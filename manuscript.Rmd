@@ -37,7 +37,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some areas but increasing in others. 
 
-The literature that studies fishermen's responses to either changes in fish availability or policies that restrict access to fisheries (e.g., Vasquez Caballero et al. 2023; Stafford 2017) has identified that fishers can adopt the following adaptive strategies:
+The literature that studies fishermen's responses to either changes in fish availability or policies that restrict access to fisheries (e.g., @Vasquez_Caballero2023-ip; @Stafford2018-pq) has identified that fishers can adopt the following adaptive strategies:
 
 1. Fishermen can reduce or reallocate fishing effort, either to another species or to another location (Gonzalez-Mon et al. 2021).
 2. Keep following the same strategy.
