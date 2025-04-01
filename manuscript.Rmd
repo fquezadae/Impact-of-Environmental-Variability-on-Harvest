@@ -1,0 +1,50 @@
+---
+title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
+  using a Multi-Species Approach"
+author: "Felipe J. Quezada"
+date: "`r Sys.Date()`"
+output: pdf_document
+bibliography: bib_paperpile.bib
+csl: apa.csl # Optional: for APA-style citations
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+# Introduction: Theoretical-Conceptual Foundations and State of the Art that Support the Proposal
+
+The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some areas but increasing in others. 
+
+The literature that studies fishermen's responses to either changes in fish availability or policies that restrict access to fisheries (e.g., Vasquez Caballero et al. 2023; Stafford 2017) has identified that fishers can adopt the following adaptive strategies:
+
+1. Fishermen can reduce or reallocate fishing effort, either to another species or to another location (Gonzalez-Mon et al. 2021).
+2. Keep following the same strategy.
+3. In the worst-case scenario, stop fishing entirely and find alternative employment elsewhere (Powell et al. 2022).
+
+Among all those strategies, reallocating fishing efforts to other alternative species might be an effective adaptation strategy to climate change (Young et al. 2018). Diversification of target species has been associated with reducing income variability (e.g., Kasperski and Holland 2013; Sethi et al. 2014) and increasing resilience to both climate shock (@Cline2017-dp; Fisher et al. 2021) and interannual oceanographic variability (Aguilera et al. 2015; Finkbeiner 2015).
+
+However, switching between species requires fishers to have the skills, the gear, and the permits to do so (Frawley et al. 2021; Powell et al. 2022). Moreover, even though a fisher may satisfy these requirements, diversification might not be possible (Beaudreau et al. 2019) as it might be constrained depending on port infrastructure, markets, and regulations (Kasperski and Holland 2013; Powell et al. 2022). Therefore, deciding which adaptation strategy to take is not straightforward and would depend on many factors. Additionally, fishers might respond differently to an analogous situation as they have different goals, skills, and preferences (Zhang and Smith 2011; Jardine et al. 2020; Powell et al. 2022).
+
+
