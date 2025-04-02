@@ -106,7 +106,7 @@ where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of expl
 The price of each species is modeled using an inverse demand model, which assumes weak separability between the species into consideration and other products [@Kasperski2015-jm]. The price of a species $i$ in year $y$ is the following:
 
 \begin{equation}
-p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + epsilo_{iy}, \quad i = 1,\ldots,n.
+p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n.
 \label{eq6}
 \end{equation}
 
