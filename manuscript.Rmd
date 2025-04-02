@@ -78,14 +78,14 @@ Together with estimating the restricted cost function, we estimate the condition
 Similar to stock dynamics, the system of equations formed by \eqref{eq3} and \eqref{eq4} can be estimated using SUR. To comply with economic theory, and to reduce even more the number of parameters to estimate, the following restrictions are imposed when estimating \eqref{eq4}:
 
 1. Symmetry of the cost function, where
-  \begin{equation}
+  \begin{equation*}
   \alpha_{g,\mathbf{X}_i\mathbf{X}_j} = \alpha_{g,\mathbf{X}_j\mathbf{X}_i} \quad \forall \quad i=1,\ldots,(2n + M + k); \ i \neq j; \ g = 1,\ldots, G.
-  \end{equation}
+  \end{equation*}
 
 2. Linear homogeneity in input prices, where
-  \begin{equation}
+  \begin{equation*}
   \sum_m^M \alpha_{g,w_m} = 1 \ \text{and} \ \sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0 \quad i=1,\ldots,(2n + M + k); \ g = 1,\ldots, G.
-  \end{equation}
+  \end{equation*}
 
 Data at the trip level is available upon request from the Chilean Fisheries Research Institute (IFOP), which registers geo-referenced catch information on the Chilean fleet's fishing operation per trip [see e.g. @PeñaElNiño and [IFOP data observatory](ifop.dataobservatory.net)]. As inputs we can use the time spent at sea during a trip, where the price is the average wage pay to crew member per hour, and the distance traveled during a trip, where the price of distance traveled is the diesel cost.
 
@@ -94,18 +94,39 @@ To link this function to climate change, we can also include additional environm
 ### Total annual trips
 
 The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution [@Kasperski2015-jm]:
-
 \begin{equation}
-Pr\left[T^*_{vgy} = t_v \right]=\frac{exp^{exp(U'_vg\beta_g)}exp(U'_{vg}\beta_g)^{t_v}}{t_v !}
+Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
+\label{eq5}
 \end{equation}
+where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, $\beta_g$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and $\bar{q}$ is the annual quota level. Additionally, we can add the accumulation of "bad weather days" as an explanatory variable to incorporate weather conditions into this decision. 
+
 
 ### Inverse demand model for outputs
 
+The price of each species is modeled using an inverse demand model, which assumes weak separability between the species into consideration and other products [@Kasperski2015-jm]. The price of a species $i$ in year $y$ is the following:
 
+\begin{equation}
+p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + epsilo_{iy}, \quad i = 1,\ldots,n.
+\label{eq6}
+\end{equation}
+
+The system formed by \eqref{eq6} can be estimated using maximum likelihood. Note that harvest may be endogenous in this system due to simultaneity. @Kasperski2015-jm solves this by assuming that the TAC is exogenous, and the catch, in general, is determined by this quota. 
 
 ## Numerical optimization
 
-## Potential extension of the project
+To obtain the effect of future climate variability on stock, harvest, quota and profits, we conduct numerical optimization for different climate scenarios using the parameters estimates for the stock dynamic, cost functions, total annual trips and inverse demand equations. 
+In each year, a vessel maximizes profits by choosing their optimal number of trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
+\begin{align}
+\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
+\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
+\label{eq7}
+\end{align}
+where $\rho$ is the intra-annual discount factor, $\omega$  is a vector of shares of $\bar{q}$, and $h_{lt}=0$ for all $l\neq g$. The vector of shares is obtained from historical data on harvest. The optimal profit from the maximization problem in \eqref{eq7}
+ is denoted as $π_{vgy}^* (p,w,x,Z,\bar{q},\omega)$, and $h_{vgty}^*$ and $T_{vgy}^*$ are the optimal choices harvest per trip and total number of trips in year y for vessel v. To obtain the optimal quota level, we must solve the social-planner optimization problem to maximize the net value of the fishery by choosing the quota levels per year and by species.
+
+Following @Kasperski2015-jm, the optimization problem will be conducted for the next 25 years. I will use different climate scenarios and compare different optimal outcomes between them by using future projections for the environmental variables included in the model. 
+
+
 
 # Results
 
@@ -113,7 +134,7 @@ Pr\left[T^*_{vgy} = t_v \right]=\frac{exp^{exp(U'_vg\beta_g)}exp(U'_{vg}\beta_g)
 
 ## Potential extension of the project
 
-Several other extensions to the model can be incorporated to be improved. For instance, the geographical space where fishermen operate is relevant, as depending on the location chosen and when to participate, the set of potential choices would vary (Reimer et al. 2017). As I mentioned above, it is possible to extend the stock dynamic model by considering different locations. The model would also require that the participation decision, which is captured by the Poisson model on the annual number of trips, should then consider the decision to participate in a determined fishing ground, connecting the multi-species model of @Kasperski2015-jm to the literature of location choice modeling (e.g., Dupont 1993; Smith 2005; Hicks et al. 2020). Regarding the determination of prices, the model assumes that quantities are exogenous because the quota is likely to be binding. However, we can relax this assumption by considering that all variables in the inverse demand equations are endogenous by estimating a vector autoregressive (VAR) model (Juselius 2006). In other words, harvest $h_{vg}$ has its own equations in the system. 
+Several other extensions to the model can be incorporated to be improved. For instance, the geographical space where fishermen operate is relevant, as depending on the location chosen and when to participate, the set of potential choices would vary [@Reimer2017-jw]. As I mentioned above, it is possible to extend the stock dynamic model by considering different locations. The model would also require that the participation decision, which is captured by the Poisson model on the annual number of trips, should then consider the decision to participate in a determined fishing ground, connecting the multi-species model of @Kasperski2015-jm to the literature of location choice modeling [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz]. Regarding the determination of prices, the model assumes that quantities are exogenous because the quota is likely to be binding. However, we can relax this assumption by considering that all variables in the inverse demand equations are endogenous by estimating a vector autoregressive (VAR) model [@juselius2006cointegrated]. In other words, harvest $h_{vg}$ has its own equations in the system. 
 
 # Conclusions
 
