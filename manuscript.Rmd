@@ -91,7 +91,9 @@ procedure.
 ## Data
 
 - **SOLICITAR!** 
-  - Stock abundance and vessel landings were obtained from stock assessment by request to the Chilean National Fisheries and Aquaculture Service (SERNAPESCA) and the Chilean Undersecretariat for Fisheries and Aquaculture (SUBPESCA).
+  - Stock abundance and vessel landings 
+    - Fish stock by species $i=1,\ldots,n$ in year $y$ 
+    - Annual harvest of species $i$ on year $y$
   - Environmental covariates:
     - Sea surface temperature
     - Chlorophyll levels
@@ -122,7 +124,7 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
 
 where $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, $h_{iy}$ is the annual harvest of
 species $i$ on year $y$, $r_i$ is the intrinsic growth rate of the resource $i$, $\eta_i$ is a density-dependent factor related to the
-carrying capacity, and $\alpha_{ij}$ are the interaction parameters between species. The system of n growth equations can be estimated
+carrying capacity, and $\alpha_{ij}$ are the interaction parameters between species. The system of $n$ growth equations can be estimated
 simultaneously using seemingly unrelated regression (SUR) or other similar approaches.
 
 Following @Richter2018, we can augment \eqref{eq1} by including environmental covariates $Env_{iy}$ that affect the fish stock, such as
