@@ -66,8 +66,7 @@ many factors. Additionally, fishers might respond differently to an
 analogous situation as they have different goals, skills, and
 preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
 
-In this project, we aim to answer how fishing decisions, aggregate catch
-levels, and the price of marine resources will be affected under
+In this project, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under
 different climatic scenarios in the multi-species small pelagic fishery
 (SPF) in Chile, composed by anchoveta (*Engraulis ringens*), jack
 mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or
@@ -102,19 +101,7 @@ significant interrelations between species stock and harvest, and that
 the composition of the catch will vary depending on the climate scenario
 we use for future predictions.
 
-Under a changing climate, studying the effect of climatic variability on
-fishers' harvest decisions and landings is relevant for understanding
-fishing communities' adaptive capacities and strategies in response to
-climate change, thereby enabling the design of potential mitigation
-measures in response to these changes. Countries have different
-institutions, cultures, and norms, so responses might differ depending
-on where the study is conducted. For this reason, conducting this
-research based on the Chilean fishing industry is necessary to develop
-local policies that aim to reduce climate change impacts on fisheries.
-While there is some literature on the effect of climate change on
-Chilean fisheries, I am unaware of local-level studies that consider a
-multiple-species framework and the interrelationship between the local
-market and fishing decisions seen under a variable climate context.[^1]
+Under a changing climate, studying the effect of climatic variability on fishers' harvest decisions and landings is relevant for understanding fishing communities' adaptive capacities and strategies in response to climate change, thereby enabling the design of potential mitigation measures in response to these changes by policymakers. Countries have different institutions, cultures, and norms, so responses might differ depending on where the study is conducted. For this reason, conducting this research based on the Chilean fishing industry is necessary to develop local policies that aim to reduce climate change impacts on fisheries. While there is some literature on the effect of climate change on Chilean fisheries, I am unaware of local-level studies that consider a multiple-species framework and the interrelationship between the local market and fishing decisions seen under a variable climate context.[^1]
 
 [^1]: For the case of Chile, as far as I know, the only article that
     study fishers' behavior using discrete choice modelling is
@@ -181,7 +168,7 @@ C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1
 $\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$, $w$ is a $V_g \times M$ matrix of
 variable input prices, $h_{vg}$ is an $V_g \times n$ matrix of harvest
 quantities and $Z_v$ is a vector of fixed vessel characteristics for
-vessel v, x is an V_g×n matrix of given stock levels of the species of
+vessel v, x is an $V_g \times n$ matrix of given stock levels of the species of
 interest, and $Z_v$ is an $V_g \times k$ matrix of given vessel
 characteristics. Therefore, $\mathbf{X}_{vg}$ is a $V_g \times (2n+M+k)$
 matrix, and $\mathbf{X}_{ivg}$ represents the *i*th column of the
@@ -252,10 +239,14 @@ p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \qua
 \label{eq6}
 \end{equation}
 
-The system formed by \eqref{eq6} can be estimated using maximum
-likelihood. Note that harvest may be endogenous in this system due to
-simultaneity. @Kasperski2015-jm solves this by assuming that the TAC is
-exogenous, and the catch, in general, is determined by this quota.
+The system formed by \eqref{eq6} can be estimated using maximum likelihood. Note that harvest may be endogenous in this system due to
+simultaneity. @Kasperski2015-jm solves this by assuming that the TAC is exogenous, and the catch, in general, is determined by this quota.
+We can relax this assumption by considering that all variables in the inverse demand equations are endogenous by estimating a vector autoregressive (VAR) model [@juselius2006cointegrated]. In other words, harvest $h_{vg}$ has its own equations in the system.
+
+<!-- Comment: One concern I have regards the endogeneity of factors determining the outcomes of fishing effort on a fishing
+trip (where, when, how long, and for what, and how much), climate conditions (temperature, wave, and wind),
+and input and output prices. While Kasperski assumes that total allowable catches are binding to avoid one potential endogeneity, I wonder if this is a good assumption under climate change. What would you need to assume about the regulator’s response to the changing conditions and the setting of the total allowable catches? -->
+
 
 ## Numerical optimization
 
@@ -302,13 +293,7 @@ the participation decision, which is captured by the Poisson model on
 the annual number of trips, should then consider the decision to
 participate in a determined fishing ground, connecting the multi-species
 model of @Kasperski2015-jm to the literature of location choice modeling
-[e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz]. Regarding the
-determination of prices, the model assumes that quantities are exogenous
-because the quota is likely to be binding. However, we can relax this
-assumption by considering that all variables in the inverse demand
-equations are endogenous by estimating a vector autoregressive (VAR)
-model [@juselius2006cointegrated]. In other words, harvest $h_{vg}$ has
-its own equations in the system.
+[e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
 
 # Conclusions
 
