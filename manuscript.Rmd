@@ -24,9 +24,13 @@ header-includes:
 editor_options: 
   markdown: 
     wrap: 72
+abstract: "In this paper, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed by anchoveta (Engraulis ringens), jack mackerel (Trachurus murphyi), sardine (either Sardinops sagax or Strangomera bentincki), among others. By doing this, we expect to understand better how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will estimate a multi-species harvesting model. This model considers species' economic and biological interrelation to study the effect of climate variability on harvest decisions and substitution between species and determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile. We hypothesize that if the availability of a main target species is reduced, fishers will switch to the closest substitute if the expected revenue obtained from targeting this new species is high enough to cover the expected cost. Otherwise, the vessel would decrease fishing efforts or even exit the fishery due to the lack of economically viable substitutes. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation -- as it determines the availability of other species-- and the gear type used."
 ---
 
-***Check comments from FONDECYT reviewers!***
+<!-- ***Check comments from FONDECYT reviewers!*** -->
+
+
+
 
 # Introduction
 
@@ -282,6 +286,8 @@ projections for the environmental variables included in the model.
 
 # Results
 
+NO RESULTS YET
+
 # Discussion
 
 ## Potential extension of the project
@@ -305,6 +311,8 @@ model [@juselius2006cointegrated]. In other words, harvest $h_{vg}$ has
 its own equations in the system.
 
 # Conclusions
+
+NO CONCLUSION YET
 
 # Repository
 
