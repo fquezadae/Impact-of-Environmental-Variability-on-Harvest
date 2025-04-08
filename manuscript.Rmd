@@ -7,6 +7,7 @@ output:
   pdf_document:
     latex_engine: xelatex
     number_sections: true
+    pandoc_args: ["--variable=fontsize:11pt"]
 bibliography: bib_paperpile.bib
 csl: apa.csl # Optional: for APA-style citations
 linkcolor: blue
@@ -34,82 +35,48 @@ abstract: "In this paper, we aim to answer how fishing decisions, aggregate catc
 
 # Introduction
 
-The distribution and abundance of marine resources are changing in
-response to environmental conditions such as global ocean warming
-[@Poloczanska2013-qq]. Due to climate change, species distribution is
-expected to change in the future, reducing species availability in some
-areas but increasing in others. The literature that studies fishermen'
-responses to either changes in fish availability or policies that
-restrict access to fisheries [e.g., @Stafford2018-pq;
-@Vasquez_Caballero2023-ip] has identified that fishers can adopt the
-following adaptive strategies: (i) fishermen can reduce or reallocate
-fishing effort, either to another species or to another location
-[@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii)
-in the worst-case scenario, stop fishing entirely and find alternative
-employment elsewhere [@Powell2022-wj]. Among all those strategies,
-reallocating fishing efforts to other alternative species might be an
-effective adaptation strategy to climate change [@Young2018-kk].
-Diversification of target species has been associated with reducing
-income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and
-increasing resilience to both climate shock [@Cline2017-dp;
-@Fisher2021-lw] and interannual oceanographic variability
-[@Aguilera2015-wo; @Finkbeiner2015-bs].
+The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming
+[@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some
+areas but increasing in others. The literature that studies fishermen' responses to either changes in fish availability or policies that
+restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that fishers can adopt the
+following adaptive strategies: (i) fishermen can reduce or reallocate fishing effort, either to another species or to another location
+[@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii) in the worst-case scenario, stop fishing entirely and find alternative
+employment elsewhere [@Powell2022-wj]. Among all those strategies, reallocating fishing efforts to other alternative species might be an
+effective adaptation strategy to climate change [@Young2018-kk]. Diversification of target species has been associated with reducing
+income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and increasing resilience to both climate shock [@Cline2017-dp;
+@Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
-However, switching between species requires fishers to have the skills,
-the gear, and the permits to do so [@Frawley2021-cw; @Powell2022-wj].
-Moreover, even though a fisher may satisfy these requirements,
-diversification might not be possible [@Beaudreau2019-xg] as it might be
-constrained depending on port infrastructure, markets, and regulations
-[@Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which
-adaptation strategy to take is not straightforward and would depend on
-many factors. Additionally, fishers might respond differently to an
-analogous situation as they have different goals, skills, and
-preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
+However, switching between species requires fishers to have the skills, the gear, and the permits to do so [@Frawley2021-cw; @Powell2022-wj].
+Moreover, even though a fisher may satisfy these requirements, diversification might not be possible [@Beaudreau2019-xg] as it might be
+constrained depending on port infrastructure, markets, and regulations [@Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which
+adaptation strategy to take is not straightforward and would depend on many factors. Additionally, fishers might respond differently to an
+analogous situation as they have different goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
 
 In this project, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under
-different climatic scenarios in the multi-species small pelagic fishery
-(SPF) in Chile, composed by anchoveta (*Engraulis ringens*), jack
-mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or
-*Strangomera bentincki*), among others. The SPF is the most important in
-terms of catches in the country, accounting for almost 94% of the total
-Chilean catch in 2019 [@SUBPESCA2020]. By doing this research, we expect
-to understand better how Chilean fishers and fishing communities will
-adapt to climate change. To address our research question, we will
-estimate a multi-species harvesting model based on @Kasperski2015-jm.
-This model considers species' economic and biological interrelation to
-study the effect of climate variability on harvest decisions and
-substitution between species and determine the impact of different
-climatic scenarios on the well-being (e.g., profits) of fishers and
-fishing communities in Chile.
+different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed by anchoveta (*Engraulis ringens*), jack
+mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or *Strangomera bentincki*), among others. The SPF is the most important in
+terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. By doing this research, we expect
+to understand better how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will
+estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelation to
+study the effect of climate variability on harvest decisions and substitution between species and determine the impact of different
+climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile.
 
-We hypothesize that if the availability of a main target species is
-reduced, fishers will switch to the closest substitute if the expected
-revenue obtained from targeting this new species is high enough to cover
-the expected cost. Otherwise, the vessel would decrease fishing efforts
-or even exit the fishery due to the lack of economically viable
-substitutes. Moreover, we expect that this behavior is heterogeneous
-depending on the geographical area of operation -- as it determines the
-availability of other species [@Reimer2017-jw] -- and the gear type
+We hypothesize that if the availability of a main target species is reduced, fishers will switch to the closest substitute if the expected
+revenue obtained from targeting this new species is high enough to cover the expected cost. Otherwise, the vessel would decrease fishing efforts
+or even exit the fishery due to the lack of economically viable substitutes. Moreover, we expect that this behavior is heterogeneous
+depending on the geographical area of operation -- as it determines the availability of other species [@Reimer2017-jw] -- and the gear type
 used.
 
-At the end of the project, I expect to find significant effects of
-climate variables on species stock dynamics, the cost of fishing during
-a trip, and the number of trips a vessel would take. The combinations of
-these environmental effects would be reflected in the optimal harvest
-level and the prices seen on the local market. I also expect to find
-significant interrelations between species stock and harvest, and that
-the composition of the catch will vary depending on the climate scenario
-we use for future predictions.
+At the end of the project, I expect to find significant effects of climate variables on species stock dynamics, the cost of fishing during
+a trip, and the number of trips a vessel would take. The combinations of these environmental effects would be reflected in the optimal harvest
+level and the prices seen on the local market. I also expect to find significant interrelations between species stock and harvest, and that
+the composition of the catch will vary depending on the climate scenario we use for future predictions.
 
 Under a changing climate, studying the effect of climatic variability on fishers' harvest decisions and landings is relevant for understanding fishing communities' adaptive capacities and strategies in response to climate change, thereby enabling the design of potential mitigation measures in response to these changes by policymakers. Countries have different institutions, cultures, and norms, so responses might differ depending on where the study is conducted. For this reason, conducting this research based on the Chilean fishing industry is necessary to develop local policies that aim to reduce climate change impacts on fisheries. While there is some literature on the effect of climate change on Chilean fisheries, I am unaware of local-level studies that consider a multiple-species framework and the interrelationship between the local market and fishing decisions seen under a variable climate context.[^1]
 
-[^1]: For the case of Chile, as far as I know, the only article that
-    study fishers' behavior using discrete choice modelling is
-    @PeñaElNiño. This article study how El Niño Southern Oscillation
-    (ENSO) affect fishermen location choices that participate in the
-    Jack Mackerel fishery.
+[^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is @PeñaElNiño. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
 
-# Methodology
+# Data and methodology
 
 To fulfill the project's objectives, and following @Kasperski2015-jm,
 the research entails five different stages: (i) estimating the stock
@@ -121,47 +88,54 @@ profits levels evolve over time. The numeral optimization uses estimated
 parameters from the previous four stages to conduct the optimization
 procedure.
 
+## Data
+
+- **SOLICITAR!** 
+  - Stock abundance and vessel landings were obtained from stock assessment by request to the Chilean National Fisheries and Aquaculture Service (SERNAPESCA) and the Chilean Undersecretariat for Fisheries and Aquaculture (SUBPESCA).
+  - Environmental covariates:
+    - Sea surface temperature
+    - Chlorophyll levels
+    - Wind intensity and wave conditions in each trip at the harvest location
+    - Bad weather days?
+  - Data at the trip level ([IFOP data observatory?](ifop.dataobservatory.net)]).
+    - Time spent at sea during a trip, 
+    - Distance traveled during a trip, 
+  - Other data?
+    - Average wage pay to crew member per hour?
+    - Diesel cost.
+
+To link this function to climate change, we can also include additional
+environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind
+intensity and wave conditions in each trip at the harvest location, upon
+data availability. Therefore, the augmented $X_{vg}$ matrix becomes
+$\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
+
 ## Econometrics models
 
 ### Stock dynamics
 
-To estimate stock dynamics, I will use annual data on stock abundance
-and vessel landings. This data will be obtained from stock assessment by
-request to the Chilean National Fisheries and Aquaculture Service
-(SERNAPESCA) or the Chilean Undersecretariat for Fisheries and
-Aquaculture (SUBPESCA).
-
-Following @Kasperski2015-jm, the growth of each species follows a
+To estimate stock dynamics, I use annual data on stock abundance and vessel landings. Following @Kasperski2015-jm, the growth of each species follows a
 discrete logistic function: \begin{equation}
 x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
 \label{eq1}
 \end{equation}
 
-where $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$,
-$n$ is the total number of species, $h_{iy}$ is the annual harvest of
-species $i$ on year $y$, $r_i$ is the intrinsic growth rate of the
-resource $i$, $\eta_i$ is a density-dependent factor related to the
-carrying capacity, and $\alpha_{ij}$ are the interaction parameters
-between species. The system of n growth equations can be estimated
-simultaneously using seemingly unrelated regression (SUR) or other
-similar approaches.
+where $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, $h_{iy}$ is the annual harvest of
+species $i$ on year $y$, $r_i$ is the intrinsic growth rate of the resource $i$, $\eta_i$ is a density-dependent factor related to the
+carrying capacity, and $\alpha_{ij}$ are the interaction parameters between species. The system of n growth equations can be estimated
+simultaneously using seemingly unrelated regression (SUR) or other similar approaches.
 
-Following @Richter2018, we can augment \eqref{eq1} by including
-environmental covariates $Env_{iy}$ that affect the fish stock, such as
-sea surface temperature and chlorophyll levels, and an error term
-$\varepsilon_{iy}$ that captures random recruitment: \begin{equation}
+Following @Richter2018, we can augment \eqref{eq1} by including environmental covariates $Env_{iy}$ that affect the fish stock, such as
+sea surface temperature and chlorophyll levels, and an error term $\varepsilon_{iy}$ that captures random recruitment: \begin{equation}
 x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
 \label{eq2}
 \end{equation} where $\rho_i$ are the coefficient for the environmental
-covariates. The model could also be expanded to different spatial
-locations conditional on data availability.
+covariates. The model could also be expanded to different spatial locations conditional on data availability.
 
 ### Trip level cost functions
 
-Ignoring trip subscript, the cost functions vary by vessel
-$v=1,\ldots,V_g$ and gear used $g=1,\ldots,G$, where $V_g$ is the number
-of observations using gear type $g$, and $G$ is the total number of
-available (or observed) gears: \begin{equation}
+Ignoring trip subscript, the cost functions vary by vessel $v=1,\ldots,V_g$ and gear used $g=1,\ldots,G$, where $V_g$ is the number
+of observations using gear type $g$, and $G$ is the total number of available (or observed) gears: \begin{equation}
 C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
 \label{eq3}
 \end{equation} where $C_{vg}= w z_{vg}^*$,
@@ -225,7 +199,7 @@ $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the
 number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
 $\bar{q}$ is the annual quota level. Additionally, we can add the
 accumulation of "bad weather days" as an explanatory variable to
-incorporate weather conditions into this decision.
+incorporate weather conditions into this decision, thus $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
 
 ### Inverse demand model for outputs
 
@@ -257,14 +231,14 @@ cost functions, total annual trips and inverse demand equations. In each
 year, a vessel maximizes profits by choosing their optimal number of
 trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
 \begin{align}
-\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
+\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
 \label{eq7}
 \end{align} where $\rho$ is the intra-annual discount factor, $\omega$
 is a vector of shares of $\bar{q}$, and $h_{lt}=0$ for all $l\neq g$.
 The vector of shares is obtained from historical data on harvest. The
 optimal profit from the maximization problem in \eqref{eq7} is denoted
-as $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega)$, and $h_{vgty}^*$ and
+as $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, and $h_{vgty}^*$ and
 $T_{vgy}^*$ are the optimal choices harvest per trip and total number of
 trips in year y for vessel v. To obtain the optimal quota level, we must
 solve the social-planner optimization problem to maximize the net value
