@@ -78,39 +78,31 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 # Data and methodology
 
-To fulfill the project's objectives, and following @Kasperski2015-jm,
-the research entails five different stages: (i) estimating the stock
-dynamics of each species included in the model, (ii) estimating trip
-level cost functions, (iii) estimating total annual trips, (iv) estimate
-the inverse demand model for outputs (i.e., price responses to supply),
-and (v) conduct numerical optimization to examine how harvest and
-profits levels evolve over time. The numeral optimization uses estimated
-parameters from the previous four stages to conduct the optimization
+To fulfill the project's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the stock
+dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate
+the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and
+profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization
 procedure.
 
 ## Data
 
-- **SOLICITAR!** 
-  - Stock abundance and vessel landings 
-    - Fish stock by species $i=1,\ldots,n$ in year $y$ 
-    - Annual harvest of species $i$ on year $y$
+- **SOLICITADO A IFOP 2012-2024:** 
+  - Stock abundance and vessel landings (annual by port/county/region/country and species)
+  - Data at the trip level ([IFOP data observatory?](ifop.dataobservatory.net)]).
+  - Ex-vessel prices (monthly or annual by port/county/region/country and species)
+  
+- **POR SOLICITAR:** 
   - Environmental covariates:
     - Sea surface temperature
     - Chlorophyll levels
     - Wind intensity and wave conditions in each trip at the harvest location
     - Bad weather days?
-  - Data at the trip level ([IFOP data observatory?](ifop.dataobservatory.net)]).
-    - Time spent at sea during a trip, 
-    - Distance traveled during a trip, 
   - Other data?
-    - Average wage pay to crew member per hour?
+    - Average wage pay to crew member per hour
     - Diesel cost.
-
-To link this function to climate change, we can also include additional
-environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind
-intensity and wave conditions in each trip at the harvest location, upon
-data availability. Therefore, the augmented $X_{vg}$ matrix becomes
-$\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
+    
+    
+  
 
 ## Econometrics models
 
@@ -187,6 +179,7 @@ environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind
 intensity and wave conditions in each trip at the harvest location, upon
 data availability. Therefore, the augmented $X_{vg}$ matrix becomes
 $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
+
 
 ### Total annual trips
 
