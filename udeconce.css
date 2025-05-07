@@ -3,26 +3,12 @@
   --udec-gold: #f59f18;
 }
 
-/* Default slide styling */
-.remark-slide-content {
-  background-color: white;
-  color: var(--udec-blue);
-}
-
-h1, h2, h3 {
-  color: var(--udec-blue);
-}
-
-a {
-  color: black;
-}
-
 /* Custom title slide */
 .title-slide {
   background-color: var(--udec-blue) !important;
   color: white !important;
   background-image: url(logo/Logo-UdeC-1-mag.png);
-  background-position: 50% 90%;
+  background-position: 50% 95%;
   background-size: 200px;
   background-repeat: no-repeat;
 }

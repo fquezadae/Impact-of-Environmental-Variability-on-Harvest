@@ -1,33 +1,37 @@
 ---
-output:
-  xaringan::moon_reader:
-    css: ["udeconce.css", "default", "default-fonts"]
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
-      slideNumberFormat: "%current%"
-bibliography: bib_paperpile.bib
-csl: apa.csl
-linkcolor: blue
 title: "The Impact of Environmental Variability on Multi-Species Harvest Decisions by Chilean Fishers"
 author: "Felipe J. Quezada-Escalona"
+date: "Last update: `r Sys.Date()`"
+output: 
+  xaringan::moon_reader:
+    css: ["udeconce.css", "default", "default-fonts"]
 ---
 
 ```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
 
+
+```{r refmanager, include=FALSE}
+library(RefManageR)
+source(here::here("helper.R"))
+BibOptions(check.entries = FALSE, 
+           bib.style = "authoryear", 
+           style = "markdown",
+           dashed = TRUE)
+bib <- ReadBib("bib_paperpile.bib")
+citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ```
 
 # Introduction
 
-- Marine resource distribution is changing due to climate variability [Poloczanska2013-qq].
+- Marine resource distribution is changing due to climate variability `r Citep(bib, "Poloczanska2013-qq", .opts = citeopt)`.
 - Fishers respond to change by:
-  - Reallocating effort to other species/areas [@Gonzalez-Mon2021-kj]
+  - Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`
   - Maintaining the current strategy
-  - Exiting the fishery [@Powell2022-wj]
-- Diversification improves income stability and climate resilience [@Kasperski2013-jz; @Finkbeiner2015-bs]
-
+  - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+  
+- Diversification improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
 ---
 
 # Why a Multi-Species Model?
@@ -35,15 +39,15 @@ author: "Felipe J. Quezada-Escalona"
 - Responses to availability vary by:
   - Port infrastructure
   - Market access
-  - Regulations [@Powell2022-wj]
-- Different fishers, different choices [@Jardine2020-um]
+  - Regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+- Different fishers, different choices `r Citep(bib, "Jardine2020-um", .opts = citeopt)`
 
 ---
 
 # Case Study: Chile’s Small Pelagic Fishery (SPF)
 
 - Anchoveta, Jack mackerel, Sardine
-- ~94% of national catch [@SUBPESCA2020]
+- ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
 - Climate change will impact:
   - Catch levels
   - Prices
@@ -194,3 +198,11 @@ T_{iy} = \gamma_0 + \gamma_1 R_{iy} + \gamma_2 c_{iy} + \gamma_3 \text{Lagged ef
 Felipe J. Quezada-Escalona  
 Department of Economics, University of Concepción  
 Questions?
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE}
+PrintBibliography(bib)
+```
