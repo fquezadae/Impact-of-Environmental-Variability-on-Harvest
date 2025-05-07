@@ -1,0 +1,659 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{indentfirst}
+\setlength{\parindent}{10pt}
+\usepackage{authblk}
+\author{Felipe J. Quezada}
+\affil{Department of Economics \\ University of Concepción \vspace{-48pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile using a Multi-Species Approach},
+  pdfauthor={Felipe J. Quezada},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={blue},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{The Impact of Environmental Variability on Fishers' Harvest
+Decisions in Chile using a Multi-Species Approach}
+\author{Felipe J. Quezada}
+\date{May 07, 2025}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+In this paper, we aim to answer how fishing decisions, aggregate catch
+levels, and the price of marine resources will be affected under
+different climatic scenarios in the multi-species small pelagic fishery
+(SPF) in Chile, composed by anchoveta (Engraulis ringens), jack mackerel
+(Trachurus murphyi), sardine (either Sardinops sagax or Strangomera
+bentincki), among others. By doing this, we expect to understand better
+how Chilean fishers and fishing communities will adapt to climate
+change. To address our research question, we will estimate a
+multi-species harvesting model. This model considers species' economic
+and biological interrelation to study the effect of climate variability
+on harvest decisions and substitution between species and determine the
+impact of different climatic scenarios on the well-being (e.g., profits)
+of fishers and fishing communities in Chile. We hypothesize that if the
+availability of a main target species is reduced, fishers will switch to
+the closest substitute if the expected revenue obtained from targeting
+this new species is high enough to cover the expected cost. Otherwise,
+the vessel would decrease fishing efforts or even exit the fishery due
+to the lack of economically viable substitutes. Moreover, we expect that
+this behavior is heterogeneous depending on the geographical area of
+operation -- as it determines the availability of other species-- and
+the gear type used.
+\end{abstract}
+
+\section{Introduction}\label{introduction}
+
+The distribution and abundance of marine resources are changing in
+response to environmental conditions such as global ocean warming
+(\citeproc{ref-Poloczanska2013-qq}{Poloczanska et al., 2013}). Due to
+climate change, species distribution is expected to change in the
+future, reducing species availability in some areas but increasing in
+others. The literature that studies fishermen' responses to either
+changes in fish availability or policies that restrict access to
+fisheries (e.g., \citeproc{ref-Stafford2018-pq}{Stafford, 2018};
+\citeproc{ref-Vasquez_Caballero2023-ip}{Vasquez Caballero et al., 2023})
+has identified that fishers can adopt the following adaptive strategies:
+(i) fishermen can reduce or reallocate fishing effort, either to another
+species or to another location
+(\citeproc{ref-Gonzalez-Mon2021-kj}{Gonzalez-Mon et al., 2021}), (ii)
+keep following the same strategy, or, (iii) in the worst-case scenario,
+stop fishing entirely and find alternative employment elsewhere
+(\citeproc{ref-Powell2022-wj}{Powell et al., 2022}). Among all those
+strategies, reallocating fishing efforts to other alternative species
+might be an effective adaptation strategy to climate change
+(\citeproc{ref-Young2018-kk}{Young et al., 2018}). Diversification of
+target species has been associated with reducing income variability
+(e.g., \citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013};
+\citeproc{ref-Sethi2014-bn}{Sethi et al., 2014}) and increasing
+resilience to both climate shock (\citeproc{ref-Cline2017-dp}{Cline et
+al., 2017}; \citeproc{ref-Fisher2021-lw}{Fisher et al., 2021}) and
+interannual oceanographic variability
+(\citeproc{ref-Aguilera2015-wo}{Aguilera et al., 2015};
+\citeproc{ref-Finkbeiner2015-bs}{Finkbeiner, 2015}).
+
+However, switching between species requires fishers to have the skills,
+the gear, and the permits to do so
+(\citeproc{ref-Frawley2021-cw}{Frawley et al., 2021};
+\citeproc{ref-Powell2022-wj}{Powell et al., 2022}). Moreover, even
+though a fisher may satisfy these requirements, diversification might
+not be possible (\citeproc{ref-Beaudreau2019-xg}{Beaudreau et al.,
+2019}) as it might be constrained depending on port infrastructure,
+markets, and regulations (\citeproc{ref-Kasperski2013-jz}{Kasperski \&
+Holland, 2013}; \citeproc{ref-Powell2022-wj}{Powell et al., 2022}).
+Therefore, deciding which adaptation strategy to take is not
+straightforward and would depend on many factors. Additionally, fishers
+might respond differently to an analogous situation as they have
+different goals, skills, and preferences
+(\citeproc{ref-Jardine2020-um}{Jardine et al., 2020};
+\citeproc{ref-Powell2022-wj}{Powell et al., 2022};
+\citeproc{ref-Zhang2011-wv}{Zhang \& Smith, 2011}).
+
+In this project, we aim to answer how fishing decisions, aggregate catch
+levels, and the price of marine resources will be affected under
+different climatic scenarios in the multi-species small pelagic fishery
+(SPF) in Chile, composed by anchoveta (\emph{Engraulis ringens}), jack
+mackerel (\emph{Trachurus murphyi}), sardine (either \emph{Sardinops
+sagax} or \emph{Strangomera bentincki}), among others. The SPF is the
+most important in terms of catches in the country, accounting for almost
+94\% of the total Chilean catch in 2019
+(\citeproc{ref-SUBPESCA2020}{SUBPESCA, 2020}). By doing this research,
+we expect to understand better how Chilean fishers and fishing
+communities will adapt to climate change. To address our research
+question, we will estimate a multi-species harvesting model based on
+Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}). This model considers
+species' economic and biological interrelation to study the effect of
+climate variability on harvest decisions and substitution between
+species and determine the impact of different climatic scenarios on the
+well-being (e.g., profits) of fishers and fishing communities in Chile.
+
+We hypothesize that if the availability of a main target species is
+reduced, fishers will switch to the closest substitute if the expected
+revenue obtained from targeting this new species is high enough to cover
+the expected cost. Otherwise, the vessel would decrease fishing efforts
+or even exit the fishery due to the lack of economically viable
+substitutes. Moreover, we expect that this behavior is heterogeneous
+depending on the geographical area of operation -- as it determines the
+availability of other species (\citeproc{ref-Reimer2017-jw}{Reimer et
+al., 2017}) -- and the gear type used.
+
+At the end of the project, I expect to find significant effects of
+climate variables on species stock dynamics, the cost of fishing during
+a trip, and the number of trips a vessel would take. The combinations of
+these environmental effects would be reflected in the optimal harvest
+level and the prices seen on the local market. I also expect to find
+significant interrelations between species stock and harvest, and that
+the composition of the catch will vary depending on the climate scenario
+we use for future predictions.
+
+Under a changing climate, studying the effect of climatic variability on
+fishers' harvest decisions and landings is relevant for understanding
+fishing communities' adaptive capacities and strategies in response to
+climate change, thereby enabling the design of potential mitigation
+measures in response to these changes by policymakers. Countries have
+different institutions, cultures, and norms, so responses might differ
+depending on where the study is conducted. For this reason, conducting
+this research based on the Chilean fishing industry is necessary to
+develop local policies that aim to reduce climate change impacts on
+fisheries. While there is some literature on the effect of climate
+change on Chilean fisheries, I am unaware of local-level studies that
+consider a multiple-species framework and the interrelationship between
+the local market and fishing decisions seen under a variable climate
+context.\footnote{For the case of Chile, as far as I know, the only
+  article that study fishers' behavior using discrete choice modelling
+  is Peña-Torres et al. (\citeproc{ref-Peuxf1aElNiuxf1o}{2017}). This
+  article study how El Niño Southern Oscillation (ENSO) affect fishermen
+  location choices that participate in the Jack Mackerel fishery.}
+
+\section{Data and methodology}\label{data-and-methodology}
+
+To fulfill the project's objectives, and following Kasperski
+(\citeproc{ref-Kasperski2015-jm}{2015}), the research entails five
+different stages: (i) estimating the stock dynamics of each species
+included in the model, (ii) estimating trip level cost functions, (iii)
+estimating total annual trips, (iv) estimate the inverse demand model
+for outputs (i.e., price responses to supply), and (v) conduct numerical
+optimization to examine how harvest and profits levels evolve over time.
+The numeral optimization uses estimated parameters from the previous
+four stages to conduct the optimization procedure.
+
+\subsection{Data}\label{data}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{SOLICITADO A IFOP 2012-2024:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Stock abundance and vessel landings (annual by
+    port/county/region/country and species)
+  \item
+    Data at the trip level (\href{ifop.dataobservatory.net}{IFOP data
+    observatory?}{]}).
+  \item
+    Ex-vessel prices (monthly or annual by port/county/region/country
+    and species)
+  \end{itemize}
+\item
+  \textbf{POR SOLICITAR:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Environmental covariates:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Sea surface temperature
+    \item
+      Chlorophyll levels
+    \item
+      Wind intensity and wave conditions in each trip at the harvest
+      location
+    \item
+      Bad weather days?
+    \end{itemize}
+  \item
+    Other data?
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Average wage pay to crew member per hour
+    \item
+      Diesel cost.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\subsection{Econometrics models}\label{econometrics-models}
+
+\subsubsection{Stock dynamics}\label{stock-dynamics}
+
+To estimate stock dynamics, I use annual data on stock abundance and
+vessel landings. Following Kasperski
+(\citeproc{ref-Kasperski2015-jm}{2015}), the growth of each species
+follows a discrete logistic function: \begin{equation}
+x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
+\label{eq1}
+\end{equation}
+
+where \(x_{iy}\) is the fish stock by species \(i=1,\ldots,n\) in year
+\(y\), \(n\) is the total number of species, \(h_{iy}\) is the annual
+harvest of species \(i\) on year \(y\), \(r_i\) is the intrinsic growth
+rate of the resource \(i\), \(\eta_i\) is a density-dependent factor
+related to the carrying capacity, and \(\alpha_{ij}\) are the
+interaction parameters between species. The system of \(n\) growth
+equations can be estimated simultaneously using seemingly unrelated
+regression (SUR) or other similar approaches.
+
+Following Richter et al. (\citeproc{ref-Richter2018}{2018}), we can
+augment \eqref{eq1} by including environmental covariates \(Env_{iy}\)
+that affect the fish stock, such as sea surface temperature and
+chlorophyll levels, and an error term \(\varepsilon_{iy}\) that captures
+random recruitment: \begin{equation}
+x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
+\label{eq2}
+\end{equation} where \(\rho_i\) are the coefficient for the
+environmental covariates. The model could also be expanded to different
+spatial locations conditional on data availability.
+
+\subsubsection{Trip level cost
+functions}\label{trip-level-cost-functions}
+
+Ignoring trip subscript, the cost functions vary by vessel
+\(v=1,\ldots,V_g\) and gear used \(g=1,\ldots,G\), where \(V_g\) is the
+number of observations using gear type \(g\), and \(G\) is the total
+number of available (or observed) gears: \begin{equation}
+C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
+\label{eq3}
+\end{equation} where \(C_{vg}= w z_{vg}^*\),
+\(\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]\), \(w\) is a \(V_g \times M\) matrix
+of variable input prices, \(h_{vg}\) is an \(V_g \times n\) matrix of
+harvest quantities and \(Z_v\) is a vector of fixed vessel
+characteristics for vessel v, x is an \(V_g \times n\) matrix of given
+stock levels of the species of interest, and \(Z_v\) is an
+\(V_g \times k\) matrix of given vessel characteristics. Therefore,
+\(\mathbf{X}_{vg}\) is a \(V_g \times (2n+M+k)\) matrix, and
+\(\mathbf{X}_{ivg}\) represents the \emph{i}th column of the
+\(\mathbf{X}_{vg}\) matrix.
+
+Together with estimating the restricted cost function, we estimate the
+conditional input demand equations. This addition allows an increase in
+the degrees of freedom by imposing cross-equation parameter constraints
+and allows for the testing of, for instance, jointness in inputs
+(\citeproc{ref-Kasperski2015-jm}{Kasperski, 2015}). The conditional
+input demand equations are derived by Shepard's Lemma: \begin{equation}
+\frac{\partial C_{vg}}{\partial w_m} = z^*_{vg,w_m} = \alpha_{g,w_m} + \sum_{j=1}^{2n+M+k} \alpha_{g,w_m,\mathbf{X}_j} \mathbf{X}_{jvg} \quad m=1,\ldots,M.
+\label{eq4}
+\end{equation}
+
+Similar to stock dynamics, the system of equations formed by \eqref{eq3}
+and \eqref{eq4} can be estimated using SUR. To comply with economic
+theory, and to reduce even more the number of parameters to estimate,
+the following restrictions are imposed when estimating \eqref{eq4}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Symmetry of the cost function, where \begin{equation*}
+    \alpha_{g,\mathbf{X}_i\mathbf{X}_j} = \alpha_{g,\mathbf{X}_j\mathbf{X}_i} \quad \forall \quad i=1,\ldots,(2n + M + k); \ i \neq j; \ g = 1,\ldots, G.
+    \end{equation*}
+\item
+  Linear homogeneity in input prices, where \begin{equation*}
+    \sum_m^M \alpha_{g,w_m} = 1 \ \text{and} \ \sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0 \quad i=1,\ldots,(2n + M + k); \ g = 1,\ldots, G.
+    \end{equation*}
+\end{enumerate}
+
+Data at the trip level is available upon request from the Chilean
+Fisheries Research Institute (IFOP), which registers geo-referenced
+catch information on the Chilean fleet's fishing operation per trip (see
+e.g. \citeproc{ref-Peuxf1aElNiuxf1o}{Peña-Torres et al., 2017} and
+\href{ifop.dataobservatory.net}{IFOP data observatory}). As inputs we
+can use the time spent at sea during a trip, where the price is the
+average wage pay to crew member per hour, and the distance traveled
+during a trip, where the price of distance traveled is the diesel cost.
+
+To link this function to climate change, we can also include additional
+environmental variables \(Env\) to \(\mathbf{X}_{vg}\) such as wind
+intensity and wave conditions in each trip at the harvest location, upon
+data availability. Therefore, the augmented \(X_{vg}\) matrix becomes
+\(\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]\).
+
+\subsubsection{Total annual trips}\label{total-annual-trips}
+
+The number of trips a vessel will take in a given year for each gear
+type used is assumed to follow a Poison distribution
+(\citeproc{ref-Kasperski2015-jm}{Kasperski, 2015}): \begin{equation}
+Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
+\label{eq5}
+\end{equation} where \(U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]\) is a
+\((3n+M+k+1)×V_g\) matrix of explanatory variables, \(\beta_g\) is a
+\((3n+M+k+1)\times1\) matrix of coefficients to be estimated, \(t_v\) is
+the number of trips taken by vessel \(v\) using gear type \(g\) in year
+\(y\), and \(\bar{q}\) is the annual quota level. Additionally, we can
+add the accumulation of ``bad weather days'' as an explanatory variable
+to incorporate weather conditions into this decision, thus
+\(U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]\)
+
+\subsubsection{Inverse demand model for
+outputs}\label{inverse-demand-model-for-outputs}
+
+The price of each species is modeled using an inverse demand model,
+which assumes weak separability between the species into consideration
+and other products (\citeproc{ref-Kasperski2015-jm}{Kasperski, 2015}).
+The price of a species \(i\) in year \(y\) is the following:
+
+\begin{equation}
+p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+\label{eq6}
+\end{equation}
+
+The system formed by \eqref{eq6} can be estimated using maximum
+likelihood. Note that harvest may be endogenous in this system due to
+simultaneity. Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}) solves
+this by assuming that the TAC is exogenous, and the catch, in general,
+is determined by this quota. We can relax this assumption by considering
+that all variables in the inverse demand equations are endogenous by
+estimating a vector autoregressive (VAR) model
+(\citeproc{ref-juselius2006cointegrated}{Juselius, 2006}). In other
+words, harvest \(h_{vg}\) has its own equations in the system.
+
+\subsection{Numerical optimization}\label{numerical-optimization}
+
+To obtain the effect of future climate variability on stock, harvest,
+quota and profits, we conduct numerical optimization for different
+climate scenarios using the parameters estimates for the stock dynamic,
+cost functions, total annual trips and inverse demand equations. In each
+year, a vessel maximizes profits by choosing their optimal number of
+trips \(T_g\) and harvest levels per trip \(h_{g\tau}\) given a gear
+type: \begin{align}
+\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
+\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
+\label{eq7}
+\end{align} where \(\rho\) is the intra-annual discount factor,
+\(\omega\) is a vector of shares of \(\bar{q}\), and \(h_{lt}=0\) for
+all \(l\neq g\). The vector of shares is obtained from historical data
+on harvest. The optimal profit from the maximization problem in
+\eqref{eq7} is denoted as \(\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)\),
+and \(h_{vgty}^*\) and \(T_{vgy}^*\) are the optimal choices harvest per
+trip and total number of trips in year y for vessel v. To obtain the
+optimal quota level, we must solve the social-planner optimization
+problem to maximize the net value of the fishery by choosing the quota
+levels per year and by species.
+
+Following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the
+optimization problem will be conducted for the next 25 years. I will use
+different climate scenarios and compare different optimal outcomes
+between them by using future projections for the environmental variables
+included in the model.
+
+\section{Results}\label{results}
+
+NO RESULTS YET
+
+\section{Discussion}\label{discussion}
+
+\subsection{Potential extension of the
+project}\label{potential-extension-of-the-project}
+
+Several other extensions to the model can be incorporated to be
+improved. For instance, the geographical space where fishermen operate
+is relevant, as depending on the location chosen and when to
+participate, the set of potential choices would vary
+(\citeproc{ref-Reimer2017-jw}{Reimer et al., 2017}). As I mentioned
+above, it is possible to extend the stock dynamic model by considering
+different locations. The model would also require that the participation
+decision, which is captured by the Poisson model on the annual number of
+trips, should then consider the decision to participate in a determined
+fishing ground, connecting the multi-species model of Kasperski
+(\citeproc{ref-Kasperski2015-jm}{2015}) to the literature of location
+choice modeling (e.g., \citeproc{ref-Dupont1993-jn}{Dupont, 1993};
+\citeproc{ref-Hicks2020-mz}{Hicks et al., 2020};
+\citeproc{ref-Smith2005-us}{Smith, 2005}).
+
+\section{Conclusions}\label{conclusions}
+
+NO CONCLUSION YET
+
+\section{Repository}\label{repository}
+
+The source code for this project is available on
+\href{https://github.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest}{GitHub}
+
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-Aguilera2015-wo}
+Aguilera, S. E., Cole, J., Finkbeiner, E. M., Le Cornu, E., Ban, N. C.,
+Carr, M. H., Cinner, J. E., Crowder, L. B., Gelcich, S., Hicks, C. C.,
+Kittinger, J. N., Martone, R., Malone, D., Pomeroy, C., Starr, R. M.,
+Seram, S., Zuercher, R., \& Broad, K. (2015). Managing small-scale
+commercial fisheries for adaptive capacity: Insights from dynamic
+social-ecological drivers of change in monterey bay. \emph{PLoS One},
+\emph{10}(3), e0118992.
+
+\bibitem[\citeproctext]{ref-Beaudreau2019-xg}
+Beaudreau, A. H., Ward, E. J., Brenner, R. E., Shelton, A. O., Watson,
+J. T., Womack, J. C., Anderson, S. C., Haynie, A. C., Marshall, K. N.,
+\& Williams, B. C. (2019). Thirty years of change and the future of
+alaskan fisheries: Shifts in fishing participation and diversification
+in response to environmental, regulatory and economic pressures.
+\emph{Fish Fish}, \emph{20}(faf.12364), 601--619.
+
+\bibitem[\citeproctext]{ref-Cline2017-dp}
+Cline, T. J., Schindler, D. E., \& Hilborn, R. (2017). Fisheries
+portfolio diversification and turnover buffer alaskan fishing
+communities from abrupt resource and market changes. \emph{Nat.
+Commun.}, \emph{8}, 14042.
+
+\bibitem[\citeproctext]{ref-Dupont1993-jn}
+Dupont, D. P. (1993). Price uncertainty, expectations formation and
+fishers' location choices. \emph{Mar. Resour. Econ.}, \emph{8}(3),
+219--247.
+
+\bibitem[\citeproctext]{ref-Finkbeiner2015-bs}
+Finkbeiner, E. M. (2015). The role of diversification in dynamic
+small-scale fisheries: Lessons from baja california sur, mexico.
+\emph{Glob. Environ. Change}, \emph{32}, 139--152.
+
+\bibitem[\citeproctext]{ref-Fisher2021-lw}
+Fisher, M. C., Moore, S. K., Jardine, S. L., Watson, J. R., \& Samhouri,
+J. F. (2021). Climate shock effects and mediation in fisheries.
+\emph{Proc. Natl. Acad. Sci. U. S. A.}, \emph{118}(2).
+
+\bibitem[\citeproctext]{ref-Frawley2021-cw}
+Frawley, T. H., Muhling, B. A., Brodie, S., Fisher, M. C., Tommasi, D.,
+Le Fol, G., Hazen, E. L., Stohs, S. S., Finkbeiner, E. M., \& Jacox, M.
+G. (2021). Changes to the structure and function of an albacore fishery
+reveal shifting social‐ecological realities for pacific northwest
+fishermen. \emph{Fish Fish}, \emph{22}(2), 280--297.
+
+\bibitem[\citeproctext]{ref-Gonzalez-Mon2021-kj}
+Gonzalez-Mon, B., Bodin, Ö., Lindkvist, E., Frawley, T. H., Giron-Nava,
+A., Basurto, X., Nenadovic, M., \& Schlüter, M. (2021). Spatial
+diversification as a mechanism to adapt to environmental changes in
+small-scale fisheries. \emph{Environ. Sci. Policy}, \emph{116},
+246--257.
+
+\bibitem[\citeproctext]{ref-Hicks2020-mz}
+Hicks, R. L., Holland, D. S., Kuriyama, P. T., \& Schnier, K. E. (2020).
+Choice sets for spatial discrete choice models in data rich
+environments. \emph{Res. Energy Econ.}, \emph{60}, 101148.
+
+\bibitem[\citeproctext]{ref-Jardine2020-um}
+Jardine, S. L., Fisher, M. C., Moore, S. K., \& Samhouri, J. F. (2020).
+Inequality in the economic impacts from climate shocks in fisheries: The
+case of harmful algal blooms. \emph{Ecol. Econ.}, \emph{176}, 106691.
+
+\bibitem[\citeproctext]{ref-juselius2006cointegrated}
+Juselius, K. (2006). \emph{The cointegrated VAR model: Methodology and
+applications}. Oxford university press.
+
+\bibitem[\citeproctext]{ref-Kasperski2015-jm}
+Kasperski, S. (2015). Optimal multi-species harvesting in ecologically
+and economically interdependent fisheries. \emph{Environ. Resour.
+Econ.}, \emph{61}(4), 517--557.
+
+\bibitem[\citeproctext]{ref-Kasperski2013-jz}
+Kasperski, S., \& Holland, D. S. (2013). Income diversification and risk
+for fishermen. \emph{Proc. Natl. Acad. Sci. U. S. A.}, \emph{110}(6),
+2076--2081.
+
+\bibitem[\citeproctext]{ref-Peuxf1aElNiuxf1o}
+Peña-Torres, J., Dresdner, J., \& Vasquez, F. (2017). {El Niño and
+Fishing Location Decisions: The Chilean Straddling Jack Mackerel
+Fishery}. \emph{Marine Resource Economics}, \emph{32}(3), 249--275.
+\url{https://doi.org/10.1086/692073}
+
+\bibitem[\citeproctext]{ref-Poloczanska2013-qq}
+Poloczanska, E. S., Brown, C. J., Sydeman, W. J., Kiessling, W.,
+Schoeman, D. S., Moore, P. J., Brander, K., Bruno, J. F., Buckley, L.
+B., Burrows, M. T., Duarte, C. M., Halpern, B. S., Holding, J., Kappel,
+C. V., O'Connor, M. I., Pandolfi, J. M., Parmesan, C., Schwing, F.,
+Thompson, S. A., \& Richardson, A. J. (2013). Global imprint of climate
+change on marine life. \emph{Nat. Clim. Chang.}, \emph{3}(10), 919--925.
+
+\bibitem[\citeproctext]{ref-Powell2022-wj}
+Powell, F., Levine, A., \& Ordonez-Gauger, L. (2022). Climate adaptation
+in the market squid fishery: Fishermen responses to past variability
+associated with el niño southern oscillation cycles inform our
+understanding of adaptive capacity in the face of future climate change.
+\emph{Clim. Change}, \emph{173}(1-2), 1.
+
+\bibitem[\citeproctext]{ref-Reimer2017-jw}
+Reimer, M. N., Abbott, J. K., \& Wilen, J. E. (2017). Fisheries
+production: Management institutions, spatial choice, and the quest for
+policy invariance. \emph{Mar. Resour. Econ.}, \emph{32}(2), 143--168.
+
+\bibitem[\citeproctext]{ref-Richter2018}
+Richter, A., Eikeset, A. M., Van Soest, D., Diekert, F. K., \& Stenseth,
+N. C. (2018). Optimal management under institutional constraints:
+Determining a total allowable catch for different northeast arctic cod
+fishery fleet segments. \emph{Environmental and Resource Economics},
+\emph{69}, 811--835. \url{https://doi.org/10.1007/s10640-016-0106-3}
+
+\bibitem[\citeproctext]{ref-Sethi2014-bn}
+Sethi, S. A., Reimer, M., \& Knapp, G. (2014). Alaskan fishing community
+revenues and the stabilizing role of fishing portfolios. \emph{Mar.
+Policy}, \emph{48}, 134--141.
+
+\bibitem[\citeproctext]{ref-Smith2005-us}
+Smith, M. D. (2005). State dependence and heterogeneity in fishing
+location choice. \emph{J. Environ. Econ. Manage.}, \emph{50}(2),
+319--340.
+
+\bibitem[\citeproctext]{ref-Stafford2018-pq}
+Stafford, T. M. (2018). Accounting for outside options in discrete
+choice models: An application to commercial fishing effort. \emph{J.
+Environ. Econ. Manage.}, \emph{88}, 159--179.
+
+\bibitem[\citeproctext]{ref-SUBPESCA2020}
+SUBPESCA. (2020). \emph{Informe sectorial de pesca y acuicultura 2019}.
+Subsecretaría de Pesca y Acuicultura.
+\url{https://www.subpesca.cl/portal/618/articles-106845_documento.pdf}
+
+\bibitem[\citeproctext]{ref-Vasquez_Caballero2023-ip}
+Vasquez Caballero, S., Sylvia, G., \& Holland, D. S. (2023). Fishery
+participation and location choice model: The west coast salmon troll
+commercial fishery. \emph{Can. J. Fish. Aquat. Sci.}
+
+\bibitem[\citeproctext]{ref-Young2018-kk}
+Young, T., Fuller, E. C., Provost, M. M., Coleman, K. E., St. Martin,
+K., McCay, B. J., \& Pinsky, M. L. (2018). Adaptation strategies of
+coastal fishing communities as species shift poleward. \emph{ICES
+Journal of Marine Science}, \emph{76}(1), 93--103.
+
+\bibitem[\citeproctext]{ref-Zhang2011-wv}
+Zhang, J., \& Smith, M. D. (2011). Heterogeneous response to marine
+reserve formation: {A} sorting model approach. \emph{Environ. Resour.
+Econ.}, \emph{49}(3), 311--325.
+
+\end{CSLReferences}
+
+\end{document}

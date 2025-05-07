@@ -2,7 +2,7 @@
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
   using a Multi-Species Approach"
 author: "Felipe J. Quezada"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+date: "May 07, 2025"
 output: 
   pdf_document:
     latex_engine: xelatex
