@@ -1,30 +1,44 @@
 ---
-title: "Slides"
+title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile Using a Multi-Species Approach"
 author: "Felipe J. Quezada-Escalona"
-date: "`r Sys.Date()`"
-output: html_document
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+# output: 
+#   xaringan::moon_reader:
+#     css: [default, metropolis, metropolis-fonts]
+#     lib_dir: libs
+#     nature:
+#       highlightStyle: github
+#       highlightLines: true
+#       countIncrementalSlides: false
+output: 
+   beamer_presentation:
+     latex_engine: xelatex
+     theme: metropolis
+     colortheme: seahorse
+header-includes:
+  - \usepackage{amsmath}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
-## R Markdown
+---
+## Research Question & Objectives  
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+.pull-left[
+**Key Question:**  
+How do fishing decisions, catch levels, and prices respond to climatic scenarios in Chile's small pelagic fishery (SPF)?  
+]
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+.pull-right[
+**Objectives:**  
+1. Estimate multi-species harvest model  
+2. Assess climate impacts on adaptation strategies  
+3. Inform resilience policies  
+]
 
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+.center[
+![:scale 40%](https://upload.wikimedia.org/wikipedia/commons/7/7c/Anchovies_at_the_New_England_Aquarium.jpg)  
+*Anchovies - key SPF species*  
+]
