@@ -1,16 +1,18 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+%
 \documentclass[
   ignorenonframetext,
 ]{beamer}
-\newif\ifbibliography
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
 \beamertemplatenavigationsymbolsempty
-% remove section numbering
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
 \setbeamertemplate{part page}{
   \centering
   \begin{beamercolorbox}[sep=16pt,center]{part title}
@@ -29,11 +31,6 @@
     \usebeamerfont{subsection title}\insertsubsection\par
   \end{beamercolorbox}
 }
-\usetheme[]{metropolis}
-\usecolortheme[]{seahorse}
-% Prevent slide breaks in the middle of a paragraph
-\widowpenalties 1 10000
-\raggedbottom
 \AtBeginPart{
   \frame{\partpage}
 }
@@ -46,6 +43,7 @@
 \AtBeginSubsection{
   \frame{\subsectionpage}
 }
+\usepackage{amsmath,amssymb}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -57,6 +55,8 @@
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
+\usetheme[]{metropolis}
+\usecolortheme{seahorse}
 \ifPDFTeX\else
   % xetex/luatex font selection
 \fi
@@ -76,9 +76,27 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\newif\ifbibliography
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 \usepackage{amsmath}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -97,7 +115,23 @@ Decisions in Chile Using a Multi-Species Approach}
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}
+\begin{frame}{Research Question \& Objectives}
+\phantomsection\label{research-question-objectives}
+.pull-left{[} \textbf{Key Question:}\\
+How do fishing decisions, catch levels, and prices respond to climatic
+scenarios in Chile's small pelagic fishery (SPF)?\\
+{]}
+
+.pull-right{[} \textbf{Objectives:}\\
+1. Estimate multi-species harvest model\\
+2. Assess climate impacts on adaptation strategies\\
+3. Inform resilience policies\\
+{]}
+
+.center{[}
+\pandocbounded{\includegraphics[keepaspectratio]{https://upload.wikimedia.org/wikipedia/commons/7/7c/Anchovies_at_the_New_England_Aquarium.jpg}}\\
+\emph{Anchovies - key SPF species}\\
+{]}
 \end{frame}
 
 \end{document}

@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>The Impact of Environmental Variability on Multi-Species Harvest Decisions by Chilean Fishers</title>
+    <title>The Impact of Environmental Variability on Fishers’ Harvest Decisions in Chile using a Multi-Species Approach</title>
     <meta charset="utf-8" />
     <meta name="author" content="Felipe J. Quezada-Escalona" />
+    <meta name="date" content="2025-05-07" />
     <script src="libs/header-attrs-2.25/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
-    <link rel="stylesheet" href="udeconce.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 .title[
-# The Impact of Environmental Variability on Multi-Species Harvest Decisions by Chilean Fishers
+# The Impact of Environmental Variability on Fishers’ Harvest Decisions in Chile using a Multi-Species Approach
 ]
 .author[
 ### Felipe J. Quezada-Escalona
+]
+.date[
+### May 07, 2025
 ]
 
 ---
 
 
-
-
 # Introduction
 
-- Marine resource distribution is changing due to climate variability [Poloczanska2013-qq].
+- Marine resource distribution is changing due to climate variability [@Poloczanska2013-qq].
 - Fishers respond to change by:
   - Reallocating effort to other species/areas [@Gonzalez-Mon2021-kj]
   - Maintaining the current strategy
@@ -121,57 +122,6 @@ x_{i,y+1} + h_{iy} = (1 + r_i)x_{iy} + \eta_i x_{iy}^2 + \sum_{j \neq i} \alpha_
 
 - Adds environmental covariates (SST, chlorophyll)
 
-
-# Model 2: Trip-Level Costs
-
-`\[
-\log(c_{iyp}) = \beta_0 + \beta_1 x_{iy} + \beta_2 d_{ip} + \beta_3 z_{p} + \varepsilon_{iyp}
-\]`
-
-- Dependent variable: log of average cost per trip
-- Explanatory variables:
-  - \( x_{iy} \): stock abundance
-  - \( d_{ip} \): distance from port \( p \) to fishing ground
-  - \( z_p \): port-level controls (e.g., infrastructure, fuel prices)
-
----
-
-# Model 3: Annual Participation
-
-`\[
-T_{iy} = \gamma_0 + \gamma_1 R_{iy} + \gamma_2 c_{iy} + \gamma_3 \text{Lagged effort}_{iy} + u_{iy}
-\]`
-
-- Predicts number of trips \( T_{iy} \) made by fisher \( i \) in year \( y \)
-- Key predictors:
-  - Expected revenue \( R_{iy} \)
-  - Cost per trip \( c_{iy} \)
-  - Lagged behavior (habit persistence)
-
----
-
-# Model 4: Inverse Demand
-
-`\[
-\log(p_{iy}) = \delta_0 + \delta_1 \log(q_{iy}) + \delta_2 w_y + \delta_3 \text{Import}_{iy} + \nu_{iy}
-\]`
-
-- Price as a function of quantity landed:
-  - \( q_{iy} \): landings
-  - \( w_y \): income/proxy demand shifter
-  - \( \text{Import}_{iy} \): substitution with imports
-
----
-
-# Integration and Simulation
-
-- Use models to simulate:
-  - Climate-driven stock projections
-  - Trip-level and annual harvest adjustments
-  - Market responses and price shifts
-- Evaluate fisher income, species substitution, and supply chain outcomes
-
-
 ---
 
 # Expected Results
@@ -203,11 +153,16 @@ Questions?
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="custom.css"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
-"slideNumberFormat": "%current%"
+"slideNumberFormat": "%current%",
+"ratio": "16:9",
+"navigation": {
+"scroll": false
+}
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

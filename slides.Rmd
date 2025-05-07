@@ -1,44 +1,196 @@
 ---
-title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile Using a Multi-Species Approach"
+output:
+  xaringan::moon_reader:
+    css: ["udeconce.css", "default", "default-fonts"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+bibliography: bib_paperpile.bib
+csl: apa.csl
+linkcolor: blue
+title: "The Impact of Environmental Variability on Multi-Species Harvest Decisions by Chilean Fishers"
 author: "Felipe J. Quezada-Escalona"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
-# output: 
-#   xaringan::moon_reader:
-#     css: [default, metropolis, metropolis-fonts]
-#     lib_dir: libs
-#     nature:
-#       highlightStyle: github
-#       highlightLines: true
-#       countIncrementalSlides: false
-output: 
-   beamer_presentation:
-     latex_engine: xelatex
-     theme: metropolis
-     colortheme: seahorse
-header-includes:
-  - \usepackage{amsmath}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
 ```
 
+# Introduction
+
+- Marine resource distribution is changing due to climate variability [Poloczanska2013-qq].
+- Fishers respond to change by:
+  - Reallocating effort to other species/areas [@Gonzalez-Mon2021-kj]
+  - Maintaining the current strategy
+  - Exiting the fishery [@Powell2022-wj]
+- Diversification improves income stability and climate resilience [@Kasperski2013-jz; @Finkbeiner2015-bs]
+
 ---
-## Research Question & Objectives  
 
-.pull-left[
-**Key Question:**  
-How do fishing decisions, catch levels, and prices respond to climatic scenarios in Chile's small pelagic fishery (SPF)?  
-]
+# Why a Multi-Species Model?
 
-.pull-right[
-**Objectives:**  
-1. Estimate multi-species harvest model  
-2. Assess climate impacts on adaptation strategies  
-3. Inform resilience policies  
-]
+- Responses to availability vary by:
+  - Port infrastructure
+  - Market access
+  - Regulations [@Powell2022-wj]
+- Different fishers, different choices [@Jardine2020-um]
 
-.center[
-![:scale 40%](https://upload.wikimedia.org/wikipedia/commons/7/7c/Anchovies_at_the_New_England_Aquarium.jpg)  
-*Anchovies - key SPF species*  
-]
+---
+
+# Case Study: Chile’s Small Pelagic Fishery (SPF)
+
+- Anchoveta, Jack mackerel, Sardine
+- ~94% of national catch [@SUBPESCA2020]
+- Climate change will impact:
+  - Catch levels
+  - Prices
+  - Species composition
+
+---
+
+# Research Questions
+
+- How will **fishing decisions, catch levels, and prices** evolve under different climate scenarios?
+- How do fishers **substitute between species**?
+
+---
+
+# Hypotheses
+
+- Reduced availability → Switch if expected revenue > expected cost
+- Otherwise → Decrease effort or exit
+- Behavior is **heterogeneous**:
+  - Geography
+  - Gear type [@Reimer2017-jw]
+
+---
+
+# Methodology Overview
+
+**Based on @Kasperski2015-jm:**
+
+1. Estimate stock dynamics
+2. Estimate trip-level costs
+3. Estimate annual trips
+4. Estimate inverse demand
+5. Simulate climate change effects on profits/harvest
+
+---
+
+# Data Sources
+
+## Requested (2012–2024)
+
+- Stock abundance, landings
+- Trip-level data (IFOP)
+- Ex-vessel prices
+
+## To Be Requested
+
+- Sea surface temperature
+- Chlorophyll, wind, wave
+- Crew wages, fuel prices
+
+---
+
+# Model 1: Stock Dynamics
+
+`\[
+x_{i,y+1} + h_{iy} = (1 + r_i)x_{iy} + \eta_i x_{iy}^2 + \sum_{j \neq i} \alpha_{ij} x_{iy} x_{jy}
+\]`
+
+- Follows logistic + interspecies interaction
+- Seemingly unrelated regressions (SUR)
+
+---
+
+# Model with Environment
+
+`\[
+x_{i,y+1} + h_{iy} = (1 + r_i)x_{iy} + \eta_i x_{iy}^2 + \sum_{j \neq i} \alpha_{ij} x_{iy} x_{jy} + \rho_i Env_{iy} + \varepsilon_{iy}
+\]`
+
+- Adds environmental covariates (SST, chlorophyll)
+
+
+# Model 2: Trip-Level Costs
+
+`\[
+\log(c_{iyp}) = \beta_0 + \beta_1 x_{iy} + \beta_2 d_{ip} + \beta_3 z_{p} + \varepsilon_{iyp}
+\]`
+
+- Dependent variable: log of average cost per trip
+- Explanatory variables:
+  - \( x_{iy} \): stock abundance
+  - \( d_{ip} \): distance from port \( p \) to fishing ground
+  - \( z_p \): port-level controls (e.g., infrastructure, fuel prices)
+
+---
+
+# Model 3: Annual Participation
+
+`\[
+T_{iy} = \gamma_0 + \gamma_1 R_{iy} + \gamma_2 c_{iy} + \gamma_3 \text{Lagged effort}_{iy} + u_{iy}
+\]`
+
+- Predicts number of trips \( T_{iy} \) made by fisher \( i \) in year \( y \)
+- Key predictors:
+  - Expected revenue \( R_{iy} \)
+  - Cost per trip \( c_{iy} \)
+  - Lagged behavior (habit persistence)
+
+---
+
+# Model 4: Inverse Demand
+
+`\[
+\log(p_{iy}) = \delta_0 + \delta_1 \log(q_{iy}) + \delta_2 w_y + \delta_3 \text{Import}_{iy} + \nu_{iy}
+\]`
+
+- Price as a function of quantity landed:
+  - \( q_{iy} \): landings
+  - \( w_y \): income/proxy demand shifter
+  - \( \text{Import}_{iy} \): substitution with imports
+
+---
+
+# Integration and Simulation
+
+- Use models to simulate:
+  - Climate-driven stock projections
+  - Trip-level and annual harvest adjustments
+  - Market responses and price shifts
+- Evaluate fisher income, species substitution, and supply chain outcomes
+
+
+---
+
+# Expected Results
+
+- Climate affects:
+  - **Stock** dynamics
+  - **Fishing costs**
+  - **Trip frequency**
+- Catch composition shifts with climate
+- Localized market effects
+
+---
+
+# Relevance
+
+- Understand fishers’ adaptive capacity
+- Inform climate-resilient fisheries policies in Chile
+- Contribute to the sparse local multi-species economic modeling literature [^1]
+
+[^1]: See @PeñaElNiño for ENSO effects in Jack Mackerel fishery using discrete choice.
+
+---
+
+# Thank you!
+
+Felipe J. Quezada-Escalona  
+Department of Economics, University of Concepción  
+Questions?
