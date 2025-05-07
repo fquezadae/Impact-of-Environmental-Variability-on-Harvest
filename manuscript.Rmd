@@ -1,7 +1,7 @@
 ---
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
   using a Multi-Species Approach"
-author: "Felipe J. Quezada"
+author: "Felipe J. Quezada-Escalona"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
   pdf_document:
