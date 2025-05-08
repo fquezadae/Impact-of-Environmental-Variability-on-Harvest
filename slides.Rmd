@@ -1,6 +1,6 @@
 ---
-title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
-  using a Multi-Species Approach"
+title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile"
+subtitle: "Using a Multi-Species Approach"
 author: "Felipe J. Quezada-Escalona"
 date: "Departamento de Economía" #"Last update: `r Sys.Date()`"
 output: 
@@ -279,16 +279,19 @@ of the fishery
 
 - Understand fishers’ adaptive capacity
 - Inform climate-resilient fisheries policies in Chile
-- Contribute to the sparse local multi-species economic modeling literature [^1]
-
-[^1]: See @PeñaElNiño for ENSO effects in Jack Mackerel fishery using discrete choice.
+- Contribute to the sparse local multi-species economic modeling literature in Chile
+  - See `r Citep(bib, "PeñaElNiño", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
 
 ---
+
+class: inverse, center, middle
 
 # Thank you!
 
 Felipe J. Quezada-Escalona  
+
 Department of Economics
+
 University of Concepción
 
 
@@ -308,4 +311,12 @@ print_bib_rmd(bib, start = 1, stop = 6)
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
 print_bib_rmd(bib, start = 7, stop = 10)
+```
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 11, stop = 16)
 ```
