@@ -28,10 +28,6 @@ editor_options:
 abstract: "In this paper, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed by anchoveta (Engraulis ringens), jack mackerel (Trachurus murphyi), sardine (either Sardinops sagax or Strangomera bentincki), among others. By doing this, we expect to understand better how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will estimate a multi-species harvesting model. This model considers species' economic and biological interrelation to study the effect of climate variability on harvest decisions and substitution between species and determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile. We hypothesize that if the availability of a main target species is reduced, fishers will switch to the closest substitute if the expected revenue obtained from targeting this new species is high enough to cover the expected cost. Otherwise, the vessel would decrease fishing efforts or even exit the fishery due to the lack of economically viable substitutes. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation -- as it determines the availability of other species-- and the gear type used."
 ---
 
-<!-- ***Check comments from FONDECYT reviewers!*** -->
-
-
-
 
 # Introduction
 
@@ -133,29 +129,21 @@ of observations using gear type $g$, and $G$ is the total number of available (o
 C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
 \label{eq3}
 \end{equation} where $C_{vg}= w z_{vg}^*$,
-$\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$, $w$ is a $V_g \times M$ matrix of
-variable input prices, $h_{vg}$ is an $V_g \times n$ matrix of harvest
-quantities and $Z_v$ is a vector of fixed vessel characteristics for
-vessel v, x is an $V_g \times n$ matrix of given stock levels of the species of
-interest, and $Z_v$ is an $V_g \times k$ matrix of given vessel
-characteristics. Therefore, $\mathbf{X}_{vg}$ is a $V_g \times (2n+M+k)$
-matrix, and $\mathbf{X}_{ivg}$ represents the *i*th column of the
-$\mathbf{X}_{vg}$ matrix.
+$\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$, $w$ is a $V_g \times M$ matrix of variable input prices, $h_{vg}$ is an $V_g \times n$ matrix of harvest
+quantities, $x$ is an $V_g \times n$ matrix of given stock levels of the species of
+interest, and $Z_v$ is an $V_g \times k$ matrix of given vessel characteristics. Therefore, $\mathbf{X}_{vg}$ is a $V_g \times (2n+M+k)$
+matrix, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$ matrix.
 
-Together with estimating the restricted cost function, we estimate the
-conditional input demand equations. This addition allows an increase in
-the degrees of freedom by imposing cross-equation parameter constraints
-and allows for the testing of, for instance, jointness in inputs
-[@Kasperski2015-jm]. The conditional input demand equations are derived
-by Shepard's Lemma: \begin{equation}
+Together with estimating the restricted cost function, we estimate the conditional input demand equations. This addition allows an increase in
+the degrees of freedom by imposing cross-equation parameter constraints and allows for the testing of, for instance, jointness in inputs
+[@Kasperski2015-jm]. The conditional input demand equations are derived by Shepard's Lemma: \begin{equation}
 \frac{\partial C_{vg}}{\partial w_m} = z^*_{vg,w_m} = \alpha_{g,w_m} + \sum_{j=1}^{2n+M+k} \alpha_{g,w_m,\mathbf{X}_j} \mathbf{X}_{jvg} \quad m=1,\ldots,M.
 \label{eq4}
 \end{equation}
 
 Similar to stock dynamics, the system of equations formed by \eqref{eq3}
 and \eqref{eq4} can be estimated using SUR. To comply with economic
-theory, and to reduce even more the number of parameters to estimate,
-the following restrictions are imposed when estimating \eqref{eq4}:
+theory, and to reduce even more the number of parameters to estimate, the following restrictions are imposed when estimating \eqref{eq4}:
 
 1.  Symmetry of the cost function, where \begin{equation*}
       \alpha_{g,\mathbf{X}_i\mathbf{X}_j} = \alpha_{g,\mathbf{X}_j\mathbf{X}_i} \quad \forall \quad i=1,\ldots,(2n + M + k); \ i \neq j; \ g = 1,\ldots, G.
@@ -165,20 +153,12 @@ the following restrictions are imposed when estimating \eqref{eq4}:
       \sum_m^M \alpha_{g,w_m} = 1 \ \text{and} \ \sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0 \quad i=1,\ldots,(2n + M + k); \ g = 1,\ldots, G.
       \end{equation*}
 
-Data at the trip level is available upon request from the Chilean
-Fisheries Research Institute (IFOP), which registers geo-referenced
-catch information on the Chilean fleet's fishing operation per trip [see
-e.g. @PeñaElNiño and [IFOP data observatory](ifop.dataobservatory.net)].
-As inputs we can use the time spent at sea during a trip, where the
-price is the average wage pay to crew member per hour, and the distance
-traveled during a trip, where the price of distance traveled is the
-diesel cost.
+Data at the trip level is available upon request from the Chilean Fisheries Research Institute (IFOP), which registers geo-referenced
+catch information on the Chilean fleet's fishing operation per trip [see e.g. @PeñaElNiño and [IFOP data observatory](ifop.dataobservatory.net)].
+As inputs we can use the time spent at sea during a trip, where the price is the average wage pay to crew member per hour, and the distance
+traveled during a trip, where the price of distance traveled is the diesel cost.
 
-To link this function to climate change, we can also include additional
-environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind
-intensity and wave conditions in each trip at the harvest location, upon
-data availability. Therefore, the augmented $X_{vg}$ matrix becomes
-$\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
+To link this function to climate change, we can also include additional environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind intensity and wave conditions in each trip at the harvest location, upon data availability. Therefore, the augmented $X_{vg}$ matrix becomes $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
 
 
 ### Total annual trips
@@ -235,7 +215,7 @@ The vector of shares is obtained from historical data on harvest. The
 optimal profit from the maximization problem in \eqref{eq7} is denoted
 as $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, and $h_{vgty}^*$ and
 $T_{vgy}^*$ are the optimal choices harvest per trip and total number of
-trips in year y for vessel v. To obtain the optimal quota level, we must
+trips in year $y$ for vessel $v$. To obtain the optimal quota level, we must
 solve the social-planner optimization problem to maximize the net value
 of the fishery by choosing the quota levels per year and by species.
 

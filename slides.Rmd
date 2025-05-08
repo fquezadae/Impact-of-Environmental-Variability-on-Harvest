@@ -5,6 +5,7 @@ author: "Felipe J. Quezada-Escalona"
 date: "Departamento de Economía" #"Last update: `r Sys.Date()`"
 output: 
   xaringan::moon_reader:
+    self_contained: true
     css: ["udeconce.css", "default", "default-fonts"]
 ---
 
@@ -98,87 +99,174 @@ citeopt <- list(max.names=2, longnamesfirst = FALSE)
 
 - Sea surface temperature (SST), Chlorophyll, wind (Mostly satellite data)
 - Wave height and speed (Chilean navy?)
+- Other variables about weather (e.g. number of days in a year with storm warning? -- Maybe use wind/wave speed and height?)
 - Crew wages (maybe INE?) 
 - Fuel prices
+- Vessel permits (Maybe I can infer them from the data)
 
 ---
 
-# Model 1: Stock Dynamics
+# Model 1: Stock Dynamics 
 
 ## Base model
 
-`\[
-x_{i,y+1} + h_{iy} = (1 + r_i)x_{iy} + \eta_i x_{iy}^2 + \sum_{j \neq i} \alpha_{ij} x_{iy} x_{jy}
-\]`
-
+`\begin{equation}
+x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
+\label{eq1}
+\end{equation}
+`
+- where: 
+  - $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, 
+  - $h_{iy}$ is the annual harvest of species $i$ on year $y$, 
+  - $r_i$ is the intrinsic growth rate of the resource $i$,
+  - $\eta_i$ is a density-dependent factor related to the carrying capacity, 
+  - $\alpha_{ij}$ are the interaction parameters between species. 
 - Follows logistic + interspecies interaction
-- Seemingly unrelated regressions (SUR)
+- System of $n$ growth equations can be estimated simultaneously using SUR
+
+
+
+---
+
+# Model 1: Stock Dynamics 
 
 ## Model with the environment
 
-`\[
-x_{i,y+1} + h_{iy} = (1 + r_i)x_{iy} + \eta_i x_{iy}^2 + \sum_{j \neq i} \alpha_{ij} x_{iy} x_{jy} + \rho_i Env_{iy} + \varepsilon_{iy}
-\]`
 
-- Adds environmental covariates (SST, chlorophyll)
+Following `r Citep(bib, "Richter2018", .opts = citeopt)`: 
+
+`
+\begin{equation}
+x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
+\label{eq2}
+\end{equation}
+`
+
+- Adds environmental covariates (e.g., SST and chlorophyll)
+
 
 ---
 
 # Model 2: Trip-Level Costs
 
-`\[
-\log(c_{iyp}) = \beta_0 + \beta_1 x_{iy} + \beta_2 d_{ip} + \beta_3 z_{p} + \varepsilon_{iyp}
-\]`
+## Base model
 
-- Dependent variable: log of average cost per trip
-- Explanatory variables:
-  - $x_{iy}$: stock abundance
-  - $d_{ip}$: distance from port $p$ to fishing ground
-  - $z_p$: port-level controls (e.g., infrastructure, fuel prices)
+`\begin{equation}
+C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
+\label{eq3}
+\end{equation}`
+
+where: 
+- $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$:
+  - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance travelled?)
+  - $w$ is a $V_g \times M$ matrix of variable input prices, 
+- $\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$ is a $V_g \times (2n+M+k)$ matrix, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
+  - $h_{vg}$ is an $V_g \times n$ matrix of harvest quantities and 
+  - $x$ is an $V_g \times n$ matrix of given stock levels of the species of interest, and 
+  - $Z_v$ is an $V_g \times k$ matrix of given vessel characteristics. 
+
+---
+
+# Model 2: Trip-Level Costs
+
+## Model with the environment
+
+To link this function to climate variability
+- Include additional environmental variables $Env$ to $\mathbf{X}_{vg}$ 
+  - e.g., wind intensity and wave conditions in each trip at the harvest location, upon data availability.
+- Therefore, the augmented $X_{vg}$ matrix becomes $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
+- The model can be estimated with **SUR**. 
 
 ---
 
 # Model 3: Annual Participation
 
-`\[
-T_{iy} = \gamma_0 + \gamma_1 R_{iy} + \gamma_2 c_{iy} + \gamma_3 \text{Lagged effort}_{iy} + u_{iy}
-\]`
+The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
+[@Kasperski2015-jm]: 
+`\begin{equation}
+Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
+\label{eq5}
+\end{equation}`
+where 
+- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, 
+- $\beta_g$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, 
+- $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
+- $\bar{q}$ is the annual quota level. 
 
-- Predicts number of trips \( T_{iy} \) made by fisher \( i \) in year \( y \)
-- Key predictors:
-  - Expected revenue \( R_{iy} \)
-  - Cost per trip \( c_{iy} \)
-  - Lagged behavior (habit persistence)
+Additionally, we can add the accumulation of "bad weather days?" as an explanatory variable to
+incorporate weather conditions into this decision, thus: 
+- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+- Other variables? e.g., state dependency?
 
 ---
 
 # Model 4: Inverse Demand
 
-`\[
-\log(p_{iy}) = \delta_0 + \delta_1 \log(q_{iy}) + \delta_2 w_y + \delta_3 \text{Import}_{iy} + \nu_{iy}
-\]`
-
-- Price as a function of quantity landed:
-  - \(q_{iy}\): landings
-  - \(w_y\): income/proxy demand shifter
-  - \(\text{Import}_{iy}\): substitution with imports
+The price of each species is modeled using an **inverse demand model** (assumes weak separability...). The price of a species $i$ in
+year $y$ is the following:
+`\begin{equation}
+p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+\label{eq6}
+\end{equation}
+`
+- The system can be estimated using maximum likelihood. 
+- Note that harvest may be endogenous (assume TAC is binding? Estimate a vector autoregressive (VAR) model `r Citep(bib, "juselius2006cointegrated", .opts = citeopt)` that allows for endogeneity?)
+- Other variables? 
+  - Substitute prices? 
+  - Fishmeal prices? 
+  - Other demand shifters?
 
 ---
 
 # Integration and Simulation
 
-- Use models to simulate:
-  - Climate-driven stock projections
-  - Trip-level and annual harvest adjustments
-  - Market responses and price shifts
-- Evaluate fisher income, species substitution, and supply chain outcomes
+Use models parameters to:
+- Conduct numerical optimization for different climate scenarios
+- Obtain the optimal **harvest** and **quota** conditional on climate scenario
+- Evaluate **profits** and **species substitution**
+- I need future projection for climate/environmental variables (?)
+
+
+---
+
+# Numerical optimization
+
+## Vessel maximization problem
+
+In each year, a vessel maximizes profits by choosing their optimal number of
+trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
+`
+\begin{align}
+\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
+\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
+\label{eq7}
+\end{align}
+`
+- where:
+  - $\rho$ is the intra-annual discount factor, 
+  - $\omega$ is a vector of shares of $\bar{q}$, and 
+  - $h_{lt}=0$ for all $l\neq g$.
+
+---
+
+# Numerical optimization
+
+## Some considerations
+
+- The vector of shares is obtained from historical data on harvest. 
+- The optimal profit from the maximization problem is $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, 
+  - $h_{vgty}^*$ is the optimal harvest per trip.
+  - $T_{vgy}^*$ optimal total number of trips.
+- Optimal quota level, per year and by species, is obtained by solving the social-planner optimization problem to maximize the net value
+of the fishery 
+
 
 
 ---
 
 # Expected Results
 
-- Climate affects:
+- Climate variability affects:
   - **Stock** dynamics
   - **Fishing costs**
   - **Trip frequency**
