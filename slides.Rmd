@@ -304,7 +304,7 @@ Department of Economics
 # References
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 1, stop = 6)
+print_bib_rmd(bib, start = 1, stop = 5)
 ```
 
 ---
@@ -312,7 +312,7 @@ print_bib_rmd(bib, start = 1, stop = 6)
 # References
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 7, stop = 10)
+print_bib_rmd(bib, start = 6, stop = 10)
 ```
 
 ---
@@ -320,5 +320,5 @@ print_bib_rmd(bib, start = 7, stop = 10)
 # References
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 11, stop = 16)
+print_bib_rmd(bib, start = 11, stop = 15)
 ```
