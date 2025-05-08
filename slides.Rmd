@@ -22,7 +22,7 @@ BibOptions(check.entries = FALSE,
            style = "markdown",
            dashed = TRUE)
 bib <- ReadBib("bib_paperpile.bib")
-citeopt <- list(max.names=2, longnamesfirst = FALSE)
+citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ```
 
 # Introduction
@@ -280,7 +280,7 @@ of the fishery
 - Understand fishers’ adaptive capacity
 - Inform climate-resilient fisheries policies in Chile
 - Contribute to the sparse local multi-species economic modeling literature in Chile
-  - See `r Citep(bib, "PeñaElNiño", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
+  - See `r Citep(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
 
 ---
 
@@ -288,14 +288,16 @@ class: inverse, center, middle
 
 # Thank you!
 
-Felipe J. Quezada-Escalona  
+**Felipe J. Quezada-Escalona**  
 
 Department of Economics
 
-University of Concepción
+<img src="logo/Logo-UdeC-1-mag.png" width="150">
 
 
-**Questions?**
+<span style="color:#f59f18;">Questions?</span>
+
+
 
 ---
 
