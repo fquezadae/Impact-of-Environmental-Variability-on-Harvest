@@ -75,7 +75,7 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 
 # Methodology Overview
 
-**Based on  `r Citep(bib, "@Kasperski2015-jm", .opts = citeopt)`:**
+Based on `r Citep(bib, "@Kasperski2015-jm", .opts = citeopt)`:
 
 1. Estimate stock dynamics
 2. Estimate trip-level costs
