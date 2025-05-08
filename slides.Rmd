@@ -1,7 +1,8 @@
 ---
-title: "The Impact of Environmental Variability on Multi-Species Harvest Decisions by Chilean Fishers"
+title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
+  using a Multi-Species Approach"
 author: "Felipe J. Quezada-Escalona"
-date: "Last update: `r Sys.Date()`"
+date: "Departamento de Economía" #"Last update: `r Sys.Date()`"
 output: 
   xaringan::moon_reader:
     css: ["udeconce.css", "default", "default-fonts"]
@@ -68,13 +69,13 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 - Otherwise → Decrease effort or exit
 - Behavior is **heterogeneous**:
   - Geography
-  - Gear type [@Reimer2017-jw]
+  - Gear type `r Citep(bib, "Reimer2017-jw", .opts = citeopt)`
 
 ---
 
 # Methodology Overview
 
-**Based on @Kasperski2015-jm:**
+**Based on  `r Citep(bib, "@Kasperski2015-jm", .opts = citeopt)`:**
 
 1. Estimate stock dynamics
 2. Estimate trip-level costs
@@ -155,9 +156,9 @@ T_{iy} = \gamma_0 + \gamma_1 R_{iy} + \gamma_2 c_{iy} + \gamma_3 \text{Lagged ef
 \]`
 
 - Price as a function of quantity landed:
-  - \( q_{iy} \): landings
-  - \( w_y \): income/proxy demand shifter
-  - \( \text{Import}_{iy} \): substitution with imports
+  - \(q_{iy}\): landings
+  - \(w_y\): income/proxy demand shifter
+  - \(\text{Import}_{iy}\): substitution with imports
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
   using a Multi-Species Approach"
-author: "Felipe J. Quezada"
+author: "Felipe J. Quezada-Escalona"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
   pdf_document:
@@ -20,8 +20,8 @@ header-includes:
   - \usepackage{indentfirst}  # Enables first-line indentation
   - \setlength{\parindent}{10pt}  # Adjusts the indentation size
   - \usepackage{authblk}
-  - \author{Felipe J. Quezada}
-  - \affil{Department of Economics \\ University of Concepción \vspace{-48pt}}
+  - \author{Felipe J. Quezada-Escalona}
+  - \affil{Departmento de Economía \\ Universidad de Concepción \vspace{-48pt}}
 editor_options: 
   markdown: 
     wrap: 72
