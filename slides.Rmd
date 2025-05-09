@@ -28,21 +28,36 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 # Introduction
 
 - Marine resource distribution is changing due to climate variability `r Citep(bib, "Poloczanska2013-qq", .opts = citeopt)`.
+- Thus, harvest levels would be affected by climate variability `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`
+
+## Why a Multi-Species Model?
+
+- Diversification improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
 - Fishers respond to change by:
-  - Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`
   - Maintaining the current strategy
+  - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
   - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
   
 ---
 
-# Why a Multi-Species Model?
+# Introduction
 
-- Diversification improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
+Under multispecies harvesting is not straighforward to study fisher harvest decisions
 - Responses to availability vary by:
   - Port infrastructure
   - Market access
   - Regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-- Different fishers, different choices `r Citep(bib, "Jardine2020-um", .opts = citeopt)`
+- Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
+
+
+---
+
+# Relevance
+
+- Understand fishers’ adaptive capacity
+- Inform climate-resilient fisheries policies in Chile
+- Contribute to the sparse local multi-species economic modeling literature in Chile
+  - See `r Citep(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
 
 ---
 
@@ -50,11 +65,12 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 
 - Anchoveta, Jack mackerel, Sardine
 - ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
-- Climate change will impact:
-  - Catch levels
-  - Prices
+- Climate variability will impact:
   - Species composition
-
+  - Prices
+  - Trip cost
+  - Total annual trips
+  - Catch levels
 ---
 
 # Research Questions
@@ -179,10 +195,10 @@ To link this function to climate variability
 
 ---
 
-# Model 3: Annual Participation
+# Model 3: Total Annual Trips
 
 The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
-[@Kasperski2015-jm]: 
+`r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`: 
 `\begin{equation}
 Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
 \label{eq5}
@@ -272,15 +288,6 @@ of the fishery
   - **Trip frequency**
 - Catch composition shifts with climate
 - Localized market effects
-
----
-
-# Relevance
-
-- Understand fishers’ adaptive capacity
-- Inform climate-resilient fisheries policies in Chile
-- Contribute to the sparse local multi-species economic modeling literature in Chile
-  - See `r Citep(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
 
 ---
 
