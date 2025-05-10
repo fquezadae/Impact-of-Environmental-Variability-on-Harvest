@@ -6,7 +6,7 @@ date: "Departamento de Economía" #"Last update: `r Sys.Date()`"
 output: 
   xaringan::moon_reader:
     self_contained: true
-    css: ["udeconce.css", "default", "default-fonts"]
+    css: ["metropolis", "default-fonts", "udeconce.css"]
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +25,14 @@ bib <- ReadBib("bib_paperpile.bib")
 citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ```
 
+```{r use-logo, echo=FALSE}
+xaringanExtra::use_logo("logo/udec2.png")
+```
+
+
 # Introduction
+
+## Big picture
 
 - Marine resource distribution is changing due to climate variability `r Citep(bib, "Poloczanska2013-qq", .opts = citeopt)`.
 - Thus, harvest levels would be affected by climate variability `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`
@@ -41,27 +48,20 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ---
 
 # Introduction
-
-Under multispecies harvesting is not straighforward to study fisher harvest decisions
-- Responses to availability vary by:
-  - Port infrastructure
-  - Market access
-  - Regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-- Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
-
-
----
-
-# Relevance
-
+## Relevance
+- Under multispecies harvesting is not straighforward to study fisher harvest decisions
+  - Responses to availability vary by (i) port infrastructur, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+  - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
 - Understand fishers’ adaptive capacity
-- Inform climate-resilient fisheries policies in Chile
+  - Inform climate-resilient fisheries policies in Chile
 - Contribute to the sparse local multi-species economic modeling literature in Chile
-  - See `r Citep(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
+  - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
 
 ---
 
-# Case Study: Chile’s Small Pelagic Fishery (SPF)
+# Introduction
+
+## Case Study: Chile’s Small Pelagic Fishery (SPF)
 
 - Anchoveta, Jack mackerel, Sardine
 - ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
@@ -71,16 +71,17 @@ Under multispecies harvesting is not straighforward to study fisher harvest deci
   - Trip cost
   - Total annual trips
   - Catch levels
----
 
-# Research Questions
+## Research Questions
 
 - How will **fishing decisions, catch levels, and prices** evolve under different climate scenarios?
 - How do fishers **substitute between species**?
 
 ---
 
-# Hypotheses
+# Introduction
+
+## Hypotheses
 
 - Reduced availability → Switch if expected revenue > expected cost in other fishery
 - Otherwise → Decrease effort or exit
@@ -149,7 +150,7 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
 ## Model with the environment
 
 
-Following `r Citep(bib, "Richter2018", .opts = citeopt)`: 
+Following `r Citet(bib, "Richter2018", .opts = citeopt)`: 
 
 `
 \begin{equation}
@@ -167,19 +168,18 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
 
 ## Base model
 
-`\begin{equation}
-C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
-\label{eq3}
-\end{equation}`
 
+`\[
+C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
+\]`
 where: 
 - $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$:
-  - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance travelled?)
-  - $w$ is a $V_g \times M$ matrix of variable input prices, 
-- $\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$ is a $V_g \times (2n+M+k)$ matrix, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
-  - $h_{vg}$ is an $V_g \times n$ matrix of harvest quantities and 
-  - $x$ is an $V_g \times n$ matrix of given stock levels of the species of interest, and 
-  - $Z_v$ is an $V_g \times k$ matrix of given vessel characteristics. 
+  - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance traveled?)
+  - $w$ is a matrix of variable input prices, 
+- $\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
+  - $h_{vg}$ is a matrix of harvest quantities, 
+  - $x$ is a matrix of given stock levels of the species of interest, and 
+  - $Z_v$ is a matrix of given vessel characteristics. 
 
 ---
 
@@ -199,19 +199,17 @@ To link this function to climate variability
 
 The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
 `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`: 
-`\begin{equation}
+`\[
 Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
 \label{eq5}
-\end{equation}`
+\]`
 where 
-- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, 
-- $\beta_g$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, 
+- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a matrix of explanatory variables, 
+- $\beta_g$ is a vector of coefficients to be estimated, 
 - $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
 - $\bar{q}$ is the annual quota level. 
 
-Additionally, we can add the accumulation of "bad weather days?" as an explanatory variable to
-incorporate weather conditions into this decision, thus: 
-- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+Additionally, we can add the accumulation of *bad weather days?* as an explanatory variable to incorporate weather conditions into this decision, thus: - $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
 - Other variables? e.g., state dependency?
 
 ---
@@ -290,6 +288,7 @@ of the fishery
 - Localized market effects
 
 ---
+layout: false
 
 class: inverse, center, middle
 

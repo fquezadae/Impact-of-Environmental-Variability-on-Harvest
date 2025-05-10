@@ -8,7 +8,7 @@
   background-color: var(--udec-blue) !important;
   color: white !important;
   background-image: url(logo/Logo-UdeC-1-mag.png);
-  background-position: 50% 90%;
+  background-position: 6.5% 10%;
   background-size: 200px;
   background-repeat: no-repeat;
 }
@@ -30,4 +30,15 @@
 .inverse h3,
 .inverse p {
   color: white !important;
+}
+
+a {
+  color: #113b63 !important;
+  text-decoration: none;
+}
+
+
+.remark-slide-content {
+  border-top: 80px solid #113b63;
+
 }
