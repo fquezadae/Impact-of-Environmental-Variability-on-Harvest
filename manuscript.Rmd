@@ -72,6 +72,17 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 [^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is @PeñaElNiño. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
 
+# SPF in Chile
+
+- Composed by anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or *Strangomera bentincki*), among others. 
+- The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. 
+
+- Some facts:
+  - Jack mackerel catched monstly by artisanal boats (race for fish)
+  - Anchoveta and sardina is a mix species, with a mixed regulation. Separate quota, but if a vessel can´t found a spcies, can use the quota for that species to capture the other one.
+  - There is some quota that goes through industrial vessel to artisanal (SERNAPESCA might have the data for this transactions)
+  
+
 # Data and methodology
 
 To fulfill the project's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the stock
@@ -88,7 +99,7 @@ procedure.
   - Ex-vessel prices (monthly or annual by port/county/region/country and species)
   
 - **POR SOLICITAR:** 
-  - Environmental covariates:
+  - Environmental covariates -- Ask Fabian Tapia, UdeC
     - Sea surface temperature
     - Chlorophyll levels
     - Wind intensity and wave conditions in each trip at the harvest location
@@ -154,9 +165,11 @@ theory, and to reduce even more the number of parameters to estimate, the follow
       \end{equation*}
 
 Data at the trip level is available upon request from the Chilean Fisheries Research Institute (IFOP), which registers geo-referenced
-catch information on the Chilean fleet's fishing operation per trip [see e.g. @PeñaElNiño and [IFOP data observatory](ifop.dataobservatory.net)].
+catch information on the Chilean fleet's fishing operation per trip [see e.g. @Pena-Torres2017-gn and [IFOP data observatory](ifop.dataobservatory.net)].
 As inputs we can use the time spent at sea during a trip, where the price is the average wage pay to crew member per hour, and the distance
-traveled during a trip, where the price of distance traveled is the diesel cost.
+traveled during a trip, where the price of distance traveled is the diesel cost. Therefore, the total cost function $C_{vg}= w z_{vg}^*$ for vessel $v$, using gear $g$ in a trip would be sum of the total cost of distance travelled plus the total cost of the time spent at sea. 
+
+**Note:** *Depending on the type of vessel, this cost should change. Some vessels are more efficient, other one are more heavy. How to capture this? The righ hand side has vessel characteristics, so the effect of harvest would be conditional on vessel characteristics, the stock levels and input prices. As we only care in the margin how harvest increase cost, this should be fine. @Kasperski2015-jm mention this "...no reliable fixed cost information on these vessels exists, but these should not affect the optimization as economic decisions are made at the margin. Therefore, this study does not measure true profit, but rather a proxy based on the net operating rent accruing to vessels in the fishery."*
 
 To link this function to climate change, we can also include additional environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind intensity and wave conditions in each trip at the harvest location, upon data availability. Therefore, the augmented $X_{vg}$ matrix becomes $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
 
