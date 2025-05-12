@@ -13,7 +13,6 @@ output:
 options(htmltools.dir.version = FALSE)
 ```
 
-
 ```{r refmanager, include=FALSE}
 library(RefManageR)
 source(here::here("helper.R"))
@@ -28,7 +27,6 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ```{r use-logo, echo=FALSE}
 xaringanExtra::use_logo("https://raw.githubusercontent.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest/088d0bab630a8da78df8a546f30138ba56324573/logo/udec2.png")
 ```
-
 
 # Introduction
 
@@ -45,6 +43,11 @@ xaringanExtra::use_logo("https://raw.githubusercontent.com/fquezadae/Impact-of-E
   - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
   - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
   
+  
+???
+
+Recordar que uno apreta C para clonar, P para Presenter View. Creo que H para tener un mapa de las teclas
+
 ---
 
 # Introduction
