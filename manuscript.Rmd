@@ -209,20 +209,11 @@ trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
 \max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
 \label{eq7}
-\end{align} where $\rho$ is the intra-annual discount factor, $\omega$
-is a vector of shares of $\bar{q}$, and $h_{lt}=0$ for all $l\neq g$.
-The vector of shares is obtained from historical data on harvest. The
-optimal profit from the maximization problem in \eqref{eq7} is denoted
-as $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, and $h_{vgty}^*$ and
-$T_{vgy}^*$ are the optimal choices harvest per trip and total number of
-trips in year $y$ for vessel $v$. To obtain the optimal quota level, we must
-solve the social-planner optimization problem to maximize the net value
-of the fishery by choosing the quota levels per year and by species.
+\end{align} where $\rho$ is the intra-annual discount factor, $\omega$ is a vector of shares of $\bar{q}$, and $h_{lt}=0$ for all $l\neq g$. The vector of shares is obtained from historical data on harvest. The
+optimal profit from the maximization problem in \eqref{eq7} is denoted as $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, and $h_{vgty}^*$ and $T_{vgy}^*$ are the optimal choices harvest per trip and total number of
+trips in year $y$ for vessel $v$. To obtain the optimal quota level, we must solve the social-planner optimization problem to maximize the net value of the fishery by choosing the quota levels per year and by species.
 
-Following @Kasperski2015-jm, the optimization problem will be conducted
-for the next 25 years. I will use different climate scenarios and
-compare different optimal outcomes between them by using future
-projections for the environmental variables included in the model.
+Following @Kasperski2015-jm, the optimization problem will be conducted for the next 25 years. I will use different climate scenarios and compare different optimal outcomes between them by using future projections for the environmental variables included in the model.
 
 # Results
 
