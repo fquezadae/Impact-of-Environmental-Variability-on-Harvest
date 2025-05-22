@@ -109,6 +109,38 @@ procedure.
     - Diesel cost.
     
     
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(readxl)
+library(dplyr)
+
+anch_sard_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", 
+    sheet = "SARDINA-ANCHOVETA")
+
+# Select and rename columns 1, 3, and 4
+anch_sard_biomass <- anch_sard_biomass[, c(1, 3, 4)]
+anch_sard_biomass <- anch_sard_biomass[-1, ]
+colnames(anch_sard_biomass) <- c("year", "sardine_biomass", "anchoveta_biomass")
+
+jackmackerel_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", 
+    sheet = "JUREL")
+
+jackmackerel_biomass  <- jackmackerel_biomass[, c(1, 3)]
+jackmackerel_biomass  <- jackmackerel_biomass[-1, ]
+colnames(jackmackerel_biomass) <- c("year", "jackmackerel_biomass")
+
+
+# left join
+anch_sard_biomass$year <- as.numeric(anch_sard_biomass$year)
+jackmackerel_biomass$year <- as.numeric(jackmackerel_biomass$year)
+combined_biomass <- left_join(anch_sard_biomass, jackmackerel_biomass, by = "year")
+
+
+### CREATE FIGURE!!!! 
+
+```
+    
+    
+    
   
 
 ## Econometrics models
