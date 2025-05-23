@@ -4,9 +4,10 @@ title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in
 author: "Felipe J. Quezada-Escalona"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
-  pdf_document:
+  bookdown::pdf_document2:
     latex_engine: xelatex
     number_sections: true
+    toc: false
     pandoc_args: ["--variable=fontsize:11pt"]
 bibliography: bib_paperpile.bib
 csl: apa.csl # Optional: for APA-style citations
@@ -70,7 +71,7 @@ the composition of the catch will vary depending on the climate scenario we use 
 
 Under a changing climate, studying the effect of climatic variability on fishers' harvest decisions and landings is relevant for understanding fishing communities' adaptive capacities and strategies in response to climate change, thereby enabling the design of potential mitigation measures in response to these changes by policymakers. Countries have different institutions, cultures, and norms, so responses might differ depending on where the study is conducted. For this reason, conducting this research based on the Chilean fishing industry is necessary to develop local policies that aim to reduce climate change impacts on fisheries. While there is some literature on the effect of climate change on Chilean fisheries, I am unaware of local-level studies that consider a multiple-species framework and the interrelationship between the local market and fishing decisions seen under a variable climate context.[^1]
 
-[^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is @PeñaElNiño. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
+[^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is @Pena-Torres2017-gn. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
 
 # SPF in Chile
 
@@ -109,39 +110,26 @@ procedure.
     - Diesel cost.
     
     
-```{r echo=TRUE, message=FALSE, warning=FALSE}
+```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
+
 library(readxl)
 library(dplyr)
 
-anch_sard_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", 
-    sheet = "SARDINA-ANCHOVETA")
-
-# Select and rename columns 1, 3, and 4
+anch_sard_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 3, 4)]
 anch_sard_biomass <- anch_sard_biomass[-1, ]
 colnames(anch_sard_biomass) <- c("year", "sardine_biomass", "anchoveta_biomass")
-
-jackmackerel_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", 
-    sheet = "JUREL")
-
+jackmackerel_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", sheet = "JUREL")
 jackmackerel_biomass  <- jackmackerel_biomass[, c(1, 3)]
 jackmackerel_biomass  <- jackmackerel_biomass[-1, ]
 colnames(jackmackerel_biomass) <- c("year", "jackmackerel_biomass")
-
-
-# left join
 anch_sard_biomass$year <- as.numeric(anch_sard_biomass$year)
 jackmackerel_biomass$year <- as.numeric(jackmackerel_biomass$year)
-combined_biomass <- left_join(anch_sard_biomass, jackmackerel_biomass, by = "year")
-
-
-### CREATE FIGURE!!!! 
+biomass <- left_join(anch_sard_biomass, jackmackerel_biomass, by = "year")
+rm(list = c("anch_sard_biomass", "jackmackerel_biomass"))
 
 ```
-    
-    
-    
-  
+
 
 ## Econometrics models
 
@@ -164,6 +152,53 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
 \label{eq2}
 \end{equation} where $\rho_i$ are the coefficient for the environmental
 covariates. The model could also be expanded to different spatial locations conditional on data availability.
+
+
+As shown in Figure \@ref(fig:biomass), biomass levels vary by species, and there is some interrelation between them. It is also clear that these biomass levels are affected by the harvests that occurred during those periods. For instance, in the case of jack mackerel, an abrupt decline in biomass is observed, likely due to a combination of overexploitation of the resource and unfavorable environmental conditions.
+
+```{r biomass, fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.align='center', fig.pos='ht!', echo=FALSE, message=FALSE, warning=FALSE}
+
+library(ggplot2)
+library(tidyr)
+library(scales)
+library(viridis)
+
+biomass_long <- biomass %>%
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jackmackerel_biomass),
+               names_to = "species", 
+               values_to = "biomass") %>%
+  filter(!is.na(biomass)) %>%
+  arrange(species, year)
+
+biomass_long$biomass <- as.numeric(biomass_long$biomass)
+biomass_long$year <- as.numeric(biomass_long$year)
+biomass_long$species <- recode(biomass_long$species,
+                               anchoveta_biomass = "Anchoveta",
+                               sardine_biomass = "Sardine",
+                               jackmackerel_biomass = "Jack Mackerel")
+# Plot
+ggplot(biomass_long, aes(x = year, y = biomass, color = species, group = species)) +
+  geom_smooth(se = TRUE, method = "loess", span = 0.4, linetype = "solid") +
+  scale_y_continuous(labels = comma) +  # Or use scale_y_log10(labels = comma) to compress
+  labs(x = "Year",
+       y = "Biomass (tons)",
+       color = "Species") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.y = element_text(angle = 0, hjust = 1),
+    legend.position = "right" 
+  ) + 
+  scale_color_viridis_d(option = "D")
+
+rm(list = c("biomass_long"))
+
+```
+    
+    
+
+
+
 
 ### Trip level cost functions
 
