@@ -167,10 +167,19 @@ rm(list = c("annual_harvest_SERNAPESCA_ART", "annual_harvest_SERNAPESCA_IND", "a
 library(readxl)
 library(dplyr)
 
-annual_harvest_IFOP_jurel <- 
+annual_harvest_IFOP_jmck_IND <- 
   read_excel("Data/4. DESEMBARQUES.xlsx", 
              sheet = "INDUSTRIAL (nacional)", 
-             range = "A2:M293") 
+             range = "A2:L293") 
+annual_harvest_IFOP_sardine_IND <- 
+  read_excel("Data/4. DESEMBARQUES.xlsx", 
+             sheet = "INDUSTRIAL (nacional)", 
+             range = "N2:W196") 
+annual_harvest_IFOP_anchoveta_IND <- 
+  read_excel("Data/4. DESEMBARQUES.xlsx", 
+             sheet = "INDUSTRIAL (nacional)", 
+             range = "Y2:AJ273") 
+
 
 # %>%
 #   rename(specie = Especie) %>% 
