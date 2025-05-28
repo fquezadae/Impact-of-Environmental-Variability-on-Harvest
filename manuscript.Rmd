@@ -99,19 +99,9 @@ procedure.
   - Data at the trip level ([IFOP data observatory?](ifop.dataobservatory.net)]).
   - Ex-vessel prices (monthly or annual by port/county/region/country and species)
   
-- **POR SOLICITAR:** 
-  - Environmental covariates -- Ask Fabian Tapia, UdeC
-    - Sea surface temperature
-    - Chlorophyll levels
-    - Wind intensity and wave conditions in each trip at the harvest location
-    - Bad weather days?
-  - Other data?
-    - Average wage pay to crew member per hour
-    - Diesel cost.
-    
-    
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
-
+rm(list = ls())
+gc()
 library(readxl)
 library(dplyr)
 
@@ -129,6 +119,79 @@ biomass <- left_join(anch_sard_biomass, jackmackerel_biomass, by = "year")
 rm(list = c("anch_sard_biomass", "jackmackerel_biomass"))
 
 ```
+
+```{r harvest_SERNAPESCA, message=FALSE, warning=FALSE, include=FALSE}
+
+library(readxl)
+library(dplyr)
+
+annual_harvest_SERNAPESCA_ART <- 
+  read_excel("Data/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx", 
+             sheet = "ART_2012_2024", 
+             range = "A6:S36337") %>%
+  rename(specie = Especie) %>% 
+  rename(year = Año) %>%
+  group_by(specie, year) %>%
+  summarize(Annual_harvest_ART = sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop")
+
+annual_harvest_SERNAPESCA_IND <- 
+  read_excel("Data/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx", 
+             sheet = "IND_2012_2024", 
+             range = "A6:R3349") %>%
+  rename(specie = Especie) %>% 
+  rename(year = Año) %>%
+  group_by(specie, year) %>%
+  summarize(Annual_harvest_IND = sum(Desembarque, na.rm = TRUE), .groups = "drop")
+
+annual_harvest_SERNAPESCA_BF <- 
+  read_excel("Data/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx", 
+             sheet = "BF_2017_2024", 
+             range = "A7:R144") %>%
+  rename(specie = DESCR1TABL) %>% 
+  rename(year = Año) %>%
+  group_by(specie, year) %>%
+  summarize(Annual_harvest_BF = sum(DESEMBARQUE, na.rm = TRUE), .groups = "drop")
+
+harvest_SERNAPESCA <- 
+  left_join(annual_harvest_SERNAPESCA_ART, annual_harvest_SERNAPESCA_IND, by = c("year", "specie")) %>%
+  left_join(annual_harvest_SERNAPESCA_BF, by = c("year", "specie")) %>%
+  mutate(total_harvest = rowSums(across(c(Annual_harvest_IND, Annual_harvest_ART)), na.rm = TRUE)) %>%
+  mutate(total_harvest2 = rowSums(across(c(Annual_harvest_IND, Annual_harvest_BF, Annual_harvest_ART)), na.rm = TRUE))
+
+rm(list = c("annual_harvest_SERNAPESCA_ART", "annual_harvest_SERNAPESCA_IND", "annual_harvest_SERNAPESCA_BF"))
+
+```
+
+```{r harvest_IFOP, message=FALSE, warning=FALSE, include=FALSE}
+
+library(readxl)
+library(dplyr)
+
+annual_harvest_IFOP_jurel <- 
+  read_excel("Data/4. DESEMBARQUES.xlsx", 
+             sheet = "INDUSTRIAL (nacional)", 
+             range = "A2:M293") 
+
+# %>%
+#   rename(specie = Especie) %>% 
+#   rename(year = Año) %>%
+#   group_by(specie, year) %>%
+#   summarize(Annual_harvest_ART = sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop")
+
+```
+
+
+- **POR SOLICITAR:** 
+  - Environmental covariates -- Ask Fabian Tapia, UdeC
+    - Sea surface temperature
+    - Chlorophyll levels
+    - Wind intensity and wave conditions in each trip at the harvest location
+    - Bad weather days?
+  - Other data?
+    - Average wage pay to crew member per hour
+    - Diesel cost.
+    
+
 
 
 ## Econometrics models
