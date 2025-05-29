@@ -32,42 +32,15 @@ abstract: "In this paper, we aim to answer how fishing decisions, aggregate catc
 
 # Introduction
 
-The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming
-[@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some
-areas but increasing in others. The literature that studies fishermen' responses to either changes in fish availability or policies that
-restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that fishers can adopt the
-following adaptive strategies: (i) fishermen can reduce or reallocate fishing effort, either to another species or to another location
-[@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii) in the worst-case scenario, stop fishing entirely and find alternative
-employment elsewhere [@Powell2022-wj]. Among all those strategies, reallocating fishing efforts to other alternative species might be an
-effective adaptation strategy to climate change [@Young2018-kk]. Diversification of target species has been associated with reducing
-income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and increasing resilience to both climate shock [@Cline2017-dp;
-@Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
+The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some areas but increasing in others. The literature that studies fishermen' responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that fishers can adopt the following adaptive strategies: (i) fishermen can reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii) in the worst-case scenario, stop fishing entirely and find alternative employment elsewhere [@Powell2022-wj]. Among all those strategies, reallocating fishing efforts to other alternative species might be an effective adaptation strategy to climate change [@Young2018-kk]. Diversification of target species has been associated with reducing income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and increasing resilience to both climate shock [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
-However, switching between species requires fishers to have the skills, the gear, and the permits to do so [@Frawley2021-cw; @Powell2022-wj].
-Moreover, even though a fisher may satisfy these requirements, diversification might not be possible [@Beaudreau2019-xg] as it might be
-constrained depending on port infrastructure, markets, and regulations [@Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which
-adaptation strategy to take is not straightforward and would depend on many factors. Additionally, fishers might respond differently to an
-analogous situation as they have different goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
+However, switching between species requires fishers to have the skills, the gear, and the permits to do so [@Frawley2021-cw; @Powell2022-wj]. Moreover, even though a fisher may satisfy these requirements, diversification might not be possible [@Beaudreau2019-xg] as it might be constrained depending on port infrastructure, markets, and regulations [@Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which adaptation strategy to take is not straightforward and would depend on many factors. Additionally, fishers might respond differently to an analogous situation as they have different goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
 
-In this project, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under
-different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed by anchoveta (*Engraulis ringens*), jack
-mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or *Strangomera bentincki*), among others. The SPF is the most important in
-terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. By doing this research, we expect
-to understand better how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will
-estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelation to
-study the effect of climate variability on harvest decisions and substitution between species and determine the impact of different
-climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile.
+In this project, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed by anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or *Strangomera bentincki*), among others. The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. By doing this research, we expect to understand better how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelation to study the effect of climate variability on harvest decisions and substitution between species and determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile.
 
-We hypothesize that if the availability of a main target species is reduced, fishers will switch to the closest substitute if the expected
-revenue obtained from targeting this new species is high enough to cover the expected cost. Otherwise, the vessel would decrease fishing efforts
-or even exit the fishery due to the lack of economically viable substitutes. Moreover, we expect that this behavior is heterogeneous
-depending on the geographical area of operation -- as it determines the availability of other species [@Reimer2017-jw] -- and the gear type
-used.
+We hypothesize that if the availability of a main target species is reduced, fishers will switch to the closest substitute if the expected revenue obtained from targeting this new species is high enough to cover the expected cost. Otherwise, the vessel would decrease fishing efforts or even exit the fishery due to the lack of economically viable substitutes. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation -- as it determines the availability of other species [@Reimer2017-jw] -- and the gear type used.
 
-At the end of the project, I expect to find significant effects of climate variables on species stock dynamics, the cost of fishing during
-a trip, and the number of trips a vessel would take. The combinations of these environmental effects would be reflected in the optimal harvest
-level and the prices seen on the local market. I also expect to find significant interrelations between species stock and harvest, and that
-the composition of the catch will vary depending on the climate scenario we use for future predictions.
+At the end of the project, I expect to find significant effects of climate variables on species stock dynamics, the cost of fishing during a trip, and the number of trips a vessel would take. The combinations of these environmental effects would be reflected in the optimal harvest level and the prices seen on the local market. I also expect to find significant interrelations between species stock and harvest, and that the composition of the catch will vary depending on the climate scenario we use for future predictions.
 
 Under a changing climate, studying the effect of climatic variability on fishers' harvest decisions and landings is relevant for understanding fishing communities' adaptive capacities and strategies in response to climate change, thereby enabling the design of potential mitigation measures in response to these changes by policymakers. Countries have different institutions, cultures, and norms, so responses might differ depending on where the study is conducted. For this reason, conducting this research based on the Chilean fishing industry is necessary to develop local policies that aim to reduce climate change impacts on fisheries. While there is some literature on the effect of climate change on Chilean fisheries, I am unaware of local-level studies that consider a multiple-species framework and the interrelationship between the local market and fishing decisions seen under a variable climate context.[^1]
 
@@ -167,25 +140,26 @@ rm(list = c("annual_harvest_SERNAPESCA_ART", "annual_harvest_SERNAPESCA_IND", "a
 library(readxl)
 library(dplyr)
 
-annual_harvest_IFOP_jmck_IND <- 
+harvest_IFOP_jmck_IND <- 
   read_excel("Data/4. DESEMBARQUES.xlsx", 
              sheet = "INDUSTRIAL (nacional)", 
-             range = "A2:L293") 
-annual_harvest_IFOP_sardine_IND <- 
+             range = "A2:L293") %>% 
+  dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
+  mutate(specie = "JUREL")
+harvest_IFOP_sardine_IND <- 
   read_excel("Data/4. DESEMBARQUES.xlsx", 
              sheet = "INDUSTRIAL (nacional)", 
-             range = "N2:W196") 
-annual_harvest_IFOP_anchoveta_IND <- 
+             range = "N2:W196") %>% 
+  dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
+  mutate(specie = "SARDINA COMUN")
+harvest_IFOP_anchoveta_IND <- 
   read_excel("Data/4. DESEMBARQUES.xlsx", 
              sheet = "INDUSTRIAL (nacional)", 
-             range = "Y2:AJ273") 
+             range = "Y2:AJ273") %>% 
+  dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
+  mutate(specie = "ANCHOVETA")
 
-
-# %>%
-#   rename(specie = Especie) %>% 
-#   rename(year = Año) %>%
-#   group_by(specie, year) %>%
-#   summarize(Annual_harvest_ART = sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop")
+harvest_IFOP_IND <- rbind(harvest_IFOP_jmck_IND, harvest_IFOP_sardine_IND, harvest_IFOP_anchoveta_IND)
 
 ```
 
@@ -390,7 +364,7 @@ model of @Kasperski2015-jm to the literature of location choice modeling
 
 ## Damage function for the fisheries sector
 
-Link to the work made in the U.S. West Coast. Similar weather, but different development. We would need to also have estimate of the dose-response function in other latitudes, with significatly different temperatures... 
+Link to the work made in the U.S. West Coast. Similar weather, but different development. We would need to also have estimate of the dose-response function in other latitudes, with significantly different temperatures... 
 
 # Conclusions
 
