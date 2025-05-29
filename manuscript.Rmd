@@ -387,6 +387,11 @@ participate in a determined fishing ground, connecting the multi-species
 model of @Kasperski2015-jm to the literature of location choice modeling
 [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
 
+
+## Damage function for the fisheries sector
+
+Link to the work made in the U.S. West Coast. Similar weather, but different development. We would need to also have estimate of the dose-response function in other latitudes, with significatly different temperatures... 
+
 # Conclusions
 
 NO CONCLUSION YET
