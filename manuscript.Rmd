@@ -160,6 +160,32 @@ harvest_IFOP_anchoveta_IND <-
   mutate(specie = "ANCHOVETA")
 
 harvest_IFOP_IND <- rbind(harvest_IFOP_jmck_IND, harvest_IFOP_sardine_IND, harvest_IFOP_anchoveta_IND)
+rm(list = c("harvest_IFOP_jmck_IND", "harvest_IFOP_sardine_IND", "harvest_IFOP_anchoveta_IND"))
+
+
+harvest_IFOP_jmck_LANCHAS <- 
+  read_excel("Data/4. DESEMBARQUES.xlsx", 
+             sheet = "LANCHAS (CentroSur)", 
+             range = "A2:I143") %>% 
+  dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
+  mutate(specie = "JUREL")
+harvest_IFOP_sardine_LANCHAS <- 
+  read_excel("Data/4. DESEMBARQUES.xlsx", 
+             sheet = "LANCHAS (CentroSur)", 
+             range = "K2:S170") %>% 
+  dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
+  mutate(specie = "SARDINA COMUN")
+harvest_IFOP_anchoveta_LANCHAS <- 
+  read_excel("Data/4. DESEMBARQUES.xlsx", 
+             sheet = "LANCHAS (CentroSur)", 
+             range = "U2:AC169") %>% 
+  dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
+  mutate(specie = "ANCHOVETA")
+
+harvest_IFOP_LANCHAS <- rbind(harvest_IFOP_jmck_LANCHAS, harvest_IFOP_sardine_LANCHAS, harvest_IFOP_anchoveta_LANCHAS)
+rm(list = c("harvest_IFOP_jmck_LANCHAS", "harvest_IFOP_sardine_LANCHAS", "harvest_IFOP_anchoveta_LANCHAS"))
+
+
 
 ```
 
