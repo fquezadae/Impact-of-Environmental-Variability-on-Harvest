@@ -30,6 +30,17 @@ abstract: "In this paper, we aim to answer how fishing decisions, aggregate catc
 ---
 
 
+```{r}
+rm(list = ls())
+gc()
+library(readxl)
+library(dplyr)
+
+dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+```
+
+
+
 # Introduction
 
 The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some areas but increasing in others. The literature that studies fishermen' responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that fishers can adopt the following adaptive strategies: (i) fishermen can reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii) in the worst-case scenario, stop fishing entirely and find alternative employment elsewhere [@Powell2022-wj]. Among all those strategies, reallocating fishing efforts to other alternative species might be an effective adaptation strategy to climate change [@Young2018-kk]. Diversification of target species has been associated with reducing income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and increasing resilience to both climate shock [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
@@ -81,12 +92,7 @@ procedure.
   - Ex-vessel prices (monthly or annual by port/county/region/country and species)
   
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
-rm(list = ls())
-gc()
-library(readxl)
-library(dplyr)
-
-anch_sard_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", sheet = "SARDINA-ANCHOVETA")
+anch_sard_biomass <- read_excel(paste0(dirdata, "3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 3, 4)]
 anch_sard_biomass <- anch_sard_biomass[-1, ]
 colnames(anch_sard_biomass) <- c("year", "sardine_biomass", "anchoveta_biomass")
