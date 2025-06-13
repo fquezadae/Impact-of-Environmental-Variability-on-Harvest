@@ -476,6 +476,11 @@ ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
   theme(legend.position = "top")
 
 #### HAY QUE SOLO INCLUIR CENTRO SUR EN COSECHA!!!! ####
+#### VER TAMBIEN LA OTRA BASE DE DATOS DE BIOMASA!!!! ####
+#### REVISAR UNIDADES!!!! ####
+
+
+
 
 
 ```
