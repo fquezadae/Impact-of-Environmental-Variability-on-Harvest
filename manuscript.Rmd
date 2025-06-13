@@ -303,7 +303,7 @@ library(dplyr)
 
 harvest <- 
   left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie")) 
-rm(list = c("harvest_IFOP"))
+rm(list = c("harvest_IFOP", "harvest_SERNAPESCA"))
 
 
 ```
@@ -347,7 +347,7 @@ ggplot(harvest_long, aes(x = year, y = harvest, color = source)) +
        y = "Annual landings (tons)", 
        color = "Source") +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") 
 
 rm(harvest_long)
 
@@ -403,7 +403,9 @@ library(scales)
 library(viridis)
 
 biomass_long <- biomass %>%
-  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jackmackerel_biomass),
+  pivot_longer(cols = c(sardine_biomass_max, sardine_biomass_sum, sardine_biomass_mean, 
+                        anchoveta_biomass_max, anchoveta_biomass_sum, anchoveta_biomass_mean, 
+                        jackmackerel_biomass),
                names_to = "species", 
                values_to = "biomass") %>%
   filter(!is.na(biomass)) %>%
@@ -412,11 +414,19 @@ biomass_long <- biomass %>%
 biomass_long$biomass <- as.numeric(biomass_long$biomass)
 biomass_long$year <- as.numeric(biomass_long$year)
 biomass_long$species <- recode(biomass_long$species,
-                               anchoveta_biomass = "Anchoveta",
-                               sardine_biomass = "Sardine",
+                               sardine_biomass_max = "Sardine", 
+                               sardine_biomass_sum = "Sardine (sum)", 
+                               sardine_biomass_mean = "Sardine (mean)",
+                               anchoveta_biomass_max = "Anchoveta", 
+                               anchoveta_biomass_sum = "Anchoveta (sum)", 
+                               anchoveta_biomass_mean = "Anchoveta (mean)",
                                jackmackerel_biomass = "Jack Mackerel")
+
+biomass <- biomass_long %>% filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel"))
+
+
 # Plot
-ggplot(biomass_long, aes(x = year, y = biomass, color = species, group = species)) +
+ggplot(biomass, aes(x = year, y = biomass, color = species, group = species)) +
   geom_smooth(se = TRUE, method = "loess", span = 0.4, linetype = "solid") +
   scale_y_continuous(labels = comma) +  # Or use scale_y_log10(labels = comma) to compress
   labs(x = "Year",
@@ -430,6 +440,7 @@ ggplot(biomass_long, aes(x = year, y = biomass, color = species, group = species
   ) + 
   scale_color_viridis_d(option = "D")
 
+
 rm(list = c("biomass_long"))
 
 ```
@@ -438,27 +449,33 @@ rm(list = c("biomass_long"))
 ```{r}
 library(tidyverse)
 
-harvest2 <- harvest %>%
+harvest <- harvest %>%
   select(c(specie, year, total_harvest_all_SERNAPESCA)) %>%
   mutate(specie = recode(specie,
-                          "SARDINA COMUN" = "sardine",
-                          "JUREL" = "jackmackerel",
-                          "ANCHOVETA" = "anchoveta"
+                          "SARDINA COMUN" = "Sardine",
+                          "JUREL" = "Jack Mackerel",
+                          "ANCHOVETA" = "Anchoveta"
                           )) %>%
   rename(harvest = total_harvest_all_SERNAPESCA) %>%
   rename(species = specie)
 
-biomass2 <- biomass %>%
-  mutate(across(ends_with("biomass"), as.numeric))%>%
-  pivot_longer(cols = ends_with("biomass"),
-               names_to = "species",
-               values_to = "biomass") %>%
-  mutate(species = str_remove(species, "_biomass"))
+biomass_harvest <- full_join(biomass, harvest, by = c("species" = "species", "year" = "year")) %>% arrange(species, year)
 
-biomass_harvest <- left_join(biomass2, harvest2, by = c("species" = "species", "year" = "year"))
+biomass_harvest_long <- biomass_harvest %>%
+  pivot_longer(cols = c(biomass, harvest),
+               names_to = "variable",
+               values_to = "value")
 
-head(biomass_harvest)
+ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
+  geom_line(size = 1, na.rm = TRUE) +  
+  geom_point(size = 2, na.rm = TRUE) + 
+  facet_wrap(~species, scales = "free_y") +  # 1 panel per species, adjust scales as needed
+  labs(x = "Year", y = "Value (tons)", color = "Variable") +
+  scale_color_manual(values = c("biomass" = "darkgreen", "harvest" = "steelblue")) +
+  theme_minimal() +
+  theme(legend.position = "top")
 
+#### HAY QUE SOLO INCLUIR CENTRO SUR EN COSECHA!!!! ####
 
 
 ```
