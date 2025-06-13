@@ -30,13 +30,26 @@ abstract: "In this paper, we aim to answer how fishing decisions, aggregate catc
 ---
 
 
-```{r}
+```{r directorio, message=FALSE, warning=FALSE, include=FALSE}
 rm(list = ls())
 gc()
+
 library(readxl)
 library(dplyr)
 
-dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+# Definir directorios según usuario
+
+usuario <- Sys.info()[["user"]]
+# computador <- Sys.info()[["nodename"]]  # Alternativamente puedes usar esto
+if (usuario == "fequezad") {
+  dirdata <- "C:/Users/fequezad/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "FACEA") {
+  dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else {
+  stop("Usuario no reconocido. Defina el directorio correspondiente.")
+}
+rm(usuario)
+
 ```
 
 
@@ -96,7 +109,7 @@ anch_sard_biomass <- read_excel(paste0(dirdata, "3. ESTIMACIONES CRUCERO ACUSTIC
 anch_sard_biomass <- anch_sard_biomass[, c(1, 3, 4)]
 anch_sard_biomass <- anch_sard_biomass[-1, ]
 colnames(anch_sard_biomass) <- c("year", "sardine_biomass", "anchoveta_biomass")
-jackmackerel_biomass <- read_excel("Data/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx", sheet = "JUREL")
+jackmackerel_biomass <- read_excel(paste0(dirdata, "3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "JUREL")
 jackmackerel_biomass  <- jackmackerel_biomass[, c(1, 3)]
 jackmackerel_biomass  <- jackmackerel_biomass[-1, ]
 colnames(jackmackerel_biomass) <- c("year", "jackmackerel_biomass")
@@ -113,7 +126,7 @@ library(readxl)
 library(dplyr)
 
 annual_harvest_SERNAPESCA_ART <- 
-  read_excel("Data/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx", 
+  read_excel(paste0(dirdata, "AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
              sheet = "ART_2012_2024", 
              range = "A6:S36337") %>%
   rename(specie = Especie) %>% 
@@ -122,7 +135,7 @@ annual_harvest_SERNAPESCA_ART <-
   summarize(annual_harvest_ART_SERNAPESCA = sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop")
 
 annual_harvest_SERNAPESCA_IND <- 
-  read_excel("Data/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx", 
+  read_excel(paste0(dirdata, "AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
              sheet = "IND_2012_2024", 
              range = "A6:R3349") %>%
   rename(specie = Especie) %>% 
@@ -131,7 +144,7 @@ annual_harvest_SERNAPESCA_IND <-
   summarize(annual_harvest_IND_SERNAPESCA = sum(Desembarque, na.rm = TRUE), .groups = "drop")
 
 annual_harvest_SERNAPESCA_BF <- 
-  read_excel("Data/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx", 
+  read_excel(paste0(dirdata, "AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
              sheet = "BF_2017_2024", 
              range = "A7:R144") %>%
   rename(specie = DESCR1TABL) %>% 
@@ -155,7 +168,7 @@ library(readxl)
 library(dplyr)
 
 harvest_IFOP_jmck_IND <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "INDUSTRIAL (nacional)", 
              range = "A2:L293") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -165,7 +178,7 @@ harvest_IFOP_jmck_IND <-
   summarize(annual_harvest_IND_IFOP  = sum(`Total general`, na.rm = TRUE), .groups = "drop")
 
 harvest_IFOP_sardine_IND <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "INDUSTRIAL (nacional)", 
              range = "N2:W196") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -175,7 +188,7 @@ harvest_IFOP_sardine_IND <-
   summarize(annual_harvest_IND_IFOP  = sum(`Total general`, na.rm = TRUE), .groups = "drop")
 
 harvest_IFOP_anchoveta_IND <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "INDUSTRIAL (nacional)", 
              range = "Y2:AJ273") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -188,7 +201,7 @@ harvest_IFOP_IND <- rbind(harvest_IFOP_jmck_IND, harvest_IFOP_sardine_IND, harve
 rm(list = c("harvest_IFOP_jmck_IND", "harvest_IFOP_sardine_IND", "harvest_IFOP_anchoveta_IND"))
 
 harvest_IFOP_jmck_LANCHAS <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "LANCHAS (CentroSur)", 
              range = "A2:I143") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -198,7 +211,7 @@ harvest_IFOP_jmck_LANCHAS <-
   summarize(annual_harvest_LANCHAS_IFOP = sum(`Total general`, na.rm = TRUE), .groups = "drop")
 
 harvest_IFOP_sardine_LANCHAS <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "LANCHAS (CentroSur)", 
              range = "K2:S170") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -208,7 +221,7 @@ harvest_IFOP_sardine_LANCHAS <-
   summarize(annual_harvest_LANCHAS_IFOP = sum(`Total general`, na.rm = TRUE), .groups = "drop")
 
 harvest_IFOP_anchoveta_LANCHAS <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"),  
              sheet = "LANCHAS (CentroSur)", 
              range = "U2:AC169") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -221,7 +234,7 @@ harvest_IFOP_LANCHAS <- rbind(harvest_IFOP_jmck_LANCHAS, harvest_IFOP_sardine_LA
 rm(list = c("harvest_IFOP_jmck_LANCHAS", "harvest_IFOP_sardine_LANCHAS", "harvest_IFOP_anchoveta_LANCHAS"))
 
 harvest_IFOP_jmck_BOTES <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "BOTES (CentroSur)", 
              range = "A2:I146") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -231,7 +244,7 @@ harvest_IFOP_jmck_BOTES <-
   summarize(annual_harvest_BOTES_IFOP = sum(`Total general`, na.rm = TRUE), .groups = "drop")
 
 harvest_IFOP_sardine_BOTES <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "BOTES (CentroSur)", 
              range = "K2:S163") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -241,7 +254,7 @@ harvest_IFOP_sardine_BOTES <-
   summarize(annual_harvest_BOTES_IFOP = sum(`Total general`, na.rm = TRUE), .groups = "drop")
 
 harvest_IFOP_anchoveta_BOTES <- 
-  read_excel("Data/4. DESEMBARQUES.xlsx", 
+  read_excel(paste0(dirdata, "4. DESEMBARQUES.xlsx"), 
              sheet = "BOTES (CentroSur)", 
              range = "U2:AD109") %>% 
   dplyr::select(c('Años (Fc_Llegada)', 'Meses (Fc_Llegada)', 'Total general')) %>%
@@ -262,7 +275,7 @@ rm(list = c("harvest_IFOP_IND", "harvest_IFOP_BOTES", "harvest_IFOP_LANCHAS"))
 
 ```
 
-```{r harvest_IFOP, message=FALSE, warning=FALSE, include=FALSE}
+```{r harvest_merged, message=FALSE, warning=FALSE, include=FALSE}
 
 library(readxl)
 library(dplyr)
@@ -273,6 +286,53 @@ rm(list = c("harvest_IFOP", "harvest_SERNAPESCA"))
 
 
 ```
+
+How different are SERNAPESCA and IFOP harvest data? (Figura \@ref(fig:harvestsource))
+
+```{r harvestsource, echo=FALSE, fig.align='center', fig.cap="Desembarques anuales (IFOP vs SERNAPESCA)", fig.pos='ht!', message=FALSE, warning=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+harvest_long <- harvest %>%
+  pivot_longer(cols = c("annual_harvest_LANCHAS_IFOP",
+                        "annual_harvest_BOTES_IFOP",
+                        "annual_harvest_IND_IFOP",
+                        "total_harvest_IFOP",
+                        "annual_harvest_ART_SERNAPESCA",
+                        "annual_harvest_IND_SERNAPESCA",
+                        "annual_harvest_BF_SERNAPESCA",
+                        "total_harvest_SERNAPESCA",
+                        "total_harvest_all_SERNAPESCA"),
+               names_to = "source", 
+               values_to = "harvest") %>%
+  mutate(source = recode(source,
+                         "annual_harvest_LANCHAS_IFOP" = "Lanchas Artesanal IFOP",
+                         "annual_harvest_BOTES_IFOP" = "Botes Artesanal IFOP",
+                         "annual_harvest_IND_IFOP" = "Industrial IFOP",
+                         "total_harvest_IFOP" = "Total IFOP",
+                         "annual_harvest_ART_SERNAPESCA" = "Artesanal SERNAPESCA",
+                         "annual_harvest_IND_SERNAPESCA" = "Industrial SERNAPESCA",
+                         "annual_harvest_BF_SERNAPESCA" = "Barcos Factoría SERNAPESCA",
+                         "total_harvest_SERNAPESCA" = "Total SERNAPESCA (no BF)",
+                         "total_harvest_all_SERNAPESCA" = "Total SERNAPESCA")) %>%
+  filter(source %in% c("Total IFOP", "Total SERNAPESCA"))
+
+# Gráfico
+ggplot(harvest_long, aes(x = year, y = harvest, color = source)) +
+  geom_line(size = 1) +
+  facet_wrap(~specie, scales = "free_y") +
+  labs(x = "Año", 
+       y = "Annual landings (tons)", 
+       color = "Source") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+rm(harvest_long)
+
+```
+
+
 
 
 - **POR SOLICITAR:** 
@@ -313,7 +373,8 @@ covariates. The model could also be expanded to different spatial locations cond
 
 As shown in Figure \@ref(fig:biomass), biomass levels vary by species, and there is some interrelation between them. It is also clear that these biomass levels are affected by the harvests that occurred during those periods. For instance, in the case of jack mackerel, an abrupt decline in biomass is observed, likely due to a combination of overexploitation of the resource and unfavorable environmental conditions.
 
-```{r biomass, fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.align='center', fig.pos='ht!', echo=FALSE, message=FALSE, warning=FALSE}
+
+```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
 library(ggplot2)
 library(tidyr)
