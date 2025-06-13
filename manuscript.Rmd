@@ -107,14 +107,20 @@ procedure.
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
 anch_sard_biomass <- read_excel(paste0(dirdata, "3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 3, 4)]
+
+
 anch_sard_biomass <- anch_sard_biomass[-1, ]
 colnames(anch_sard_biomass) <- c("year", "sardine_biomass", "anchoveta_biomass")
+
+# Jack Mackerel Biomass
 jackmackerel_biomass <- read_excel(paste0(dirdata, "3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "JUREL")
 jackmackerel_biomass  <- jackmackerel_biomass[, c(1, 3)]
 jackmackerel_biomass  <- jackmackerel_biomass[-1, ]
 colnames(jackmackerel_biomass) <- c("year", "jackmackerel_biomass")
 anch_sard_biomass$year <- as.numeric(anch_sard_biomass$year)
 jackmackerel_biomass$year <- as.numeric(jackmackerel_biomass$year)
+
+# All species biomass
 biomass <- left_join(anch_sard_biomass, jackmackerel_biomass, by = "year")
 rm(list = c("anch_sard_biomass", "jackmackerel_biomass"))
 
@@ -282,7 +288,7 @@ library(dplyr)
 
 harvest <- 
   left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie")) 
-rm(list = c("harvest_IFOP", "harvest_SERNAPESCA"))
+rm(list = c("harvest_IFOP"))
 
 
 ```
@@ -413,6 +419,34 @@ rm(list = c("biomass_long"))
 
 ```
     
+  
+```{r}
+library(tidyverse)
+
+harvest2 <- harvest %>%
+  select(c(specie, year, total_harvest_all_SERNAPESCA)) %>%
+  mutate(specie = recode(specie,
+                          "SARDINA COMUN" = "sardine",
+                          "JUREL" = "jackmackerel",
+                          "ANCHOVETA" = "anchoveta"
+                          )) %>%
+  rename(harvest = total_harvest_all_SERNAPESCA) %>%
+  rename(species = specie)
+
+biomass2 <- biomass %>%
+  mutate(across(ends_with("biomass"), as.numeric))%>%
+  pivot_longer(cols = ends_with("biomass"),
+               names_to = "species",
+               values_to = "biomass") %>%
+  mutate(species = str_remove(species, "_biomass"))
+
+biomass_harvest <- left_join(biomass2, harvest2, by = c("species" = "species", "year" = "year"))
+
+head(biomass_harvest)
+
+
+
+```
     
 
 
