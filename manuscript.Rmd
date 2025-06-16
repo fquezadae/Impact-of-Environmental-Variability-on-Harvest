@@ -108,7 +108,7 @@ procedure.
 library(dplyr)
 
 #Anchovy and sardine biomass
-anch_sard_biomass <- read_excel(paste0(dirdata, "3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
+anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 3, 4)]
 anch_sard_biomass <- anch_sard_biomass[-1, ]
 colnames(anch_sard_biomass) <- c("year", "sardine_biomass", "anchoveta_biomass")
