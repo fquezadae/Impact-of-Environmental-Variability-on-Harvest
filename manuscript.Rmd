@@ -41,8 +41,8 @@ library(dplyr)
 
 usuario <- Sys.info()[["user"]]
 # computador <- Sys.info()[["nodename"]]  # Alternativamente puedes usar esto
-if (usuario == "fequezad") {
-  dirdata <- "C:/Users/fequezad/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+if (usuario == "felip") {
+  dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else if (usuario == "FACEA") {
   dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else {
@@ -80,65 +80,33 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 # SPF in Chile
 
-- Composed by anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (either *Sardinops sagax* or *Strangomera bentincki*), among others. 
+- Composed by anchoveta (*Engraulis ringens*), sardine (either *Sardinops sagax* or *Strangomera bentincki*)
+- Other important species is jack mackerel (*Trachurus murphyi*). Jack mackerel is catched mostly by small-scale boats (race for fish). 
+- Unfortunately, due to lack information about stock biomass, we could not include this species in our research
 - The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. 
 
 - Some facts:
-  - Jack mackerel catched monstly by artisanal boats (race for fish)
-  - Anchoveta and sardina is a mix species, with a mixed regulation. Separate quota, but if a vessel can´t found a spcies, can use the quota for that species to capture the other one.
+  
+  - Anchoveta and sardina is a mix species, with a mixed regulation. Separate quota, but if a vessel can´t found a species, can use the quota for that species to capture the other one.
   - There is some quota that goes through industrial vessel to artisanal (SERNAPESCA might have the data for this transactions)
   
 
-# Data and methodology
-
-To fulfill the project's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the stock
-dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate
-the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and
-profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization
-procedure.
-
-## Data
-
-- **SOLICITADO A IFOP 2012-2024:** 
-  - Stock abundance and vessel landings (annual by port/county/region/country and species)
-  - Data at the trip level ([IFOP data observatory?](ifop.dataobservatory.net)]).
-  - Ex-vessel prices (monthly or annual by port/county/region/country and species)
-  
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
 library(dplyr)
+library(stringr)
 
 #Anchovy and sardine biomass
 anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 2, 3, 4)]
 anch_sard_biomass <- anch_sard_biomass[-1, ]
 colnames(anch_sard_biomass) <- c("year", "cruise", "sardine_biomass", "anchoveta_biomass")
-
 anch_sard_biomass <- anch_sard_biomass %>%
-  mutate(across(ends_with("biomass"), ~as.numeric(.))) %>% group_by(year) %>%
-  summarise(
-    sardine_biomass_max = max(sardine_biomass, na.rm = TRUE),
-    sardine_biomass_sum = sum(sardine_biomass, na.rm = TRUE),
-    sardine_biomass_mean = mean(sardine_biomass, na.rm = TRUE),
-    anchoveta_biomass_max = max(anchoveta_biomass, na.rm = TRUE),
-    anchoveta_biomass_sum = sum(anchoveta_biomass, na.rm = TRUE),
-    anchoveta_biomass_mean = mean(anchoveta_biomass, na.rm = TRUE)
-  )
+  filter(str_detect(cruise, "Reclas")) %>%  ## Summer survey!
+  dplyr::select(-c(cruise)) %>%
+  mutate(across(ends_with("biomass"), ~as.numeric(.))) 
 anch_sard_biomass$year <- as.numeric(anch_sard_biomass$year)
-
-# Jack Mackerel Biomass
-jackmackerel_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "JUREL")
-jackmackerel_biomass  <- jackmackerel_biomass[, c(1, 3)]
-jackmackerel_biomass  <- jackmackerel_biomass[-1, ]
-colnames(jackmackerel_biomass) <- c("year", "jackmackerel_biomass")
-jackmackerel_biomass <- jackmackerel_biomass %>%
-  mutate(across(ends_with("biomass"), ~as.numeric(.))) %>%
-  mutate(jackmackerel_biomass = ifelse(jackmackerel_biomass == 0, NA, jackmackerel_biomass))
-jackmackerel_biomass$year <- as.numeric(jackmackerel_biomass$year)
-
-# All species biomass
-biomass <- full_join(anch_sard_biomass, jackmackerel_biomass, by = "year")
-rm(list = c("anch_sard_biomass", "jackmackerel_biomass"))
-
+biomass <- anch_sard_biomass
+rm(list = c("anch_sard_biomass"))
 ```
 
 ```{r harvest_SERNAPESCA, message=FALSE, warning=FALSE, include=FALSE}
@@ -350,6 +318,48 @@ harvest_IFOP_month <-
 rm(list = c("harvest_IFOP_IND_month", "harvest_IFOP_BOTES_month", "harvest_IFOP_LANCHAS_month"))
 ```
 
+```{r season_SPF, eval=FALSE, fig.align='center', fig.cap="Fishery seasons", fig.pos='ht!', message=FALSE, warning=FALSE, include=FALSE}
+
+library(ggplot2)
+library(dplyr)
+
+months <- c("E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
+
+# Fishing periods
+sardine_periods <- data.frame(
+  start = c(1, 3,7,10),    
+  end = c(3,7,10,12),      
+  status = c("Closed", "Open", "Closed", "Open")
+)
+
+# Cruise brackets
+cruise_brackets <- data.frame(
+  cruise = c("1st Cruise (Summer)", "2nd Cruise (Fall)"),
+  x_start = c(1, 3),   
+  x_end = c(3, 6),      
+  y = c(1.05, 1.05)       
+)
+
+# Plot with reduced white space
+ggplot() +
+  geom_segment(data = sardine_periods, aes(x = start, xend = end, y = 1, yend = 1, color = status), size = 4) +
+  geom_segment(data = cruise_brackets, aes(x = x_start, xend = x_end, y = y, yend = y), size = 1) +
+  geom_segment(data = cruise_brackets, aes(x = x_start, xend = x_start, y = y, yend = y - 0.05), size = 1) +
+  geom_segment(data = cruise_brackets, aes(x = x_end, xend = x_end, y = y, yend = y - 0.05), size = 1) +
+  geom_text(data = cruise_brackets, aes(x = (x_start + x_end) / 2, y = y + 0.05, label = cruise), size = 3.5) +
+  scale_x_continuous(breaks = 1:12, labels = months, expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0.9, 1.3), breaks = 1, labels = " ", expand = c(0, 0)) +
+  scale_color_manual(values = c("Open" = "green", "Closed" = "red")) +
+    labs(x = "Month", y = NULL) +
+  theme_minimal() + coord_cartesian(clip = "off") +
+theme(
+  plot.margin = margin(2, 2, 2, 2),  # very small margins (t, r, b, l)
+  axis.title.x = element_text(margin = margin(t = 0)),  # reduce margin below x-axis label
+  axis.text.x = element_text(margin = margin(t = 0)),   # reduce space below x-axis ticks
+  plot.title = element_text(hjust = 0.5, margin = margin(b = 0))  # reduce margin above title
+)
+
+```
 
 ```{r monthly_graph_harvest, echo=FALSE, fig.align='center', fig.cap="Average monthly landings by species (2012-2024; South-Central Chile)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
@@ -390,6 +400,15 @@ rm(harvest_summary)
 
 ```
 
+# Data and methodology
+
+To fulfill the project's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the stock
+dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate
+the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and
+profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization
+procedure.
+
+## Data
 
 ```{r harvest_merged, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -402,6 +421,11 @@ rm(list = c("harvest_IFOP", "harvest_SERNAPESCA"))
 
 
 ```
+
+- **SOLICITADO A IFOP 2012-2024:** 
+  - Stock abundance and vessel landings (annual by port/county/region/country and species)
+  - Data at the trip level ([IFOP data observatory?](ifop.dataobservatory.net)]).
+  - Ex-vessel prices (monthly or annual by port/county/region/country and species)
 
 How different are SERNAPESCA and IFOP harvest data? (Figura \@ref(fig:harvestsource))
 
