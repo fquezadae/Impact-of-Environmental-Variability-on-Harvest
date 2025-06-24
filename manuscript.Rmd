@@ -109,6 +109,73 @@ biomass <- anch_sard_biomass
 rm(list = c("anch_sard_biomass"))
 ```
 
+```{r ind_harvest_substitution, message=FALSE, warning=FALSE, include=FALSE}
+
+library(readxl)
+library(dplyr)
+library(tidyr)
+
+ind_harvest_SERNAPESCA_ART <- 
+  read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
+             sheet = "ART_2012_2024", 
+             range = "A6:S36337") %>%
+  rename(specie = Especie,
+         year = Año,
+         region = `Región de Operación`,
+         vessel_id = `RPA Embarcación`) %>%
+  mutate(zone = case_when(
+    region %in% c(1,2,3,4,15) ~ "Norte",
+    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro-Sur",
+    region %in% c(11,12) ~ "Extremo Sur",
+    TRUE ~ "No Especifica"
+  )) %>%
+  filter(zone == "Centro-Sur") %>% 
+  filter(specie == "ANCHOVETA" | specie == "SARDINA COMUN" | specie == "JUREL")
+
+vessel_species_year <- ind_harvest_SERNAPESCA_ART %>% 
+  select(vessel_id, year, specie, SumaDeDesembarque) %>%
+  group_by(vessel_id, year, specie) %>%
+  summarize(total_catch = sum(SumaDeDesembarque, na.rm = TRUE)) %>%
+  group_by(vessel_id, year) %>%
+  mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
+  ungroup() %>%
+  select(-c(total_catch)) %>%
+  pivot_wider(
+    names_from = specie,
+    values_from = species_share,
+    values_fill = 0
+  ) %>%
+  rename(
+    Anchoveta = `ANCHOVETA`,
+    Sardine = `SARDINA COMUN`,
+    JackMackerel = `JUREL`
+  )
+
+vessel_strategies_yearly <- vessel_species_year %>%
+  rowwise() %>%
+  mutate(
+    max_share = max(c(Anchoveta, Sardine, JackMackerel))    ,
+    top_two =  list(sort(c(Anchoveta, Sardine, JackMackerel), decreasing = TRUE)[1:2]),
+    strategy = case_when(
+      max_share >= 0.9 ~ "Specialist",
+      top_two[1] >= 0.25 & top_two[2] >= 0.25 ~ "Dual",
+      all(c(Anchoveta, Sardine, JackMackerel) >= 0.1 & c(Anchoveta, Sardine, JackMackerel) <= 0.25) ~ "Balanced (30/30/30)",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  ungroup()
+
+
+vessel_strategies_yearly %>%
+  count(year, strategy) %>%
+  tidyr::pivot_wider(names_from = strategy, values_from = n, values_fill = 0)
+
+
+```
+
+
+
+
 ```{r harvest_SERNAPESCA, message=FALSE, warning=FALSE, include=FALSE}
 
 library(readxl)
