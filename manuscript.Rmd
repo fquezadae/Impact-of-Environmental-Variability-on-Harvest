@@ -114,6 +114,7 @@ rm(list = c("anch_sard_biomass"))
 library(readxl)
 library(dplyr)
 library(tidyr)
+library(purrr)
 
 ind_harvest_SERNAPESCA_ART <- 
   read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
@@ -151,24 +152,31 @@ vessel_species_year <- ind_harvest_SERNAPESCA_ART %>%
     JackMackerel = `JUREL`
   )
 
+
+get_strategy <- function(sardine, jackmackerel, anchoveta) {
+  species <- c()
+  if (sardine > 0.25) species <- c(species, "Sardine")
+  if (jackmackerel > 0.25) species <- c(species, "JackMackerel")
+  if (anchoveta > 0.25) species <- c(species, "Anchoveta")
+  
+  n <- length(species)
+  if (n == 0) return("None or negligible")
+  if (n == 1) return(paste("Only", species[1]))
+  if (n == 2) return(paste(species[1], "and", species[2]))
+  return("All species")
+}
+
 vessel_strategies_yearly <- vessel_species_year %>%
-  rowwise() %>%
-  mutate(
-    max_share = max(c(Anchoveta, Sardine, JackMackerel))    ,
-    top_two =  list(sort(c(Anchoveta, Sardine, JackMackerel), decreasing = TRUE)[1:2]),
-    strategy = case_when(
-      max_share >= 0.9 ~ "Specialist",
-      top_two[1] >= 0.25 & top_two[2] >= 0.25 ~ "Dual",
-      all(c(Anchoveta, Sardine, JackMackerel) >= 0.1 & c(Anchoveta, Sardine, JackMackerel) <= 0.25) ~ "Balanced (30/30/30)",
-      TRUE ~ "Other"
-    )
-  ) %>%
-  ungroup()
+  mutate(strategy = pmap_chr(
+    list(Sardine, JackMackerel, Anchoveta),
+    get_strategy
+  ))
 
-
-vessel_strategies_yearly %>%
-  count(year, strategy) %>%
-  tidyr::pivot_wider(names_from = strategy, values_from = n, values_fill = 0)
+strategy_percent_ART <- vessel_strategies_yearly %>%
+  group_by(strategy) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  mutate(percent = round(100 * n / sum(n), 1)) %>%
+  arrange(desc(percent))
 
 
 ```
