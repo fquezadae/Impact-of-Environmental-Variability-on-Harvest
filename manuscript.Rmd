@@ -303,6 +303,8 @@ strategy_wide <- strategy_all %>%
   mutate(Percent = round(100 * Total / sum(Total), 1)) %>%
   arrange(desc(Percent))
 
+LO MISMO PARA DATOS DE IFOP???
+
 ```
 
 
