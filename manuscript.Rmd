@@ -114,223 +114,7 @@ rm(list = c("anch_sard_biomass", "jurel_biomass"))
 ```
 
 
-```{r ind_harvest_substitution_SERNAPESCA, message=FALSE, warning=FALSE, include=FALSE}
-library(readxl)
-library(dplyr)
-library(tidyr)
-library(purrr)
-
-ind_harvest_SERNAPESCA_ART <- 
-  read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
-             sheet = "ART_2012_2024", 
-             range = "A6:S36337") %>%
-  rename(specie = Especie,
-         year = Año,
-         region = `Región de Operación`,
-         vessel_id = `RPA Embarcación`) %>%
-  mutate(zone = case_when(
-    region %in% c(1,2,3,4,15) ~ "Norte",
-    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro-Sur",
-    region %in% c(11,12) ~ "Extremo Sur",
-    TRUE ~ "No Especifica"
-  )) %>%
-  filter(zone == "Centro-Sur") 
-
-vessel_species_year_ART <- ind_harvest_SERNAPESCA_ART %>% 
-  select(vessel_id, year, specie, SumaDeDesembarque) %>%
-  group_by(vessel_id, year, specie) %>%
-  summarize(total_catch = sum(SumaDeDesembarque, na.rm = TRUE)) %>%
-  group_by(vessel_id, year) %>%
-  mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
-  ungroup() %>%
-  select(-c(total_catch)) %>%
-  complete(vessel_id, year, specie, fill = list(species_share = 0)) %>%
-  group_by(vessel_id, year) %>%
-  mutate(species_share_check = sum(species_share, na.rm = TRUE)) %>%
-  filter(species_share_check > 0) %>%
-  dplyr::select(-c(species_share_check)) %>%
-  group_by(vessel_id, specie) %>% 
-  summarize(species_share = mean(species_share, na.rm = TRUE)) %>%
-  pivot_wider(
-    names_from = specie,
-    values_from = species_share,
-    values_fill = 0) %>%
-  rename(
-    Anchoveta = `ANCHOVETA`,
-    Sardine = `SARDINA COMUN`,
-    AustralSardine = `SARDINA AUSTRAL`,
-    SpanishSardine = `SARDINA ESPAÑOLA`,
-    JackMackerel = `JUREL`
-  )
-
-get_strategy <- function(sardine, jackmackerel, anchoveta, australsardine, spanishsardine) {
-  species <- c()
-  if (sardine > 0.15) species <- c(species, "Sardine")
-  if (jackmackerel > 0.15) species <- c(species, "JackMackerel")
-  if (anchoveta > 0.15) species <- c(species, "Anchoveta")
-  if (australsardine > 0.15) species <- c(species, "AustralSardine")
-  if (spanishsardine> 0.15) species <- c(species, "SpanishSardine")
-  
-  n <- length(species)
-  if (n == 0) return("None or negligible")
-  if (n == 1) return(paste("Only", species[1]))
-  if (n == 2) return(paste(species[1], "and", species[2]))
-  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
-  if (n == 4) return(paste(species[1], ",", species[2], ",", species[3], "and", species[4]))
-  return("All species")
-}
-
-vessel_strategies_yearly_ART <- vessel_species_year_ART %>%
-  mutate(strategy = pmap_chr(
-    list(Sardine, JackMackerel, Anchoveta, AustralSardine, SpanishSardine),
-    get_strategy
-  ))
-
-strategy_percent_ART <- vessel_strategies_yearly_ART %>%
-  group_by(strategy) %>%
-  summarise(n = n(), .groups = "drop") %>%
-  mutate(percent = round(100 * n / sum(n), 1)) %>%
-  arrange(desc(percent))  %>%
-  mutate(sector = "SmallScale")
-
-
-#####################################################
-
-ind_harvest_SERNAPESCA_IND <- 
-  read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
-             sheet = "IND_2012_2024", 
-             range = "A6:R3349") %>%
-  rename(specie = Especie,
-         year = Año,
-         region = `Región`,
-         vessel_id = `CD_MATRICU`) %>%
-  mutate(zone = case_when(
-    region %in% c(1,2,3,4,15) ~ "Norte",
-    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro-Sur",
-    region %in% c(11,12) ~ "Extremo Sur",
-    TRUE ~ "No Especifica")) %>%
-  filter(zone == "Centro-Sur") 
-
-vessel_species_year_IND <- ind_harvest_SERNAPESCA_IND %>% 
-  select(vessel_id, year, specie, Desembarque) %>%
-  group_by(vessel_id, year, specie) %>%
-  summarize(total_catch = sum(Desembarque, na.rm = TRUE)) %>%
-  group_by(vessel_id, year) %>%
-  mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
-  ungroup() %>%
-  select(-c(total_catch)) %>%
-  complete(vessel_id, year, specie, fill = list(species_share = 0)) %>%
-  group_by(vessel_id, year) %>%
-  mutate(species_share_check = sum(species_share, na.rm = TRUE)) %>%
-  filter(species_share_check > 0) %>%
-  dplyr::select(-c(species_share_check)) %>%
-  group_by(vessel_id, specie) %>% ### OJO ACA!
-  summarize(species_share = mean(species_share, na.rm = TRUE)) %>%
-  pivot_wider(
-    names_from = specie,
-    values_from = species_share,
-    values_fill = 0
-  ) %>%
-  rename(
-    Anchoveta = `ANCHOVETA`,
-    Sardine = `SARDINA COMUN`,
-    SpanishSardine = `SARDINA ESPAÑOLA`,
-    JackMackerel = `JUREL`
-  )
-  
-get_strategy <- function(sardine, jackmackerel, anchoveta, spanishsardine) {
-  species <- c()
-  if (sardine > 0.15) species <- c(species, "Sardine")
-  if (jackmackerel > 0.15) species <- c(species, "JackMackerel")
-  if (anchoveta > 0.15) species <- c(species, "Anchoveta")
-  if (spanishsardine> 0.15) species <- c(species, "SpanishSardine")
-  
-  n <- length(species)
-  if (n == 0) return("None or negligible")
-  if (n == 1) return(paste("Only", species[1]))
-  if (n == 2) return(paste(species[1], "and", species[2]))
-  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
-  return("All species")
-}
-
-  vessel_strategies_yearly_IND <- vessel_species_year_IND %>%
-  mutate(strategy = pmap_chr(
-    list(Sardine, JackMackerel, Anchoveta, SpanishSardine),
-    get_strategy
-  )) 
-  
-  strategy_percent_IND <- vessel_strategies_yearly_IND %>%
-  group_by(strategy) %>%
-  summarise(n = n(), .groups = "drop") %>%
-  mutate(percent = round(100 * n / sum(n), 1)) %>%
-  arrange(desc(percent)) %>%
-  mutate(sector = "Industrial")
-  
-  
-#####################################################
-
-# 7 barcos de factoria que capturan puro JUREL!
-
-# ind_harvest_SERNAPESCA_BF <- 
-#   read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
-#              sheet = "BF_2017_2024", 
-#              range = "A7:R144") %>%
-#   rename(specie = DESCR1TABL,
-#          year = Año,
-#          region = `Cd_Region`,
-#          vessel_id = `CD_MATRICU`) %>%
-#   mutate(zone = case_when(
-#     region %in% c(1,2,3,4,15) ~ "Norte",
-#     region %in% c(5,6,7,8,9,10,14,16) ~ "Centro-Sur",
-#     region %in% c(11,12) ~ "Extremo Sur",
-#     TRUE ~ "No Especifica")) %>%
-#   filter(zone == "Centro-Sur") 
-# 
-# vessel_species_year_BF <- ind_harvest_SERNAPESCA_BF %>% 
-#   select(vessel_id, year, specie, DESEMBARQUE) %>%
-#   group_by(vessel_id, year, specie) %>%
-#   summarize(total_catch = sum(DESEMBARQUE, na.rm = TRUE)) %>%
-#   group_by(vessel_id, year) %>%
-#   mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
-#   ungroup() %>%
-#   select(-c(total_catch)) %>%
-#   pivot_wider(
-#     names_from = specie,
-#     values_from = species_share,
-#     values_fill = 0
-#   ) 
-
-# -----  Merge -----
-strategy_all <- bind_rows(
-  strategy_percent_ART,
-  strategy_percent_IND
-) %>%
-  arrange(sector, desc(percent))
-  
-strategy_wide <- strategy_all %>%
-  select(strategy, sector, n) %>%
-  pivot_wider(names_from = sector, values_from = n, values_fill = 0) %>%
-  mutate(Total = SmallScale + Industrial) %>%
-  mutate(Percent = round(100 * Total / sum(Total), 1)) %>%
-  arrange(desc(Percent))
-
-  rm(list = c("ind_harvest_SERNAPESCA_IND", "ind_harvest_SERNAPESCA_ART",
-              "vessel_strategies_yearly_IND", "vessel_strategies_yearly_ART",
-              "vessel_species_year_IND", "vessel_species_year_ART",
-              "strategy_percent_ART", "strategy_percent_IND", "strategy_all"))
-
-
-```
-
-```{r strategy-table, echo=FALSE, results='asis'}
-library(knitr)
-kable(strategy_wide, format = "markdown", 
-      col.names = c("Strategy", "Industrial", "Small-Scale", "Total", "Percent (%)"))
-
-rm(list = c("strategy_wide"))
-```
-
-```{r ind_harvest_substitution_IFOP, message=FALSE, warning=FALSE, include=FALSE}
+```{r load_logbook, message=FALSE, warning=FALSE, include=FALSE}
 
 library(readxl)
 library(dplyr)
@@ -338,13 +122,11 @@ library(tidyr)
 library(purrr)
 library(lubridate)
 
-
 ### Load logbooks information for central-south Chile
 logbooks <- 
   read_excel(paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"), 
              sheet = "bIt_2001_2024_comercial") %>%
   filter(REGION %in% c(5,6,7,8,9,10,14,16))
-
 
 ### Get species name in logbooks
 species <- 
@@ -356,9 +138,18 @@ logbooks <- left_join(logbooks, species, by = "COD_ESPECIE")
 logbooks$year <- year(logbooks$FECHA_HORA_RECALADA)
 logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)  
 
+```
+
+```{r harvest_substitution, message=FALSE, warning=FALSE, include=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(lubridate)
+
 
 # First, get your original summarized table
-vessel_species_year <- logbooks %>% 
+vessel_species_year <- logbooks %>% filter(year >= 2019) %>% ### all species available after 2019?
   select(COD_BARCO, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
   group_by(COD_BARCO, year, NOMBRE_ESPECIE) %>%
   summarize(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
@@ -377,44 +168,34 @@ vessel_species_year <- logbooks %>%
     names_from = NOMBRE_ESPECIE,
     values_from = species_share,
     values_fill = 0) %>%
-  dplyr::select(c(COD_BARCO, ANCHOVETA, `SARDINA COMUN`, JUREL, 
-                  `SARDINA ESPANOLA`, `SARDINAS SIN IDENTIFICAR`)) %>%
-  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL - `SARDINA ESPANOLA` - 
-           `SARDINAS SIN IDENTIFICAR`) %>%
+  dplyr::select(c(COD_BARCO, ANCHOVETA, `SARDINA COMUN`, JUREL)) %>%
+  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL) %>%
   rename(
     Anchoveta = `ANCHOVETA`,
     Sardine = `SARDINA COMUN`,
     JackMackerel = `JUREL`,
-    SpanishSardine = `SARDINA ESPANOLA`,
-    SardineNA = `SARDINAS SIN IDENTIFICAR`,
     Other = `OTHER`
   )
 
-
-get_strategy <- function(sardine, jackmackerel, anchoveta, sardinena, spanishsardine, other) {
+get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
   species <- c()
-  if (sardine > 0.15) species <- c(species, "Sardine")
-  if (jackmackerel > 0.15) species <- c(species, "JackMackerel")
-  if (anchoveta > 0.15) species <- c(species, "Anchoveta")
-  if (spanishsardine > 0.15) species <- c(species, "SpanishSardine")
-  if (sardinena > 0.15) species <- c(species, "SardineNA")
-  if (other > 0.15) species <- c(species, "Other")
+  if (sardine > 0.20) species <- c(species, "Sardine")
+  if (jackmackerel > 0.20) species <- c(species, "JackMackerel")
+  if (anchoveta > 0.20) species <- c(species, "Anchoveta")
+  if (other > 0.20) species <- c(species, "Other")
 
   n <- length(species)
   if (n == 0) return("None or negligible")
   if (n == 1) return(paste("Only", species[1]))
   if (n == 2) return(paste(species[1], "and", species[2]))
   if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
-  if (n == 4) return(paste(species[1], ",", species[2], ",", species[3], "and", species[4]))
-  if (n == 5) return(paste(species[1], ",", species[2], ",", 
-                           species[3], ",", species[4], "and", species[5]))
   return(paste(species[1], ",", species[2], ",", species[3], ",", 
-               species[4], ",", species[5] , "and", species[6]))
+               "and", species[4]))
 }
 
 vessel_species_year <- vessel_species_year %>%
   mutate(strategy = pmap_chr(
-    list(Sardine, JackMackerel, Anchoveta, SpanishSardine, SardineNA, Other),
+    list(Sardine, JackMackerel, Anchoveta, Other),
     get_strategy
   ))
 
@@ -426,6 +207,74 @@ strategy_percent <- vessel_species_year %>%
 
 ```
 
+```{r harvest_substitution_pre, message=FALSE, warning=FALSE, include=FALSE}
+
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(lubridate)
+
+
+# First, get your original summarized table
+vessel_species_year <- logbooks %>% filter(year < 2019) %>% ### all species available after 2019?
+  select(COD_BARCO, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
+  group_by(COD_BARCO, year, NOMBRE_ESPECIE) %>%
+  summarize(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
+  group_by(COD_BARCO, year) %>%
+  mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
+  ungroup() %>%
+  select(-total_catch) %>%
+  complete(COD_BARCO, year, NOMBRE_ESPECIE, fill = list(species_share = 0)) %>%
+  group_by(COD_BARCO, year) %>%
+  mutate(species_share_check = sum(species_share, na.rm = TRUE)) %>%
+  filter(species_share_check > 0) %>%
+  dplyr::select(-c(species_share_check)) %>%
+  group_by(COD_BARCO, NOMBRE_ESPECIE) %>% 
+  summarize(species_share = mean(species_share, na.rm = TRUE)) %>%
+  pivot_wider(
+    names_from = NOMBRE_ESPECIE,
+    values_from = species_share,
+    values_fill = 0) %>%
+  dplyr::select(c(COD_BARCO, ANCHOVETA, `SARDINA COMUN`, JUREL)) %>%
+  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL) %>%
+  rename(
+    Anchoveta = `ANCHOVETA`,
+    Sardine = `SARDINA COMUN`,
+    JackMackerel = `JUREL`,
+    Other = `OTHER`
+  )
+
+get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
+  species <- c()
+  if (sardine > 0.20) species <- c(species, "Sardine")
+  if (jackmackerel > 0.20) species <- c(species, "JackMackerel")
+  if (anchoveta > 0.20) species <- c(species, "Anchoveta")
+  if (other > 0.20) species <- c(species, "Other")
+
+  n <- length(species)
+  if (n == 0) return("None or negligible")
+  if (n == 1) return(paste("Only", species[1]))
+  if (n == 2) return(paste(species[1], "and", species[2]))
+  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
+  return(paste(species[1], ",", species[2], ",", species[3], ",", 
+               "and", species[4]))
+}
+
+vessel_species_year_pre <- vessel_species_year %>%
+  mutate(strategy = pmap_chr(
+    list(Sardine, JackMackerel, Anchoveta, Other),
+    get_strategy
+  ))
+
+strategy_percent_pre <- vessel_species_year_pre %>%
+  group_by(strategy) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  mutate(percent = round(100 * n / sum(n), 1)) %>%
+  arrange(desc(percent)) 
+
+```
+
+
 
 ```{r strategy-table-logbooks, echo=FALSE, results='asis'}
 library(knitr)
@@ -435,6 +284,21 @@ kable(strategy_percent, format = "markdown",
 rm(list = c("strategy_percent"))
 ```
 
+
+```{r strategy-table-logbooks, echo=FALSE, results='asis'}
+library(knitr)
+kable(strategy_percent_pre, format = "markdown", 
+      col.names = c("Strategy", "Total", "Percent (%)"))
+
+rm(list = c("strategy_percent_pre"))
+```
+
+
+```{r switch_strategy, message=FALSE, warning=FALSE, include=FALSE}
+
+TRABAJAR ACA!!!
+
+```
 
 
 ```{r harvest_SERNAPESCA, message=FALSE, warning=FALSE, include=FALSE}
@@ -453,10 +317,10 @@ annual_harvest_SERNAPESCA_ART <-
     region %in% c(1,2,3,4,15) ~ "Norte",
     region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
     region %in% c(11,12) ~ "Extremo_Sur",
-    TRUE ~ "No_Especifica"
-  )) %>%
+    TRUE ~ "No_Especifica")) %>% 
   group_by(specie, year, zone) %>%
-  summarize(annual_harvest_ART_SERNAPESCA = sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop") 
+  summarize(annual_harvest_ART_SERNAPESCA = 
+              sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop") 
 
 annual_harvest_SERNAPESCA_IND <- 
   read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
@@ -470,9 +334,10 @@ annual_harvest_SERNAPESCA_IND <-
     region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
     region %in% c(11,12) ~ "Extremo_Sur",
     TRUE ~ "No_Especifica"
-  )) %>%
+  )) %>% 
   group_by(specie, year, zone) %>%
-  summarize(annual_harvest_IND_SERNAPESCA = sum(Desembarque, na.rm = TRUE), .groups = "drop")
+  summarize(annual_harvest_IND_SERNAPESCA = 
+              sum(Desembarque, na.rm = TRUE), .groups = "drop")
 
 annual_harvest_SERNAPESCA_BF <- 
   read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
@@ -486,7 +351,7 @@ annual_harvest_SERNAPESCA_BF <-
     region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
     region %in% c(11,12) ~ "Extremo_Sur",
     TRUE ~ "No_Especifica"
-  )) %>%
+  )) %>% 
   group_by(specie, year, zone) %>%
   summarize(annual_harvest_BF_SERNAPESCA = sum(DESEMBARQUE, na.rm = TRUE), .groups = "drop")
 
@@ -669,8 +534,29 @@ harvest_IFOP <- harvest_IFOP_month %>%
 
 rm(list = c("harvest_IFOP_IND_month", "harvest_IFOP_BOTES_month", "harvest_IFOP_LANCHAS_month"))
 
-CALCULAR HARVEST IFOP CON BITACORAS!!!
 ```
+
+
+```{r harvest_IFOP_logbooks, message=FALSE, warning=FALSE, include=FALSE}
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+harvest_IFOP_logbooks <- logbooks %>% 
+  filter(year >= 2012) %>%
+  filter(REGION %in% c(5,6,7,8,9,10,14,16)) %>%
+  group_by(NOMBRE_ESPECIE, year) %>%
+  summarise(
+    harvest_IFOP_loogbook_centrosur = sum(CAPTURA_RETENIDA, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(specie = NOMBRE_ESPECIE) %>%
+  mutate(harvest_IFOP_loogbook_centrosur = harvest_IFOP_loogbook_centrosur / 1000)
+
+```
+
 
 ```{r season_SPF, eval=FALSE, fig.align='center', fig.cap="Fishery seasons", fig.pos='ht!', message=FALSE, warning=FALSE, include=FALSE}
 
@@ -767,9 +653,9 @@ procedure.
 library(readxl)
 library(dplyr)
 
-harvest <- 
-  left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie")) 
-rm(list = c("harvest_IFOP", "harvest_SERNAPESCA"))
+harvest <- left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie"))
+harvest <- left_join(harvest, harvest_IFOP_logbooks, by = c("year", "specie")) 
+rm(list = c("harvest_IFOP", "harvest_SERNAPESCA", "harvest_IFOP_logbooks"))
 
 
 ```
@@ -787,15 +673,30 @@ library(dplyr)
 library(tidyr)
 
 harvest_long <- harvest %>% 
-  dplyr::select(c("specie", "year", "total_harvest_IFOP_centrosur", "total_harvest_all_SERNAPESCA_Centro_Sur")) %>%
-  pivot_longer(cols = c("total_harvest_IFOP_centrosur", 
-                        "total_harvest_all_SERNAPESCA_Centro_Sur"),
+  dplyr::select(c("specie", "year", 
+                  "total_harvest_IFOP_centrosur",
+                  "harvest_LANCHAS_IFOP_centrosur",
+                  "harvest_BOTES_IFOP_centrosur",
+                  "harvest_IND_IFOP_centrosur",
+                  "total_harvest_all_SERNAPESCA_Centro_Sur",
+                  "harvest_IFOP_loogbook_centrosur")) %>%
+  pivot_longer(cols = c("total_harvest_IFOP_centrosur",
+                        "harvest_LANCHAS_IFOP_centrosur",
+                        "harvest_BOTES_IFOP_centrosur",
+                        "harvest_IND_IFOP_centrosur",
+                        "total_harvest_all_SERNAPESCA_Centro_Sur",
+                        "harvest_IFOP_loogbook_centrosur"),
                names_to = "source", 
                values_to = "harvest") %>%
   mutate(source = recode(source,
+                         "harvest_LANCHAS_IFOP_centrosur" = "Lanchas IFOP",
+                         "harvest_BOTES_IFOP_centrosur" = "Botes IFOP",
+                         "harvest_IND_IFOP_centrosur" = "Industrial IFOP",
                          "total_harvest_IFOP_centrosur" = "Total IFOP",
-                         "total_harvest_all_SERNAPESCA_Centro_Sur" = "Total SERNAPESCA")) %>%
-  filter(source %in% c("Total IFOP", "Total SERNAPESCA"))
+                         "total_harvest_all_SERNAPESCA_Centro_Sur" = "Total SERNAPESCA",
+                         "harvest_IFOP_loogbook_centrosur" = "Total IFOP (logbooks)")) %>%
+  filter(source %in% c("Total IFOP", "Total SERNAPESCA", "Total IFOP (logbooks)", "Lanchas IFOP", "Botes IFOP",
+                       "Industrial IFOP"))
 
 # Gráfico
 ggplot(harvest_long, aes(x = year, y = harvest, color = source)) +
