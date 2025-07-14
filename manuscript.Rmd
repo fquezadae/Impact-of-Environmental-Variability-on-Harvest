@@ -138,6 +138,8 @@ logbooks <- left_join(logbooks, species, by = "COD_ESPECIE")
 logbooks$year <- year(logbooks$FECHA_HORA_RECALADA)
 logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)  
 
+rm(list = c("species"))
+
 ```
 
 ```{r harvest_substitution, message=FALSE, warning=FALSE, include=FALSE}
@@ -194,20 +196,23 @@ get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
 }
 
 vessel_species_year <- vessel_species_year %>%
-  mutate(strategy = pmap_chr(
+  mutate(strategy_After = pmap_chr(
     list(Sardine, JackMackerel, Anchoveta, Other),
     get_strategy
   ))
 
 strategy_percent <- vessel_species_year %>%
-  group_by(strategy) %>%
+  group_by(strategy_After) %>%
   summarise(n = n(), .groups = "drop") %>%
   mutate(percent = round(100 * n / sum(n), 1)) %>%
   arrange(desc(percent)) 
 
+strategy_after <- vessel_species_year %>%
+  select(COD_BARCO, strategy_After)
+
 ```
 
-```{r harvest_substitution_pre, message=FALSE, warning=FALSE, include=FALSE}
+```{r harvest_substitution_before, message=FALSE, warning=FALSE, include=FALSE}
 
 library(dplyr)
 library(tidyr)
@@ -216,7 +221,8 @@ library(lubridate)
 
 
 # First, get your original summarized table
-vessel_species_year <- logbooks %>% filter(year < 2019) %>% ### all species available after 2019?
+vessel_species_year <- logbooks %>% 
+  filter(year >= 2012, year < 2019) %>% 
   select(COD_BARCO, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
   group_by(COD_BARCO, year, NOMBRE_ESPECIE) %>%
   summarize(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
@@ -244,33 +250,20 @@ vessel_species_year <- logbooks %>% filter(year < 2019) %>% ### all species avai
     Other = `OTHER`
   )
 
-get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
-  species <- c()
-  if (sardine > 0.20) species <- c(species, "Sardine")
-  if (jackmackerel > 0.20) species <- c(species, "JackMackerel")
-  if (anchoveta > 0.20) species <- c(species, "Anchoveta")
-  if (other > 0.20) species <- c(species, "Other")
-
-  n <- length(species)
-  if (n == 0) return("None or negligible")
-  if (n == 1) return(paste("Only", species[1]))
-  if (n == 2) return(paste(species[1], "and", species[2]))
-  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
-  return(paste(species[1], ",", species[2], ",", species[3], ",", 
-               "and", species[4]))
-}
-
 vessel_species_year_pre <- vessel_species_year %>%
-  mutate(strategy = pmap_chr(
+  mutate(strategy_Before = pmap_chr(
     list(Sardine, JackMackerel, Anchoveta, Other),
     get_strategy
   ))
 
 strategy_percent_pre <- vessel_species_year_pre %>%
-  group_by(strategy) %>%
+  group_by(strategy_Before) %>%
   summarise(n = n(), .groups = "drop") %>%
   mutate(percent = round(100 * n / sum(n), 1)) %>%
   arrange(desc(percent)) 
+
+strategy_before <- vessel_species_year_pre %>%
+  select(COD_BARCO, strategy_Before)
 
 ```
 
@@ -285,7 +278,7 @@ rm(list = c("strategy_percent"))
 ```
 
 
-```{r strategy-table-logbooks, echo=FALSE, results='asis'}
+```{r strategy-table-logbooks-before, echo=FALSE, results='asis'}
 library(knitr)
 kable(strategy_percent_pre, format = "markdown", 
       col.names = c("Strategy", "Total", "Percent (%)"))
@@ -294,10 +287,76 @@ rm(list = c("strategy_percent_pre"))
 ```
 
 
-```{r switch_strategy, message=FALSE, warning=FALSE, include=FALSE}
+```{r switch_strategy, echo=FALSE, message=FALSE, warning=FALSE}
 
-TRABAJAR ACA!!!
+strategy_transitions <- full_join(strategy_before, strategy_after, by = "COD_BARCO") %>%
+  mutate(
+    strategy_Before = ifelse(is.na(strategy_Before), "No fishing", strategy_Before),
+    strategy_After  = ifelse(is.na(strategy_After),  "No fishing", strategy_After)
+  )
 
+transition_counts <- strategy_transitions %>%
+  count(strategy_Before, strategy_After)
+
+simplify_focus_strategy <- function(strategy) {
+  if (strategy == "Only Sardine") return("Sardine")
+  if (strategy == "Only Anchoveta") return("Anchoveta")
+  if (grepl("Sardine", strategy) & grepl("Anchoveta", strategy)) return("Sardine & Anchoveta")
+  if (strategy == "No fishing") return("No fishing")
+  return("Other")
+}
+
+strategy_transitions_focus <- strategy_transitions %>%
+  mutate(
+    strategy_Before_simple = simplify_focus_strategy(strategy_Before),
+    strategy_After_simple = simplify_focus_strategy(strategy_After)
+  ) %>%
+  filter(strategy_Before_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "No fishing") |
+           strategy_After_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "No fishing"))
+
+transition_counts_focus <- strategy_transitions_focus %>%
+  count(strategy_Before_simple, strategy_After_simple)
+
+
+library(ggplot2)
+library(ggalluvial)
+library(dplyr)
+
+# Create the base plot object
+p <- ggplot(transition_counts_focus,
+            aes(axis1 = strategy_Before_simple, axis2 = strategy_After_simple, y = n)) +
+  geom_flow(aes(fill = strategy_Before_simple), width = 1/12, knot.pos = 0.4, alpha = 0.8) +
+  geom_stratum(width = 1/12, fill = "gray95", color = "black") +
+  scale_x_discrete(limits = c("2012–2018", "2019–2024"), expand = c(.15, .15)) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  labs(
+    title = "Vessel Strategy Transitions ",
+    x = "", y = "Number of Vessels"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "none",
+    panel.grid = element_blank()
+  )
+
+# Get label positions from the stratum data
+stratum_data <- ggplot_build(p)$data[[2]]
+
+# Separate left (axis1) and right (axis2) sides
+left_labels <- stratum_data %>%
+  filter(x == 1) %>%
+  mutate(hjust = 1, x = x - 0.05)  # shift left
+
+right_labels <- stratum_data %>%
+  filter(x == 2) %>%
+  mutate(hjust = 0, x = x + 0.05)  # shift right
+
+# Add to the plot
+p + 
+  geom_text(data = left_labels, aes(x = x, y = y, label = stratum, hjust = hjust),
+            size = 2.5, inherit.aes = FALSE) +
+  geom_text(data = right_labels, aes(x = x, y = y, label = stratum, hjust = hjust),
+            size = 2.5, inherit.aes = FALSE)
 ```
 
 
