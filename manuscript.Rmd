@@ -21,6 +21,7 @@ header-includes:
   - \usepackage{indentfirst}  # Enables first-line indentation
   - \setlength{\parindent}{10pt}  # Adjusts the indentation size
   - \usepackage{authblk}
+  - \usepackage{booktabs}
   - \author{Felipe J. Quezada-Escalona}
   - \affil{Departmento de Economía \\ Universidad de Concepción \vspace{-48pt}}
 editor_options: 
@@ -36,6 +37,16 @@ gc()
 
 library(readxl)
 library(dplyr)
+library(tidyr)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(ggalluvial)
+library(purrr)
+library(lubridate)
+library(stringr)
+library(readxl)
+
 
 # Definir directorios según usuario
 
@@ -84,8 +95,6 @@ The small pelagic fishery (SPF) in Chile is primarily composed of anchoveta (*En
   
 
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
-library(dplyr)
-library(stringr)
 
 #Anchovy and sardine biomass
 anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
@@ -116,11 +125,6 @@ rm(list = c("anch_sard_biomass", "jurel_biomass"))
 
 ```{r load_logbook, message=FALSE, warning=FALSE, include=FALSE}
 
-library(readxl)
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(lubridate)
 
 ### Load logbooks information for central-south Chile
 logbooks <- 
@@ -143,12 +147,6 @@ rm(list = c("species"))
 ```
 
 ```{r harvest_substitution, message=FALSE, warning=FALSE, include=FALSE}
-
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(lubridate)
-
 
 # First, get your original summarized table
 vessel_species_year <- logbooks %>% filter(year >= 2019) %>% ### all species available after 2019?
@@ -190,9 +188,8 @@ get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
   if (n == 0) return("None or negligible")
   if (n == 1) return(paste("Only", species[1]))
   if (n == 2) return(paste(species[1], "and", species[2]))
-  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
-  return(paste(species[1], ",", species[2], ",", species[3], ",", 
-               "and", species[4]))
+  if (n == 3) return(paste0(species[1], ", ", species[2], " and ", species[3]))
+  return(paste0(species[1], ", ", species[2], ", ", species[3], " and ", species[4]))
 }
 
 vessel_species_year <- vessel_species_year %>%
@@ -213,12 +210,6 @@ strategy_after <- vessel_species_year %>%
 ```
 
 ```{r harvest_substitution_before, message=FALSE, warning=FALSE, include=FALSE}
-
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(lubridate)
-
 
 # First, get your original summarized table
 vessel_species_year <- logbooks %>% 
@@ -267,27 +258,36 @@ strategy_before <- vessel_species_year_pre %>%
 
 ```
 
+See Figure \@ref(fig:switchStrategy) and Table \@ref(tab:strategy-table-logbooks) for strategy transitions.
 
 
 ```{r strategy-table-logbooks, echo=FALSE, results='asis'}
-library(knitr)
-kable(strategy_percent, format = "markdown", 
-      col.names = c("Strategy", "Total", "Percent (%)"))
+# Rename for joining
+before <- strategy_percent_pre %>%
+  rename(strategy = strategy_Before, n_before = n, percent_before = percent)
 
-rm(list = c("strategy_percent"))
+after <- strategy_percent %>%
+  rename(strategy = strategy_After, n_after = n, percent_after = percent)
+
+# Merge strategies
+strategy_summary <- full_join(before, after, by = "strategy") %>%
+  arrange(desc(coalesce(percent_after, 0) + coalesce(percent_before, 0))) %>%
+  mutate(across(where(is.numeric), ~replace_na(., 0)))
+
+# Create table with grouped columns
+strategy_summary %>%
+  select(strategy, n_before, percent_before, n_after, percent_after) %>%
+  kable("latex", booktabs = TRUE, digits = 1,
+        col.names = c("Strategy", "n", "%", "n", "%"),
+        caption = "Comparison of Strategies Before and After") %>%
+  add_header_above(c(" " = 1, "Before" = 2, "After" = 2)) %>%
+  kable_styling(font_size = 10)
+
 ```
 
 
-```{r strategy-table-logbooks-before, echo=FALSE, results='asis'}
-library(knitr)
-kable(strategy_percent_pre, format = "markdown", 
-      col.names = c("Strategy", "Total", "Percent (%)"))
 
-rm(list = c("strategy_percent_pre"))
-```
-
-
-```{r switch_strategy, echo=FALSE, message=FALSE, warning=FALSE}
+```{r switchStrategy, echo=FALSE, fig.align='center', fig.cap="Vessel strategy transitions", fig.pos='ht!', message=FALSE, warning=FALSE, paged.print=FALSE}
 
 strategy_transitions <- full_join(strategy_before, strategy_after, by = "COD_BARCO") %>%
   mutate(
@@ -317,11 +317,6 @@ strategy_transitions_focus <- strategy_transitions %>%
 transition_counts_focus <- strategy_transitions_focus %>%
   count(strategy_Before_simple, strategy_After_simple)
 
-
-library(ggplot2)
-library(ggalluvial)
-library(dplyr)
-
 # Create the base plot object
 p <- ggplot(transition_counts_focus,
             aes(axis1 = strategy_Before_simple, axis2 = strategy_After_simple, y = n)) +
@@ -330,10 +325,9 @@ p <- ggplot(transition_counts_focus,
   scale_x_discrete(limits = c("2012–2018", "2019–2024"), expand = c(.15, .15)) +
   scale_fill_brewer(type = "qual", palette = "Set2") +
   labs(
-    title = "Vessel Strategy Transitions ",
     x = "", y = "Number of Vessels"
   ) +
-  theme_minimal(base_size = 13) +
+  theme_minimal(base_size = 10) +
   theme(
     legend.position = "none",
     panel.grid = element_blank()
@@ -618,9 +612,6 @@ harvest_IFOP_logbooks <- logbooks %>%
 
 
 ```{r season_SPF, eval=FALSE, fig.align='center', fig.cap="Fishery seasons", fig.pos='ht!', message=FALSE, warning=FALSE, include=FALSE}
-
-library(ggplot2)
-library(dplyr)
 
 months <- c("E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
 
