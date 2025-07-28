@@ -91,6 +91,12 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 # SPF in Chile
 
+
+
+
+
+
+
 The small pelagic fishery (SPF) in Chile is primarily composed of anchoveta (*Engraulis ringens*) and sardine (*Strangomera bentincki*), with jack mackerel (*Trachurus murphyi*) also playing a significant role, particularly for small-scale fishers engaged in a "race for fish" dynamic. The Central-South region of Chile is especially important for sardine harvests and will therefore be the focus of this research, as it provides a relevant setting to study potential species substitution within a multispecies management framework. In 2019, the SPF represented nearly 94% of total national fish landings, highlighting its critical importance to the Chilean fisheries sector [@SUBPESCA2020]. Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since been fished within maximum sustainable yield (MSY) limits. Sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Similarly, jack mackerel was overexploited until 2018 but has since been harvested sustainably. Anchoveta and sardine are regulated as a mixed-species fishery: they have separate quotas, but if one species is unavailable, the quota for the other can be used as a substitute. Additionally, some quota originally allocated to industrial fleets is transferred to the artisanal sector, with these transactions potentially traceable through SERNAPESCA data.
   
 
@@ -774,6 +780,7 @@ rm(harvest_long)
   - Other data?
     - Average wage pay to crew member per hour
     - Diesel cost.
+    - Permits by vessels
     
 
 
@@ -985,6 +992,11 @@ Following @Kasperski2015-jm, the optimization problem will be conducted for the 
 NO RESULTS YET
 
 # Discussion
+
+
+
+If ITQ in this fishery in Chile: **The theoretical findings on multispecies harvest patterns in Birkenbach et al. (2020) give rise to nuanced hypotheses about how behavior and outcomes will change after the adoption of catch shares. For example, a secure property right to catch fish at any time in the fishing season allows firms to spread the catch of stocks with high prices and downward-sloping demand over a longer fishing season. This minimizes market gluts that steer product toward lower priced frozen markets (Homans and Wilen 2005) and can result in higher prices for those species. Fishermen might also shift their efforts toward lower-priced species with cheaper quota or toward non-catch-share fisheries, intensifying the race to fish  for those species during portions of the season (Asche et al. 2007; Cunningham et al. 2016).** -- However, we do not include other species than jack mackerel, sardine and anchovy that might be caught by thise fleet. This would require to expand the model by **N** species, which would increase dimensionality of the model. WE NEED PERMITS TO CHECK IF ACTUALLY THIS HAPPEN! (Stil problem with Open-Access)
+
 
 ## Potential extension of the project
 
