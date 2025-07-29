@@ -781,7 +781,17 @@ rm(harvest_long)
     - Average wage pay to crew member per hour
     - Diesel cost.
     - Permits by vessels
+    - Quota prices?
     
+    
+    Implicitly,
+
+    
+    
+    
+- *Birkenbach (2024):*
+  - **Day at sea price captures elements of forward-looking behavior and information. Reimer et al. (2022) similarly argue that including a quota price captures forward looking behavior and allows one to simplify the dynamic model to a static one.**
+  - **Data on wind speed and direction were collected from NOAA’s National Center for Atmospheric Prediction’s high-resolution North American Regional Reanalysis dataset and averaged to the daily level for each stock centroid location, defined as gear and month-specific average latitudes and longitudes where fishing occurs for each stock.**
 
 
 
