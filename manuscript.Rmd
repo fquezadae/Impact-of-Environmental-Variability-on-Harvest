@@ -69,11 +69,10 @@ rm(usuario)
 
 The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Due to climate change, species distribution is expected to change in the future, reducing species availability in some areas but increasing in others. The literature that studies fishermen' responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that fishers can adopt the following adaptive strategies: (i) fishermen can reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii) in the worst-case scenario, stop fishing entirely and find alternative employment elsewhere [@Powell2022-wj]. Among all those strategies, reallocating fishing efforts to other alternative species might be an effective adaptation strategy to climate change [@Young2018-kk]. Diversification of target species has been associated with reducing income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and increasing resilience to both climate shock [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
-Climate variability affects income risk... From Cruz paper: 
-
-  - *"Climate variability has a substantial impact on key food-producing sectors, particularly agriculture and fisheries, where income is closely tied to environmental fluctuations (e.g., temperature and rainfall) and market forces (e.g., input costs) (Carter et al., 2018; Kasperski & Holland, 2013)."*
-  - *"With climate variability expected to reduce productivity in these sectors, the associated income risk is likely to increase (Carter et al., 2018; Free et al., 2019)."* 
-  - *"Adaptive strategies like diversification, both within (e.g. switching crop or species) and across sectors, are widely advocated to mitigate risks associated with climate variability (Abbott et al., 2022; Markowitz, 1952), but these strategies can be costly, particularly for rural, resource-dependent communities with limited capital and skills (Cherdchuchai & Otsuka, 2006; Ellis, 2000)."*
+- Climate variability affects income risk... From @sjcruz_jmp: 
+  - *"Climate variability has a substantial impact on key food-producing sectors, particularly agriculture and fisheries, where income is closely tied to environmental fluctuations (e.g., temperature and rainfall) and market forces (e.g., input costs) [@Kasperski2013-jz; @Carter2018]."*
+  - *"With climate variability expected to reduce productivity in these sectors, the associated income risk is likely to increase [@Carter2018; @Free2019]."* 
+  - *"Adaptive strategies like diversification, both within (e.g. switching crop or species) and across sectors, are widely advocated to mitigate risks associated with climate variability [@Abbott2023-sb], but these strategies can be costly, particularly for rural, resource-dependent communities with limited capital and skills [@Cherdchuchai2006; @Ellis2000]."*
   - *"The role of these switching costs, and how they might hinder or aid diversification within and across sectors remain largely unexplored in this context"*. 
   
 
@@ -90,12 +89,6 @@ Under a changing climate, studying the effect of climatic variability on fishers
 [^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is @Pena-Torres2017-gn. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
 
 # SPF in Chile
-
-
-
-
-
-
 
 The small pelagic fishery (SPF) in Chile is primarily composed of anchoveta (*Engraulis ringens*) and sardine (*Strangomera bentincki*), with jack mackerel (*Trachurus murphyi*) also playing a significant role, particularly for small-scale fishers engaged in a "race for fish" dynamic. The Central-South region of Chile is especially important for sardine harvests and will therefore be the focus of this research, as it provides a relevant setting to study potential species substitution within a multispecies management framework. In 2019, the SPF represented nearly 94% of total national fish landings, highlighting its critical importance to the Chilean fisheries sector [@SUBPESCA2020]. Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since been fished within maximum sustainable yield (MSY) limits. Sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Similarly, jack mackerel was overexploited until 2018 but has since been harvested sustainably. Anchoveta and sardine are regulated as a mixed-species fishery: they have separate quotas, but if one species is unavailable, the quota for the other can be used as a substitute. Additionally, some quota originally allocated to industrial fleets is transferred to the artisanal sector, with these transactions potentially traceable through SERNAPESCA data.
   
@@ -784,14 +777,9 @@ rm(harvest_long)
     - Quota prices?
     
     
-    Implicitly,
-
-    
-    
-    
-- *Birkenbach (2024):*
-  - **Day at sea price captures elements of forward-looking behavior and information. Reimer et al. (2022) similarly argue that including a quota price captures forward looking behavior and allows one to simplify the dynamic model to a static one.**
-  - **Data on wind speed and direction were collected from NOAA’s National Center for Atmospheric Prediction’s high-resolution North American Regional Reanalysis dataset and averaged to the daily level for each stock centroid location, defined as gear and month-specific average latitudes and longitudes where fishing occurs for each stock.**
+- @Birkenbach2024:
+  - *Day at sea price captures elements of forward-looking behavior and information. @reimer2022structural similarly argue that including a quota price captures forward looking behavior and allows one to simplify the dynamic model to a static one.*
+  - *Data on wind speed and direction were collected from NOAA’s National Center for Atmospheric Prediction’s high-resolution North American Regional Reanalysis dataset and averaged to the daily level for each stock centroid location, defined as gear and month-specific average latitudes and longitudes where fishing occurs for each stock.*
 
 
 
@@ -819,6 +807,13 @@ covariates. The model could also be expanded to different spatial locations cond
 
 
 As shown in Figure \@ref(fig:biomass), biomass levels vary by species, and there is some interrelation between them. It is also clear that these biomass levels are affected by the harvests that occurred during those periods. For instance, in the case of jack mackerel, an abrupt decline in biomass is observed, likely due to a combination of overexploitation of the resource and unfavorable environmental conditions.
+
+
+- From [@Yáñez2014]:
+  - *"@Fuenzalida2007 forecast that surface winds would strengthen in the coast of Chile, with an increase of 6 m/s in some areas of Chile during the period 2046-2065 in comparison to 2000–2005; this might increase upwelling and thus, fisheries productivity [@garreaud2009]."*
+    - *"Wind direction and strength will probably influence the distribution and abundance of marine species. Small and coastal pelagic species, for example, show different behaviors: while anchovy maximizes recruitment at current speeds of 5.46 m/s, showing an important decrease with lower and higher values, sardine maximizes recruitment at 5.63 m/s or more [@yanez2001].* 
+  - *Anchovy dominates during cold inter-decadal periods, while sardine prevail during warm inter-decadal periods. Such interdecadal variations in SST also influence recruitment, a situation that has been documented in anchovies off the Peruvian coast [@cahuin2009]."*
+    - *Longer term predictions based on two global warming scenarios of the IPCC (Intergovernmental Panel on Climate Change) done by @Fuenzalida2007 shows a warming on the Chilean coast."*
 
 
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
@@ -943,6 +938,11 @@ traveled during a trip, where the price of distance traveled is the diesel cost.
 To link this function to climate change, we can also include additional environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind intensity and wave conditions in each trip at the harvest location, upon data availability. Therefore, the augmented $X_{vg}$ matrix becomes $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
 
 
+MAYBE INCLUDE QUOTA PRICE? **Higher quota prices for depleted stocks (e.g., GOM cod) reduce incentives to target them.** and **Active leasing markets for quota (and previously for DAS) allow fishermen to treat quota as a "priced input" rather than a fixed, exhaustible resource.**
+
+
+
+
 ### Total annual trips
 
 The number of trips a vessel will take in a given year for each gear
@@ -997,6 +997,19 @@ trips in year $y$ for vessel $v$. To obtain the optimal quota level, we must sol
 
 Following @Kasperski2015-jm, the optimization problem will be conducted for the next 25 years. I will use different climate scenarios and compare different optimal outcomes between them by using future projections for the environmental variables included in the model.
 
+
+## Projections
+
+*From [@Yáñez2014]*:
+
+- "To project the model, the average structure of catches and temperature (of Antofagasta and the region Niño 3 + 4) for the years 2005, 2006 and 2007 were used as starting point. We consider a linear increase in temperature, taking into account four climate change scenarios based on the scenarios presented by IPCC, designed for the northern part of Chile until 2100. 
+  1. The first scenario considers an increase in temperature of 0.034ºC per year [@Fuenzalida2007], similar to that estimated by @Trenberth2007. 
+  2. A second scenario, more moderate, of 0,025ºC/year is also proposed by @Fuenzalida2007. 
+  3. The third scenario is not considered a significant effect on the area, following the work of @Trenberth2007. 
+  4. The fourth scenario is contradictory, indicating a cooling de 0.02 ºC/year [@falvey2009]. It should be noted that according to the work of @Fuenzalida2007 and @falvey2009 the same SST increase (or decrease) were considered for both temperatures (in Antofagasta and in the Niño 3 + 4 region)."
+
+
+
 # Results
 
 NO RESULTS YET
@@ -1005,7 +1018,7 @@ NO RESULTS YET
 
 
 
-If ITQ in this fishery in Chile: **The theoretical findings on multispecies harvest patterns in Birkenbach et al. (2020) give rise to nuanced hypotheses about how behavior and outcomes will change after the adoption of catch shares. For example, a secure property right to catch fish at any time in the fishing season allows firms to spread the catch of stocks with high prices and downward-sloping demand over a longer fishing season. This minimizes market gluts that steer product toward lower priced frozen markets (Homans and Wilen 2005) and can result in higher prices for those species. Fishermen might also shift their efforts toward lower-priced species with cheaper quota or toward non-catch-share fisheries, intensifying the race to fish  for those species during portions of the season (Asche et al. 2007; Cunningham et al. 2016).** -- However, we do not include other species than jack mackerel, sardine and anchovy that might be caught by thise fleet. This would require to expand the model by **N** species, which would increase dimensionality of the model. WE NEED PERMITS TO CHECK IF ACTUALLY THIS HAPPEN! (Stil problem with Open-Access)
+If ITQ in this fishery in Chile: **The theoretical findings on multispecies harvest patterns in @Birkenbach2020-nh give rise to nuanced hypotheses about how behavior and outcomes will change after the adoption of catch shares. For example, a secure property right to catch fish at any time in the fishing season allows firms to spread the catch of stocks with high prices and downward-sloping demand over a longer fishing season. This minimizes market gluts that steer product toward lower priced frozen markets [@homans2005] and can result in higher prices for those species. Fishermen might also shift their efforts toward lower-priced species with cheaper quota or toward non-catch-share fisheries, intensifying the race to fish  for those species during portions of the season [@asche2007; @cunningham2016spillovers].** -- However, we do not include other species than jack mackerel, sardine and anchovy that might be caught by thise fleet. This would require to expand the model by **N** species, which would increase dimensionality of the model. WE NEED PERMITS TO CHECK IF ACTUALLY THIS HAPPEN! (Stil problem with Open-Access)
 
 
 ## Potential extension of the project
