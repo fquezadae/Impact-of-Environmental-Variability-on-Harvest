@@ -105,6 +105,12 @@ Under a changing climate, studying the effect of climatic variability on fishers
 # SPF in Chile
 
 The small pelagic fishery (SPF) in Chile is primarily composed of anchoveta (*Engraulis ringens*) and sardine (*Strangomera bentincki*), with jack mackerel (*Trachurus murphyi*) also playing a significant role, particularly for small-scale fishers engaged in a "race for fish" dynamic. The Central-South region of Chile is especially important for sardine harvests and will therefore be the focus of this research, as it provides a relevant setting to study potential species substitution within a multispecies management framework. In 2019, the SPF represented nearly 94% of total national fish landings, highlighting its critical importance to the Chilean fisheries sector [@SUBPESCA2020]. Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since been fished within maximum sustainable yield (MSY) limits. Sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Similarly, jack mackerel was overexploited until 2018 but has since been harvested sustainably. Anchoveta and sardine are regulated as a mixed-species fishery: they have separate quotas, but if one species is unavailable, the quota for the other can be used as a substitute. Additionally, some quota originally allocated to industrial fleets is transferred to the artisanal sector, with these transactions potentially traceable through SERNAPESCA data.
+<<<<<<< HEAD
+=======
+
+PREGUNTA: ¿¿¿¿Jurel al parecer otra especie, predadora de sancho?????
+  
+>>>>>>> aea65fdaf9d1bd4938d13dad0b0c42143e226b80
 
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -180,7 +186,7 @@ vessel_species_year <- logbooks %>% filter(year >= 2019) %>% ### all species ava
     values_from = species_share,
     values_fill = 0) %>%
   dplyr::select(c(COD_BARCO, ANCHOVETA, `SARDINA COMUN`, JUREL)) %>%
-  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL) %>%
+  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL) %>% ACA DEBERIA CALCULAR TODAS LAS DEMAS ESPECIES!!!
   rename(
     Anchoveta = `ANCHOVETA`,
     Sardine = `SARDINA COMUN`,
