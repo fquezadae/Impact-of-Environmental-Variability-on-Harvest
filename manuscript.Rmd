@@ -109,8 +109,12 @@ The small pelagic fishery (SPF) in Chile is primarily composed of anchoveta (*En
 =======
 
 PREGUNTA: ¿¿¿¿Jurel al parecer otra especie, predadora de sancho?????
-  
->>>>>>> aea65fdaf9d1bd4938d13dad0b0c42143e226b80
+
+Sobre cuotas transables:
+
+Since 2013, the industrial sector have been managed using individual transferable quotas (ITQs), called Transferable Fishing Licenses (LTP). These permits are individual catch quotas with a duration of 20 years, renewable, and are separate from vessel ownership. Two types of LTP were created: Class A LTP, which continued from the LMCA and were allocated based on historical criteria as a percentage of the industrial fraction; and Class B LTP, which are awarded through the auction of up to 15% of the industrial fraction. This auctioned fraction was obtained by an equivalent reduction in Class A LTP. In 2015, the first auctions of this type were held in various fishery units.
+
+
 
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
 
