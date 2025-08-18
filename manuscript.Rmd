@@ -114,6 +114,14 @@ Sobre cuotas transables:
 
 Since 2013, the industrial sector have been managed using individual transferable quotas (ITQs), called Transferable Fishing Licenses (LTP). These permits are individual catch quotas with a duration of 20 years, renewable, and are separate from vessel ownership. Two types of LTP were created: Class A LTP, which continued from the LMCA and were allocated based on historical criteria as a percentage of the industrial fraction; and Class B LTP, which are awarded through the auction of up to 15% of the industrial fraction. This auctioned fraction was obtained by an equivalent reduction in Class A LTP. In 2015, the first auctions of this type were held in various fishery units.
 
+There is quota for direct human consumption....
+
+For the small-scale sector is also managed with a annual total allowable catch. In the case of sardine and anchovy, this quota is distributed by administrative region and seasonally through the season. In the case of jack mackerel, the small quota allocated to the artisanal sector is....
+
+
+
+
+
 
 
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
@@ -708,6 +716,10 @@ rm(harvest_summary)
 
 # Data and methodology
 
+
+**SEPARATE ANALYSIS FOR ARTISANAL AND FOR INDUSTRIAL!**
+
+
 To fulfill the project's objectives, and following @Kasperski2015-jm,
 the research entails five different stages: (i) estimating the stock
 dynamics of each species included in the model, (ii) estimating trip
@@ -811,6 +823,13 @@ rm(harvest_long)
         daily level for each stock centroid location, defined as gear
         and month-specific average latitudes and longitudes where
         fishing occurs for each stock.*
+        
+- Also
+  - Quota price? Auction market but also secondary market if available
+  - Quota level, by area/fishing organization for Artisanal, and TAC for industrial with ITQ levels by vessel?
+  - If no data, mybe intrapolate prices from other auctions????
+  
+  
 
 ## Econometrics models
 
