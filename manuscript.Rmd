@@ -89,18 +89,15 @@ The small pelagic fishery (SPF) in Chile is of critical importance to the nation
 ## Status of the stocks
 Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since 2020 been fished within maximum sustainable yield (MSY) limits. Meanwhile, sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Jack mackerel was overexploited until 2018 but has since been harvested within MSY limits. 
 
-
 ## Quota allocation
 
-
-The Chilean fishing sector is managed primarily through a Total Allowable Catch (TAC; *Cuota Global* in Spanish), which is divided between the artisanal and industrial sectors. A small share (≈2%) is reserved for research, with additional portions allocated to contingency and human consumption. The TAC is further subdivided by region and season where the fishery operates, and unused quotas may be reassigned during the fishing year.
+The Chilean fishing sector is managed primarily through a Total Allowable Catch (TAC; *Cuota Global*), which is divided between the industrial and artisanal sectors. A small share (≈2%) is reserved for research, with additional portions allocated to contingency and human consumption. The TAC is subdivided by region and season, and unused quotas may be reassigned during the fishing year.
 
 Anchoveta and sardine are regulated as a mixed-species fishery: although each has its own quota, substitution between them is permitted. A share of industrial quota is also periodically reassigned to the artisanal sector.
 
-Since 2013, the industrial sector has operated under an individual transferable quota (ITQ) system, known as Transferable Fishing Licenses (*Licencias Transables de Pesca*, LTP). Class A licenses were allocated based on historical catches, while Class B licenses—up to 15% of the industrial fraction—are auctioned, with the first auctions held in 2015. These sealed-bid, first-price auctions aimed to broaden access and limit concentration, but have faced challenges such as low participation, difficulties in reflecting economies of scale, and signs of potential coordinated bidding [@peña_torres_2022_MRE].
+Since 2013, the industrial sector has operated under an individual transferable quota (ITQ) system, known as Transferable Fishing Licenses (*Licencias Transables de Pesca, LTP*). Class A licenses were allocated based on historical catches, while Class B licenses—up to 15% of the industrial fraction—are auctioned, with the first auctions held in 2015. These sealed-bid, first-price auctions aimed to broaden access and limit concentration but have faced challenges such as low participation, difficulties in reflecting economies of scale, and signs of potential coordinated bidding [@peña_torres_2022_MRE].
 
-
-The TAC allocated to artisanal sector, instead, is ....
+The artisanal TAC operates under a regulated freedom-to-fish regime, allowing registered vessels to fish without individual quotas, except in areas where access is closed or suspended, in which case authorities may implement management measures. The main measure is the Régimen Artesanal de Extracción (RAE), which allocates the regional artisanal TAC by area, vessel size, landing site (caleta), organization, or individually, in agreement with artisanal fisher organizations. To date, area-based and organization-based allocations are the only observed schemes. Area-based allocations allow registered artisanal vessels in a given area to fish as in open access until the assigned quota is exhausted, while organization-based allocations follow the historical rights of members to distribute the organization’s quota.
 
 
 ## Other regulations
@@ -112,9 +109,6 @@ The TAC allocated to artisanal sector, instead, is ....
 - Jack mackerel: 26 cm 
 
 ### Maximum harvest levels
-
-
-
 
 
 
