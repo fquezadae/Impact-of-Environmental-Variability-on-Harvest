@@ -100,17 +100,35 @@ Since 2013, the industrial sector has operated under an individual transferable 
 The artisanal TAC operates under a regulated freedom-to-fish regime, allowing registered vessels to fish without individual quotas, except in areas where access is closed or suspended, in which case authorities may implement management measures. The main measure is the Régimen Artesanal de Extracción (RAE), which allocates the regional artisanal TAC by area, vessel size, landing site (caleta), organization, or individually, in agreement with artisanal fisher organizations. To date, area-based and organization-based allocations are the only observed schemes. Area-based allocations allow registered artisanal vessels in a given area to fish as in open access until the assigned quota is exhausted, while organization-based allocations follow the historical rights of members to distribute the organization’s quota.
 
 
+- Sardine: RAE in V, VIII Y X regions? What about other species? Open access in anchovy and jack mackerel (only artisanal TAC matter at country level?)
+
+
+
 ## Other regulations
 
-### Closures
+### Limited entry
+
+Fishery with restricted access to new operators (just artisanal?)
+
+
+### Biological closures for recruitment
+
+- Jack mackerel is open through all year.
+- Sardine and anchovy: In southern-central Chile, December–April (fixed period: January to February).
+
+### Biological closures for reproduction
+
+- Jack mackerel is open through all year.
+- Sardine and anchovy: In southern-central Chile, July–October (fixed period: August-September).
 
 ### Minimum size
 
 - Jack mackerel: 26 cm 
+- Sardine and anchovy?
 
 ### Maximum harvest levels
 
-
+- All species: Maximum catch limit per vessel owner (LMC) for industrial vessels
 
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
 
