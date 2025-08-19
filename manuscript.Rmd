@@ -84,24 +84,24 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 # SPF in Chile
 
-The small pelagic fishery (SPF) in Chile its OF critical importance to the Chilean fisheries sector. In 2019, the SPF represented nearly 94% of total national fish landing [@SUBPESCA2020]. The fishery is primarily composed of anchoveta (*Engraulis ringens*) and sardine (*Strangomera bentincki*), with jack mackerel (*Trachurus murphyi*) also playing a significant role<!-- , particularly for small-scale fishers engaged in a "race for fish" dynamic????-->. The Central-South region of Chile is especially important for sardine harvests and will therefore be the focus of this research, as it provides a relevant setting to study potential species substitution within a multispecies management framework. 
+The small pelagic fishery (SPF) in Chile is of critical importance to the national fisheries sector. In 2019, the SPF represented nearly 94% of total national fish landings [@SUBPESCA2020]. The fishery is primarily composed of anchoveta (*Engraulis ringens*), sardine (*Strangomera bentincki*), and jack mackerel (*Trachurus murphyi*). While in the Northern region competition mainly occurs between anchoveta and jack mackerel, in the Central-South region all three species play a major role. This makes the Central-South particularly relevant for the study of species interactions and potential substitution within a multispecies management framework, and it is therefore the focus of this research.
 
 ## Status of the stocks
 Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since 2020 been fished within maximum sustainable yield (MSY) limits. Meanwhile, sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Jack mackerel was overexploited until 2018 but has since been harvested within MSY limits. 
 
 
 ## Quota allocation
-Anchoveta and sardine are regulated as a mixed-species fishery: they have separate quotas, but if one species is unavailable, the quota for the other can be used as a substitute. Additionally, some quota originally allocated to industrial fleets is transferred to the artisanal sector, with these transactions potentially traceable through SERNAPESCA data.
 
 
-Since 2013, the industrial sector have been managed using individual transferable quotas (ITQs), called Transferable Fishing Licenses (LTP). These permits are individual catch quotas with a duration of 20 years, renewable, and are separate from vessel ownership. Two types of LTP were created: Class A LTP, which continued from the LMCA and were allocated based on historical criteria as a percentage of the industrial fraction; and Class B LTP, which are awarded through the auction of up to 15% of the industrial fraction. This auctioned fraction was obtained by an equivalent reduction in Class A LTP. In 2015, the first auctions of this type were held in various fishery units.
+The Chilean fishing sector is managed primarily through a Total Allowable Catch (TAC; *Cuota Global* in Spanish), which is divided between the artisanal and industrial sectors. A small share (≈2%) is reserved for research, with additional portions allocated to contingency and human consumption. The TAC is further subdivided by region and season where the fishery operates, and unused quotas may be reassigned during the fishing year.
 
-There is quota for direct human consumption....
+Anchoveta and sardine are regulated as a mixed-species fishery: although each has its own quota, substitution between them is permitted. A share of industrial quota is also periodically reassigned to the artisanal sector.
 
-In Chile, part of the industrial quotas for jack mackerel, sardine, and anchovy have been allocated through transferable license auctions since 2015. These sealed-bid, first-price auctions set aside a share of quota, often prioritizing small and medium-sized enterprises, and imposed limits to prevent excessive concentration. While the system helped distribute access to these fisheries, it also faced challenges, including low participation, difficulties for firms to express economies of scale, and indications of possible coordinated bidding behavior.
+Since 2013, the industrial sector has operated under an individual transferable quota (ITQ) system, known as Transferable Fishing Licenses (*Licencias Transables de Pesca*, LTP). Class A licenses were allocated based on historical catches, while Class B licenses—up to 15% of the industrial fraction—are auctioned, with the first auctions held in 2015. These sealed-bid, first-price auctions aimed to broaden access and limit concentration, but have faced challenges such as low participation, difficulties in reflecting economies of scale, and signs of potential coordinated bidding [@peña_torres_2022_MRE].
 
 
-For the small-scale sector is also managed with a annual total allowable catch. In the case of sardine and anchovy, this quota is distributed by administrative region and seasonally through the season. In the case of jack mackerel, the small quota allocated to the artisanal sector is....
+The TAC allocated to artisanal sector, instead, is ....
+
 
 ## Other regulations
 
@@ -822,6 +822,7 @@ rm(harvest_long)
   - Quota price? Auction market but also secondary market if available
   - Quota level, by area/fishing organization for Artisanal, and TAC for industrial with ITQ levels by vessel?
   - If no data, mybe intrapolate prices from other auctions????
+  - Reallocations of quotas?
   
   
 
