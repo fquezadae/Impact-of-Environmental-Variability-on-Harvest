@@ -9,6 +9,7 @@ output:
     number_sections: true
     toc: false
     pandoc_args: ["--variable=fontsize:11pt"]
+  bookdown::latex_document2: default
 bibliography: bib_paperpile.bib
 csl: apa.csl # Optional: for APA-style citations
 linkcolor: blue
@@ -64,32 +65,11 @@ rm(usuario)
 
 # Introduction
 
-The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming
-[@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others. The literature that studies fishermen' responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that fishers can adopt the
-following adaptive strategies: (i) fishermen can reduce or reallocate fishing effort, either to another species or to another location
-[@Gonzalez-Mon2021-kj], (ii) keep following the same strategy, or, (iii) in the worst-case scenario, stop fishing entirely and find alternative employment elsewhere [@Powell2022-wj]. Among all those strategies, reallocating fishing efforts to other alternative species might be an effective adaptation strategy to climate change [@Young2018-kk]. Researchers have linked the diversification of target species to a reduction in income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn]. This diversification also increases resilience to both
-climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
+The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others. The literature that studies fishers’ responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that they can adopt the following adaptive strategies: (i) reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj]; (ii) continue following the same strategy; or (iii) in the worst-case scenario, exit the fishery and find alternative employment [@Powell2022-wj]. Among these strategies, reallocating effort to alternative species has been identified as a potentially effective response to climate change [@Young2018-kk]. Diversification of target species has also been linked to reduced income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and greater resilience to both climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
--   Climate variability affects income risk... From @sjcruz_jmp:
-    -   *"Climate variability has a substantial impact on key
-        food-producing sectors, particularly agriculture and fisheries,
-        where income is closely tied to environmental fluctuations
-        (e.g., temperature and rainfall) and market forces (e.g., input
-        costs) [@Kasperski2013-jz; @Carter2018]."*
-    -   *"With climate variability expected to reduce productivity in
-        these sectors, the associated income risk is likely to increase
-        [@Carter2018; @Free2019]."*
-    -   *"Adaptive strategies like diversification, both within (e.g.
-        switching crop or species) and across sectors, are widely
-        advocated to mitigate risks associated with climate variability
-        [@Abbott2023-sb], but these strategies can be costly,
-        particularly for rural, resource-dependent communities with
-        limited capital and skills [@Cherdchuchai2006; @Ellis2000]."*
-    -   *"The role of these switching costs, and how they might hinder
-        or aid diversification within and across sectors remain largely
-        unexplored in this context"*.
+This emphasis on diversification aligns with broader evidence from food-producing sectors. As @sjcruz_jmp highlights, climate variability substantially affects agriculture and fisheries, where income depends heavily on environmental fluctuations (e.g., temperature, rainfall) and market forces (e.g., input costs) [@Kasperski2013-jz; @Carter2018]. With variability expected to reduce productivity, income risk is likely to rise [@Carter2018; @Free2019]. Diversification—whether within a sector (e.g., switching crops or species) or across sectors—is often promoted as an adaptive strategy [@Abbott2023-sb]. However, these strategies can be costly for resource-dependent communities with limited capital and skills [@Cherdchuchai2006; @Ellis2000], and the role of switching costs in shaping diversification remains poorly understood.
 
-However, switching between species requires fishers to have the skills, the gear, and the permits to do so [@Frawley2021-cw; @Powell2022-wj]. Moreover, even though a fisher may satisfy these requirements, diversification might not be possible [@Beaudreau2019-xg] as it might be constrained depending on port infrastructure, markets, and regulations [@Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which adaptation strategy to adopt is not straightforward and depends on many factors. Additionally, fishers might respond differently to an analogous situation as they have different goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
+In the fisheries context, switching between species requires not only the skills but also the appropriate gear and permits [@Frawley2021-cw; @Powell2022-wj]. Even if these conditions are met, diversification may still be constrained by port infrastructure, markets, and regulations [@Beaudreau2019-xg; @Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which adaptation strategy to adopt is not straightforward and depends on multiple factors. Moreover, fishers may respond differently to similar circumstances depending on their goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
 
 In this project, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed of anchoveta (Engraulis ringens), jack mackerel (Trachurus murphyi), sardine (either Sardinops sagax or Strangomera bentincki), among others. The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. Through this research, we aim to gain a deeper understanding of how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelations to study the effect of climate variability on harvest decisions and substitution between species, and to determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile.
 
@@ -104,20 +84,34 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 # SPF in Chile
 
-The small pelagic fishery (SPF) in Chile is primarily composed of anchoveta (*Engraulis ringens*) and sardine (*Strangomera bentincki*), with jack mackerel (*Trachurus murphyi*) also playing a significant role, particularly for small-scale fishers engaged in a "race for fish" dynamic. The Central-South region of Chile is especially important for sardine harvests and will therefore be the focus of this research, as it provides a relevant setting to study potential species substitution within a multispecies management framework. In 2019, the SPF represented nearly 94% of total national fish landings, highlighting its critical importance to the Chilean fisheries sector [@SUBPESCA2020]. Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since been fished within maximum sustainable yield (MSY) limits. Sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Similarly, jack mackerel was overexploited until 2018 but has since been harvested sustainably. Anchoveta and sardine are regulated as a mixed-species fishery: they have separate quotas, but if one species is unavailable, the quota for the other can be used as a substitute. Additionally, some quota originally allocated to industrial fleets is transferred to the artisanal sector, with these transactions potentially traceable through SERNAPESCA data.
-<<<<<<< HEAD
-=======
+The small pelagic fishery (SPF) in Chile its OF critical importance to the Chilean fisheries sector. In 2019, the SPF represented nearly 94% of total national fish landing [@SUBPESCA2020]. The fishery is primarily composed of anchoveta (*Engraulis ringens*) and sardine (*Strangomera bentincki*), with jack mackerel (*Trachurus murphyi*) also playing a significant role<!-- , particularly for small-scale fishers engaged in a "race for fish" dynamic????-->. The Central-South region of Chile is especially important for sardine harvests and will therefore be the focus of this research, as it provides a relevant setting to study potential species substitution within a multispecies management framework. 
 
-PREGUNTA: ¿¿¿¿Jurel al parecer otra especie, predadora de sancho?????
+## Status of the stocks
+Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since 2020 been fished within maximum sustainable yield (MSY) limits. Meanwhile, sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Jack mackerel was overexploited until 2018 but has since been harvested within MSY limits. 
 
-Sobre cuotas transables:
+
+## Quota allocation
+Anchoveta and sardine are regulated as a mixed-species fishery: they have separate quotas, but if one species is unavailable, the quota for the other can be used as a substitute. Additionally, some quota originally allocated to industrial fleets is transferred to the artisanal sector, with these transactions potentially traceable through SERNAPESCA data.
+
 
 Since 2013, the industrial sector have been managed using individual transferable quotas (ITQs), called Transferable Fishing Licenses (LTP). These permits are individual catch quotas with a duration of 20 years, renewable, and are separate from vessel ownership. Two types of LTP were created: Class A LTP, which continued from the LMCA and were allocated based on historical criteria as a percentage of the industrial fraction; and Class B LTP, which are awarded through the auction of up to 15% of the industrial fraction. This auctioned fraction was obtained by an equivalent reduction in Class A LTP. In 2015, the first auctions of this type were held in various fishery units.
 
 There is quota for direct human consumption....
 
+In Chile, part of the industrial quotas for jack mackerel, sardine, and anchovy have been allocated through transferable license auctions since 2015. These sealed-bid, first-price auctions set aside a share of quota, often prioritizing small and medium-sized enterprises, and imposed limits to prevent excessive concentration. While the system helped distribute access to these fisheries, it also faced challenges, including low participation, difficulties for firms to express economies of scale, and indications of possible coordinated bidding behavior.
+
+
 For the small-scale sector is also managed with a annual total allowable catch. In the case of sardine and anchovy, this quota is distributed by administrative region and seasonally through the season. In the case of jack mackerel, the small quota allocated to the artisanal sector is....
 
+## Other regulations
+
+### Closures
+
+### Minimum size
+
+- Jack mackerel: 26 cm 
+
+### Maximum harvest levels
 
 
 
