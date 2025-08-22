@@ -116,14 +116,28 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 - Trip-level data
 - Ex-vessel prices
 
-### To Be Requested/Retrieved
+### Retrieving from Climate Model Intercomparison Project (CMIP)
 
-- Sea surface temperature (SST), Chlorophyll, wind (Mostly satellite data)
-- Wave height and speed (Chilean navy?)
-- Other variables about weather (e.g. number of days in a year with storm warning? -- Maybe use wind/wave speed and height?)
+- Sea Surface Temperature (historical and projections)
+- Chlorophyll (historical and projections)
+- Salinity  (historical and projections)
+- Wind Speed  (historical and projections)
+- Wave height  (historical and projections)
+- Precipitations  (historical and projections)
+
+**Note:** Requested in lower resolution to Fabian Tapia (Oceanographic, UdeC)
+
+---
+
+# Data Sources
+
+### To Be Requested
+
 - Crew wages (maybe INE?) 
 - Fuel prices
-- Vessel permits (Maybe I can infer them from the data)
+- Vessel permits
+- TAC 
+- Quota prices (auction/secondary market?)
 
 ---
 
@@ -143,7 +157,7 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
   - $\eta_i$ is a density-dependent factor related to the carrying capacity, 
   - $\alpha_{ij}$ are the interaction parameters between species. 
 - Follows logistic + interspecies interaction
-- System of $n$ growth equations can be estimated simultaneously using SUR
+- System of $n$ growth equations can be estimated simultaneously using SUR (¿endogeneity?)
 
 
 
@@ -220,19 +234,23 @@ Additionally, we can add the accumulation of *bad weather days?* as an explanato
 
 # Model 4: Inverse Demand
 
-The price of each species is modeled using an **inverse demand model** (assumes weak separability...). The price of a species $i$ in
+The price of each species is modeled using an **inverse demand model**. The price of a species $i$ in
 year $y$ is the following:
 `\begin{equation}
-p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+p_{iy} = \gamma_{h_i} h_{iy} + x'\beta +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
 \label{eq6}
 \end{equation}
 `
-- The system can be estimated using maximum likelihood. 
-- Note that harvest may be endogenous (assume TAC is binding? Estimate a vector autoregressive (VAR) model `r Citep(bib, "juselius2006cointegrated", .opts = citeopt)` that allows for endogeneity?)
-- Other variables? 
-  - Substitute prices? 
-  - Fishmeal prices? 
-  - Other demand shifters?
+- The system can be estimated using 2SLS, instrumenting harvest with climate variables and other cost shifters.
+  - Undergrad student analyzing the option to estimate a supply-demand system with 3SLS for each species (6 equations simultaneously?)
+- Other variables for the demand? 
+
+Maybe then see if we need to estimate a AR(2) model?? (**HELP LEO!!!**):
+`\begin{equation}
+p_{iy} = \mathbf{\sum_j^n \gamma_j p_{j,y-1}} + \gamma_{h_i} h_{iy} + x'\beta + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+\label{eq7}
+\end{equation}
+`
 
 ---
 
@@ -260,6 +278,7 @@ trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
 \label{eq7}
 \end{align}
 `
+
 - where:
   - $\rho$ is the intra-annual discount factor, 
   - $\omega$ is a vector of shares of $\bar{q}$, and 

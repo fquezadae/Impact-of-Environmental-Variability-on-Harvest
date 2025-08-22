@@ -418,14 +418,28 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 - Trip-level data
 - Ex-vessel prices
 
-### To Be Requested/Retrieved
+### Retrieving from Climate Model Intercomparison Project (CMIP)
 
-- Sea surface temperature (SST), Chlorophyll, wind (Mostly satellite data)
-- Wave height and speed (Chilean navy?)
-- Other variables about weather (e.g. number of days in a year with storm warning? -- Maybe use wind/wave speed and height?)
+- Sea Surface Temperature (historical and projections)
+- Chlorophyll (historical and projections)
+- Salinity  (historical and projections)
+- Wind Speed  (historical and projections)
+- Wave height  (historical and projections)
+- Precipitations  (historical and projections)
+
+**Note:** Requested in lower resolution to Fabian Tapia (Oceanographic, UdeC)
+
+---
+
+# Data Sources
+
+### To Be Requested
+
 - Crew wages (maybe INE?) 
 - Fuel prices
-- Vessel permits (Maybe I can infer them from the data)
+- Vessel permits
+- TAC 
+- Quota prices (auction/secondary market?)
 
 ---
 
@@ -445,7 +459,7 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
   - `\(\eta_i\)` is a density-dependent factor related to the carrying capacity, 
   - `\(\alpha_{ij}\)` are the interaction parameters between species. 
 - Follows logistic + interspecies interaction
-- System of `\(n\)` growth equations can be estimated simultaneously using SUR
+- System of `\(n\)` growth equations can be estimated simultaneously using SUR (¿endogeneity?)
 
 
 
@@ -522,19 +536,23 @@ Additionally, we can add the accumulation of *bad weather days?* as an explanato
 
 # Model 4: Inverse Demand
 
-The price of each species is modeled using an **inverse demand model** (assumes weak separability...). The price of a species `\(i\)` in
+The price of each species is modeled using an **inverse demand model**. The price of a species `\(i\)` in
 year `\(y\)` is the following:
 `\begin{equation}
-p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+p_{iy} = \gamma_{h_i} h_{iy} + x&#39;\beta +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
 \label{eq6}
 \end{equation}
 `
-- The system can be estimated using maximum likelihood. 
-- Note that harvest may be endogenous (assume TAC is binding? Estimate a vector autoregressive (VAR) model &lt;a name=cite-juselius2006cointegrated&gt;&lt;/a&gt;([Juselius, 2006](#bib-juselius2006cointegrated)) that allows for endogeneity?)
-- Other variables? 
-  - Substitute prices? 
-  - Fishmeal prices? 
-  - Other demand shifters?
+- The system can be estimated using 2SLS, instrumenting harvest with climate variables and other cost shifters.
+  - Undergrad student analyzing the option to estimate a supply-demand system with 3SLS for each species (6 equations simultaneously?)
+- Other variables for the demand? 
+
+Maybe then see if we need to estimate a AR(2) model?? (**HELP LEO!!!**):
+`\begin{equation}
+p_{iy} = \mathbf{\sum_j^n \gamma_j p_{j,y-1}} + \gamma_{h_i} h_{iy} + x&#39;\beta + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+\label{eq7}
+\end{equation}
+`
 
 ---
 
@@ -562,6 +580,7 @@ trips `\(T_g\)` and harvest levels per trip `\(h_{g\tau}\)` given a gear type:
 \label{eq7}
 \end{align}
 `
+
 - where:
   - `\(\rho\)` is the intra-annual discount factor, 
   - `\(\omega\)` is a vector of shares of `\(\bar{q}\)`, and 
@@ -670,18 +689,14 @@ Moore, et al.](#cite-Jardine2020-um) (2020). &quot;Inequality in the
 Economic Impacts from Climate Shocks in Fisheries: The Case of Harmful
 Algal Blooms&quot;. In: _Ecol. Econ._ 176, p. 106691.
 
-&lt;a name=bib-juselius2006cointegrated&gt;&lt;/a&gt;[Juselius,
-K.](#cite-juselius2006cointegrated) (2006). _The cointegrated VAR
-model: methodology and applications_. Oxford university press.
-
----
-
-# References
-
 &lt;a name=bib-Kasperski2015-jm&gt;&lt;/a&gt;[Kasperski,
 S.](#cite-Kasperski2015-jm) (2015). &quot;Optimal Multi-species Harvesting
 in Ecologically and Economically Interdependent Fisheries&quot;. In:
 _Environ. Resour. Econ._ 61.4, pp. 517-557.
+
+---
+
+# References
 
 &lt;a name=bib-Kasperski2013-jz&gt;&lt;/a&gt;[Kasperski, S. and D. S.
 Holland](#cite-Kasperski2013-jz) (2013). &quot;Income diversification and
@@ -705,15 +720,15 @@ associated with El Niño Southern Oscillation cycles inform our
 understanding of adaptive capacity in the face of future climate
 change&quot;. En. In: _Clim. Change_ 173.1-2, p. 1.
 
----
-
-# References
-
 &lt;a name=bib-Quezada2023-hc&gt;&lt;/a&gt;[Quezada, F. J., D. Tommasi, T. H.
 Frawley, et al.](#cite-Quezada2023-hc) (2023). &quot;Catch as catch can:
 markets, availability, and fishery closures drive distinct responses
 among the U.S. West Coast coastal pelagic species fleet segments&quot;. En.
 In: _Can. J. Fish. Aquat. Sci._. Just-IN.
+
+---
+
+# References
 
 &lt;a name=bib-Reimer2017-jw&gt;&lt;/a&gt;[Reimer, M. N., J. K. Abbott, and J. E.
 Wilen](#cite-Reimer2017-jw) (2017). &quot;Fisheries Production: Management
