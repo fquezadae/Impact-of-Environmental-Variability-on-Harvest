@@ -46,7 +46,7 @@ xaringanExtra::use_logo("https://raw.githubusercontent.com/fquezadae/Impact-of-E
   
 ???
 
-Recordar que uno apreta C para clonar, P para Presenter View. Creo que H para tener un mapa de las teclas
+Recordar que uno apreta C para clonar, P para Presenter View, H para tener un mapa de las teclas
 
 ---
 
@@ -83,6 +83,7 @@ Recordar que uno apreta C para clonar, P para Presenter View. Creo que H para te
 ---
 
 # Introduction
+
 
 ## Hypotheses
 
@@ -307,6 +308,38 @@ Department of Economics
 <span style="color:#f59f18;">Questions?</span>
 
 
+---
+
+# Temas de investigación en curso
+
+
+- Modelos de elección discreta para el estudio del efecto de cambios en la distribución de especies pelágicas en las decisiones de pesca en la costa oeste de EEUU (localización, especie y participación)  -- Enviado a *Ecological Economics*
+  - ¿Hacer lo mismo para Chile? Idea: basados en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`, crear contrafactuales para fraccionamiento, o cambios en variables climáticas. Validar con periodos observados.
+  - ¿Como endogeneizar los precios en modelos de eleccion discreta, los cuales dependen de la frecuencia en que pescadores participan? (ojo: no es lo mismo que instrumentar)
+  
+- Colaborando con NOAA Fisheries en:
+  - El desarrollo de proyecciones de desembarque futuro bajo distintos modelos climáticos que afectan la distribución de especies.
+  - La incorporación de un modelo de teoría de juegos a modelos de evaluación de stock que consideran especies transfronterizas.
+  
+---
+
+# Areas de posible colaboración con INCAR2/SE
+
+- Impacto de la variación climática (u otro shock exógeno?) en las decisiones de cosecha de centros de cultivos (o productores de pequeña escala)? 
+  - Algo similar a lo hecho con SPF para USA
+  - Es como lo que hace Adams con HAB pero tal vez con modelo de elección discreta en vez de modelo de causalidad -- Crear contrafactuales como en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`.
+
+- Relación entre las etapas de producción en áreas estuarinas y marinas (ejemplo: ¿La eficiencia técnica en agua dulce predice eficiencia técnica en etapa de agua salada?).
+
+- Estimar patrones de sustitución de demanda de salmón en *XX* país usando modelo BLP, y como estos patrones se pudieron ver afectados por algún evento (e.g., marea roja) -- Idea de Manuel
+
+---
+
+# Areas de posible colaboración con INCAR2/SE
+
+- ¿Conectar el modelo para SPF ha elaborar en el proyecto FONDECYT a los costos de alimentación de la acuicultura en Chile? (Comentario de Jorge cuando me adjudique el FONDECYT)​
+
+- Early Warning System usando indicadores económicos (Estoy inscrito en ese tema en la línea de Renato -- Adams Ceballos le interesa participar)
 
 ---
 
@@ -331,3 +364,6 @@ print_bib_rmd(bib, start = 6, stop = 10)
 ```{r, results='asis', echo=FALSE, warning=FALSE}
 print_bib_rmd(bib, start = 11, stop = 15)
 ```
+
+
+
