@@ -1,4 +1,4 @@
-cd "C:\GitHub\Impact of Environment on Harvest\data\env"
+cd "C:\Users\felip\OneDrive - Universidad de Concepción\FONDECYT Iniciacion\Data\Environmental"
 mamba activate C:\Users\FACEA\miniforge3\envs\cmems_env_py3.12
 
 

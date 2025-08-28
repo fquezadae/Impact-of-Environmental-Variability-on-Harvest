@@ -1,10 +1,14 @@
+###----------------------------------------------###
+###   Environmental covariates: GLORYS 2012-2021 ### 
+###----------------------------------------------###
+
 library(dplyr)
 library(ncdf4)
 library(data.table)
 library(lubridate)
 
-f <- "C:/GitHub/Impact of Environment on Harvest/data/env/cmems_mod_glo_phy_my_0.083deg_P1M-m_so-thetao-uo-vo_78.00W-71.50W_42.00S-32.00S_0.49-1.54m_2012-01-01-2021-06-01.nc"
-
+f <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/Environmental/cmems_mod_glo_phy_my_0.083deg_P1D-m_so-thetao-uo-vo_78.00W-71.50W_42.00S-32.00S_0.49-1.54m_2012-01-01-2021-06-30.nc"
+  
 nc <- ncdf4::nc_open(f)
 
 ## Dimensions ##
@@ -52,8 +56,7 @@ dt <- Reduce(function(x, y) merge(x, y, by = c("lon", "lat", "depth", "date")),
   filter(depth < 1) %>%
   mutate(current_speed = sqrt(uo^2 + vo^2),
          current_direction = atan2(vo, uo) * 180 / pi) %>% 
-  select(-c("depth", "uo", "vo")) %>%
-  mutate(bad_weather = ifelse(current_speed > 1, 1, 0))
+  select(-c("depth", "uo", "vo")) 
 
 
 dt[, `:=`(
@@ -61,6 +64,5 @@ dt[, `:=`(
   month = month(date)
 )]
 
-
-
+saveRDS(df, file = "data/env/glorysDaily_2012_2021.rds")
 
