@@ -790,8 +790,8 @@ rm(harvest_long)
           - Use GlobColour (Copernicus ocean colour, 4 km) → chlorophyll.
           
         - Future (2040–2050):
-          - Use Copernicus downscaled CMIP6 projections (if available for the variables I need).
-          - If not, fall back on CMIP6 coarse data (~100 km) and **downscale statistically**.
+          - OracleBio -- Decadal projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution);
+          - CMIP6 for winds (~100 km).
         
 -   **POR SOLICITAR:**
    -   Other data?
