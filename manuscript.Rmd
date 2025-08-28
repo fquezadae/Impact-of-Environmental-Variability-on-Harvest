@@ -783,15 +783,15 @@ rm(harvest_long)
 
 ```
 
- -   Environmental covariates -- Use R package **copernicusmarine**
-        - Historical (2012–2024):
-          - Use Copernicus GLORYS12V1 (ocean reanalysis, ~8 km) → SST, salinity, currents.
-          - Use ERA5 (atmosphere reanalysis, 25 km) → winds.
+ -   Environmental covariates -- downloaded from Copernicus Marine Service using API **copernicusmarine**
+        - Historical daily data (2012–2024):
+          - Use Copernicus GLORYS12V1 (ocean reanalysis, ~8 km) → SST, salinity, currents  (speed and direction).
+          - Use ERA5 (atmosphere reanalysis, 25 km) → winds (speed and direction).
           - Use GlobColour (Copernicus ocean colour, 4 km) → chlorophyll.
           
         - Future (2040–2050):
-          - OracleBio -- Decadal projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution);
-          - CMIP6 for winds (~100 km).
+          - OracleBio -- Unfurtunally only decadal projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution) -- no winds;
+          - CMIP6 for winds? (~100 km).
         
 -   **POR SOLICITAR:**
    -   Other data?
