@@ -132,30 +132,7 @@ Fishery with restricted access to new operators (just artisanal?)
 
 ```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
 
-#Anchovy and sardine biomass
-anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
-anch_sard_biomass <- anch_sard_biomass[, c(1, 2, 3, 4)]
-anch_sard_biomass <- anch_sard_biomass[-1, ]
-colnames(anch_sard_biomass) <- c("year", "cruise", "sardine_biomass", "anchoveta_biomass")
-anch_sard_biomass <- anch_sard_biomass %>%
-  filter(str_detect(cruise, "Reclas")) %>%  ## Summer survey!
-  dplyr::select(-c(cruise)) %>%
-  mutate(across(ends_with("biomass"), ~as.numeric(.))) 
-anch_sard_biomass$year <- as.numeric(anch_sard_biomass$year)
 
-#Jurel biomass
-jurel_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "JUREL")
-jurel_biomass <- jurel_biomass[, c(1, 3)]
-jurel_biomass <- jurel_biomass[-1, ]
-colnames(jurel_biomass) <- c("year", "jurel_biomass")
-jurel_biomass <- jurel_biomass %>%
-  mutate(across(ends_with("biomass"), ~as.numeric(.))) %>%
-  mutate(jurel_biomass = ifelse(jurel_biomass == 0, NA, jurel_biomass))
-jurel_biomass$year <- as.numeric(jurel_biomass$year)
-
-# Merge databse
-biomass <- full_join(anch_sard_biomass, jurel_biomass, by = c("year")) %>% arrange(year)
-rm(list = c("anch_sard_biomass", "jurel_biomass"))
 ```
 
 ```{r load_logbook, message=FALSE, warning=FALSE, include=FALSE}
@@ -806,14 +783,18 @@ rm(harvest_long)
 
 ```
 
+ -   Environmental covariates -- Use R package **copernicusmarine**
+        - Historical (2012–2024):
+          - Use Copernicus GLORYS12V1 (ocean reanalysis, ~8 km) → SST, salinity, currents.
+          - Use ERA5 (atmosphere reanalysis, 25 km) → winds.
+          - Use GlobColour (Copernicus ocean colour, 4 km) → chlorophyll.
+          
+        - Future (2040–2050):
+          - OracleBio -- Decadal projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution);
+          - CMIP6 for winds (~100 km).
+        
 -   **POR SOLICITAR:**
-    -   Environmental covariates -- Ask Fabian Tapia, UdeC
-        -   Sea surface temperature
-        -   Chlorophyll levels
-        -   Wind intensity and wave conditions in each trip at the
-            harvest location
-        -   Bad weather days?
-    -   Other data?
+   -   Other data?
         -   Average wage pay to crew member per hour
         -   Diesel cost.
         -   Permits by vessels

@@ -1,0 +1,25 @@
+name: cmems_env_py3.12
+channels:
+  - conda-forge
+dependencies:
+  - basemap
+  - cartopy
+  - cmocean
+  - copernicusmarine
+  - datashader
+  - fiona
+  - fire
+  - geoviews
+  - geopandas
+  - hvplot
+  - ipython
+  - ipykernel
+  - jupyterlab
+  - nodejs
+  - panel
+  - pip
+  - python=3.12
+  - pyproj
+  - rasterio
+  - rioxarray
+  - speedtest-cli

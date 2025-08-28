@@ -1,5 +1,2 @@
-/Literature
 .Rproj.user
-/Data
-
-
+*.nc

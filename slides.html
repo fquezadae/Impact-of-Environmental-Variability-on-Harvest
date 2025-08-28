@@ -539,18 +539,19 @@ Additionally, we can add the accumulation of *bad weather days?* as an explanato
 The price of each species is modeled using an **inverse demand model**. The price of a species `\(i\)` in
 year `\(y\)` is the following:
 `\begin{equation}
-p_{iy} = \gamma_{h_i} h_{iy} + x&#39;\beta +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x&#39;\beta  +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 2,\ldots,n, i \neq j.
 \label{eq6}
 \end{equation}
 `
 - The system can be estimated using 2SLS, instrumenting harvest with climate variables and other cost shifters.
   - Undergrad student analyzing the option to estimate a supply-demand system with 3SLS for each species (6 equations simultaneously?)
 - Other variables for the demand? 
+- Endogeneity of substitute prices?
 
-Maybe then see if we need to estimate a AR(2) model?? (**HELP LEO!!!**):
+Maybe then see if we need to estimate a AR(1) model?? (**HELP LEO!!!**):
 `\begin{equation}
-p_{iy} = \mathbf{\sum_j^n \gamma_j p_{j,y-1}} + \gamma_{h_i} h_{iy} + x&#39;\beta + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
-\label{eq7}
+p_{iy} = \gamma_i p_{i,y-1} + \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x&#39;\beta + \epsilon_{iy}
+\label{eq6_2}
 \end{equation}
 `
 
@@ -573,11 +574,10 @@ Use models parameters to:
 
 In each year, a vessel maximizes profits by choosing their optimal number of
 trips `\(T_g\)` and harvest levels per trip `\(h_{g\tau}\)` given a gear type:
-`
-\begin{align}
+`\begin{align}
 \max_{h_{gt}, T_g} \quad \pi_{vgt} &amp; = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} &amp; = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
-\label{eq7}
+\label{eq8}
 \end{align}
 `
 
