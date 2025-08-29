@@ -2,6 +2,9 @@
 ###   Environmental covariates: Wind  ### 
 ###-----------------------------------###
 
+rm(list = ls())
+gc()
+
 library(dplyr)
 library(ncdf4)
 library(data.table)
@@ -26,35 +29,60 @@ var_names <- names(nc$var)
 ua <- ncvar_get(nc, "eastward_wind")
 va <- ncvar_get(nc, "northward_wind")
 
+ncatt_get(nc, "time", "units")
 ncdf4::nc_close(nc)
 
-dimnames(ua)  <- list(lon = lon, lat = lat, time = tim)
-ua_dt <- as.data.table(data.table::melt(ua, value.name = "ua"))
-setnames(ua_dt, c("lon", "lat", "time", "ua"))
-ua_dt[, date := as.Date("1950-01-01") + time / 24]
-ua_dt[, time := NULL]
+# --- Convert hours → day index
 
-dimnames(va)  <- list(lon = lon, lat = lat, time = tim)
-va_dt <- as.data.table(data.table::melt(va, value.name = "va"))
-setnames(va_dt, c("lon", "lat", "time", "va"))
-va_dt[, date := as.Date("1950-01-01") + time / 24]
-va_dt[, time := NULL]
-
-dt <- Reduce(function(x, y) merge(x, y, by = c("lon", "lat", "date")),
-             list(ua_dt, va_dt))
+dates <- as.Date(as.POSIXct(tim, origin = "1990-01-01", tz = "UTC"))
+day_index <- as.integer(dates - min(dates))
+unique_dates <- unique(dates)
 
 
-%>% 
-  filter(depth < 1) %>%
-  mutate(current_speed = sqrt(uo^2 + vo^2),
-         current_direction = atan2(vo, uo) * 180 / pi) %>% 
-  select(-c("depth", "uo", "vo")) 
+# --- Function to compute mean/min/max
+day_stats <- function(x, idx) {
+  tapply(x, idx, function(v) c(mean=mean(v, na.rm=TRUE),
+                               min=min(v, na.rm=TRUE),
+                               max=max(v, na.rm=TRUE)))
+}
+
+# --- Eastward (ua)
+ua_day <- apply(ua, c(1,2), day_stats, idx=day_index)  # [lon,lat,stat,day]
+ua_day <- aperm(ua_day, c(1,2,4,3))
+dimnames(ua_day) <- list(lon=lon, lat=lat, date=unique_dates,
+                         stat=c("mean","min","max"))
+
+# --- Northward (va)
+va_day <- apply(va, c(1,2), day_stats, idx=day_index)
+va_day <- aperm(va_day, c(1,2,4,3))
+dimnames(va_day) <- list(lon=lon, lat=lat, date=unique_dates,
+                         stat=c("mean","min","max"))
+
+# --- Convert to data.table (wide format)
+ua_dt <- as.data.table(reshape2::melt(ua_day, value.name="ua"))
+va_dt <- as.data.table(reshape2::melt(va_day, value.name="va"))
 
 
-dt[, `:=`(
-  year  = year(date),
-  month = month(date)
-)]
+# Cast wide: each stat becomes a column
+ua_dt <- dcast(ua_dt, lon + lat + date ~ stat, value.var="ua", fun.aggregate=mean)
+setnames(ua_dt, c("mean","min","max"), c("ua_mean","ua_min","ua_max"))
 
-saveRDS(dt, file = "data/env/WindDaily_2012_2025.rds")
+va_dt <- dcast(va_dt, lon + lat + date ~ stat, value.var="va", fun.aggregate=mean)
+setnames(va_dt, c("mean","min","max"), c("va_mean","va_min","va_max"))
+
+# --- Merge eastward + northward
+wind_dt <- merge(ua_dt, va_dt, by=c("lon","lat","date"))
+
+
+# %>% 
+#   filter(depth < 1) %>%
+#   mutate(current_speed = sqrt(uo^2 + vo^2),
+#          current_direction = atan2(vo, uo) * 180 / pi) %>% 
+#   select(-c("depth", "uo", "vo")) 
+# dt[, `:=`(
+#   year  = year(date),
+#   month = month(date)
+# )]
+# 
+# saveRDS(dt, file = "data/env/WindDaily_2012_2025.rds")
 
