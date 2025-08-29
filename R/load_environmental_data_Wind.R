@@ -29,32 +29,22 @@ va <- ncvar_get(nc, "northward_wind")
 ncdf4::nc_close(nc)
 
 dimnames(ua)  <- list(lon = lon, lat = lat, time = tim)
-ua_dt <- as.data.table(data.table::melt(so, value.name = "so"))
-setnames(so_dt, c("lon", "lat", "depth", "time", "so"))
+ua_dt <- as.data.table(data.table::melt(ua, value.name = "ua"))
+setnames(ua_dt, c("lon", "lat", "time", "ua"))
 ua_dt[, date := as.Date("1950-01-01") + time / 24]
 ua_dt[, time := NULL]
 
-dimnames(sst)  <- list(lon = lon, lat = lat, time = tim)
-sst_dt <- as.data.table(data.table::melt(sst, value.name = "sst"))
-setnames(sst_dt, c("lon", "lat", "depth", "time", "sst"))
-sst_dt[, date := as.Date("1950-01-01") + time / 24]
-sst_dt[, time := NULL]
+dimnames(va)  <- list(lon = lon, lat = lat, time = tim)
+va_dt <- as.data.table(data.table::melt(va, value.name = "va"))
+setnames(va_dt, c("lon", "lat", "time", "va"))
+va_dt[, date := as.Date("1950-01-01") + time / 24]
+va_dt[, time := NULL]
 
-dimnames(uo)  <- list(lon = lon, lat = lat, dep = dep, time = tim)
-uo_dt <- as.data.table(data.table::melt(uo, value.name = "uo"))
-setnames(uo_dt, c("lon", "lat", "depth", "time", "uo"))
-uo_dt[, date := as.Date("1950-01-01") + time / 24]
-uo_dt[, time := NULL]
-
-dimnames(vo)  <- list(lon = lon, lat = lat, dep = dep, time = tim)
-vo_dt <- as.data.table(data.table::melt(vo, value.name = "vo"))
-setnames(vo_dt, c("lon", "lat", "depth", "time", "vo"))
-vo_dt[, date := as.Date("1950-01-01") + time / 24]
-vo_dt[, time := NULL]
+dt <- Reduce(function(x, y) merge(x, y, by = c("lon", "lat", "date")),
+             list(ua_dt, va_dt))
 
 
-dt <- Reduce(function(x, y) merge(x, y, by = c("lon", "lat", "depth", "date")),
-             list(so_dt, sst_dt, uo_dt, vo_dt)) %>% 
+%>% 
   filter(depth < 1) %>%
   mutate(current_speed = sqrt(uo^2 + vo^2),
          current_direction = atan2(vo, uo) * 180 / pi) %>% 
