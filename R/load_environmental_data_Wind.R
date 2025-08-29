@@ -20,24 +20,21 @@ nc <- ncdf4::nc_open(f)
 lon <- ncvar_get(nc, "longitude")
 lat <- ncvar_get(nc, "latitude")
 tim <- ncvar_get(nc, "time")
-dep <- ncvar_get(nc, "depth")
 
 ## Vars ##
 var_names <- names(nc$var)
-so <- ncvar_get(nc, "so")
-sst <- ncvar_get(nc, "thetao")
-uo <- ncvar_get(nc, "uo")
-vo <- ncvar_get(nc, "vo")
+ua <- ncvar_get(nc, "eastward_wind")
+va <- ncvar_get(nc, "northward_wind")
 
 ncdf4::nc_close(nc)
 
-dimnames(so)  <- list(lon = lon, lat = lat, dep = dep, time = tim)
-so_dt <- as.data.table(data.table::melt(so, value.name = "so"))
+dimnames(ua)  <- list(lon = lon, lat = lat, time = tim)
+ua_dt <- as.data.table(data.table::melt(so, value.name = "so"))
 setnames(so_dt, c("lon", "lat", "depth", "time", "so"))
-so_dt[, date := as.Date("1950-01-01") + time / 24]
-so_dt[, time := NULL]
+ua_dt[, date := as.Date("1950-01-01") + time / 24]
+ua_dt[, time := NULL]
 
-dimnames(sst)  <- list(lon = lon, lat = lat, dep = dep, time = tim)
+dimnames(sst)  <- list(lon = lon, lat = lat, time = tim)
 sst_dt <- as.data.table(data.table::melt(sst, value.name = "sst"))
 setnames(sst_dt, c("lon", "lat", "depth", "time", "sst"))
 sst_dt[, date := as.Date("1950-01-01") + time / 24]
