@@ -7,7 +7,9 @@ library(ncdf4)
 library(data.table)
 library(lubridate)
 
-f <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/Environmental/cmems_mod_glo_phy_my_0.083deg_P1D-m_so-thetao-uo-vo_78.00W-71.50W_42.00S-32.00S_0.49-1.54m_2012-01-01-2021-06-30.nc"
+usuario <- Sys.info()[["user"]]
+dirdata <- paste0("C:/Users/", paste0(usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"))
+f <- paste0(dirdata, "Environmental/cmems_mod_glo_phy_my_0.083deg_P1D-m_so-thetao-uo-vo_78.00W-71.50W_42.00S-32.00S_0.49-1.54m_2012-01-01-2021-06-30.nc")
   
 nc <- ncdf4::nc_open(f)
 
@@ -64,5 +66,5 @@ dt[, `:=`(
   month = month(date)
 )]
 
-saveRDS(df, file = "data/env/glorysDaily_2012_2021.rds")
+saveRDS(dt, file = "data/env/glorysDaily_2012_2021.rds")
 
