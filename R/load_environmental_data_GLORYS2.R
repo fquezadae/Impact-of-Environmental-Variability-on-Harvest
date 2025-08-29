@@ -61,7 +61,7 @@ dt <- Reduce(function(x, y) merge(x, y, by = c("lon", "lat", "depth", "date")),
   filter(depth < 1) %>%
   mutate(current_speed = sqrt(uo^2 + vo^2),
          current_direction = atan2(vo, uo) * 180 / pi) %>% 
-  select(-c("depth", "uo", "vo")) 
+    select(-c("depth", "uo", "vo")) 
 
 
 dt[, `:=`(
@@ -71,3 +71,4 @@ dt[, `:=`(
 
 saveRDS(dt, file = "data/env/glorysDaily_2021_2025.rds")
 
+### ADD direction[direction < 0] <- direction[direction < 0] + 360
