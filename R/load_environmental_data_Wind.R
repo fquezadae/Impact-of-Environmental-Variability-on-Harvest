@@ -66,5 +66,5 @@ dt[, `:=`(
   month = month(date)
 )]
 
-saveRDS(dt, file = "data/env/glorysDaily_2021_2025.rds")
+saveRDS(dt, file = "data/env/WindDaily_2012_2025.rds")
 
