@@ -57,9 +57,9 @@ day_index <- as.integer(dates - min(dates))
 unique_dates <- unique(dates)
 
 # --- Compute wind speed + direction
-speed <- sqrt(ua^2 + va^2)
-direction <- atan2(ua, va) * 180/pi
-direction[direction < 0] <- direction[direction < 0] + 360
+wind_speed <- sqrt(ua^2 + va^2)
+wind_direction <- atan2(ua, va) * 180/pi
+wind_direction[wind_direction < 0] <- wind_direction[wind_direction < 0] + 360
 
 # --- Function for daily stats
 day_stats <- function(x, idx) {
@@ -69,25 +69,25 @@ day_stats <- function(x, idx) {
 }
 
 # --- Aggregate daily
-speed_day <- apply(speed, c(1,2), day_stats, idx=day_index)
-speed_day <- aperm(speed_day, c(1,2,4,3))
-dimnames(speed_day) <- list(lon=lon, lat=lat, date=unique_dates,
+wind_speed_day <- apply(wind_speed, c(1,2), day_stats, idx=day_index)
+wind_speed_day <- aperm(wind_speed_day, c(1,2,4,3))
+dimnames(wind_speed_day) <- list(lon=lon, lat=lat, date=unique_dates,
                             stat=c("mean","min","max"))
 
-direction_day <- apply(direction, c(1,2), day_stats, idx=day_index)
-direction_day <- aperm(direction_day, c(1,2,4,3))
-dimnames(direction_day) <- list(lon=lon, lat=lat, date=unique_dates,
+wind_direction_day <- apply(wind_direction, c(1,2), day_stats, idx=day_index)
+wind_direction_day <- aperm(wind_direction_day, c(1,2,4,3))
+dimnames(wind_direction_day) <- list(lon=lon, lat=lat, date=unique_dates,
                                 stat=c("mean","min","max"))
 
 # --- Convert to data.table
-speed_dt <- as.data.table(reshape2::melt(speed_day, value.name="speed"))
-speed_dt <- dcast(speed_dt, lon + lat + date ~ stat, value.var="speed")
-setnames(speed_dt, c("mean","min","max"), c("speed_mean","speed_min","speed_max"))
+speed_dt <- as.data.table(reshape2::melt(wind_speed_day, value.name="wind_speed"))
+speed_dt <- dcast(speed_dt, lon + lat + date ~ stat, value.var="wind_speed")
+setnames(speed_dt, c("mean","min","max"), c("wind_speed_mean","wind_speed_min","wind_speed_max"))
 
-direction_dt <- as.data.table(reshape2::melt(direction_day, value.name="direction"))
-direction_dt <- dcast(direction_dt, lon + lat + date ~ stat, value.var="direction")
+direction_dt <- as.data.table(reshape2::melt(wind_direction_day, value.name="wind_direction"))
+direction_dt <- dcast(direction_dt, lon + lat + date ~ stat, value.var="wind_direction")
 setnames(direction_dt, c("mean","min","max"),
-         c("dir_mean","dir_min","dir_max"))
+         c("wind_dir_mean","wind_dir_min","wind_dir_max"))
 
 # --- Merge
 wind_dt <- merge(speed_dt, direction_dt, by=c("lon","lat","date"))

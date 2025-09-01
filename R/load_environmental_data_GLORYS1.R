@@ -57,7 +57,10 @@ dt <- Reduce(function(x, y) merge(x, y, by = c("lon", "lat", "depth", "date")),
              list(so_dt, sst_dt, uo_dt, vo_dt)) %>% 
   filter(depth < 1) %>%
   mutate(current_speed = sqrt(uo^2 + vo^2),
-         current_direction = atan2(vo, uo) * 180 / pi) %>% 
+         current_direction = atan2(vo, uo) * 180 / pi) %>%
+  mutate(current_direction = if_else(current_direction < 0,
+                                     current_direction + 360,
+                                     current_direction)) %>% 
   select(-c("depth", "uo", "vo")) 
 
 
