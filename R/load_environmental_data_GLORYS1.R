@@ -2,6 +2,10 @@
 ###   Environmental covariates: GLORYS 2012-2021 ### 
 ###----------------------------------------------###
 
+rm(list = ls())
+gc()
+
+
 library(dplyr)
 library(ncdf4)
 library(data.table)

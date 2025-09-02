@@ -2,6 +2,9 @@
 ###   Environmental covariates: GLORYS 2012-2021 ### 
 ###----------------------------------------------###
 
+rm(list = ls())
+gc()
+
 library(dplyr)
 library(ncdf4)
 library(data.table)
@@ -74,4 +77,3 @@ dt[, `:=`(
 
 saveRDS(dt, file = "data/env/glorysDaily_2021_2025.rds")
 
-### ADD direction[direction < 0] <- direction[direction < 0] + 360
