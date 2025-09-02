@@ -32,7 +32,6 @@ library(tidyverse)
 # library(stringr)
 # library(readxl)
 
-
 #Anchovy and sardine biomass
 anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 2, 3, 4)]

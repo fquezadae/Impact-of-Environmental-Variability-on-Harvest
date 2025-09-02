@@ -82,5 +82,13 @@ env_merged <- Reduce(function(x,y) merge(x, y, by=c("lon","lat","date"), all=TRU
 #-----------------------------
 setorder(env_merged, lon, lat, date)
 
+max(env_merged$lon)
+min(env_merged$lon)
+max(env_merged$lat)
+min(env_merged$lat)
+max(env_merged$date)
+min(env_merged$date)
+
 saveRDS(env_merged, file="data/env/EnvMergedDaily_2012_2025_0.125deg.rds")
+
 
