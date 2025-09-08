@@ -65,6 +65,13 @@ rm(usuario)
 
 # Introduction
 
+
+
+--- SEE HOW FAR VESSEL TRAVEL -- 80 longitud aprox... IM USING 165 nm
+--- USE DIFFERENT LENGHT FOR FUNCTIONS??? INTEAD OF GEAR?
+--- Shift in spatial distrution of jack mackerel out of EEZ during El Niño events
+
+
 The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others. The literature that studies fishers’ responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that they can adopt the following adaptive strategies: (i) reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj]; (ii) continue following the same strategy; or (iii) in the worst-case scenario, exit the fishery and find alternative employment [@Powell2022-wj]. Among these strategies, reallocating effort to alternative species has been identified as a potentially effective response to climate change [@Young2018-kk]. Diversification of target species has also been linked to reduced income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and greater resilience to both climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
 This emphasis on diversification aligns with broader evidence from food-producing sectors. As @sjcruz_jmp highlights, climate variability substantially affects agriculture and fisheries, where income depends heavily on environmental fluctuations (e.g., temperature, rainfall) and market forces (e.g., input costs) [@Kasperski2013-jz; @Carter2018]. With variability expected to reduce productivity, income risk is likely to rise [@Carter2018; @Free2019]. Diversification—whether within a sector (e.g., switching crops or species) or across sectors—is often promoted as an adaptive strategy [@Abbott2023-sb]. However, these strategies can be costly for resource-dependent communities with limited capital and skills [@Cherdchuchai2006; @Ellis2000], and the role of switching costs in shaping diversification remains poorly understood.
@@ -130,7 +137,7 @@ Fishery with restricted access to new operators (just artisanal?)
 
 - All species: Maximum catch limit per vessel owner (LMC) for industrial vessels
 
-```{r biomass_data, message=FALSE, warning=FALSE, include=FALSE}
+```{r load_biomass, message=FALSE, warning=FALSE, include=FALSE}
 
 
 ```
@@ -138,23 +145,6 @@ Fishery with restricted access to new operators (just artisanal?)
 ```{r load_logbook, message=FALSE, warning=FALSE, include=FALSE}
 
 
-### Load logbooks information for central-south Chile
-logbooks <- 
-  read_excel(paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"), 
-             sheet = "bIt_2001_2024_comercial") %>%
-  filter(REGION %in% c(5,6,7,8,9,10,14,16))
-
-### Get species name in logbooks
-species <- 
-  read_excel(
-    paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"), 
-    sheet = "PESQUERIAS_MAESTRO_ESPECIE") %>%
-  dplyr::select(c('COD_ESPECIE', 'NOMBRE_ESPECIE'))
-logbooks <- left_join(logbooks, species, by = "COD_ESPECIE") 
-logbooks$year <- year(logbooks$FECHA_HORA_RECALADA)
-logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)  
-
-rm(list = c("species"))
 
 ```
 
