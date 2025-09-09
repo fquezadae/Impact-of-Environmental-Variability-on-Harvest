@@ -25,13 +25,6 @@ rm(usuario)
 library(readxl)
 library(tidyverse)
 
-# library(knitr)
-# library(kableExtra)
-# library(ggalluvial)
-# library(purrr)
-# library(stringr)
-# library(readxl)
-
 ### Load logbooks information for central-south Chile
 logbooks <- 
   read_excel(paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"), 
@@ -49,7 +42,8 @@ logbooks$year <- year(logbooks$FECHA_HORA_RECALADA)
 logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)  
 rm(list = c("species"))
 
-
+### Save logbooks
+saveRDS(logbooks, "data/logbooks/logbooks.rds)
 
 
 ### Check longitude by latitude
