@@ -43,7 +43,7 @@ logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)
 rm(list = c("species"))
 
 ### Save logbooks
-saveRDS(logbooks, "data/logbooks/logbooks.rds)
+saveRDS(logbooks, "data/logbooks/logbooks.rds")
 
 
 ### Check longitude by latitude
