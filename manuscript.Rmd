@@ -137,6 +137,25 @@ Fishery with restricted access to new operators (just artisanal?)
 
 - All species: Maximum catch limit per vessel owner (LMC) for industrial vessels
 
+
+```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
+
+library(dplyr)
+library(data.table)
+library(lubridate)
+library(sf)
+library(rnaturalearth)
+library(ggplot2)
+
+usuario <- Sys.info()[["user"]]
+dirdata <- paste0("C:/Users/", usuario,
+                  "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/")
+
+env_dt <- readRDS("data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
+
+```
+
+
 ```{r load_biomass, message=FALSE, warning=FALSE, include=FALSE}
 
 
