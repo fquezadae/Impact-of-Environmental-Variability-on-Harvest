@@ -55,7 +55,14 @@ jurel_biomass <- jurel_biomass %>%
   mutate(jurel_biomass_no = ifelse(jurel_biomass_no == 0, NA, jurel_biomass_no))
 jurel_biomass$year <- as.numeric(jurel_biomass$year)
 
-AGREGAR LA OTRA BASE DE DATOS!!!
+
+## Add the other database
+biomass_v2 <- read_excel(paste0(dirdata, "IFOP/Datos_estimación biomasa.xlsx")) %>%
+  dplyr::rename(year = `Año (calendario/.5 semestral)`) %>%
+  dplyr::filter(Especie == "Jurel",
+                year >= 2000)
+
+biomass_v2$`Año (calendario/.5 semestral)`
 
 
 
