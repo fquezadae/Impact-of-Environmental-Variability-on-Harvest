@@ -43,7 +43,7 @@ anch_sard_biomass <- anch_sard_biomass %>%
   mutate(across(ends_with("biomass"), ~as.numeric(.))) 
 anch_sard_biomass$year <- as.numeric(anch_sard_biomass$year)
 
-#Jurel biomass
+# Jurel biomass
 jurel_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "JUREL")
 jurel_biomass <- jurel_biomass[, c(1, 3,8)]
 jurel_biomass <- jurel_biomass[-1, ]
@@ -56,15 +56,44 @@ jurel_biomass <- jurel_biomass %>%
 jurel_biomass$year <- as.numeric(jurel_biomass$year)
 
 
-## Add the other database
+## --> Add the other database
 biomass_v2 <- read_excel(paste0(dirdata, "IFOP/Datos_estimación biomasa.xlsx")) %>%
-  dplyr::rename(year = `Año (calendario/.5 semestral)`) %>%
+  dplyr::rename(year = `Año (calendario/.5 semestral)`,
+                ind_chl_per_ecu = `Reclutas (millones individuos)`,
+                sb_chl_per_ecu = `Biomasa desovante (t)`) %>%
   dplyr::filter(Especie == "Jurel",
-                year >= 2000)
+                year >= 2000) %>%
+  dplyr::select(c("year", "ind_chl_per_ecu", "sb_chl_per_ecu"))
 
-biomass_v2$`Año (calendario/.5 semestral)`
 
+# GLM models with log link
+model1 <- glm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu,
+              family = gaussian(link = "log"),
+              data = jurel_biomass)
 
+model2 <- glm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu + 
+                jurel_biomass_no:sb_chl_per_ecu,
+              family = gaussian(link = "log"),
+              data = jurel_biomass)
+
+model3 <- glm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2),
+              family = gaussian(link = "log"),
+              data = jurel_biomass)
+
+model4 <- glm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + 
+                sb_chl_per_ecu + I(sb_chl_per_ecu^2) + 
+                jurel_biomass_no:sb_chl_per_ecu,
+              family = gaussian(link = "log"),
+              data = jurel_biomass)
+
+# Add GLM predictions (always >= 0)
+jurel_biomass <- jurel_biomass %>% 
+  mutate(
+    jurel_biomass_cs_p1 = predict(model1, newdata = ., type = "response"),
+    jurel_biomass_cs_p2 = predict(model2, newdata = ., type = "response"),
+    jurel_biomass_cs_p3 = predict(model3, newdata = ., type = "response"),
+    jurel_biomass_cs_p4 = predict(model4, newdata = ., type = "response")
+  )
 
 # Merge databse
 biomass <- full_join(anch_sard_biomass, jurel_biomass, by = c("year")) %>% arrange(year)
