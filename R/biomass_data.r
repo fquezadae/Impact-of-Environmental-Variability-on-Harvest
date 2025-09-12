@@ -21,16 +21,8 @@ if (usuario == "felip") {
 rm(usuario)
 
 # Load packages 
-
 library(readxl)
 library(tidyverse)
-
-# library(knitr)
-# library(kableExtra)
-# library(ggalluvial)
-# library(purrr)
-# library(stringr)
-# library(readxl)
 
 #Anchovy and sardine biomass
 anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
@@ -65,25 +57,23 @@ biomass_v2 <- read_excel(paste0(dirdata, "IFOP/Datos_estimación biomasa.xlsx"))
                 year >= 2000) %>%
   dplyr::select(c("year", "ind_chl_per_ecu", "sb_chl_per_ecu"))
 
+jurel_biomass <- left_join(jurel_biomass, biomass_v2, by = "year")
+rm(biomass_v2)
 
 # GLM models with log link
-model1 <- glm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu,
-              family = gaussian(link = "log"),
+model1 <- lm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu,
               data = jurel_biomass)
 
-model2 <- glm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu + 
+model2 <- lm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu + 
                 jurel_biomass_no:sb_chl_per_ecu,
-              family = gaussian(link = "log"),
               data = jurel_biomass)
 
-model3 <- glm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2),
-              family = gaussian(link = "log"),
+model3 <- lm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2),
               data = jurel_biomass)
 
-model4 <- glm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + 
+model4 <- lm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + 
                 sb_chl_per_ecu + I(sb_chl_per_ecu^2) + 
                 jurel_biomass_no:sb_chl_per_ecu,
-              family = gaussian(link = "log"),
               data = jurel_biomass)
 
 # Add GLM predictions (always >= 0)
@@ -93,8 +83,25 @@ jurel_biomass <- jurel_biomass %>%
     jurel_biomass_cs_p2 = predict(model2, newdata = ., type = "response"),
     jurel_biomass_cs_p3 = predict(model3, newdata = ., type = "response"),
     jurel_biomass_cs_p4 = predict(model4, newdata = ., type = "response")
-  )
+  ) %>%
+  mutate(
+    jurel_biomass_cs_p1 = ifelse(jurel_biomass_cs_p1 > 0, jurel_biomass_cs_p1, NA),
+    jurel_biomass_cs_p2 = ifelse(jurel_biomass_cs_p2 > 0, jurel_biomass_cs_p2, NA),
+    jurel_biomass_cs_p3 = ifelse(jurel_biomass_cs_p3 > 0, jurel_biomass_cs_p3, NA),
+    jurel_biomass_cs_p4 = ifelse(jurel_biomass_cs_p4 > 0, jurel_biomass_cs_p4, NA)
+  ) %>%
+  mutate(jurel_biomass_cs_intra = ifelse(is.na(jurel_biomass_cs), 
+                                         jurel_biomass_cs_p4, 
+                                         jurel_biomass_cs)) %>%
+  dplyr::select(c(year, jurel_biomass_cs, jurel_biomass_cs_intra))
 
 # Merge databse
 biomass <- full_join(anch_sard_biomass, jurel_biomass, by = c("year")) %>% arrange(year)
 rm(list = c("anch_sard_biomass", "jurel_biomass"))
+
+
+# Save data
+saveRDS(biomass, file="data/biomass/biomass_dt.rds")
+
+
+

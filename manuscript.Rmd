@@ -158,6 +158,7 @@ env_dt <- readRDS("data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
 
 ```{r load_biomass, message=FALSE, warning=FALSE, include=FALSE}
 
+biomass <- readRDS("data/biomass/biomass_dt.rds")
 
 ```
 
