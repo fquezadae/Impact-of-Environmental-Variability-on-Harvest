@@ -87,11 +87,16 @@ predictions.
 
 Under a changing climate, studying the effect of climatic variability on fishers' harvest decisions and landings is relevant for understanding fishing communities' adaptive capacities and strategies in response to climate change, thereby enabling the design of potential mitigation measures in response to these changes by policymakers. Countries have different institutions, cultures, and norms, leading to differing responses based on the study's location. For this reason, conducting this research based on the Chilean fishing industry is necessary to develop local policies that aim to reduce climate change impacts on fisheries. While there is some literature on the effect of climate change on Chilean fisheries, I am unaware of local-level studies that consider a multiple-species framework and the interrelationship between the local market and fishing decisions seen under a variable climate context.[^1]
 
-[^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is     @Pena-Torres2017-gn. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
+[^1]: For the case of Chile, as far as I know, the only article that study fishers' behavior using discrete choice modelling is @Pena-Torres2017-gn. This article study how El Niño Southern Oscillation (ENSO) affect fishermen location choices that participate in the Jack Mackerel fishery.
 
 # SPF in Chile
 
 The small pelagic fishery (SPF) in Chile is of critical importance to the national fisheries sector. In 2019, the SPF represented nearly 94% of total national fish landings [@SUBPESCA2020]. The fishery is primarily composed of anchoveta (*Engraulis ringens*), sardine (*Strangomera bentincki*), and jack mackerel (*Trachurus murphyi*). While in the Northern region competition mainly occurs between anchoveta and jack mackerel, in the Central-South region all three species play a major role. This makes the Central-South particularly relevant for the study of species interactions and potential substitution within a multispecies management framework, and it is therefore the focus of this research.
+
+  - Jack mackerel fishery was initially fished in northern chile. But, since the mid-1980s the main fishing grounds have been Central-south Chile [@Pena-Torres2017-gn] -- Traditionally within 50nm
+  - Species have been historically used for fishmeal and fish oil production [@Pena-Torres2017-gn]... Jack Mackerel: 85% of total landings as a yearly average over the period 1987–2004).
+  - 80 and 300 m$^3$ sardine and anchovy; More than 800 m$^3$, likely jack mackerel. @Pena-Torres2017-gn dummy for $H \leq 370 \ \text{m}^3$, $370 \ \text{m}^3 < H \leq 790 \ \text{m}^3$, $H > 790 \ \text{m}^3$ ... Also use age of vessel to check technical obsolescence (year trip, year ship was built)
+  - Ports: San Antonio, Tome, Talcahuano, San Vicente, Coronel, Lota, Corral
 
 ## Status of the stocks
 Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since 2020 been fished within maximum sustainable yield (MSY) limits. Meanwhile, sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Jack mackerel was overexploited until 2018 but has since been harvested within MSY limits. 
@@ -127,6 +132,8 @@ Fishery with restricted access to new operators (just artisanal?)
 
 - Jack mackerel is open through all year.
 - Sardine and anchovy: In southern-central Chile, July–October (fixed period: August-September).
+
+- Seasonality? Include quarter dummies? Jack mackerel gather in the first 6 month of the year in shoals, great density in EEZ, then migrate outside 200nm ()
 
 ### Minimum size
 
@@ -164,119 +171,135 @@ biomass <- readRDS("data/biomass/biomass_dt.rds")
 
 ```{r load_logbook, message=FALSE, warning=FALSE, include=FALSE}
 
-
+logbooks <- readRDS("data/logbooks/logbooks.rds")
 
 ```
 
 ```{r harvest_substitution, message=FALSE, warning=FALSE, include=FALSE}
 
-# First, get your original summarized table
-vessel_species_year <- logbooks %>% filter(year >= 2019) %>% ### all species available after 2019?
-  select(COD_BARCO, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
-  group_by(COD_BARCO, year, NOMBRE_ESPECIE) %>%
-  summarize(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
-  group_by(COD_BARCO, year) %>%
+
+# Build shares per vessel/fleet/year/species
+vessel_species_year <- logbooks %>%
+  filter(year >= 2019) %>%
+  select(COD_BARCO, TIPO_FLOTA, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
+  group_by(COD_BARCO, TIPO_FLOTA, year, NOMBRE_ESPECIE) %>%
+  summarise(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
+  group_by(COD_BARCO, TIPO_FLOTA, year) %>%
   mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
   ungroup() %>%
   select(-total_catch) %>%
-  complete(COD_BARCO, year, NOMBRE_ESPECIE, fill = list(species_share = 0)) %>%
-  group_by(COD_BARCO, year) %>%
-  mutate(species_share_check = sum(species_share, na.rm = TRUE)) %>%
-  filter(species_share_check > 0) %>%
-  dplyr::select(-c(species_share_check)) %>%
-  group_by(COD_BARCO, NOMBRE_ESPECIE) %>% 
-  summarize(species_share = mean(species_share, na.rm = TRUE)) %>%
+  complete(COD_BARCO, TIPO_FLOTA, year, NOMBRE_ESPECIE, fill = list(species_share = 0)) %>%
+  group_by(COD_BARCO, TIPO_FLOTA, year) %>%
+  filter(sum(species_share, na.rm = TRUE) > 0) %>%
+  group_by(COD_BARCO, TIPO_FLOTA, NOMBRE_ESPECIE) %>%
+  summarise(species_share = mean(species_share, na.rm = TRUE), .groups = "drop") %>%
   pivot_wider(
     names_from = NOMBRE_ESPECIE,
     values_from = species_share,
-    values_fill = 0) %>%
-  dplyr::select(c(COD_BARCO, ANCHOVETA, `SARDINA COMUN`, JUREL)) %>%
-  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL) %>% ACA DEBERIA CALCULAR TODAS LAS DEMAS ESPECIES!!!
-  rename(
-    Anchoveta = `ANCHOVETA`,
+    values_fill = 0
+  ) %>%
+  # here just add missing columns if they don't exist
+  { if(!"ANCHOVETA" %in% names(.)) .$ANCHOVETA <- 0; . } %>%
+  { if(!"SARDINA COMUN" %in% names(.)) .$`SARDINA COMUN` <- 0; . } %>%
+  { if(!"JUREL" %in% names(.)) .$JUREL <- 0; . } %>%
+  mutate(
+    Other = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL,
+    Anchoveta = ANCHOVETA,
     Sardine = `SARDINA COMUN`,
-    JackMackerel = `JUREL`,
-    Other = `OTHER`
-  )
+    JackMackerel = JUREL
+  ) %>%
+  select(COD_BARCO, TIPO_FLOTA, Anchoveta, Sardine, JackMackerel, Other)
 
+# Strategy function
 get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
   species <- c()
-  if (sardine > 0.20) species <- c(species, "Sardine")
-  if (jackmackerel > 0.20) species <- c(species, "JackMackerel")
-  if (anchoveta > 0.20) species <- c(species, "Anchoveta")
-  if (other > 0.20) species <- c(species, "Other")
-
+  if (sardine > 0.15) species <- c(species, "Sardine")
+  if (jackmackerel > 0.15) species <- c(species, "JackMackerel")
+  if (anchoveta > 0.15) species <- c(species, "Anchoveta")
+  if (other > 0.15) species <- c(species, "Other")
+  
   n <- length(species)
   if (n == 0) return("None or negligible")
   if (n == 1) return(paste("Only", species[1]))
   if (n == 2) return(paste(species[1], "and", species[2]))
-  if (n == 3) return(paste0(species[1], ", ", species[2], " and ", species[3]))
-  return(paste0(species[1], ", ", species[2], ", ", species[3], " and ", species[4]))
+  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
+  return(paste(species, collapse = ", "))
 }
 
+# Apply strategy classification
 vessel_species_year <- vessel_species_year %>%
   mutate(strategy_After = pmap_chr(
     list(Sardine, JackMackerel, Anchoveta, Other),
     get_strategy
   ))
 
+# Percentages by fleet type
 strategy_percent <- vessel_species_year %>%
-  group_by(strategy_After) %>%
+  group_by(TIPO_FLOTA, strategy_After) %>%
   summarise(n = n(), .groups = "drop") %>%
+  group_by(TIPO_FLOTA) %>%
   mutate(percent = round(100 * n / sum(n), 1)) %>%
-  arrange(desc(percent)) 
+  arrange(TIPO_FLOTA, desc(percent))
 
+# Final table vessel-strategy
 strategy_after <- vessel_species_year %>%
-  select(COD_BARCO, strategy_After)
+  select(COD_BARCO, TIPO_FLOTA, strategy_After)
 
 ```
 
 ```{r harvest_substitution_before, message=FALSE, warning=FALSE, include=FALSE}
 
-# First, get your original summarized table
-vessel_species_year <- logbooks %>% 
-  filter(year >= 2012, year < 2019) %>% 
-  select(COD_BARCO, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
-  group_by(COD_BARCO, year, NOMBRE_ESPECIE) %>%
-  summarize(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
-  group_by(COD_BARCO, year) %>%
+
+# Build shares per vessel/fleet/year/species
+vessel_species_year <- logbooks %>%
+  filter(year < 2019) %>%
+  select(COD_BARCO, TIPO_FLOTA, year, NOMBRE_ESPECIE, CAPTURA_RETENIDA) %>%
+  group_by(COD_BARCO, TIPO_FLOTA, year, NOMBRE_ESPECIE) %>%
+  summarise(total_catch = sum(CAPTURA_RETENIDA, na.rm = TRUE), .groups = "drop") %>%
+  group_by(COD_BARCO, TIPO_FLOTA, year) %>%
   mutate(species_share = total_catch / sum(total_catch, na.rm = TRUE)) %>%
   ungroup() %>%
   select(-total_catch) %>%
-  complete(COD_BARCO, year, NOMBRE_ESPECIE, fill = list(species_share = 0)) %>%
-  group_by(COD_BARCO, year) %>%
-  mutate(species_share_check = sum(species_share, na.rm = TRUE)) %>%
-  filter(species_share_check > 0) %>%
-  dplyr::select(-c(species_share_check)) %>%
-  group_by(COD_BARCO, NOMBRE_ESPECIE) %>% 
-  summarize(species_share = mean(species_share, na.rm = TRUE)) %>%
+  complete(COD_BARCO, TIPO_FLOTA, year, NOMBRE_ESPECIE, fill = list(species_share = 0)) %>%
+  group_by(COD_BARCO, TIPO_FLOTA, year) %>%
+  filter(sum(species_share, na.rm = TRUE) > 0) %>%
+  group_by(COD_BARCO, TIPO_FLOTA, NOMBRE_ESPECIE) %>%
+  summarise(species_share = mean(species_share, na.rm = TRUE), .groups = "drop") %>%
   pivot_wider(
     names_from = NOMBRE_ESPECIE,
     values_from = species_share,
-    values_fill = 0) %>%
-  dplyr::select(c(COD_BARCO, ANCHOVETA, `SARDINA COMUN`, JUREL)) %>%
-  mutate(OTHER = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL) %>%
-  rename(
-    Anchoveta = `ANCHOVETA`,
+    values_fill = 0
+  ) %>%
+  # here just add missing columns if they don't exist
+  { if(!"ANCHOVETA" %in% names(.)) .$ANCHOVETA <- 0; . } %>%
+  { if(!"SARDINA COMUN" %in% names(.)) .$`SARDINA COMUN` <- 0; . } %>%
+  { if(!"JUREL" %in% names(.)) .$JUREL <- 0; . } %>%
+  mutate(
+    Other = 1 - ANCHOVETA - `SARDINA COMUN` - JUREL,
+    Anchoveta = ANCHOVETA,
     Sardine = `SARDINA COMUN`,
-    JackMackerel = `JUREL`,
-    Other = `OTHER`
-  )
+    JackMackerel = JUREL
+  ) %>%
+  select(COD_BARCO, TIPO_FLOTA, Anchoveta, Sardine, JackMackerel, Other)
 
-vessel_species_year_pre <- vessel_species_year %>%
+# Apply strategy classification
+vessel_species_year <- vessel_species_year %>%
   mutate(strategy_Before = pmap_chr(
     list(Sardine, JackMackerel, Anchoveta, Other),
     get_strategy
   ))
 
-strategy_percent_pre <- vessel_species_year_pre %>%
-  group_by(strategy_Before) %>%
+# Percentages by fleet type
+strategy_percent_before <- vessel_species_year %>%
+  group_by(TIPO_FLOTA, strategy_Before) %>%
   summarise(n = n(), .groups = "drop") %>%
+  group_by(TIPO_FLOTA) %>%
   mutate(percent = round(100 * n / sum(n), 1)) %>%
-  arrange(desc(percent)) 
+  arrange(TIPO_FLOTA, desc(percent))
 
-strategy_before <- vessel_species_year_pre %>%
-  select(COD_BARCO, strategy_Before)
+# Final table vessel-strategy
+strategy_before <- vessel_species_year %>%
+  select(COD_BARCO, TIPO_FLOTA, strategy_Before)
 
 ```
 
@@ -284,6 +307,10 @@ See Figure \@ref(fig:switchStrategy) and Table
 \@ref(tab:strategy-table-logbooks) for strategy transitions.
 
 ```{r strategy-table-logbooks, echo=FALSE, results='asis'}
+
+
+# INDUSTRIAL VS ARTISANAL!
+
 # Rename for joining
 before <- strategy_percent_pre %>%
   rename(strategy = strategy_Before, n_before = n, percent_before = percent)
@@ -1042,6 +1069,12 @@ MAYBE INCLUDE QUOTA PRICE? **Higher quota prices for depleted stocks
 markets for quota (and previously for DAS) allow fishermen to treat
 quota as a "priced input" rather than a fixed, exhaustible resource.**
 
+
+Add
+  - liters/hours x hours trip x fuel price
+  - crew member x harvest x price x share
+  - certification cost per landed ton x landing
+
 ### Total annual trips
 
 The number of trips a vessel will take in a given year for each gear
@@ -1117,24 +1150,11 @@ projections for the environmental variables included in the model.
 
 *From [@Yáñez2014]*:
 
--   "To project the model, the average structure of catches and
-    temperature (of Antofagasta and the region Niño 3 + 4) for the years
-    2005, 2006 and 2007 were used as starting point. We consider a
-    linear increase in temperature, taking into account four climate
-    change scenarios based on the scenarios presented by IPCC, designed
-    for the northern part of Chile until 2100.
-    1.  The first scenario considers an increase in temperature of
-        0.034ºC per year [@Fuenzalida2007], similar to that estimated by
-        @Trenberth2007.
-    2.  A second scenario, more moderate, of 0,025ºC/year is also
-        proposed by @Fuenzalida2007.
-    3.  The third scenario is not considered a significant effect on the
-        area, following the work of @Trenberth2007.
-    4.  The fourth scenario is contradictory, indicating a cooling de
-        0.02 ºC/year [@falvey2009]. It should be noted that according to
-        the work of @Fuenzalida2007 and @falvey2009 the same SST
-        increase (or decrease) were considered for both temperatures (in
-        Antofagasta and in the Niño 3 + 4 region)."
+-   "To project the model, the average structure of catches and temperature (of Antofagasta and the region Niño 3 + 4) for the years 2005, 2006 and 2007 were used as starting point. We consider a linear increase in temperature, taking into account four climate change scenarios based on the scenarios presented by IPCC, designed for the northern part of Chile until 2100.
+    1.  The first scenario considers an increase in temperature of 0.034ºC per year [@Fuenzalida2007], similar to that estimated by @Trenberth2007.
+    2.  A second scenario, more moderate, of 0,025ºC/year is also proposed by @Fuenzalida2007.
+    3.  The third scenario is not considered a significant effect on the area, following the work of @Trenberth2007.
+    4.  The fourth scenario is contradictory, indicating a cooling de 0.02 ºC/year [@falvey2009]. It should be noted that according to the work of @Fuenzalida2007 and @falvey2009 the same SST increase (or decrease) were considered for both temperatures (in Antofagasta and in the Niño 3 + 4 region)."
 
 # Results
 
@@ -1142,48 +1162,26 @@ NO RESULTS YET
 
 # Discussion
 
-If ITQ in this fishery in Chile: **The theoretical findings on
-multispecies harvest patterns in @Birkenbach2020-nh give rise to nuanced
-hypotheses about how behavior and outcomes will change after the
-adoption of catch shares. For example, a secure property right to catch
-fish at any time in the fishing season allows firms to spread the catch
-of stocks with high prices and downward-sloping demand over a longer
-fishing season. This minimizes market gluts that steer product toward
-lower priced frozen markets [@homans2005] and can result in higher
-prices for those species. Fishermen might also shift their efforts
-toward lower-priced species with cheaper quota or toward non-catch-share
-fisheries, intensifying the race to fish for those species during
-portions of the season [@asche2007; @cunningham2016spillovers].** --
-However, we do not include other species than jack mackerel, sardine and
-anchovy that might be caught by thise fleet. This would require to
-expand the model by **N** species, which would increase dimensionality
-of the model. WE NEED PERMITS TO CHECK IF ACTUALLY THIS HAPPEN! (Stil
-problem with Open-Access)
+If ITQ in this fishery in Chile: **The theoretical findings on multispecies harvest patterns in @Birkenbach2020-nh give rise to nuanced hypotheses about how behavior and outcomes will change after the adoption of catch shares. For example, a secure property right to catch fish at any time in the fishing season allows firms to spread the catch of stocks with high prices and downward-sloping demand over a longer fishing season. This minimizes market gluts that steer product toward lower priced frozen markets [@homans2005] and can result in higher prices for those species. Fishermen might also shift their efforts toward lower-priced species with cheaper quota or toward non-catch-share fisheries, intensifying the race to fish for those species during
+portions of the season [@asche2007; @cunningham2016spillovers].** -- However, we do not include other species than jack mackerel, sardine and anchovy that might be caught by thise fleet. This would require to expand the model by **N** species, which would increase dimensionality of the model. WE NEED PERMITS TO CHECK IF ACTUALLY THIS HAPPEN! (Still problem with Open-Access)
 
 ## Potential extension of the project
 
-Several other extensions to the model can be incorporated to be
-improved. For instance, the geographical space where fishermen operate
-is relevant, as depending on the location chosen and when to
-participate, the set of potential choices would vary [@Reimer2017-jw].
-As I mentioned above, it is possible to extend the stock dynamic model
-by considering different locations. The model would also require that
-the participation decision, which is captured by the Poisson model on
-the annual number of trips, should then consider the decision to
-participate in a determined fishing ground, connecting the multi-species
-model of @Kasperski2015-jm to the literature of location choice modeling
-[e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
+Several other extensions to the model can be incorporated to be improved. For instance, the geographical space where fishermen operate is relevant, as depending on the location chosen and when to participate, the set of potential choices would vary [@Reimer2017-jw]. As I mentioned above, it is possible to extend the stock dynamic model by considering different locations. The model would also require that the participation decision, which is captured by the Poisson model on the annual number of trips, should then consider the decision to participate in a determined fishing ground, connecting the multi-species model of @Kasperski2015-jm to the literature of location choice modeling [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
 
 ## Damage function for the fisheries sector
 
-Link to the work made in the U.S. West Coast. Similar weather, but
-different development. We would need to also have estimate of the
-dose-response function in other latitudes, with significantly different
-temperatures...
+Link to the work made in the U.S. West Coast. Similar weather, but different development. We would need to also have estimate of the dose-response function in other latitudes, with significantly different temperatures...
 
 # Conclusions
 
 NO CONCLUSION YET
+
+
+## Future research question
+
+- Does higher quota allocation of jack mackerel, a predator for anchovy and sardine, helps small scale sector actually?
+
 
 # Repository
 
