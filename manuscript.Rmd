@@ -286,7 +286,7 @@ strategy_before <- vessel_species_year %>%
 
 ```
 
-See Figure \@ref(fig:switchStrategy) and Table
+See Figure \@ref(fig:switchStrategy-ART) and Table
 \@ref(tab:strategy-table-logbooks) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
 
 ```{r strategy-table-logbooks, echo=FALSE, results='asis'}
@@ -333,7 +333,7 @@ strategy_table %>%
 
 
 
-```{r strategy-table-logbooks-ART, echo=FALSE, results='asis', fig.height=6, fig.width=8}
+```{r switchStrategy-ART, echo=FALSE, results='asis', fig.height=6, fig.width=8}
 
 library(dplyr)
 library(tidyr)
@@ -428,7 +428,7 @@ p +
 
 ```
 
-```{r strategy-table-logbooks-IND, echo=FALSE, results='asis', fig.height=6, fig.width=8}
+```{r switchStrategy-IND, echo=FALSE, results='asis', fig.height=6, fig.width=8}
 
 library(dplyr)
 library(tidyr)
