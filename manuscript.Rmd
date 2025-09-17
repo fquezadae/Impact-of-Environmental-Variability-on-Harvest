@@ -287,14 +287,13 @@ strategy_before <- vessel_species_year %>%
 ```
 
 See Figure \@ref(fig:switchStrategy-ART) and Table
-\@ref(tab:strategy-table-logbooks) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
+\@ref(tab:strategy-table-logbooks_ART) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
 
-```{r strategy-table-logbooks, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+```{r strategy-table-logbooks_ART, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 library(kableExtra)
 library(stringr)
-
-# INDUSTRIAL VS ARTISANAL!
 
 # Rename for joining
 before <- strategy_percent_before %>%
@@ -308,29 +307,52 @@ strategy_summary <- full_join(before, after, by = c("strategy", "TIPO_FLOTA")) %
   arrange(desc(coalesce(percent_after, 0) + coalesce(percent_before, 0))) %>%
   mutate(across(where(is.numeric), ~replace_na(., 0)))
 
+# Filter only ART
+strategy_table_art <- strategy_summary %>%
+  filter(TIPO_FLOTA == "ART") %>%
+  dplyr::select(c("strategy", "n_before", "percent_before", "n_after", "percent_after"))
 
-strategy_table <- strategy_summary %>%
-  group_by(TIPO_FLOTA) %>%
-  mutate(row_id = row_number()) %>%   # index within each fleet
-  ungroup() %>%
-  select(row_id, TIPO_FLOTA, strategy, n_before, percent_before, n_after, percent_after) %>%
-  pivot_wider(
-    names_from = TIPO_FLOTA,
-    values_from = c(strategy, n_before, percent_before, n_after, percent_after),
-    names_glue = "{.value}_{TIPO_FLOTA}"
-  ) %>%
-  select(-row_id)   # drop helper column
+DELETE FIRST COLUMN!!!!
 
-strategy_table %>%
+# Table
+strategy_table_art %>%
   kable("latex", booktabs = TRUE, digits = 1,
-        col.names = c("Strategy", "n", "%", "n", "%",
-                      "Strategy", "n", "%", "n", "%"),
-        caption = "Comparison of Strategies Before and After by Fleet") %>%
-  add_header_above(c("IND" = 5, "ART" = 5)) %>%
+        col.names = c("Strategy", "n (Before)", "% (Before)", "n (After)", "% (After)"),
+        caption = "Comparison of Strategies Before and After (ART Fleet)") %>%
   kable_styling(font_size = 10)
 
 ```
 
+```{r strategy-table-logbooks_IND, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+library(kableExtra)
+library(stringr)
+
+# Rename for joining
+before <- strategy_percent_before %>%
+  rename(strategy = strategy_Before, n_before = n, percent_before = percent)
+
+after <- strategy_percent %>%
+  rename(strategy = strategy_After, n_after = n, percent_after = percent)
+
+# Merge strategies
+strategy_summary <- full_join(before, after, by = c("strategy", "TIPO_FLOTA")) %>%
+  arrange(desc(coalesce(percent_after, 0) + coalesce(percent_before, 0))) %>%
+  mutate(across(where(is.numeric), ~replace_na(., 0)))
+
+# Filter only IND
+strategy_table_ind <- strategy_summary %>%
+  filter(TIPO_FLOTA == "IND") %>%
+  select(strategy, n_before, percent_before, n_after, percent_after)
+
+# Table
+strategy_table_ind %>%
+  kable("latex", booktabs = TRUE, digits = 1,
+        col.names = c("Strategy", "n (Before)", "% (Before)", "n (After)", "% (After)"),
+        caption = "Comparison of Strategies Before and After (IND Fleet)") %>%
+  kable_styling(font_size = 10)
+
+```
 
 
 ```{r switchStrategy-ART, echo=FALSE, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, results='asis'}
