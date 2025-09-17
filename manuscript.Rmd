@@ -10,7 +10,7 @@ output:
     toc: false
     pandoc_args: ["--variable=fontsize:11pt"]
   bookdown::latex_document2: default
-bibliography: bib_paperpile.bib
+bibliography: bibliography.bib
 csl: apa.csl # Optional: for APA-style citations
 linkcolor: blue
 citecolor: blue
@@ -34,19 +34,6 @@ abstract: "In this paper, we aim to answer how fishing decisions, aggregate catc
 ```{r directorio, message=FALSE, warning=FALSE, include=FALSE}
 rm(list = ls())
 gc()
-
-library(readxl)
-library(dplyr)
-library(tidyr)
-library(knitr)
-library(kableExtra)
-library(ggplot2)
-library(ggalluvial)
-library(purrr)
-library(lubridate)
-library(stringr)
-library(readxl)
-
 
 # Definir directorios según usuario
 
@@ -147,17 +134,6 @@ Fishery with restricted access to new operators (just artisanal?)
 
 ```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
 
-library(dplyr)
-library(data.table)
-library(lubridate)
-library(sf)
-library(rnaturalearth)
-library(ggplot2)
-
-usuario <- Sys.info()[["user"]]
-dirdata <- paste0("C:/Users/", usuario,
-                  "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/")
-
 env_dt <- readRDS("data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
 
 ```
@@ -175,8 +151,16 @@ logbooks <- readRDS("data/logbooks/logbooks.rds")
 
 ```
 
-```{r harvest_substitution, message=FALSE, warning=FALSE, include=FALSE}
+```{r harvest_substitution_after, message=FALSE, warning=FALSE, include=FALSE}
 
+library(dplyr)
+library(data.table)
+library(lubridate)
+library(sf)
+library(rnaturalearth)
+library(ggplot2)
+library(tidyr)
+library(purrr)
 
 # Build shares per vessel/fleet/year/species
 vessel_species_year <- logbooks %>%
@@ -249,7 +233,6 @@ strategy_after <- vessel_species_year %>%
 
 ```{r harvest_substitution_before, message=FALSE, warning=FALSE, include=FALSE}
 
-
 # Build shares per vessel/fleet/year/species
 vessel_species_year <- logbooks %>%
   filter(year < 2019) %>%
@@ -304,343 +287,256 @@ strategy_before <- vessel_species_year %>%
 ```
 
 See Figure \@ref(fig:switchStrategy) and Table
-\@ref(tab:strategy-table-logbooks) for strategy transitions.
+\@ref(tab:strategy-table-logbooks) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
 
 ```{r strategy-table-logbooks, echo=FALSE, results='asis'}
 
+library(kableExtra)
+library(stringr)
 
 # INDUSTRIAL VS ARTISANAL!
 
 # Rename for joining
-before <- strategy_percent_pre %>%
+before <- strategy_percent_before %>%
   rename(strategy = strategy_Before, n_before = n, percent_before = percent)
 
 after <- strategy_percent %>%
   rename(strategy = strategy_After, n_after = n, percent_after = percent)
 
 # Merge strategies
-strategy_summary <- full_join(before, after, by = "strategy") %>%
+strategy_summary <- full_join(before, after, by = c("strategy", "TIPO_FLOTA")) %>%
   arrange(desc(coalesce(percent_after, 0) + coalesce(percent_before, 0))) %>%
   mutate(across(where(is.numeric), ~replace_na(., 0)))
 
-# Create table with grouped columns
-strategy_summary %>%
-  select(strategy, n_before, percent_before, n_after, percent_after) %>%
+
+strategy_table <- strategy_summary %>%
+  group_by(TIPO_FLOTA) %>%
+  mutate(row_id = row_number()) %>%   # index within each fleet
+  ungroup() %>%
+  select(row_id, TIPO_FLOTA, strategy, n_before, percent_before, n_after, percent_after) %>%
+  pivot_wider(
+    names_from = TIPO_FLOTA,
+    values_from = c(strategy, n_before, percent_before, n_after, percent_after),
+    names_glue = "{.value}_{TIPO_FLOTA}"
+  ) %>%
+  select(-row_id)   # drop helper column
+
+strategy_table %>%
   kable("latex", booktabs = TRUE, digits = 1,
-        col.names = c("Strategy", "n", "%", "n", "%"),
-        caption = "Comparison of Strategies Before and After") %>%
-  add_header_above(c(" " = 1, "Before" = 2, "After" = 2)) %>%
+        col.names = c("Strategy", "n", "%", "n", "%",
+                      "Strategy", "n", "%", "n", "%"),
+        caption = "Comparison of Strategies Before and After by Fleet") %>%
+  add_header_above(c("IND" = 5, "ART" = 5)) %>%
   kable_styling(font_size = 10)
 
 ```
 
-```{r switchStrategy, echo=FALSE, fig.align='center', fig.cap="Vessel strategy transitions", fig.pos='ht!', message=FALSE, warning=FALSE, paged.print=FALSE}
 
-strategy_transitions <- full_join(strategy_before, strategy_after, by = "COD_BARCO") %>%
+
+```{r strategy-table-logbooks-ART, echo=FALSE, results='asis', fig.height=6, fig.width=8}
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggalluvial)
+library(patchwork)
+library(ggrepel)
+
+strategy_transitions <- full_join(strategy_before, strategy_after, by = c("COD_BARCO", "TIPO_FLOTA")) %>%
   mutate(
     strategy_Before = ifelse(is.na(strategy_Before), "No fishing", strategy_Before),
     strategy_After  = ifelse(is.na(strategy_After),  "No fishing", strategy_After)
-  )
+  ) %>% filter(TIPO_FLOTA == "ART")
 
 transition_counts <- strategy_transitions %>%
   count(strategy_Before, strategy_After)
 
 simplify_focus_strategy <- function(strategy) {
-  if (strategy == "Only Sardine") return("Sardine")
-  if (strategy == "Only Anchoveta") return("Anchoveta")
-  if (grepl("Sardine", strategy) & grepl("Anchoveta", strategy)) return("Sardine & Anchoveta")
-  if (strategy == "No fishing") return("No fishing")
-  return("Other")
+  ifelse(strategy == "Only Sardine", "Sardine",
+  ifelse(strategy == "Only Anchoveta", "Anchoveta",
+  ifelse(strategy == "Only JackMackerel", "JackMackerel",
+  ifelse(grepl("Sardine", strategy) & grepl("Anchoveta", strategy) & grepl("JackMackerel", strategy),
+         "Sardine, JackMackerel & Anchoveta",
+  ifelse(grepl("Sardine", strategy) & grepl("Anchoveta", strategy), "Sardine & Anchoveta",
+  ifelse(grepl("Sardine", strategy) & grepl("JackMackerel", strategy), "Sardine & JackMackerel",
+  ifelse(grepl("JackMackerel", strategy) & grepl("Anchoveta", strategy), "JackMackerel & Anchoveta",
+  ifelse(strategy == "No fishing", "No fishing", "Other"))))))))
 }
 
 strategy_transitions_focus <- strategy_transitions %>%
   mutate(
     strategy_Before_simple = simplify_focus_strategy(strategy_Before),
     strategy_After_simple = simplify_focus_strategy(strategy_After)
-  ) %>%
-  filter(strategy_Before_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "No fishing") |
-           strategy_After_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "No fishing"))
+  ) 
+
+# %>%
+#   filter(strategy_Before_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "Sardine & JackMackerel", "JackMackerel & Anchoveta", "Sardine, JackMackerel & Anchoveta","No fishing") |
+#            strategy_After_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "Sardine & JackMackerel", "JackMackerel & Anchoveta", "Sardine, JackMackerel & Anchoveta","No fishing"))
 
 transition_counts_focus <- strategy_transitions_focus %>%
   count(strategy_Before_simple, strategy_After_simple)
 
-# Create the base plot object
+
+# Base plot
 p <- ggplot(transition_counts_focus,
-            aes(axis1 = strategy_Before_simple, axis2 = strategy_After_simple, y = n)) +
-  geom_flow(aes(fill = strategy_Before_simple), width = 1/12, knot.pos = 0.4, alpha = 0.8) +
+            aes(axis1 = strategy_Before_simple,
+                axis2 = strategy_After_simple,
+                y = n)) +
+  geom_flow(aes(fill = strategy_Before_simple),
+            width = 1/12, knot.pos = 0.4, alpha = 0.8) +
   geom_stratum(width = 1/12, fill = "gray95", color = "black") +
-  scale_x_discrete(limits = c("2012–2018", "2019–2024"), expand = c(.15, .15)) +
+  scale_x_discrete(limits = c("2012–2018", "2019–2024"),
+                   expand = c(.25, .25)) +
   scale_fill_brewer(type = "qual", palette = "Set2") +
-  labs(
-    x = "", y = "Number of Vessels"
-  ) +
-  theme_minimal(base_size = 10) +
+  labs(x = "", y = "Number of Vessels") +
+  theme_minimal(base_size = 12) +
   theme(
     legend.position = "none",
     panel.grid = element_blank()
   )
 
-# Get label positions from the stratum data
+# Extraer posiciones de etiquetas
 stratum_data <- ggplot_build(p)$data[[2]]
 
-# Separate left (axis1) and right (axis2) sides
 left_labels <- stratum_data %>%
   filter(x == 1) %>%
-  mutate(hjust = 1, x = x - 0.05)  # shift left
+  mutate(x = x - 0.05,
+         stratum = str_wrap(stratum, width = 20))
 
 right_labels <- stratum_data %>%
   filter(x == 2) %>%
-  mutate(hjust = 0, x = x + 0.05)  # shift right
+  mutate(x = x + 0.05,
+         stratum = str_wrap(stratum, width = 20))
 
-# Add to the plot
-p + 
-  geom_text(data = left_labels, aes(x = x, y = y, label = stratum, hjust = hjust),
-            size = 2.5, inherit.aes = FALSE) +
-  geom_text(data = right_labels, aes(x = x, y = y, label = stratum, hjust = hjust),
-            size = 2.5, inherit.aes = FALSE)
-```
-
-```{r harvest_SERNAPESCA, message=FALSE, warning=FALSE, include=FALSE}
-
-library(readxl)
-library(dplyr)
-
-annual_harvest_SERNAPESCA_ART <- 
-  read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
-             sheet = "ART_2012_2024", 
-             range = "A6:S36337") %>%
-  rename(specie = Especie,
-         year = Año,
-         region = `Región de Operación`) %>%
-  mutate(zone = case_when(
-    region %in% c(1,2,3,4,15) ~ "Norte",
-    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
-    region %in% c(11,12) ~ "Extremo_Sur",
-    TRUE ~ "No_Especifica")) %>% 
-  group_by(specie, year, zone) %>%
-  summarize(annual_harvest_ART_SERNAPESCA = 
-              sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop") 
-
-annual_harvest_SERNAPESCA_IND <- 
-  read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
-             sheet = "IND_2012_2024", 
-             range = "A6:R3349") %>%
-  rename(specie = Especie,
-         year = Año,
-         region = `Región`) %>%
-  mutate(zone = case_when(
-    region %in% c(1,2,3,4,15) ~ "Norte",
-    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
-    region %in% c(11,12) ~ "Extremo_Sur",
-    TRUE ~ "No_Especifica"
-  )) %>% 
-  group_by(specie, year, zone) %>%
-  summarize(annual_harvest_IND_SERNAPESCA = 
-              sum(Desembarque, na.rm = TRUE), .groups = "drop")
-
-annual_harvest_SERNAPESCA_BF <- 
-  read_excel(paste0(dirdata, "SERNAPESCA/AH010T0006857_sobre_desembarque_pelagicos_2012_2024.xlsx"), 
-             sheet = "BF_2017_2024", 
-             range = "A7:R144") %>%
-  rename(specie = DESCR1TABL,
-         year = Año,
-         region = `Cd_Region`) %>%
-  mutate(zone = case_when(
-    region %in% c(1,2,3,4,15) ~ "Norte",
-    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
-    region %in% c(11,12) ~ "Extremo_Sur",
-    TRUE ~ "No_Especifica"
-  )) %>% 
-  group_by(specie, year, zone) %>%
-  summarize(annual_harvest_BF_SERNAPESCA = sum(DESEMBARQUE, na.rm = TRUE), .groups = "drop")
-
-harvest_SERNAPESCA <- 
-  left_join(annual_harvest_SERNAPESCA_ART, annual_harvest_SERNAPESCA_IND, by = c("year", "specie", "zone")) %>%
-  left_join(annual_harvest_SERNAPESCA_BF, by = c("year", "specie", "zone")) %>%
-  mutate(total_harvest_SERNAPESCA = rowSums(across(c(annual_harvest_IND_SERNAPESCA, annual_harvest_ART_SERNAPESCA)), na.rm = TRUE)) %>%
-  mutate(total_harvest_all_SERNAPESCA = rowSums(across(c(annual_harvest_IND_SERNAPESCA, annual_harvest_BF_SERNAPESCA, annual_harvest_ART_SERNAPESCA)), na.rm = TRUE))
-
-harvest_SERNAPESCA <- harvest_SERNAPESCA %>%
-  pivot_wider(
-    names_from = zone,
-    values_from = c(
-      annual_harvest_ART_SERNAPESCA,
-      annual_harvest_IND_SERNAPESCA,
-      annual_harvest_BF_SERNAPESCA,
-      total_harvest_SERNAPESCA,
-      total_harvest_all_SERNAPESCA
-    ),
-    names_sep = "_"
+# Agregar etiquetas con repel
+p +
+  geom_text_repel(
+    data = left_labels,
+    aes(x = x, y = y, label = stratum),
+    inherit.aes = FALSE,
+    hjust = 1, nudge_x = -0.1, direction = "y",
+    size = 2.5, segment.color = "grey60", segment.size = 0.3
+  ) +
+  geom_text_repel(
+    data = right_labels,
+    aes(x = x, y = y, label = stratum),
+    inherit.aes = FALSE,
+    hjust = 0, nudge_x = 0.1, direction = "y",
+    size = 2.5, segment.color = "grey60", segment.size = 0.3
   )
 
-rm(list = c("annual_harvest_SERNAPESCA_ART", "annual_harvest_SERNAPESCA_IND", "annual_harvest_SERNAPESCA_BF"))
 
 ```
 
-```{r harvest_IFOP, message=FALSE, warning=FALSE, include=FALSE}
+```{r strategy-table-logbooks-IND, echo=FALSE, results='asis', fig.height=6, fig.width=8}
 
-library(readxl)
 library(dplyr)
-library(ggplot2)
 library(tidyr)
+library(ggplot2)
+library(ggalluvial)
+library(patchwork)
+library(ggrepel)
 
-### Industriales 
+strategy_transitions <- full_join(strategy_before, strategy_after, by = c("COD_BARCO", "TIPO_FLOTA")) %>%
+  mutate(
+    strategy_Before = ifelse(is.na(strategy_Before), "No fishing", strategy_Before),
+    strategy_After  = ifelse(is.na(strategy_After),  "No fishing", strategy_After)
+  ) %>% filter(TIPO_FLOTA == "IND")
 
-harvest_IFOP_jmck_IND_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "INDUSTRIAL (nacional)", 
-             range = "A2:L293") %>% 
-  mutate(specie = "JUREL") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_IND_IFOP_norte = rowSums(across(c('15', '1', '2', '3', '4')), na.rm = TRUE)) %>%
-  mutate(harvest_IND_IFOP_centrosur = rowSums(across(c('5', '8', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_IND_IFOP_norte, harvest_IND_IFOP_centrosur)
+transition_counts <- strategy_transitions %>%
+  count(strategy_Before, strategy_After)
 
-harvest_IFOP_sardine_IND_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "INDUSTRIAL (nacional)", 
-             range = "N2:W196") %>% 
-  mutate(specie = "SARDINA COMUN") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_IND_IFOP_norte = rowSums(across(c('1', '2', '4')), na.rm = TRUE)) %>%
-  mutate(harvest_IND_IFOP_centrosur = rowSums(across(c('5', '8', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_IND_IFOP_norte, harvest_IND_IFOP_centrosur)
+simplify_focus_strategy <- function(strategy) {
+  ifelse(strategy == "Only Sardine", "Sardine",
+  ifelse(strategy == "Only Anchoveta", "Anchoveta",
+  ifelse(strategy == "Only JackMackerel", "JackMackerel",
+  ifelse(grepl("Sardine", strategy) & grepl("Anchoveta", strategy) & grepl("JackMackerel", strategy),
+         "Sardine, JackMackerel & Anchoveta",
+  ifelse(grepl("Sardine", strategy) & grepl("Anchoveta", strategy), "Sardine & Anchoveta",
+  ifelse(grepl("Sardine", strategy) & grepl("JackMackerel", strategy), "Sardine & JackMackerel",
+  ifelse(grepl("JackMackerel", strategy) & grepl("Anchoveta", strategy), "JackMackerel & Anchoveta",
+  ifelse(strategy == "No fishing", "No fishing", "Other"))))))))
+}
 
-harvest_IFOP_anchoveta_IND_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "INDUSTRIAL (nacional)", 
-             range = "Y2:AJ273") %>% 
-  mutate(specie = "ANCHOVETA") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_IND_IFOP_norte = rowSums(across(c('15', '1', '2', '3', '4')), na.rm = TRUE)) %>%
-  mutate(harvest_IND_IFOP_centrosur = rowSums(across(c('5', '8', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_IND_IFOP_norte, harvest_IND_IFOP_centrosur)
+strategy_transitions_focus <- strategy_transitions %>%
+  mutate(
+    strategy_Before_simple = simplify_focus_strategy(strategy_Before),
+    strategy_After_simple = simplify_focus_strategy(strategy_After)
+  ) 
 
-harvest_IFOP_IND_month <- rbind(harvest_IFOP_jmck_IND_month, harvest_IFOP_sardine_IND_month, harvest_IFOP_anchoveta_IND_month)
-rm(list = c("harvest_IFOP_jmck_IND_month", "harvest_IFOP_sardine_IND_month", "harvest_IFOP_anchoveta_IND_month"))
+# %>%
+#   filter(strategy_Before_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "Sardine & JackMackerel", "JackMackerel & Anchoveta", "Sardine, JackMackerel & Anchoveta","No fishing") |
+#            strategy_After_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "Sardine & JackMackerel", "JackMackerel & Anchoveta", "Sardine, JackMackerel & Anchoveta","No fishing"))# %>%
+#   filter(strategy_Before_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "Sardine & JackMackerel", "JackMackerel & Anchoveta", "Sardine, JackMackerel & Anchoveta","No fishing") |
+#            strategy_After_simple %in% c("Sardine", "Anchoveta", "Sardine & Anchoveta", "Sardine & JackMackerel", "JackMackerel & Anchoveta", "Sardine, JackMackerel & Anchoveta","No fishing"))
 
-
-### Lanchas
-
-harvest_IFOP_jmck_LANCHAS_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "LANCHAS (CentroSur)", 
-             range = "A2:I143") %>% 
-  mutate(specie = "JUREL") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_LANCHAS_IFOP_centrosur = rowSums(across(c('5', '7', '8', '9', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_LANCHAS_IFOP_centrosur)
-
-harvest_IFOP_sardine_LANCHAS_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "LANCHAS (CentroSur)", 
-             range = "K2:S170") %>% 
-  mutate(specie = "SARDINA COMUN") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_LANCHAS_IFOP_centrosur = rowSums(across(c('5', '7', '8', '9', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_LANCHAS_IFOP_centrosur)
-
-harvest_IFOP_anchoveta_LANCHAS_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"),  
-             sheet = "LANCHAS (CentroSur)", 
-             range = "U2:AC169") %>% 
-  mutate(specie = "ANCHOVETA") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_LANCHAS_IFOP_centrosur = rowSums(across(c('5', '8', '9', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_LANCHAS_IFOP_centrosur)
-
-harvest_IFOP_LANCHAS_month <- rbind(harvest_IFOP_jmck_LANCHAS_month, 
-                              harvest_IFOP_sardine_LANCHAS_month, 
-                              harvest_IFOP_anchoveta_LANCHAS_month)
-rm(list = c("harvest_IFOP_jmck_LANCHAS_month", 
-            "harvest_IFOP_sardine_LANCHAS_month", 
-            "harvest_IFOP_anchoveta_LANCHAS_month"))
-
-### Botes
-
-harvest_IFOP_jmck_BOTES_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "BOTES (CentroSur)", 
-             range = "A2:I146") %>% 
-  mutate(specie = "JUREL") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_BOTES_IFOP_centrosur = 
-           rowSums(across(c('5', '7', '8', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_BOTES_IFOP_centrosur)
-
-harvest_IFOP_sardine_BOTES_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "BOTES (CentroSur)", 
-             range = "K2:S163") %>% 
-  mutate(specie = "SARDINA COMUN")  %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_BOTES_IFOP_centrosur = 
-           rowSums(across(c('5', '7', '8', '9', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_BOTES_IFOP_centrosur)
-
-harvest_IFOP_anchoveta_BOTES_month <- 
-  read_excel(paste0(dirdata, "IFOP/4. DESEMBARQUES.xlsx"), 
-             sheet = "BOTES (CentroSur)", 
-             range = "U2:AD109") %>% 
-  mutate(specie = "ANCHOVETA") %>%
-  rename(year = `Años (Fc_Llegada)`) %>%
-  rename(month = `Meses (Fc_Llegada)`) %>%
-  mutate(harvest_BOTES_IFOP_centrosur = 
-           rowSums(across(c('5', '7', '8', '9', '14', '10')), na.rm = TRUE)) %>% 
-  dplyr::select(year, month, specie, harvest_BOTES_IFOP_centrosur) 
-
-harvest_IFOP_BOTES_month <- 
-  rbind(harvest_IFOP_jmck_BOTES_month,
-        harvest_IFOP_sardine_BOTES_month, 
-        harvest_IFOP_anchoveta_BOTES_month)
-rm(list = c("harvest_IFOP_jmck_BOTES_month", 
-            "harvest_IFOP_sardine_BOTES_month", 
-            "harvest_IFOP_anchoveta_BOTES_month"))
+transition_counts_focus <- strategy_transitions_focus %>%
+  count(strategy_Before_simple, strategy_After_simple)
 
 
-### Unir Industriales, botes y lanchas
-harvest_IFOP_month <- 
-  full_join(harvest_IFOP_LANCHAS_month, harvest_IFOP_BOTES_month, by = c("year", "specie", "month")) %>%
-  full_join(harvest_IFOP_IND_month, by = c("year", "specie", "month")) %>%
-  mutate(total_harvest_IFOP_centrosur = 
-           rowSums(
-             across(
-               c(harvest_IND_IFOP_centrosur,
-                 harvest_LANCHAS_IFOP_centrosur, 
-                 harvest_BOTES_IFOP_centrosur)), 
-             na.rm = TRUE)) %>%
-  mutate(total_harvest_IFOP_norte = harvest_IND_IFOP_norte) %>% filter(year >= 2012)
-
-harvest_IFOP <- harvest_IFOP_month %>%
-  group_by(specie, year) %>%
-  summarise(
-    harvest_LANCHAS_IFOP_centrosur = sum(harvest_LANCHAS_IFOP_centrosur, na.rm = TRUE),
-    harvest_BOTES_IFOP_centrosur = sum(harvest_BOTES_IFOP_centrosur, na.rm = TRUE),
-    harvest_IND_IFOP_norte = sum(harvest_IND_IFOP_norte, na.rm = TRUE),
-    harvest_IND_IFOP_centrosur = sum(harvest_IND_IFOP_centrosur, na.rm = TRUE),
-    total_harvest_IFOP_centrosur = sum(total_harvest_IFOP_centrosur, na.rm = TRUE),
-    total_harvest_IFOP_norte = sum(total_harvest_IFOP_norte, na.rm = TRUE),
-    .groups = "drop"
+# Base plot
+p <- ggplot(transition_counts_focus,
+            aes(axis1 = strategy_Before_simple,
+                axis2 = strategy_After_simple,
+                y = n)) +
+  geom_flow(aes(fill = strategy_Before_simple),
+            width = 1/12, knot.pos = 0.4, alpha = 0.8) +
+  geom_stratum(width = 1/12, fill = "gray95", color = "black") +
+  scale_x_discrete(limits = c("2012–2018", "2019–2024"),
+                   expand = c(.25, .25)) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  labs(x = "", y = "Number of Vessels") +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    panel.grid = element_blank()
   )
 
-rm(list = c("harvest_IFOP_IND_month", "harvest_IFOP_BOTES_month", "harvest_IFOP_LANCHAS_month"))
+# Extraer posiciones de etiquetas
+stratum_data <- ggplot_build(p)$data[[2]]
+
+left_labels <- stratum_data %>%
+  filter(x == 1) %>%
+  mutate(x = x - 0.05,
+         stratum = str_wrap(stratum, width = 20))
+
+right_labels <- stratum_data %>%
+  filter(x == 2) %>%
+  mutate(x = x + 0.05,
+         stratum = str_wrap(stratum, width = 20))
+
+# Agregar etiquetas con repel
+p +
+  geom_text_repel(
+    data = left_labels,
+    aes(x = x, y = y, label = stratum),
+    inherit.aes = FALSE,
+    hjust = 1, nudge_x = -0.1, direction = "y",
+    size = 2.5, segment.color = "grey60", segment.size = 0.3
+  ) +
+  geom_text_repel(
+    data = right_labels,
+    aes(x = x, y = y, label = stratum),
+    inherit.aes = FALSE,
+    hjust = 0, nudge_x = 0.1, direction = "y",
+    size = 2.5, segment.color = "grey60", segment.size = 0.3
+  )
+
 
 ```
 
-```{r harvest_IFOP_logbooks, message=FALSE, warning=FALSE, include=FALSE}
+
+```{r harvest_data, message=FALSE, warning=FALSE, include=FALSE}
 
 library(readxl)
 library(dplyr)
-library(ggplot2)
-library(tidyr)
+
+harvest_IFOP_month <- readRDS("data/harvest/IFOP_month.rds") 
+harvest_IFOP <- readRDS("data/harvest/IFOP.rds")
+harvest_SERNAPESCA <- readRDS("data/harvest/sernapesca.rds")
+
+
+#---- IFOP loogbook data ----
 
 harvest_IFOP_logbooks <- logbooks %>% 
   filter(year >= 2012) %>%
@@ -652,6 +548,12 @@ harvest_IFOP_logbooks <- logbooks %>%
   ) %>%
   rename(specie = NOMBRE_ESPECIE) %>%
   mutate(harvest_IFOP_loogbook_centrosur = harvest_IFOP_loogbook_centrosur / 1000)
+
+
+#---- Harvest data merged ---- 
+
+harvest <- left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie"))
+harvest <- left_join(harvest, harvest_IFOP_logbooks, by = c("year", "specie")) 
 
 ```
 
@@ -730,7 +632,9 @@ ggplot(harvest_summary, aes(x = month, y = harvest, fill = specie)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 
+
 rm(harvest_summary)
+rm(list = c("harvest_IFOP", "harvest_SERNAPESCA", "harvest_IFOP_logbooks"))
 
 ```
 
@@ -752,17 +656,6 @@ procedure.
 
 ## Data
 
-```{r harvest_merged, message=FALSE, warning=FALSE, include=FALSE}
-
-library(readxl)
-library(dplyr)
-
-harvest <- left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie"))
-harvest <- left_join(harvest, harvest_IFOP_logbooks, by = c("year", "specie")) 
-rm(list = c("harvest_IFOP", "harvest_SERNAPESCA", "harvest_IFOP_logbooks"))
-
-
-```
 
 -   **SOLICITADO A IFOP 2012-2024:**
     -   Stock abundance and vessel landings (annual by
@@ -925,7 +818,7 @@ library(scales)
 library(viridis)
 
 biomass_long <- biomass %>%
-  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass),
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, , jurel_biomass_cs_intra),
                names_to = "species", 
                values_to = "biomass") %>%
   filter(!is.na(biomass)) %>%
@@ -936,15 +829,16 @@ biomass_long$year <- as.numeric(biomass_long$year)
 biomass_long$species <- recode(biomass_long$species,
                                sardine_biomass = "Sardine", 
                                anchoveta_biomass = "Anchoveta", 
-                               jurel_biomass = "Jack Mackerel")
+                               jurel_biomass_cs = "Jack Mackerel", 
+                               jurel_biomass_cs_intra = "Jack Mackerel (intrapolated)")
 
-biomass <- biomass_long %>% filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel"))
+biomass <- biomass_long %>% filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel", "Jack Mackerel (intrapolated)"))
 
 
 # Plot
 ggplot(biomass, aes(x = year, y = biomass, color = species, group = species)) +
   geom_smooth(se = TRUE, method = "loess", span = 0.4, linetype = "solid") +
-  scale_y_continuous(labels = comma) +  # Or use scale_y_log10(labels = comma) to compress
+  scale_y_continuous(labels = scales::comma) +  # Or use scale_y_log10(labels = comma) to compress
   labs(x = "Year",
        y = "Biomass (tons)",
        color = "Species") +
@@ -967,7 +861,7 @@ Adding harvest:
 
 library(tidyverse)
 
-harvest <- harvest %>%
+harvest2 <- harvest %>%
   select(c(specie, year, total_harvest_IFOP_centrosur)) %>%
   mutate(specie = recode(specie,
                           "SARDINA COMUN" = "Sardine",
@@ -977,7 +871,14 @@ harvest <- harvest %>%
   rename(harvest = total_harvest_IFOP_centrosur) %>%
   rename(species = specie)
 
-biomass_harvest <- full_join(biomass, harvest, by = c("species" = "species", "year" = "year")) %>% arrange(species, year)
+harvest2 <- bind_rows(
+  harvest2,
+  harvest2 %>%
+    filter(species == "Jack Mackerel") %>%
+    mutate(species = "Jack Mackerel (intrapolated)")
+)
+
+biomass_harvest <- full_join(biomass, harvest2, by = c("species" = "species", "year" = "year")) %>% arrange(species, year)
 
 biomass_harvest_long <- biomass_harvest %>%
   pivot_longer(cols = c(biomass, harvest),
@@ -985,13 +886,15 @@ biomass_harvest_long <- biomass_harvest %>%
                values_to = "value")
 
 ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
-  geom_line(size = 1, na.rm = TRUE) +  
-  geom_point(size = 2, na.rm = TRUE) + 
-  facet_wrap(~species, scales = "free_y") +  # 1 panel per species, adjust scales as needed
+  # geom_line(size = 1, na.rm = TRUE) +  
+  # geom_point(size = 2, na.rm = TRUE) + 
+  geom_smooth(se = FALSE, span = 0.4, method = "loess", na.rm = TRUE) + # <- smoothing
+  facet_wrap(~species, scales = "free_y") +
   labs(x = "Year", y = "Value (tons)", color = "Variable") +
   scale_color_manual(values = c("biomass" = "darkgreen", "harvest" = "steelblue")) +
   theme_minimal() +
   theme(legend.position = "top")
+
 ```
 
 ### Trip level cost functions
