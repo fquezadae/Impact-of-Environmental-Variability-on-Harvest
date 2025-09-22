@@ -1,4 +1,6 @@
 cd "C:\Users\felip\OneDrive - Universidad de Concepción\FONDECYT Iniciacion\Data\Environmental"
+cd "C:\Users\FACEA\OneDrive - Universidad de Concepción\FONDECYT Iniciacion\Data\Environmental"
+
 mamba activate C:\Users\FACEA\miniforge3\envs\cmems_env_py3.12
 
 
