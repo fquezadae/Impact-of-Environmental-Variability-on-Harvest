@@ -316,7 +316,7 @@ strategy_table_art <- strategy_summary %>%
 ```
 
 
-\@ref(tab:table-art) for strategy transitions.
+Table \@ref(tab:table-art) for strategy transitions.
 
 
 ```{r table-art, echo=FALSE, results='asis'}
@@ -358,7 +358,7 @@ strategy_table_ind <- strategy_summary %>%
 
 ```
 
-\@ref(tab:table-ind) for industrial strategy transitions.
+Table \@ref(tab:table-ind) for industrial strategy transitions.
 
 
 ```{r table-ind, echo=FALSE, results='asis'}
