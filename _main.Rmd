@@ -206,9 +206,9 @@ get_strategy <- function(sardine, jackmackerel, anchoveta, other) {
   n <- length(species)
   if (n == 0) return("None or negligible")
   if (n == 1) return(paste("Only", species[1]))
-  if (n == 2) return(paste0(species[1], " and ", species[2]))
-  if (n == 3) return(paste0(species[1], ", ", species[2], " and ", species[3]))
-  return(paste0(species, collapse = ", "))
+  if (n == 2) return(paste(species[1], "and", species[2]))
+  if (n == 3) return(paste(species[1], ",", species[2], "and", species[3]))
+  return(paste(species, collapse = ", "))
 }
 
 # Apply strategy classification
@@ -287,10 +287,11 @@ strategy_before <- vessel_species_year %>%
 
 ```
 
-See Figure \@ref(fig:switchStrategy-ART) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
+See Figure \@ref(fig:switchStrategy-ART) and Table
+\@ref(tab:strategy-table-logbooks_ART) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
 
 
-```{r strategy_table_logbooks_ART, message=FALSE, warning=FALSE, include=FALSE, results='asis'}
+```{r strategy-table-logbooks_ART, echo=FALSE, results='asis'}
 
 library(kableExtra)
 library(stringr)
@@ -313,27 +314,19 @@ strategy_table_art <- strategy_summary %>%
   ungroup() %>%
   select(-TIPO_FLOTA)
 
-```
-
-
-\@ref(tab:table-art) for strategy transitions.
-
-
-```{r table-art, echo=FALSE, results='asis'}
-
-# Create table with grouped columns
+# Table
 strategy_table_art %>%
-  select(strategy, n_before, percent_before, n_after, percent_after) %>%
-  kable("latex", booktabs = TRUE, digits = 1,
-        col.names = c("Strategy", "n", "%", "n", "%"),
-        caption = "Comparison of Strategies Before and After -- Small-scale vessels") %>%
-  add_header_above(c(" " = 1, "Before" = 2, "After" = 2)) %>%
+  kable(
+    "latex", booktabs = TRUE, digits = 1,
+    col.names = c("Strategy", "n (Before)", "Perc (Before)", "n (After)", "Perc (After)"),
+    escape = FALSE,
+    caption = "Strategies of the artisanal fleet before and after"
+  ) %>%
   kable_styling(font_size = 10)
 
 ```
 
-
-```{r strategy-table-logbooks_IND, message=FALSE, warning=FALSE, include=FALSE, results='asis'}
+```{r strategy-table-logbooks_IND, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, results='asis'}
 
 library(kableExtra)
 library(stringr)
@@ -356,24 +349,14 @@ strategy_table_ind <- strategy_summary %>%
   ungroup() %>%
   select(-TIPO_FLOTA)
 
-```
-
-\@ref(tab:table-ind) for industrial strategy transitions.
-
-
-```{r table-ind, echo=FALSE, results='asis'}
-
-# Create table with grouped columns
+# Table
 strategy_table_ind %>%
-  select(strategy, n_before, percent_before, n_after, percent_after) %>%
   kable("latex", booktabs = TRUE, digits = 1,
-        col.names = c("Strategy", "n", "%", "n", "%"),
-        caption = "Comparison of Strategies Before and After -- Industrial vessels") %>%
-  add_header_above(c(" " = 1, "Before" = 2, "After" = 2)) %>%
+        col.names = c("Strategy", "n (Before)", "\% (Before)", "n (After)", "\% (After)"),
+        caption = "Comparison of Strategies Before and After (IND Fleet)") %>%
   kable_styling(font_size = 10)
 
 ```
-
 
 
 ```{r switchStrategy-ART, echo=FALSE, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, results='asis'}
@@ -1135,3 +1118,397 @@ The source code for this project is available on
 [GitHub](https://github.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest)
 
 # References
+
+<!--chapter:end:manuscript.Rmd-->
+
+---
+title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile"
+subtitle: "Using a Multi-Species Approach"
+author: "Felipe J. Quezada-Escalona"
+date: "Departamento de Economía" #"Last update: `r Sys.Date()`"
+output: 
+  xaringan::moon_reader:
+    self_contained: true
+    css: ["metropolis", "default-fonts", "udeconce.css"]
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r refmanager, include=FALSE}
+library(RefManageR)
+source(here::here("helper.R"))
+BibOptions(check.entries = FALSE, 
+           bib.style = "authoryear", 
+           style = "markdown",
+           dashed = TRUE)
+bib <- ReadBib("bib_paperpile.bib")
+citeopt <- list(max.names=3, longnamesfirst = FALSE)
+```
+
+```{r use-logo, echo=FALSE}
+xaringanExtra::use_logo("https://raw.githubusercontent.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest/088d0bab630a8da78df8a546f30138ba56324573/logo/udec2.png")
+```
+
+# Introduction
+
+## Big picture
+
+- Marine resource distribution is changing due to climate variability `r Citep(bib, "Poloczanska2013-qq", .opts = citeopt)`.
+- Thus, harvest levels would be affected by climate variability `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`
+
+## Why a Multi-Species Model?
+
+- Diversification improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
+- Fishers respond to change by:
+  - Maintaining the current strategy
+  - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
+  - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+  
+  
+???
+
+Recordar que uno apreta C para clonar, P para Presenter View, H para tener un mapa de las teclas
+
+---
+
+# Introduction
+## Relevance
+- Under multispecies harvesting is not straighforward to study fisher harvest decisions
+  - Responses to availability vary by (i) port infrastructur, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+  - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
+- Understand fishers’ adaptive capacity
+  - Inform climate-resilient fisheries policies in Chile
+- Contribute to the sparse local multi-species economic modeling literature in Chile
+  - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
+
+---
+
+# Introduction
+
+## Case Study: Chile’s Small Pelagic Fishery (SPF)
+
+- Anchoveta, Jack mackerel, Sardine
+- ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
+- Climate variability will impact:
+  - Species composition
+  - Prices
+  - Trip cost
+  - Total annual trips
+  - Catch levels
+
+## Research Questions
+
+- How will **fishing decisions, catch levels, and prices** evolve under different climate scenarios?
+- How do fishers **substitute between species**?
+
+---
+
+# Introduction
+
+
+## Hypotheses
+
+- Reduced availability → Switch if expected revenue > expected cost in other fishery
+- Otherwise → Decrease effort or exit
+- Behavior is **heterogeneous**:
+  - Geography
+  - Gear type `r Citep(bib, "Reimer2017-jw", .opts = citeopt)`
+
+---
+
+# Methodology Overview
+
+**Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:**
+
+1. Estimate stock dynamics
+2. Estimate trip-level costs
+3. Estimate annual trips
+4. Estimate inverse demand
+5. Simulate climate change effects on profits/harvest
+
+---
+
+# Data Sources
+
+### Requested (2012–2024)
+
+- Stock abundance
+- Annual landings
+- Trip-level data
+- Ex-vessel prices
+
+### Retrieving from Climate Model Intercomparison Project (CMIP)
+
+- Sea Surface Temperature (historical and projections)
+- Chlorophyll (historical and projections)
+- Salinity  (historical and projections)
+- Wind Speed  (historical and projections)
+- Wave height  (historical and projections)
+- Precipitations  (historical and projections)
+
+**Note:** Requested in lower resolution to Fabian Tapia (Oceanographic, UdeC)
+
+---
+
+# Data Sources
+
+### To Be Requested
+
+- Crew wages (maybe INE?) 
+- Fuel prices
+- Vessel permits
+- TAC 
+- Quota prices (auction/secondary market?)
+
+---
+
+# Model 1: Stock Dynamics 
+
+## Base model
+
+`\begin{equation}
+x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
+\label{eq1}
+\end{equation}
+`
+- where: 
+  - $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, 
+  - $h_{iy}$ is the annual harvest of species $i$ on year $y$, 
+  - $r_i$ is the intrinsic growth rate of the resource $i$,
+  - $\eta_i$ is a density-dependent factor related to the carrying capacity, 
+  - $\alpha_{ij}$ are the interaction parameters between species. 
+- Follows logistic + interspecies interaction
+- System of $n$ growth equations can be estimated simultaneously using SUR (¿endogeneity?)
+
+
+
+---
+
+# Model 1: Stock Dynamics 
+
+## Model with the environment
+
+
+Following `r Citet(bib, "Richter2018", .opts = citeopt)`: 
+
+`
+\begin{equation}
+x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
+\label{eq2}
+\end{equation}
+`
+
+- Adds environmental covariates (e.g., SST and chlorophyll)
+
+
+---
+
+# Model 2: Trip-Level Costs
+
+## Base model
+
+
+`\[
+C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
+\]`
+where: 
+- $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$:
+  - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance traveled?)
+  - $w$ is a matrix of variable input prices, 
+- $\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
+  - $h_{vg}$ is a matrix of harvest quantities, 
+  - $x$ is a matrix of given stock levels of the species of interest, and 
+  - $Z_v$ is a matrix of given vessel characteristics. 
+
+---
+
+# Model 2: Trip-Level Costs
+
+## Model with the environment
+
+To link this function to climate variability
+- Include additional environmental variables $Env$ to $\mathbf{X}_{vg}$ 
+  - e.g., wind intensity and wave conditions in each trip at the harvest location, upon data availability.
+- Therefore, the augmented $X_{vg}$ matrix becomes $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
+- The model can be estimated with **SUR**. 
+
+---
+
+# Model 3: Total Annual Trips
+
+The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
+`r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`: 
+`\[
+Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
+\label{eq5}
+\]`
+where 
+- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a matrix of explanatory variables, 
+- $\beta_g$ is a vector of coefficients to be estimated, 
+- $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
+- $\bar{q}$ is the annual quota level. 
+
+Additionally, we can add the accumulation of *bad weather days?* as an explanatory variable to incorporate weather conditions into this decision, thus: - $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+- Other variables? e.g., state dependency?
+
+---
+
+# Model 4: Inverse Demand
+
+The price of each species is modeled using an **inverse demand model**. The price of a species $i$ in
+year $y$ is the following:
+`\begin{equation}
+p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta  +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 2,\ldots,n, i \neq j.
+\label{eq6}
+\end{equation}
+`
+- The system can be estimated using 2SLS, instrumenting harvest with climate variables and other cost shifters.
+  - Undergrad student analyzing the option to estimate a supply-demand system with 3SLS for each species (6 equations simultaneously?)
+- Other variables for the demand? 
+- Endogeneity of substitute prices?
+
+Maybe then see if we need to estimate a AR(1) model?? (**HELP LEO!!!**):
+`\begin{equation}
+p_{iy} = \gamma_i p_{i,y-1} + \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta + \epsilon_{iy}
+\label{eq6_2}
+\end{equation}
+`
+
+---
+
+# Integration and Simulation
+
+Use models parameters to:
+- Conduct numerical optimization for different climate scenarios
+- Obtain the optimal **harvest** and **quota** conditional on climate scenario
+- Evaluate **profits** and **species substitution**
+- I need future projection for climate/environmental variables (?)
+
+
+---
+
+# Numerical optimization
+
+## Vessel maximization problem
+
+In each year, a vessel maximizes profits by choosing their optimal number of
+trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
+`\begin{align}
+\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
+\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
+\label{eq8}
+\end{align}
+`
+
+- where:
+  - $\rho$ is the intra-annual discount factor, 
+  - $\omega$ is a vector of shares of $\bar{q}$, and 
+  - $h_{lt}=0$ for all $l\neq g$.
+
+---
+
+# Numerical optimization
+
+## Some considerations
+
+- The vector of shares is obtained from historical data on harvest. 
+- The optimal profit from the maximization problem is $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, 
+  - $h_{vgty}^*$ is the optimal harvest per trip.
+  - $T_{vgy}^*$ optimal total number of trips.
+- Optimal quota level, per year and by species, is obtained by solving the social-planner optimization problem to maximize the net value
+of the fishery 
+
+
+
+---
+
+# Expected Results
+
+- Climate variability affects:
+  - **Stock** dynamics
+  - **Fishing costs**
+  - **Trip frequency**
+- Catch composition shifts with climate
+- Localized market effects
+
+---
+layout: false
+
+class: inverse, center, middle
+
+# Thank you!
+
+**Felipe J. Quezada-Escalona**  
+
+Department of Economics
+
+<img src="https://raw.githubusercontent.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest/refs/heads/main/logo/Logo-UdeC-1-mag.png" width="150">
+
+
+<span style="color:#f59f18;">Questions?</span>
+
+
+---
+
+# Temas de investigación en curso
+
+
+- Modelos de elección discreta para el estudio del efecto de cambios en la distribución de especies pelágicas en las decisiones de pesca en la costa oeste de EEUU (localización, especie y participación)  -- Enviado a *Ecological Economics*
+  - ¿Hacer lo mismo para Chile? Idea: basados en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`, crear contrafactuales para fraccionamiento, o cambios en variables climáticas. Validar con periodos observados.
+  - ¿Como endogeneizar los precios en modelos de eleccion discreta, los cuales dependen de la frecuencia en que pescadores participan? (ojo: no es lo mismo que instrumentar)
+  
+- Colaborando con NOAA Fisheries en:
+  - El desarrollo de proyecciones de desembarque futuro bajo distintos modelos climáticos que afectan la distribución de especies.
+  - La incorporación de un modelo de teoría de juegos a modelos de evaluación de stock que consideran especies transfronterizas.
+  
+---
+
+# Areas de posible colaboración con INCAR2/SE
+
+- Impacto de la variación climática (u otro shock exógeno?) en las decisiones de cosecha de centros de cultivos (o productores de pequeña escala)? 
+  - Algo similar a lo hecho con SPF para USA
+  - Es como lo que hace Adams con HAB pero tal vez con modelo de elección discreta en vez de modelo de causalidad -- Crear contrafactuales como en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`.
+
+- Relación entre las etapas de producción en áreas estuarinas y marinas (ejemplo: ¿La eficiencia técnica en agua dulce predice eficiencia técnica en etapa de agua salada?).
+
+- Estimar patrones de sustitución de demanda de salmón en *XX* país usando modelo BLP, y como estos patrones se pudieron ver afectados por algún evento (e.g., marea roja) -- Idea de Manuel
+
+---
+
+# Areas de posible colaboración con INCAR2/SE
+
+- ¿Conectar el modelo para SPF ha elaborar en el proyecto FONDECYT a los costos de alimentación de la acuicultura en Chile? (Comentario de Jorge cuando me adjudique el FONDECYT)​
+
+- Early Warning System usando indicadores económicos (Estoy inscrito en ese tema en la línea de Renato -- Adams Ceballos le interesa participar)
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 1, stop = 5)
+```
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 6, stop = 10)
+```
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 11, stop = 15)
+```
+
+
+
+
+<!--chapter:end:slides.Rmd-->
+
