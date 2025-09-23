@@ -12,7 +12,7 @@ library(lubridate)
 
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", paste0(usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"))
-f <- paste0(dirdata, "Environmental/cmems_mod_glo_phy_myint_0.083deg_P1D-m_so-thetao-uo-vo_78.00W-71.50W_42.00S-32.00S_0.49-1.54m_2021-07-01-2025-06-28.nc")
+f <- paste0(dirdata, "Environmental/cmems_mod_glo_phy_myint_0.083deg_P1D-m_so-thetao-uo-vo_81.00W-71.50W_42.00S-32.00S_0.49-1.54m_2021-07-01-2025-06-28.nc")
 
 
 ## Open NCDF4 file

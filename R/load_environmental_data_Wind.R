@@ -12,7 +12,7 @@ library(lubridate)
 
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", paste0(usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"))
-f <- paste0(dirdata, "Environmental/cmems_obs-wind_glo_phy_my_l4_0.125deg_PT1H_multi-vars_77.94W-71.56W_41.94S-32.06S_2012-01-01-2025-04-19.nc")
+f <- paste0(dirdata, "Environmental/cmems_obs-wind_glo_phy_my_l4_0.125deg_PT1H_multi-vars_80.94W-71.56W_41.94S-32.06S_2012-01-01-2025-04-19.nc")
 
 # --- Open file
 nc <- nc_open(f)
