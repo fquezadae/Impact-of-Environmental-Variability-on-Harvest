@@ -39,10 +39,13 @@ grid[, date := dates[time]]
 grid[, ua := as.vector(ua)]
 grid[, va := as.vector(va)]
 
+gc()
 # --- Compute derived vars
 grid[, speed := sqrt(ua^2 + va^2)]
 grid[, direction := atan2(ua, va) * 180/pi]
 grid[direction < 0, direction := direction + 360]
+
+gc()
 
 # --- Daily aggregation
 wind_dt <- grid[, .(
