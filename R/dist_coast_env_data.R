@@ -1,3 +1,4 @@
+
 ###----------------------------------------------###
 ###   Environmental data: distance to coast      ###
 ###----------------------------------------------###
@@ -10,7 +11,6 @@ library(data.table)
 library(lubridate)
 library(sf)
 library(rnaturalearth)
-library(ggplot2)
 
 #---------------------------------
 # Load dataset
@@ -27,38 +27,85 @@ grid_coords <- env_dt %>%
   select(lon, lat) %>%
   distinct()
 
-# Convert to sf and keep lon/lat
 grid_sf <- st_as_sf(grid_coords, coords = c("lon", "lat"), crs = 4326) %>%
-  mutate(lon = st_coordinates(.)[,1],
-         lat = st_coordinates(.)[,2])
-
-# Transform to projected CRS (meters)
-grid_sf <- st_transform(grid_sf, 6933)
+  st_transform(32719)  # UTM 19S, en metros
 
 #---------------------------------
-# Coastline
+# Chile continental
 #---------------------------------
-land <- ne_countries(scale = "medium", returnclass = "sf")
-
-# Keep only South American countries (mainland)
-south_america <- land %>%
-  filter(continent == "South America")
-
-# Build the coastline from union
-coastline <- st_union(st_geometry(south_america)) %>%
-  st_transform(6933)
+chile_mainland <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  filter(admin == "Chile") %>%
+  st_union() %>%
+  st_cast("POLYGON") %>%
+  (\(x) x[which.max(st_area(x))])() %>%
+  st_transform(32719)
 
 #---------------------------------
-# Remove land points
+# Buffer de 200 nm (370.4 km)
 #---------------------------------
-inside_land <- st_intersects(grid_sf, coastline, sparse = FALSE)[,1]
+nm200 <- 200 * 1852   # en metros
+chile_buffer <- st_buffer(chile_mainland, dist = nm200)
+
+#---------------------------------
+# Quitar puntos en tierra
+#---------------------------------
+inside_land <- st_intersects(grid_sf, chile_mainland, sparse = FALSE)[,1]
 grid_sf <- grid_sf[!inside_land, ]
 
+#---------------------------------
+# Filtrar solo dentro de buffer
+#---------------------------------
+inside_buffer <- st_intersects(grid_sf, chile_buffer, sparse = FALSE)[,1]
+grid_filtered <- grid_sf[inside_buffer, ]
 
 #---------------------------------
-# Distance to coast (m)
+# Distancias a la costa
 #---------------------------------
-grid_sf$dist2coast <- st_distance(grid_sf, coastline) |> as.numeric()
+grid_filtered$dist2coast_m  <- as.numeric(st_distance(grid_filtered, chile_mainland))
+grid_filtered$dist2coast_km <- grid_filtered$dist2coast_m / 1000
+
+#---------------------------------
+# Merge con dataset original
+#---------------------------------
+grid_filtered_dt <- as.data.table(st_drop_geometry(grid_filtered))
+
+env_coast_dt <- env_dt %>%
+  inner_join(grid_filtered_dt, by = c("lon", "lat"))
+
+# Guardar
+saveRDS(env_coast_dt,
+        file="data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
+
+
+
+#---------------------------------
+# Figura
+#---------------------------------
+
+library(ggplot2)
+
+# Pasar a lat/lon para graficar bonito
+grid_plot <- st_as_sf(grid_filtered, crs = 32719) %>%
+  st_transform(4326)
+
+chile_plot <- st_as_sf(chile_mainland, crs = 32719) %>%
+  st_transform(4326)
+
+buffer_plot <- st_as_sf(chile_buffer, crs = 32719) %>%
+  st_transform(4326)
+
+ggplot() +
+  geom_sf(data = buffer_plot, fill = "lightblue", color = NA, alpha = 0.3) +
+  geom_sf(data = chile_plot, fill = "gray60", color = "black") +
+  geom_sf(data = grid_plot, aes(color = dist2coast_km), size = 0.3) +
+  scale_color_viridis_c(option = "plasma", name = "Distancia costa (km)") +
+  coord_sf(xlim = c(-82, -70), ylim = c(-42, -30)) +
+  theme_minimal() +
+  labs(title = "Distancia a la costa (≤ 200 nm)",
+       subtitle = "Grid ambiental 0.125° filtrado a 200 nm de Chile continental",
+       x = "Longitud", y = "Latitud")
+
+
 
 #---------------------------------
 # Maximum distance by latitude
@@ -75,17 +122,3 @@ min_maxdist <- min(max_dist_by_lat$max_dist, na.rm = TRUE)
 
 cat("Minimum of the maximum distances (km):",
     round(min_maxdist / 1000, 2), "\n")
-
-#---------------------------------
-# Filter to <= min_maxdist
-#---------------------------------
-grid_filtered <- grid_sf %>%
-  filter(dist2coast <= min_maxdist)
-
-grid_filtered_dt <- as.data.table(st_drop_geometry(grid_filtered))
-
-# Merge with full dataset
-env_coast_dt <- env_dt %>%
-  inner_join(grid_filtered_dt, by = c("lon", "lat"))
-
-saveRDS(env_coast_dt, file="data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
