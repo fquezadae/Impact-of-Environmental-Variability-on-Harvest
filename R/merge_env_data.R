@@ -38,7 +38,7 @@ aggregate_to_coarse <- function(dt, vars, coarse_res = 0.125){
                         date = date),
                    lapply(.SD, mean, na.rm=TRUE)),
                .SDcols = vars,
-               by = .(lon_coarse, lat_coarse, date, year, month)]
+               by = .(lon_coarse, lat_coarse, date)]
   
   return(agg_dt)
 }
@@ -64,7 +64,7 @@ chl_agg <- chl_agg[, .(lon = lon_coarse,
 # Wind is already 0.125° -> just select relevant columns
 win_vars <- c("speed_mean", "speed_min", "speed_max",
               "dir_mean", "dir_min", "dir_max")
-win_dt <- win_dt[, c("lon","lat","date", "year", "month", win_vars), with=FALSE]
+win_dt <- win_dt[, c("lon","lat","date", win_vars), with=FALSE]
 
 
 #-----------------------------
