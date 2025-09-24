@@ -27,7 +27,7 @@ grid_coords <- env_dt %>%
   distinct()
 
 grid_sf <- st_as_sf(grid_coords, coords = c("lon", "lat"), crs = 4326) %>%
-  st_transform(32719)  # UTM 19S, en metros
+  st_transform(32719)  # UTM 19S
 
 #---------------------------------
 # Chile continental (mainland only)
@@ -42,7 +42,7 @@ chile_mainland <- ne_countries(scale = "medium", returnclass = "sf") %>%
 #---------------------------------
 # Buffer de 200 nm (~370.4 km)
 #---------------------------------
-nm200 <- 200 * 1852   # en metros
+nm200 <- 200 * 1852   # metros
 chile_buffer <- st_buffer(chile_mainland, dist = nm200)
 
 #---------------------------------
@@ -71,7 +71,7 @@ grid_filtered$dist2coast_m  <- as.numeric(st_distance(grid_filtered, chile_mainl
 grid_filtered$dist2coast_km <- grid_filtered$dist2coast_m / 1000
 
 #---------------------------------
-# Convertir a lon/lat para merge
+# Extraer lon/lat de nuevo para merge
 #---------------------------------
 grid_filtered_lonlat <- st_transform(grid_filtered, 4326) %>%
   mutate(lon = st_coordinates(.)[,1],
@@ -82,17 +82,25 @@ grid_filtered_lonlat <- st_transform(grid_filtered, 4326) %>%
 #---------------------------------
 # Merge con dataset original
 #---------------------------------
+keep_cells <- grid_filtered_lonlat %>%
+  select(lon, lat, dist2coast_m, dist2coast_km)
+
 env_coast_dt <- env_dt %>%
-  inner_join(grid_filtered_lonlat, by = c("lon", "lat"))
+  semi_join(keep_cells, by = c("lon", "lat")) %>%
+  left_join(keep_cells, by = c("lon", "lat"))
 
-# Guardar
+#---------------------------------
+# Guardar dataset final
+#---------------------------------
 saveRDS(env_coast_dt,
-        file="data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
-
+        file = "data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
 
 #---------------------------------
-# Figura
+# Chequeo rápido
 #---------------------------------
+cat("Celdas originales:", nrow(env_dt %>% distinct(lon, lat)), "\n")
+cat("Celdas filtradas :", nrow(env_coast_dt %>% distinct(lon, lat)), "\n")
+
 
 library(ggplot2)
 
