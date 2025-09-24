@@ -1,4 +1,3 @@
-
 ###----------------------------------------------###
 ###   Environmental data: distance to coast      ###
 ###----------------------------------------------###
@@ -31,7 +30,7 @@ grid_sf <- st_as_sf(grid_coords, coords = c("lon", "lat"), crs = 4326) %>%
   st_transform(32719)  # UTM 19S, en metros
 
 #---------------------------------
-# Chile continental
+# Chile continental (mainland only)
 #---------------------------------
 chile_mainland <- ne_countries(scale = "medium", returnclass = "sf") %>%
   filter(admin == "Chile") %>%
@@ -41,22 +40,29 @@ chile_mainland <- ne_countries(scale = "medium", returnclass = "sf") %>%
   st_transform(32719)
 
 #---------------------------------
-# Buffer de 200 nm (370.4 km)
+# Buffer de 200 nm (~370.4 km)
 #---------------------------------
 nm200 <- 200 * 1852   # en metros
 chile_buffer <- st_buffer(chile_mainland, dist = nm200)
 
 #---------------------------------
-# Quitar puntos en tierra
+# Polígono de toda Sudamérica (para quitar tierra)
 #---------------------------------
-inside_land <- st_intersects(grid_sf, chile_mainland, sparse = FALSE)[,1]
-grid_sf <- grid_sf[!inside_land, ]
+south_america <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  filter(continent == "South America") %>%
+  st_union() %>%
+  st_transform(32719)
 
 #---------------------------------
-# Filtrar solo dentro de buffer
+# Zona de mar = buffer ∩ (no tierra)
 #---------------------------------
-inside_buffer <- st_intersects(grid_sf, chile_buffer, sparse = FALSE)[,1]
-grid_filtered <- grid_sf[inside_buffer, ]
+sea_area <- st_difference(chile_buffer, south_america)
+
+#---------------------------------
+# Filtrar solo grilla en el mar
+#---------------------------------
+inside_sea <- st_intersects(grid_sf, sea_area, sparse = FALSE)[,1]
+grid_filtered <- grid_sf[inside_sea, ]
 
 #---------------------------------
 # Distancias a la costa
@@ -65,17 +71,23 @@ grid_filtered$dist2coast_m  <- as.numeric(st_distance(grid_filtered, chile_mainl
 grid_filtered$dist2coast_km <- grid_filtered$dist2coast_m / 1000
 
 #---------------------------------
+# Convertir a lon/lat para merge
+#---------------------------------
+grid_filtered_lonlat <- st_transform(grid_filtered, 4326) %>%
+  mutate(lon = st_coordinates(.)[,1],
+         lat = st_coordinates(.)[,2]) %>%
+  st_drop_geometry() %>%
+  as.data.table()
+
+#---------------------------------
 # Merge con dataset original
 #---------------------------------
-grid_filtered_dt <- as.data.table(st_drop_geometry(grid_filtered))
-
 env_coast_dt <- env_dt %>%
-  inner_join(grid_filtered_dt, by = c("lon", "lat"))
+  inner_join(grid_filtered_lonlat, by = c("lon", "lat"))
 
 # Guardar
 saveRDS(env_coast_dt,
         file="data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
-
 
 
 #---------------------------------
@@ -84,41 +96,21 @@ saveRDS(env_coast_dt,
 
 library(ggplot2)
 
-# Pasar a lat/lon para graficar bonito
-grid_plot <- st_as_sf(grid_filtered, crs = 32719) %>%
-  st_transform(4326)
-
-chile_plot <- st_as_sf(chile_mainland, crs = 32719) %>%
-  st_transform(4326)
-
-buffer_plot <- st_as_sf(chile_buffer, crs = 32719) %>%
+# Pasar todo a lat/lon (EPSG:4326) para graficar
+chile_plot   <- st_transform(chile_mainland, 4326)
+buffer_plot  <- st_transform(chile_buffer, 4326)
+sea_plot     <- st_transform(sea_area, 4326)
+grid_plot    <- st_as_sf(grid_filtered, crs = 32719) %>%
   st_transform(4326)
 
 ggplot() +
   geom_sf(data = buffer_plot, fill = "lightblue", color = NA, alpha = 0.3) +
+  geom_sf(data = sea_plot, fill = "lightblue", color = "blue", alpha = 0.2) +
   geom_sf(data = chile_plot, fill = "gray60", color = "black") +
-  geom_sf(data = grid_plot, aes(color = dist2coast_km), size = 0.3) +
+  geom_sf(data = grid_plot, aes(color = dist2coast_km), size = 0.4) +
   scale_color_viridis_c(option = "plasma", name = "Distancia costa (km)") +
   coord_sf(xlim = c(-82, -70), ylim = c(-42, -30)) +
   theme_minimal() +
-  labs(title = "Distancia a la costa (≤ 200 nm)",
-       subtitle = "Grid ambiental 0.125° filtrado a 200 nm de Chile continental",
+  labs(title = "Zona marítima chilena (≤ 200 nm, solo mar)",
+       subtitle = "Grid ambiental 0.125° filtrado frente a Chile continental",
        x = "Longitud", y = "Latitud")
-
-
-
-#---------------------------------
-# Maximum distance by latitude
-#---------------------------------
-grid_dt <- st_drop_geometry(grid_sf)
-
-max_dist_by_lat <- grid_dt %>%
-  group_by(lat) %>%
-  summarise(max_dist = max(dist2coast, na.rm = TRUE)) %>%
-  arrange(lat)
-
-# Minimum of those maxima (narrowest width of ocean band)
-min_maxdist <- min(max_dist_by_lat$max_dist, na.rm = TRUE)
-
-cat("Minimum of the maximum distances (km):",
-    round(min_maxdist / 1000, 2), "\n")
