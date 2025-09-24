@@ -39,13 +39,21 @@ grid_sf <- st_transform(grid_sf, 6933)
 # Coastline
 #---------------------------------
 land <- ne_countries(scale = "medium", returnclass = "sf")
-coastline <- st_union(st_geometry(land)) |> st_transform(6933)
+
+# Keep only South American countries (mainland)
+south_america <- land %>%
+  filter(continent == "South America")
+
+# Build the coastline from union
+coastline <- st_union(st_geometry(south_america)) %>%
+  st_transform(6933)
 
 #---------------------------------
 # Remove land points
 #---------------------------------
 inside_land <- st_intersects(grid_sf, coastline, sparse = FALSE)[,1]
 grid_sf <- grid_sf[!inside_land, ]
+
 
 #---------------------------------
 # Distance to coast (m)
