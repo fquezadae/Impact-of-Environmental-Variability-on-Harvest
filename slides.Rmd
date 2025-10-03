@@ -20,7 +20,7 @@ BibOptions(check.entries = FALSE,
            bib.style = "authoryear", 
            style = "markdown",
            dashed = TRUE)
-bib <- ReadBib("bib_paperpile.bib")
+bib <- ReadBib("bibliography.bib")
 citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ```
 

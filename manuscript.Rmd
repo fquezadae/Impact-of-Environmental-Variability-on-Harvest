@@ -73,9 +73,7 @@ Because predator–prey links couple these species, reductions in anchoveta or s
 
 The small pelagic fishery (SPF) in Chile is of critical importance to the national fisheries sector. In 2019, the SPF represented nearly 94% of total national fish landings [@SUBPESCA2020]. The fishery is primarily composed of anchoveta (*Engraulis ringens*), sardine (*Strangomera bentincki*), and jack mackerel (*Trachurus murphyi*). While in the Northern region competition mainly occurs between anchoveta and jack mackerel, in the Central-South region all three species play a major role. This makes the Central-South particularly relevant for the study of species interactions and potential substitution within a multispecies management framework, and it is therefore the focus of this research.
 
-  - Jack mackerel fishery was initially fished in northern chile. But, since the mid-1980s the main fishing grounds have been Central-south Chile [@Pena-Torres2017-gn] -- Traditionally within 50nm
-  - Species have been historically used for fishmeal and fish oil production [@Pena-Torres2017-gn]... Jack Mackerel: 85% of total landings as a yearly average over the period 1987–2004).
-  - Some important ports are San Antonio, Tome, Talcahuano, San Vicente, Coronel, Lota, Corral
+The jack mackerel fishery was initially concentrated in northern Chile, but since the mid-1980s the main fishing grounds have shifted to Central-South Chile, traditionally within 50 nautical miles of the coast [@Pena-Torres2017-gn]. Historically, species in the SPF have been used primarily for fishmeal and fish oil production [@Pena-Torres2017-gn]. In fact, about 85% of jack mackerel landings, on a yearly average between 1987 and 2004, were destined for reduction into fishmeal and fish oil  [@Pena-Torres2017-gn]. Today, several key ports serve as hubs for these activities, including San Antonio, Tomé, Talcahuano, San Vicente, Coronel, Lota, and Corral.
 
 ## Status of the stocks
 Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since 2020 been fished within maximum sustainable yield (MSY) limits. Meanwhile, sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Jack mackerel was overexploited until 2018 but has since been harvested within MSY limits. 
@@ -680,7 +678,7 @@ rm(list = c("harvest_IFOP", "harvest_SERNAPESCA", "harvest_IFOP_logbooks"))
 <!-- Shift in spatial distribution of jack mackerel out of EEZ during El Niño events -->
 
 
-To fulfill the project's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the annual stock dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization procedure.
+To fulfill the research's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the annual stock dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization procedure.
 
 ## Data
 
@@ -778,6 +776,9 @@ For the environmental covariates, we use data from the E.U. Copernicus Marine Se
 ## Econometrics models
 
 ### Stock dynamics
+
+<!-- SANCHO -- Longitudinalmente se distribuyen desde la -->
+<!-- línea base media de la costa hasta las 30 millas náuticas hacia el oeste. -->
 
 To estimate stock dynamics, we use annual data on stock abundance and vessel landings. Following @Kasperski2015-jm, the base model for the growth of each species follows a discrete logistic function: 
 \begin{equation}
