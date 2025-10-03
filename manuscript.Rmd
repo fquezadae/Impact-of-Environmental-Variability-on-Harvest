@@ -69,17 +69,13 @@ Under a changing climate, studying the effect of climatic variability on fishers
 Because predator–prey links couple these species, reductions in anchoveta or sardine availability may reflect not only environmental drivers but also changes in predation pressure from jack mackerel [@Alheit2004; @Arancibia2019-FIPA]. Thus, even fishers who do not target jack mackerel can face induced changes in catch rates and revenues through ecosystem feedbacks. We hypothesize that if the availability of a main target species decreases, fishers will switch to the closest substitute when expected revenues (net of switching costs) exceed expected costs; otherwise they may reduce effort or exit the fishery. We also expect cross-fleet spillovers: in Chile, jack mackerel is predominantly harvested by the industrial purse-seine fleet, whereas anchoveta and sardine have substantial artisanal and industrial participation. Shocks in one component can propagate across fleets via both biology and markets, in addition to economic linkages (bycatch constraints, shared gear, and market spillovers). This strengthens the case for a multi-species framework that models joint dynamics and substitution rather than single-species responses. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation—as it determines the availability of other species [@Reimer2017-jw]—and the gear type used.
 
 
-
-
-
 # SPF in Chile
 
 The small pelagic fishery (SPF) in Chile is of critical importance to the national fisheries sector. In 2019, the SPF represented nearly 94% of total national fish landings [@SUBPESCA2020]. The fishery is primarily composed of anchoveta (*Engraulis ringens*), sardine (*Strangomera bentincki*), and jack mackerel (*Trachurus murphyi*). While in the Northern region competition mainly occurs between anchoveta and jack mackerel, in the Central-South region all three species play a major role. This makes the Central-South particularly relevant for the study of species interactions and potential substitution within a multispecies management framework, and it is therefore the focus of this research.
 
   - Jack mackerel fishery was initially fished in northern chile. But, since the mid-1980s the main fishing grounds have been Central-south Chile [@Pena-Torres2017-gn] -- Traditionally within 50nm
   - Species have been historically used for fishmeal and fish oil production [@Pena-Torres2017-gn]... Jack Mackerel: 85% of total landings as a yearly average over the period 1987–2004).
-  - 80 and 300 m$^3$ sardine and anchovy; More than 800 m$^3$, likely jack mackerel. @Pena-Torres2017-gn dummy for $H \leq 370 \ \text{m}^3$, $370 \ \text{m}^3 < H \leq 790 \ \text{m}^3$, $H > 790 \ \text{m}^3$ ... Also use age of vessel to check technical obsolescence (year trip, year ship was built)
-  - Ports: San Antonio, Tome, Talcahuano, San Vicente, Coronel, Lota, Corral
+  - Some important ports are San Antonio, Tome, Talcahuano, San Vicente, Coronel, Lota, Corral
 
 ## Status of the stocks
 Historically, anchoveta in the Central-South was considered collapsed until 2018, shifted to overexploited status in 2019, and has since 2020 been fished within maximum sustainable yield (MSY) limits. Meanwhile, sardine stocks have generally remained within MSY levels, except in 2021 and 2023 when they were classified as overexploited. Jack mackerel was overexploited until 2018 but has since been harvested within MSY limits. 
@@ -916,6 +912,11 @@ ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
 
 ### Trip level cost functions
 
+
+  <!-- - 80 and 300 m$^3$ holds sardine and anchovy; More than 800 m$^3$, likely jack mackerel. @Pena-Torres2017-gn dummy for $H \leq 370 \ \text{m}^3$, $370 \ \text{m}^3 < H \leq 790 \ \text{m}^3$, $H > 790 \ \text{m}^3$ ... Also use age of vessel to check technical obsolescence (year trip, year ship was built) -->
+
+
+
 Ignoring trip subscript, the cost functions vary by vessel
 $v=1,\ldots,V_g$ and gear used $g=1,\ldots,G$, where $V_g$ is the number
 of observations using gear type $g$, and $G$ is the total number of
@@ -1013,10 +1014,7 @@ $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
 
 ### Inverse demand model for outputs
 
-The price of each species is modeled using an inverse demand model,
-which assumes weak separability between the species into consideration
-and other products [@Kasperski2015-jm]. The price of a species $i$ in
-year $y$ is the following:
+The price of each species is modeled using an inverse demand model, which assumes weak separability between the species into consideration and other products [@Kasperski2015-jm]. The price of a species $i$ in year $y$ is the following:
 
 \begin{equation}
 p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
@@ -1032,11 +1030,15 @@ inverse demand equations are endogenous by estimating a vector
 autoregressive (VAR) model [@juselius2006cointegrated]. In other words,
 harvest $h_{vg}$ has its own equations in the system.
 
-```{=html}
+
 <!-- Comment: One concern I have regards the endogeneity of factors determining the outcomes of fishing effort on a fishing
 trip (where, when, how long, and for what, and how much), climate conditions (temperature, wave, and wind),
 and input and output prices. While Kasperski assumes that total allowable catches are binding to avoid one potential endogeneity, I wonder if this is a good assumption under climate change. What would you need to assume about the regulator’s response to the changing conditions and the setting of the total allowable catches? -->
-```
+
+
+<!-- No era que el paper estimaba un IAIDS. Sino que al precio ex-vessel a ser un % del FOB justifica que sea una variable exógena para la IAIDS que nosotros estimaremos. Así capturar las desviaciones del mercado internacional se transmitan directamente al precio ex-vessel. El otro aspecto era el siguiente: En las estimaciones MCO para la VIII Región, el Precio de la Harina de Pescado * Dólar presenta un signo negativo y significativo sobre el número agregado de viajes anuales, aunque en la XIV Región el signo es positivo [11 (254, 398). Lo que podría implicar que la reaccion de la flota al FOB es heterogénea por región  
+R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque entonces la contribución de su trabajo sigue siendo alta. Solo usan FOB como exógena, por lo tanto, nuestra metodología sigue siendo la misma, de estimar sin incluir FOB, luego incluyéndolo, ver qué pasa con el coeficiente de Q, para ver si hay algo más en la determinación de precios a corto plazo. Luego, si hay tiempo, ver si de hecho el precio FOB depende de desembarques chilenos. En cuanto a la heterogeneidad, a mí me da la impresión de que ese texto de hecho está indicando esta endogeneidad que estamos tratando de capturar! Es posible que la XIV no tenga efecto en el FOB, por lo que lo que vemos es un efecto insesgado para esa región, pero que en la VIII, que es una productora grande de pequeños pelágicos, sí tenga un efecto en el precio FOB, por lo tanto, el coeficiente negativo que obtienen de hecho está sesgado por endogeneidad!! Yo usaría ese texto como justificación de su estudio... -->
+
 
 ## Numerical optimization
 
