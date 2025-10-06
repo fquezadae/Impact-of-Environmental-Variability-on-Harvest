@@ -1,0 +1,30 @@
+<!-- KaTeX definitivo compatible con RMarkdown + móviles -->
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+          trust: true,
+          strict: 'ignore',
+          throwOnError: false,
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true},
+            {left: '\\\\(', right: '\\\\)', display: false},   /* ← móviles y self_contained */
+            {left: '\\\\[', right: '\\\\]', display: true}     /* ← móviles y self_contained */
+          ],
+          macros: {
+            '\\E': '\\mathbb{E}',
+            '\\Var': '\\mathrm{Var}',
+            '\\Cov': '\\mathrm{Cov}',
+            '\\Prob': '\\mathbb{P}',
+            '\\indep': '{\\perp\\!\\!\\!\\perp}',
+            '\\bm': '\\boldsymbol',
+            '\\argmax': '\\mathop{\\mathrm{arg\\,max}}',
+            '\\argmin': '\\mathop{\\mathrm{arg\\,min}}'
+          }
+        });">
+</script>

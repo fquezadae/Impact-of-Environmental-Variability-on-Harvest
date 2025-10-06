@@ -51,3 +51,32 @@ a {
   border-top: 80px solid #113b63;
 
 }
+
+
+/* ---- Estilos universales para texto ---- */
+.remark-slide-content b,
+.remark-slide-content strong {
+  font-weight: 700 !important;
+}
+.remark-slide-content i,
+.remark-slide-content em {
+  font-style: italic !important;
+}
+
+/* ---- Ajuste para slides inverse ---- */
+.inverse b,
+.inverse strong {
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+.inverse i,
+.inverse em {
+  font-style: italic !important;
+}
+
+/* ---- UdeC gold highlight ---- */
+span.udecgold {
+  color: #f59f18;
+  font-weight: 700;
+}
+

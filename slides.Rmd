@@ -7,6 +7,12 @@ output:
   xaringan::moon_reader:
     self_contained: true
     css: ["metropolis", "default-fonts", "udeconce.css"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    includes:
+      in_header: katex.html
 ---
 
 ```{r setup, include=FALSE}
@@ -145,11 +151,7 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 
 ## Base model
 
-`\begin{equation}
-x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
-\label{eq1}
-\end{equation}
-`
+$$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n$$
 - where: 
   - $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, 
   - $h_{iy}$ is the annual harvest of species $i$ on year $y$, 
@@ -170,12 +172,7 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
 
 Following `r Citet(bib, "Richter2018", .opts = citeopt)`: 
 
-`
-\begin{equation}
-x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
-\label{eq2}
-\end{equation}
-`
+$$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n$$
 
 - Adds environmental covariates (e.g., SST and chlorophyll)
 
@@ -187,9 +184,7 @@ x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})
 ## Base model
 
 
-`\[
-C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
-\]`
+$$C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}$$
 where: 
 - $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$:
   - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance traveled?)
@@ -217,10 +212,7 @@ To link this function to climate variability
 
 The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
 `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`: 
-`\[
-Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
-\label{eq5}
-\]`
+$$Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}$$
 where 
 - $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a matrix of explanatory variables, 
 - $\beta_g$ is a vector of coefficients to be estimated, 
@@ -236,22 +228,15 @@ Additionally, we can add the accumulation of *bad weather days?* as an explanato
 
 The price of each species is modeled using an **inverse demand model**. The price of a species $i$ in
 year $y$ is the following:
-`\begin{equation}
-p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta  +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 2,\ldots,n, i \neq j.
-\label{eq6}
-\end{equation}
-`
+$$p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta  +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 2,\ldots,n, i \neq j.$$
+
 - The system can be estimated using 2SLS, instrumenting harvest with climate variables and other cost shifters.
   - Undergrad student analyzing the option to estimate a supply-demand system with 3SLS for each species (6 equations simultaneously?)
 - Other variables for the demand? 
 - Endogeneity of substitute prices?
 
 Maybe then see if we need to estimate a AR(1) model?? (**HELP LEO!!!**):
-`\begin{equation}
-p_{iy} = \gamma_i p_{i,y-1} + \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta + \epsilon_{iy}
-\label{eq6_2}
-\end{equation}
-`
+$$p_{iy} = \gamma_i p_{i,y-1} + \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta + \epsilon_{iy}$$
 
 ---
 
@@ -272,12 +257,12 @@ Use models parameters to:
 
 In each year, a vessel maximizes profits by choosing their optimal number of
 trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
-`\begin{align}
+$$
+\begin{align*}
 \max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
-\label{eq8}
-\end{align}
-`
+\end{align*}
+$$
 
 - where:
   - $\rho$ is the intra-annual discount factor, 
