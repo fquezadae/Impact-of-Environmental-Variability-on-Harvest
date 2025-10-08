@@ -68,6 +68,9 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 Because predator–prey links couple these species, reductions in anchoveta or sardine availability may reflect not only environmental drivers but also changes in predation pressure from jack mackerel [@Alheit2004; @Arancibia2019-FIPA]. Thus, even fishers who do not target jack mackerel can face induced changes in catch rates and revenues through ecosystem feedbacks. We hypothesize that if the availability of a main target species decreases, fishers will switch to the closest substitute when expected revenues (net of switching costs) exceed expected costs; otherwise they may reduce effort or exit the fishery. We also expect cross-fleet spillovers: in Chile, jack mackerel is predominantly harvested by the industrial purse-seine fleet, whereas anchoveta and sardine have substantial artisanal and industrial participation. Shocks in one component can propagate across fleets via both biology and markets, in addition to economic linkages (bycatch constraints, shared gear, and market spillovers). This strengthens the case for a multi-species framework that models joint dynamics and substitution rather than single-species responses. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation—as it determines the availability of other species [@Reimer2017-jw]—and the gear type used.
 
+<!-- Los dos primeros, recordó, son especies clave para la cadena trófica marina, ya que alimentan a peces de mayor valor como corvina, lenguado o congrio, hoy cada vez más escasos.
+LINK: https://www.diarioconcepcion.cl/economia/2025/10/07/sector-pesquero-nueva-resolucion-de-la-camara-baja-mantiene-la-discrepancia-entre-biobio-y-nuble.html -->
+
 
 # SPF in Chile
 
@@ -92,6 +95,9 @@ The artisanal TAC operates under a regulated freedom-to-fish regime, allowing re
 - Sardine: RAE in V, VIII Y X regions? What about other species? Open access in anchovy and jack mackerel (only artisanal TAC matter at country level?)
 
 
+### Chile regionalized fisheries governance framework 
+
+Chile has a regionalize fisheres governance framework, where boat register in one region can not fish in another one. For instance, a recent conflict between the Biobío and Ñuble regions has reignited the debate over the spatial governance of the small pelagic fishery (SPF) in south–central Chile. In late August 2025, the Chilean Chamber of Deputies approved a resolution urging the Government to repeal the authorization that allows vessels from Biobío to operate in the coastal waters of Ñuble. The measure, promoted by local authorities and artisanal organizations from Ñuble, aims to protect local fishing grounds and reduce pressure on nearshore ecosystems. However, representatives from Biobío have warned that such restrictions could have severe economic consequences for the region, given its strong dependence on small pelagic landings. This episode highlights the institutional tensions arising from Chile’s regionalized fisheries governance framework, where jurisdictional boundaries often conflict with the biological and economic interdependencies of fish stocks.
 
 ## Other regulations
 
