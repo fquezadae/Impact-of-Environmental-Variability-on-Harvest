@@ -1089,7 +1089,7 @@ projections for the environmental variables included in the model.
 
 ## Stock biomass model
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r estimation_biomass,message=FALSE, warning=FALSE, include=FALSE}
 # Load packages 
 library(tidyverse)
 library(dplyr)
