@@ -92,45 +92,31 @@ saveRDS(harvest_SERNAPESCA, "data/harvest/sernapesca.rds")
 
 #---- SERNAPESCA data V2 ----
 
-monthly_harvest_SERNAPESCA <- read.csv(
+harvest_SERNAPESCA_v2 <- read.csv(
   file.path(dirdata, "SERNAPESCA", "bd_desembarque.csv"),
   fileEncoding = "Latin1",
-  sep = ";"
-)
-
-  rename(specie = Especie,
-         year = Año,
-         region = `Región de Operación`) %>%
+  sep = ";") %>%
+  rename(specie = especie,
+         year = año) %>%
   mutate(zone = case_when(
-    region %in% c(1,2,3,4,15) ~ "Norte",
-    region %in% c(5,6,7,8,9,10,14,16) ~ "Centro_Sur",
-    region %in% c(11,12) ~ "Extremo_Sur",
+    region %in% c("Valparaíso", "Metropolitana" , "O'Higgins", "Maule", "Ñuble", "Bio-bío", "La Araucanía", "Los Ríos", "Los Lagos") ~ "Centro_Sur", 
+    region %in% c("Arica y Parinacota", "Tarapacá", "Antofagasta", "Atacama", "Coquimbo" ) ~ "Norte",
+    region %in% c("Magallanes", "Aysén") ~ "Extremo_Sur",
     TRUE ~ "No_Especifica")) %>% 
   group_by(specie, year, zone) %>%
-  summarize(annual_harvest_ART_SERNAPESCA = 
-              sum(SumaDeDesembarque, na.rm = TRUE), .groups = "drop") 
+  summarize(total_harvest_SERNAPESCA_v2 = 
+              sum(toneladas, na.rm = TRUE), .groups = "drop") 
 
-
-harvest_SERNAPESCA <- 
-  left_join(annual_harvest_SERNAPESCA_ART, annual_harvest_SERNAPESCA_IND, by = c("year", "specie", "zone")) %>%
-  left_join(annual_harvest_SERNAPESCA_BF, by = c("year", "specie", "zone")) %>%
-  mutate(total_harvest_SERNAPESCA = rowSums(across(c(annual_harvest_IND_SERNAPESCA, annual_harvest_ART_SERNAPESCA)), na.rm = TRUE)) %>%
-  mutate(total_harvest_all_SERNAPESCA = rowSums(across(c(annual_harvest_IND_SERNAPESCA, annual_harvest_BF_SERNAPESCA, annual_harvest_ART_SERNAPESCA)), na.rm = TRUE))
-
-harvest_SERNAPESCA <- harvest_SERNAPESCA %>%
+harvest_SERNAPESCA_v2 <- harvest_SERNAPESCA_v2 %>%
   pivot_wider(
     names_from = zone,
     values_from = c(
-      annual_harvest_ART_SERNAPESCA,
-      annual_harvest_IND_SERNAPESCA,
-      annual_harvest_BF_SERNAPESCA,
-      total_harvest_SERNAPESCA,
-      total_harvest_all_SERNAPESCA
+      total_harvest_SERNAPESCA_v2
     ),
     names_sep = "_"
   )
 
-saveRDS(harvest_SERNAPESCA, "data/harvest/sernapesca.rds")
+saveRDS(harvest_SERNAPESCA_v2, "data/harvest/sernapesca_v2.rds")
 
 
 
