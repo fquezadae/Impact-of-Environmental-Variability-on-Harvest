@@ -572,6 +572,7 @@ library(dplyr)
 harvest_IFOP_month <- readRDS("data/harvest/IFOP_month.rds") 
 harvest_IFOP <- readRDS("data/harvest/IFOP.rds")
 harvest_SERNAPESCA <- readRDS("data/harvest/sernapesca.rds")
+harvest_SERNAPESCA_v2 <- readRDS("data/harvest/sernapesca_v2.rds")
 
 
 #---- IFOP loogbook data ----
@@ -589,9 +590,10 @@ harvest_IFOP_logbooks <- logbooks %>%
 
 
 #---- Harvest data merged ---- 
-
-harvest <- left_join(harvest_IFOP, harvest_SERNAPESCA, by = c("year", "specie"))
+harvest <- left_join(harvest_SERNAPESCA_v2, harvest_SERNAPESCA, by = c("year", "specie")) 
+harvest <- left_join(harvest, harvest_IFOP, by = c("year", "specie"))
 harvest <- left_join(harvest, harvest_IFOP_logbooks, by = c("year", "specie")) 
+
 
 ```
 
@@ -670,11 +672,73 @@ ggplot(harvest_summary, aes(x = month, y = harvest, fill = specie)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 
-
-rm(harvest_summary)
 rm(list = c("harvest_IFOP", "harvest_SERNAPESCA", "harvest_IFOP_logbooks"))
 
 ```
+
+
+```{r monthlyharvestSP, echo=FALSE, fig.align='center', fig.cap="Average monthly landings by species (2012-2024; South-Central Chile) ", fig.pos='ht!', message=FALSE, warning=FALSE}
+library(stringi)
+
+harvest_month_SERNAPESCA <- read.csv(
+  file.path(dirdata, "SERNAPESCA", "bd_desembarque.csv"),
+  fileEncoding = "Latin1",
+  sep = ";") %>%
+  rename(specie = especie,
+         year = año,
+         month = mes) %>%
+  mutate(zone = case_when(
+    region %in% c("Valparaíso", "Metropolitana" , "O'Higgins", "Maule", "Ñuble", "Bio-bío", "La Araucanía", "Los Ríos", "Los Lagos") ~ "Centro_Sur", 
+    region %in% c("Arica y Parinacota", "Tarapacá", "Antofagasta", "Atacama", "Coquimbo" ) ~ "Norte",
+    region %in% c("Magallanes", "Aysén") ~ "Extremo_Sur",
+    TRUE ~ "No_Especifica")) %>% 
+  mutate(specie = toupper(stri_trans_general(specie, "Latin-ASCII"))) %>% 
+  filter(specie %in% c("ANCHOVETA", "JUREL", "SARDINA COMUN")) %>% 
+  filter(zone %in% c("Centro_Sur"))
+
+# %>%
+#   pivot_wider(
+#     names_from = zone,
+#     values_from = total_harvest_SERNAPESCA_v2,
+#     names_glue ="
+#   ) 
+
+# English month order
+month_order <- c("jan", "feb", "mar", "apr", "may", "jun",
+                 "jul", "aug", "sep", "oct", "nov", "dec")
+
+
+harvest_summary2 <- harvest_month_SERNAPESCA %>%
+  mutate(
+    month = factor(as.integer(month), levels = 1:12, labels = month_order, ordered = TRUE)
+  ) %>%
+  group_by(month, year, specie) %>%
+  summarise(harvestym = sum(toneladas, na.rm = TRUE), .groups = "drop") %>%
+  filter(year >= 2012) %>%
+  group_by(month, specie) %>%
+  summarise(harvest = mean(harvestym, na.rm = TRUE), .groups = "drop") %>%
+  arrange(month) %>%
+  mutate(month = factor(month, levels = month_order)) %>%
+  mutate(specie = recode(specie,
+                         "ANCHOVETA" = "Anchoveta",
+                         "SARDINA COMUN" = "Sardine",
+                         "JUREL" = "Jack Mackerel")) 
+
+
+# Plot with facets by species
+ggplot(harvest_summary2, aes(x = month, y = harvest, fill = specie)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ specie, scales = "free_y", ncol = 1) +
+  labs(x = "Month", y = "Average Harvest (tons)", fill = "Specie") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+
+rm(list = c("harvest_month_SERNAPESCA"))
+
+```
+
+
 
 # Data and methodology
 
@@ -712,12 +776,14 @@ harvest_long <- harvest %>%
                   "harvest_BOTES_IFOP_centrosur",
                   "harvest_IND_IFOP_centrosur",
                   "total_harvest_all_SERNAPESCA_Centro_Sur",
+                  "total_harvest_sernapesca_v2_centro_sur",
                   "harvest_IFOP_loogbook_centrosur")) %>%
   pivot_longer(cols = c("total_harvest_IFOP_centrosur",
                         "harvest_LANCHAS_IFOP_centrosur",
                         "harvest_BOTES_IFOP_centrosur",
                         "harvest_IND_IFOP_centrosur",
                         "total_harvest_all_SERNAPESCA_Centro_Sur",
+                        "total_harvest_sernapesca_v2_centro_sur",
                         "harvest_IFOP_loogbook_centrosur"),
                names_to = "source", 
                values_to = "harvest") %>%
@@ -727,15 +793,15 @@ harvest_long <- harvest %>%
                          "harvest_IND_IFOP_centrosur" = "Industrial IFOP",
                          "total_harvest_IFOP_centrosur" = "Total IFOP",
                          "total_harvest_all_SERNAPESCA_Centro_Sur" = "Total SERNAPESCA",
+                         "total_harvest_sernapesca_v2_centro_sur" = "Total SERNAPESCA v2",
                          "harvest_IFOP_loogbook_centrosur" = "Total IFOP (logbooks)")) %>%
-  filter(source %in% c("Total IFOP", "Total SERNAPESCA", "Total IFOP (logbooks)", "Lanchas IFOP", "Botes IFOP",
-                       "Industrial IFOP"))
+  filter(source %in% c("Total IFOP", "Total SERNAPESCA v2", "Total IFOP (logbooks)")) %>% filter(year >= 2012)
 
 # Gráfico
 ggplot(harvest_long, aes(x = year, y = harvest, color = source)) +
   geom_line(size = 1) +
   facet_wrap(~specie, scales = "free_y") +
-  labs(x = "Año", 
+  labs(x = "Anio", 
        y = "Annual landings (tons)", 
        color = "Source") +
   theme_minimal() +
@@ -838,7 +904,7 @@ library(scales)
 library(viridis)
 
 biomass_long <- biomass %>%
-  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, , jurel_biomass_cs_intra),
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_biomass_cs_intra),
                names_to = "species", 
                values_to = "biomass") %>%
   filter(!is.na(biomass)) %>%
@@ -882,13 +948,13 @@ Adding harvest:
 library(tidyverse)
 
 harvest2 <- harvest %>%
-  select(c(specie, year, total_harvest_IFOP_centrosur)) %>%
+  select(c(specie, year, total_harvest_sernapesca_v2_centro_sur)) %>%
   mutate(specie = recode(specie,
                           "SARDINA COMUN" = "Sardine",
                           "JUREL" = "Jack Mackerel",
                           "ANCHOVETA" = "Anchoveta"
                           )) %>%
-  rename(harvest = total_harvest_IFOP_centrosur) %>%
+  rename(harvest = total_harvest_sernapesca_v2_centro_sur) %>%
   rename(species = specie)
 
 harvest2 <- bind_rows(
@@ -906,9 +972,9 @@ biomass_harvest_long <- biomass_harvest %>%
                values_to = "value")
 
 ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
-  # geom_line(size = 1, na.rm = TRUE) +  
+  geom_line(size = 1, na.rm = TRUE) +  
   # geom_point(size = 2, na.rm = TRUE) + 
-  geom_smooth(se = FALSE, span = 0.4, method = "loess", na.rm = TRUE) + # <- smoothing
+  # geom_smooth(se = FALSE, span = 0.4, method = "loess", na.rm = TRUE) + # <- smoothing
   facet_wrap(~species, scales = "free_y") +
   labs(x = "Year", y = "Value (tons)", color = "Variable") +
   scale_color_manual(values = c("biomass" = "darkgreen", "harvest" = "steelblue")) +
@@ -1095,6 +1161,11 @@ library(janitor) # for clean_names() if needed
 library(systemfit)
 library(lmtest)
 library(sandwich)
+
+
+TRABAJAR ACA!!!!!!!!
+
+
 
 biomass_harvest_wide <- biomass_harvest %>%
   mutate(species = gsub("[^A-Za-z0-9]", "", tolower(species))) %>%

@@ -15,6 +15,7 @@ rm(usuario)
 library(readxl)
 library(dplyr)
 library(tidyr)
+library(stringi)
 
 
 #---- SERNAPESCA data ----
@@ -92,6 +93,8 @@ saveRDS(harvest_SERNAPESCA, "data/harvest/sernapesca.rds")
 
 #---- SERNAPESCA data V2 ----
 
+library(janitor)
+
 harvest_SERNAPESCA_v2 <- read.csv(
   file.path(dirdata, "SERNAPESCA", "bd_desembarque.csv"),
   fileEncoding = "Latin1",
@@ -105,16 +108,16 @@ harvest_SERNAPESCA_v2 <- read.csv(
     TRUE ~ "No_Especifica")) %>% 
   group_by(specie, year, zone) %>%
   summarize(total_harvest_SERNAPESCA_v2 = 
-              sum(toneladas, na.rm = TRUE), .groups = "drop") 
-
-harvest_SERNAPESCA_v2 <- harvest_SERNAPESCA_v2 %>%
+              sum(toneladas, na.rm = TRUE), .groups = "drop") %>%
+  mutate(specie = toupper(stri_trans_general(specie, "Latin-ASCII"))) %>%
   pivot_wider(
     names_from = zone,
-    values_from = c(
-      total_harvest_SERNAPESCA_v2
-    ),
-    names_sep = "_"
-  )
+    values_from = total_harvest_SERNAPESCA_v2,
+    names_glue = "total_harvest_sernapesca_v2_{zone}"
+  ) %>%
+  janitor::clean_names() %>% 
+  filter(specie %in% c("ANCHOVETA", "JUREL", "SARDINA COMUN"))
+
 
 saveRDS(harvest_SERNAPESCA_v2, "data/harvest/sernapesca_v2.rds")
 
