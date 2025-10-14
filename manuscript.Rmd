@@ -1049,12 +1049,9 @@ R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque ent
 
 ## Numerical optimization
 
-To obtain the effect of future climate variability on stock, harvest,
-quota and profits, we conduct numerical optimization for different
-climate scenarios using the parameters estimates for the stock dynamic,
-cost functions, total annual trips and inverse demand equations. In each
-year, a vessel maximizes profits by choosing their optimal number of
-trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
+To obtain the effect of future climate variability on stock, harvest, quota and profits, we conduct numerical optimization for different
+climate scenarios using the parameters estimates for the stock dynamic, cost functions, total annual trips and inverse demand equations. In each
+year, a vessel maximizes profits by choosing their optimal number of trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
 \begin{align}
 \max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
