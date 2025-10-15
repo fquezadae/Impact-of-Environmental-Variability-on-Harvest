@@ -1154,6 +1154,9 @@ projections for the environmental variables included in the model.
 
 ```{r estimation_biomass,message=FALSE, warning=FALSE, include=FALSE}
 
+# AGREGAR VARIABLES AMBIENTALES!!!
+
+
 library(tidyverse)
 library(systemfit)
 library(janitor)
@@ -1179,6 +1182,9 @@ biomass_harvest_wide <- biomass_harvest_wide %>%
     biomass_t1_anchoveta_noharvest    = biomass_t1_anchoveta + harvest_anchoveta,
     biomass_t1_jackmackerel_noharvest = biomass_t1_jackmackerelintrapolated + harvest_jackmackerelintrapolated
   )
+
+# Obtener datos ambientales
+
 
 # --- 2. Subconjunto limpio y escalado ----
 sur_data <- biomass_harvest_wide %>%
