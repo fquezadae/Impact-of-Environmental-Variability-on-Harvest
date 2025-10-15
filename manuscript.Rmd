@@ -1153,25 +1153,17 @@ projections for the environmental variables included in the model.
 ## Stock biomass model
 
 ```{r estimation_biomass,message=FALSE, warning=FALSE, include=FALSE}
-# Load packages 
+
 library(tidyverse)
-library(dplyr)
-library(tidyr)
-library(janitor) # for clean_names() if needed
 library(systemfit)
-library(lmtest)
-library(sandwich)
+library(janitor)
 
-
-TRABAJAR ACA!!!!!!!!
-
-
-
+# --- 1. Limpieza y preparación de datos ----
 biomass_harvest_wide <- biomass_harvest %>%
   mutate(species = gsub("[^A-Za-z0-9]", "", tolower(species))) %>%
   arrange(species, year) %>%
   group_by(species) %>%
-  mutate(biomass_t1 = lead(biomass)) %>%  # biomass in t+1 within each species
+  mutate(biomass_t1 = lead(biomass)) %>%
   ungroup() %>%
   pivot_wider(
     names_from = species,
@@ -1180,47 +1172,85 @@ biomass_harvest_wide <- biomass_harvest %>%
   ) %>%
   janitor::clean_names()
 
+# Biomasa total sin cosecha
 biomass_harvest_wide <- biomass_harvest_wide %>%
-  mutate(biomass_t1_sardine_noharvest = biomass_t1_sardine + harvest_sardine) %>%
-  mutate(biomass_t1_anchoveta_noharvest = biomass_t1_anchoveta + harvest_anchoveta)
+  mutate(
+    biomass_t1_sardine_noharvest      = biomass_t1_sardine + harvest_sardine,
+    biomass_t1_anchoveta_noharvest    = biomass_t1_anchoveta + harvest_anchoveta,
+    biomass_t1_jackmackerel_noharvest = biomass_t1_jackmackerelintrapolated + harvest_jackmackerelintrapolated
+  )
 
-## 1) Deja solo casos completos de TODAS las variables usadas por las 2 ecuaciones
+# --- 2. Subconjunto limpio y escalado ----
 sur_data <- biomass_harvest_wide %>%
-  select(biomass_t1_sardine_noharvest, biomass_t1_anchoveta_noharvest,
-         biomass_sardine, biomass_anchoveta) %>%
-  tidyr::drop_na()
+  select(
+    year,
+    biomass_t1_sardine_noharvest,
+    biomass_t1_anchoveta_noharvest,
+    biomass_t1_jackmackerel_noharvest,
+    biomass_sardine,
+    biomass_anchoveta,
+    biomass_jackmackerelintrapolated
+  ) %>%
+  drop_na() %>%
+  mutate(across(-year, scale))   # Escalar todo menos año
 
-## 2) Define y estima el SUR sobre ese subconjunto limpio
-eq1 <- biomass_t1_sardine_noharvest  ~ biomass_sardine + biomass_anchoveta
-eq2 <- biomass_t1_anchoveta_noharvest ~ biomass_anchoveta + biomass_sardine
-fit_sur <- systemfit(list(sardine = eq1, anchoveta = eq2), data = sur_data, method = "SUR")
+# --- 3. Definición de ecuaciones ----
+eq_sardine <- biomass_t1_sardine_noharvest ~
+  biomass_sardine +
+  biomass_sardine:biomass_anchoveta +
+  biomass_sardine:biomass_jackmackerelintrapolated
+
+eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
+  biomass_sardine +
+  biomass_anchoveta:biomass_sardine +
+  biomass_anchoveta:biomass_jackmackerelintrapolated
+
+eq_jack <- biomass_t1_jackmackerel_noharvest ~
+  biomass_jackmackerelintrapolated +
+  biomass_jackmackerelintrapolated:biomass_sardine +
+  biomass_jackmackerelintrapolated:biomass_anchoveta
+
+# --- 4. Estimación SUR ----
+fit_sur <- systemfit(
+  list(
+    sardine      = eq_sardine,
+    anchoveta    = eq_anchoveta,
+    jackmackerel = eq_jack
+  ),
+  data = sur_data,
+  method = "SUR"
+)
+
 summary(fit_sur)
 
-## 3) Matrices de diseño por ecuación (con las MISMAS filas que usó el SUR)
-X1 <- model.matrix(eq1, data = sur_data)
-X2 <- model.matrix(eq2, data = sur_data)
 
-## 4) Bloque diagonal de X y vector de residuos apilado
-X_blk <- as.matrix(bdiag(X1, X2))
-u1 <- residuals(fit_sur)$sardine
-u2 <- residuals(fit_sur)$anchoveta
-u  <- c(u1, u2)
 
-## 5) Sandwich White a nivel del sistema
-# bread = (X'X)^(-1) ; meat = X' diag(u^2) X
-bread <- solve(crossprod(X_blk))
-Omega <- Diagonal(x = as.numeric(u^2))
-meat  <- crossprod(X_blk, Omega %*% X_blk)
-vcov_white <- bread %*% meat %*% bread
 
-## 6) Tabla con EE robustos, z y p-valor
-b     <- coef(fit_sur)
-seR   <- sqrt(diag(vcov_white))
-zval  <- b / seR
-pval  <- 2 * pnorm(abs(zval), lower.tail = FALSE)
-
-robust_table <- cbind(Estimate = b, `Robust SE` = seR, `z value` = zval, `Pr(>|z|)` = pval)
-round(robust_table, 4)
+# ## 3) Matrices de diseño por ecuación (con las MISMAS filas que usó el SUR)
+# X1 <- model.matrix(eq1, data = sur_data)
+# X2 <- model.matrix(eq2, data = sur_data)
+# 
+# ## 4) Bloque diagonal de X y vector de residuos apilado
+# X_blk <- as.matrix(bdiag(X1, X2))
+# u1 <- residuals(fit_sur)$sardine
+# u2 <- residuals(fit_sur)$anchoveta
+# u  <- c(u1, u2)
+# 
+# ## 5) Sandwich White a nivel del sistema
+# # bread = (X'X)^(-1) ; meat = X' diag(u^2) X
+# bread <- solve(crossprod(X_blk))
+# Omega <- Diagonal(x = as.numeric(u^2))
+# meat  <- crossprod(X_blk, Omega %*% X_blk)
+# vcov_white <- bread %*% meat %*% bread
+# 
+# ## 6) Tabla con EE robustos, z y p-valor
+# b     <- coef(fit_sur)
+# seR   <- sqrt(diag(vcov_white))
+# zval  <- b / seR
+# pval  <- 2 * pnorm(abs(zval), lower.tail = FALSE)
+# 
+# robust_table <- cbind(Estimate = b, `Robust SE` = seR, `z value` = zval, `Pr(>|z|)` = pval)
+# round(robust_table, 4)
 
 ```
 
