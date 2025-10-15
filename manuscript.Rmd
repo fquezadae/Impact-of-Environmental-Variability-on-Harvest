@@ -1154,9 +1154,6 @@ projections for the environmental variables included in the model.
 
 ```{r estimation_biomass,message=FALSE, warning=FALSE, include=FALSE}
 
-# AGREGAR VARIABLES AMBIENTALES!!!
-
-
 library(tidyverse)
 library(systemfit)
 library(janitor)
@@ -1183,7 +1180,21 @@ biomass_harvest_wide <- biomass_harvest_wide %>%
     biomass_t1_jackmackerel_noharvest = biomass_t1_jackmackerelintrapolated + harvest_jackmackerelintrapolated
   )
 
-# Obtener datos ambientales
+# Obtener datos ambientales 
+
+
+
+(NECESITO DESDE EL 2001-2011!!!!!)
+
+
+env_dt_year <- env_dt %>% 
+  mutate(year = year(date)) %>%
+  group_by(year) %>% 
+  summarize(sst = mean(sst, na.rm = TRUE),
+            chl = mean(chl, na.rm = TRUE),
+            wind = mean(speed_max, na.rm = TRUE))
+
+biomass_harvest_wide <- left_join(biomass_harvest_wide, env_dt_year, by = "year")
 
 
 # --- 2. Subconjunto limpio y escalado ----
@@ -1195,7 +1206,8 @@ sur_data <- biomass_harvest_wide %>%
     biomass_t1_jackmackerel_noharvest,
     biomass_sardine,
     biomass_anchoveta,
-    biomass_jackmackerelintrapolated
+    biomass_jackmackerelintrapolated,
+    sst, chl, wind
   ) %>%
   drop_na()    # Escalar todo menos año
 
@@ -1205,28 +1217,30 @@ eq_sardine <- biomass_t1_sardine_noharvest ~
   # biomass_anchoveta +
   # biomass_jackmackerelintrapolated +
   biomass_sardine:biomass_anchoveta +
-  biomass_sardine:biomass_jackmackerelintrapolated
+  biomass_sardine:biomass_jackmackerelintrapolated + 
+  sst + chl + wind
 
 eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
   biomass_anchoveta + 
   # biomass_sardine +
   # biomass_jackmackerelintrapolated +
   biomass_anchoveta:biomass_sardine +
-  biomass_anchoveta:biomass_jackmackerelintrapolated
+  biomass_anchoveta:biomass_jackmackerelintrapolated  + 
+  sst + chl + wind
 
 eq_jack <- biomass_t1_jackmackerel_noharvest ~
   biomass_jackmackerelintrapolated +
   # biomass_sardine +
   # biomass_anchoveta +
   biomass_jackmackerelintrapolated:biomass_sardine +
-  biomass_jackmackerelintrapolated:biomass_anchoveta
+  biomass_jackmackerelintrapolated:biomass_anchoveta  + 
+  sst + chl + wind
 
 # --- 4. Estimación SUR ----
 fit_sur <- systemfit(
   list(
     sardine      = eq_sardine,
-    anchoveta    = eq_anchoveta,
-    jackmackerel = eq_jack
+    anchoveta    = eq_anchoveta
   ),
   data = sur_data,
   method = "SUR"
