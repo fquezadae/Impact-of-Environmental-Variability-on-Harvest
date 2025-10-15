@@ -48,7 +48,7 @@ jurel_biomass <- jurel_biomass %>%
 jurel_biomass$year <- as.numeric(jurel_biomass$year)
 
 
-## --> Add the other database
+## --> Add the other biomass database
 biomass_v2 <- read_excel(paste0(dirdata, "IFOP/Datos_estimación biomasa.xlsx")) %>%
   dplyr::rename(year = `Año (calendario/.5 semestral)`,
                 ind_chl_per_ecu = `Reclutas (millones individuos)`,
@@ -60,29 +60,51 @@ biomass_v2 <- read_excel(paste0(dirdata, "IFOP/Datos_estimación biomasa.xlsx"))
 jurel_biomass <- left_join(jurel_biomass, biomass_v2, by = "year")
 rm(biomass_v2)
 
+## --> Add the harvest database
+harvest <- readRDS("data/harvest/sernapesca_v2.rds") %>%
+  filter(specie == "JUREL") %>%
+  select(c(year, total_harvest_sernapesca_v2_centro_sur))
+jurel_biomass <- left_join(jurel_biomass, harvest, by = "year")
+rm(harvest)
+
+
 # GLM models with log link
-model1 <- lm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu,
-              data = jurel_biomass)
 
-model2 <- lm(jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu + 
-                jurel_biomass_no:sb_chl_per_ecu,
-              data = jurel_biomass)
 
-model3 <- lm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2),
-              data = jurel_biomass)
 
-model4 <- lm(jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + 
-                sb_chl_per_ecu + I(sb_chl_per_ecu^2) + 
-                jurel_biomass_no:sb_chl_per_ecu,
-              data = jurel_biomass)
+model1 <- glm(
+  jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu,
+  family = Gamma(link = "log"),
+  data = jurel_biomass
+  )
+
+model2 <- glm(
+  jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu + jurel_biomass_no:sb_chl_per_ecu,
+  family = Gamma(link = "log"), 
+  data = jurel_biomass
+  )
+
+model3 <- glm(
+  jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2),
+  family = Gamma(link = "log"),
+  data = jurel_biomass)
+
+model4 <- glm(
+  jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + sb_chl_per_ecu + I(sb_chl_per_ecu^2) + jurel_biomass_no:sb_chl_per_ecu,
+  family = Gamma(link = "log"),
+  data = jurel_biomass)
 
 # Add GLM predictions (always >= 0)
 jurel_biomass <- jurel_biomass %>% 
   mutate(
     jurel_biomass_cs_p1 = predict(model1, newdata = ., type = "response"),
+    jurel_biomass_cs_p1 = pmax(jurel_biomass_cs_p1, total_harvest_sernapesca_v2_centro_sur),
     jurel_biomass_cs_p2 = predict(model2, newdata = ., type = "response"),
+    jurel_biomass_cs_p2 = pmax(jurel_biomass_cs_p2, total_harvest_sernapesca_v2_centro_sur),
     jurel_biomass_cs_p3 = predict(model3, newdata = ., type = "response"),
-    jurel_biomass_cs_p4 = predict(model4, newdata = ., type = "response")
+    jurel_biomass_cs_p3 = pmax(jurel_biomass_cs_p3, total_harvest_sernapesca_v2_centro_sur),
+    jurel_biomass_cs_p4 = predict(model4, newdata = ., type = "response"),
+    jurel_biomass_cs_p4 = pmax(jurel_biomass_cs_p4, total_harvest_sernapesca_v2_centro_sur),
   ) %>%
   mutate(
     jurel_biomass_cs_p1 = ifelse(jurel_biomass_cs_p1 > 0, jurel_biomass_cs_p1, NA),
@@ -94,6 +116,7 @@ jurel_biomass <- jurel_biomass %>%
                                          jurel_biomass_cs_p4, 
                                          jurel_biomass_cs)) %>%
   dplyr::select(c(year, jurel_biomass_cs, jurel_biomass_cs_intra))
+
 
 # Merge databse
 biomass <- full_join(anch_sard_biomass, jurel_biomass, by = c("year")) %>% arrange(year)
