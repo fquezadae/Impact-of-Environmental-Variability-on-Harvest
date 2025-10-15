@@ -113,9 +113,33 @@ jurel_biomass <- jurel_biomass %>%
     jurel_biomass_cs_p4 = ifelse(jurel_biomass_cs_p4 > 0, jurel_biomass_cs_p4, NA)
   ) %>%
   mutate(jurel_biomass_cs_intra = ifelse(is.na(jurel_biomass_cs), 
-                                         jurel_biomass_cs_p4, 
+                                         jurel_biomass_cs_p1, 
                                          jurel_biomass_cs)) %>%
   dplyr::select(c(year, jurel_biomass_cs, jurel_biomass_cs_intra))
+
+# library(ggplot2)
+# library(tidyr)
+# 
+# jurel_biomass %>%
+#   select(year,
+#          jurel_biomass_cs,
+#          jurel_biomass_cs_p1) %>%
+#   pivot_longer(
+#     cols = starts_with("jurel_biomass_cs"),
+#     names_to = "model",
+#     values_to = "predicted_biomass"
+#   ) %>%
+#   ggplot(aes(x = year, y = predicted_biomass, color = model)) +
+#   geom_smooth(linewidth = 1) +
+#   # geom_line(linewidth = 1) +
+#   # geom_point(size = 2) +
+#   labs(
+#     title = "Predicciones de Biomasa (Modelos GLM 1–4)",
+#     x = "Año",
+#     y = "Biomasa Predicha (t)",
+#     color = "Modelo"
+#   ) +
+#   theme_minimal(base_size = 13) 
 
 
 # Merge databse

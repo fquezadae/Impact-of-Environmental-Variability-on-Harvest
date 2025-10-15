@@ -949,7 +949,7 @@ library(tidyverse)
 
 harvest2 <- harvest %>%
   select(c(specie, year, total_harvest_sernapesca_v2_centro_sur)) %>%
-  mutate(specie = recode(specie,
+  mutate(specie = dplyr::recode(specie,
                           "SARDINA COMUN" = "Sardine",
                           "JUREL" = "Jack Mackerel",
                           "ANCHOVETA" = "Anchoveta"
@@ -1191,22 +1191,27 @@ sur_data <- biomass_harvest_wide %>%
     biomass_anchoveta,
     biomass_jackmackerelintrapolated
   ) %>%
-  drop_na() %>%
-  mutate(across(-year, scale))   # Escalar todo menos año
+  drop_na()    # Escalar todo menos año
 
 # --- 3. Definición de ecuaciones ----
 eq_sardine <- biomass_t1_sardine_noharvest ~
   biomass_sardine +
+  # biomass_anchoveta +
+  # biomass_jackmackerelintrapolated +
   biomass_sardine:biomass_anchoveta +
   biomass_sardine:biomass_jackmackerelintrapolated
 
 eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
-  biomass_sardine +
+  biomass_anchoveta + 
+  # biomass_sardine +
+  # biomass_jackmackerelintrapolated +
   biomass_anchoveta:biomass_sardine +
   biomass_anchoveta:biomass_jackmackerelintrapolated
 
 eq_jack <- biomass_t1_jackmackerel_noharvest ~
   biomass_jackmackerelintrapolated +
+  # biomass_sardine +
+  # biomass_anchoveta +
   biomass_jackmackerelintrapolated:biomass_sardine +
   biomass_jackmackerelintrapolated:biomass_anchoveta
 
@@ -1222,8 +1227,6 @@ fit_sur <- systemfit(
 )
 
 summary(fit_sur)
-
-
 
 
 # ## 3) Matrices de diseño por ecuación (con las MISMAS filas que usó el SUR)
