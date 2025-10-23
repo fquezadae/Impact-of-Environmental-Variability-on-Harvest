@@ -16,7 +16,7 @@ plan(multisession, workers = parallel::detectCores() - 2)
 
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", paste0(usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"))
-f <- paste0(dirdata, "Environmental/cmems_obs-wind_glo_phy_my_l4_0.125deg_PT1H_multi-vars_80.94W-71.56W_41.94S-32.06S_2012-01-01-2025-04-19.nc")
+f <- paste0(dirdata, "Environmental/2000-2011/cmems_obs-wind_glo_phy_my_l4_0.125deg_PT1H_multi-vars_80.94W-71.56W_41.94S-32.06S_2009-11-01-2011-12-31.nc")
 
 # --- Open file (solo para dimensiones y tiempo)
 nc <- nc_open(f)
@@ -92,6 +92,6 @@ wind_dt <- rbindlist(wind_list)
 wind_dt[, year  := year(date)]
 wind_dt[, month := month(date)]
 
-saveRDS(wind_dt, file = "data/env/WindDaily_2012_2025.rds")
+saveRDS(wind_dt, file = "data/env/2000-2011/WindDaily_2009_2011.rds")
 
 plan(sequential)  # volver al plan normal

@@ -2,6 +2,10 @@
 ###   Environmental covariates: Chlorophyll ### 
 ###-----------------------------------------###
 
+rm(list = ls())
+gc()
+
+
 library(dplyr)
 library(ncdf4)
 library(data.table)
@@ -9,7 +13,7 @@ library(lubridate)
 
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", paste0(usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"))
-f <- paste0(dirdata, "Environmental/cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D_CHL_80.98W-71.52W_41.98S-32.02S_2012-01-01-2025-08-20.nc")
+f <- paste0(dirdata, "Environmental/2000-2011/cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D_CHL_80.98W-71.52W_41.98S-32.02S_2000-01-01-2011-12-31.nc")
   
 nc <- ncdf4::nc_open(f)
 
@@ -34,5 +38,5 @@ dt[, `:=`(
   month = month(date)
 )]
 
-saveRDS(dt, file = "data/env/chlDaily_2012_2025.rds")
+saveRDS(dt, file = "data/env/2000-2011/chlDaily_2000_2011.rds")
 

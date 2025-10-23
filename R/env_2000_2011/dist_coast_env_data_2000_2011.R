@@ -17,7 +17,7 @@ library(rnaturalearth)
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", usuario,
                   "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/")
-env_dt <- readRDS("data/env/EnvMergedDaily_2012_2025_0.125deg.rds")
+env_dt <- readRDS("data/env/2000-2011/EnvMergedDaily_2000_2011_0.25deg.rds")
 
 #---------------------------------
 # Unique grid cells
@@ -93,7 +93,7 @@ env_coast_dt <- env_dt %>%
 # Guardar dataset final
 #---------------------------------
 saveRDS(env_coast_dt,
-        file = "data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
+        file = "data/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds")
 
 #---------------------------------
 # Chequeo rápido

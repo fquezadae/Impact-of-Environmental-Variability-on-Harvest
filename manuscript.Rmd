@@ -131,6 +131,7 @@ Fishery with restricted access to new operators (just artisanal?)
 ```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
 
 env_dt <- readRDS("data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
+env_dt_00_11 <- readRDS("data/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds")
 
 ```
 
@@ -814,6 +815,11 @@ rm(harvest_long)
 For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels [@GLORYS12V1]. Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at ~4 km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly in the case of winds) for the 2012–2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S.
  
 
+```{r figEnvData, echo=FALSE, fig.align='center', fig.cap="Geographical extent of the study area used for environmental covariates limited to the Chilean Exclusive Economic Zone", message=FALSE, warning=FALSE, fig.pos='ht!'}
+
+knitr::include_graphics("figs/env_data_map.pdf")
+
+```
  
   - Future (2040–2050):
           - OracleBio -- Unfurtunally only decadal projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution) -- no winds;
@@ -895,7 +901,11 @@ conditions.
             scenarios of the IPCC (Intergovernmental Panel on Climate
             Change) done by @Fuenzalida2007 shows a warming on the
             Chilean coast."*
-
+            
+            
+            
+            
+        
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
 library(ggplot2)
@@ -1140,7 +1150,7 @@ Following @Kasperski2015-jm, the optimization problem will be conducted for the 
 
 ## Stock biomass model
 
-```{r estimation_biomass,message=FALSE, warning=FALSE, include=FALSE}
+```{r estimation_biomass, echo=FALSE, message=FALSE, warning=FALSE}
 
 library(tidyverse)
 library(systemfit)
@@ -1169,20 +1179,29 @@ biomass_harvest_wide <- biomass_harvest_wide %>%
   )
 
 # Obtener datos ambientales 
-(NECESITO DESDE EL 2001-2011!!!!!)
 
-env_dt_year <- env_dt %>% 
+env_dt_year1 <- env_dt %>% 
   mutate(year = year(date)) %>%
   group_by(year) %>% 
   summarize(sst = mean(sst, na.rm = TRUE),
             chl = mean(chl, na.rm = TRUE),
             wind = mean(speed_max, na.rm = TRUE))
 
+env_dt_year2 <- env_dt_00_11 %>% 
+  mutate(year = year(date)) %>%
+  group_by(year) %>% 
+  summarize(sst = mean(sst, na.rm = TRUE),
+            chl = mean(chl, na.rm = TRUE),
+            wind = mean(speed_max, na.rm = TRUE))
+
+env_dt_year <- rbind(env_dt_year2, env_dt_year1)
+
 biomass_harvest_wide <- left_join(biomass_harvest_wide, env_dt_year, by = "year")
 
 
-# --- 2. Subconjunto limpio y escalado ----
-sur_data <- biomass_harvest_wide %>%
+######################################
+
+sur_scaled <- biomass_harvest_wide %>%
   select(
     year,
     biomass_t1_sardine_noharvest,
@@ -1193,44 +1212,39 @@ sur_data <- biomass_harvest_wide %>%
     biomass_jackmackerelintrapolated,
     sst, chl, wind
   ) %>%
-  drop_na()    # Escalar todo menos año
+  drop_na() %>%
+  mutate(across(where(is.numeric) & !matches("^year$"), scale))
 
-# --- 3. Definición de ecuaciones ----
-eq_sardine <- biomass_t1_sardine_noharvest ~
-  biomass_sardine +
-  # biomass_anchoveta +
-  # biomass_jackmackerelintrapolated +
+eq_sardine_sc <- biomass_t1_sardine_noharvest ~
+  biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+  sst + chl + wind + 
   biomass_sardine:biomass_anchoveta +
-  biomass_sardine:biomass_jackmackerelintrapolated + 
-  sst + chl + wind
+  biomass_sardine:biomass_jackmackerelintrapolated
 
-eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
-  biomass_anchoveta + 
-  # biomass_sardine +
-  # biomass_jackmackerelintrapolated +
+eq_anchoveta_sc <- biomass_t1_anchoveta_noharvest ~
+  biomass_anchoveta + biomass_sardine + biomass_jackmackerelintrapolated +
+  sst + chl + wind +
   biomass_anchoveta:biomass_sardine +
-  biomass_anchoveta:biomass_jackmackerelintrapolated  + 
-  sst + chl + wind
+  biomass_anchoveta:biomass_jackmackerelintrapolated
 
-eq_jack <- biomass_t1_jackmackerel_noharvest ~
-  biomass_jackmackerelintrapolated +
-  # biomass_sardine +
-  # biomass_anchoveta +
+eq_jackmackerel_sc <- biomass_t1_jackmackerel_noharvest ~
+  biomass_anchoveta + biomass_sardine + biomass_jackmackerelintrapolated +
+  sst + chl + wind +
   biomass_jackmackerelintrapolated:biomass_sardine +
-  biomass_jackmackerelintrapolated:biomass_anchoveta  + 
-  sst + chl + wind
+  biomass_jackmackerelintrapolated:biomass_anchoveta
 
-# --- 4. Estimación SUR ----
-fit_sur <- systemfit(
+fit_sur_sc <- systemfit(
   list(
-    sardine      = eq_sardine,
-    anchoveta    = eq_anchoveta
+    sardine   = eq_sardine_sc,
+    anchoveta = eq_anchoveta_sc,
+    jackmackerel = eq_jackmackerel_sc
   ),
-  data = sur_data,
+  data = sur_scaled,
   method = "SUR"
 )
 
-summary(fit_sur)
+summary(fit_sur_sc)
+
 
 
 # ## 3) Matrices de diseño por ecuación (con las MISMAS filas que usó el SUR)

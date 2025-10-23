@@ -13,7 +13,7 @@ library(lubridate)
 
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", paste0(usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"))
-f <- paste0(dirdata, "Environmental/2001-2011/cmems_mod_glo_phy_my_0.083deg_P1D-m_so-thetao-uo-vo_81.00W-71.50W_42.00S-32.00S_0.49-1.54m_2000-01-01-2011-12-31.nc")
+f <- paste0(dirdata, "Environmental/2000-2011/cmems_mod_glo_phy_my_0.083deg_P1D-m_so-thetao-uo-vo_81.00W-71.50W_42.00S-32.00S_0.49-1.54m_2000-01-01-2011-12-31.nc")
   
 nc <- ncdf4::nc_open(f)
 
@@ -73,5 +73,5 @@ dt[, `:=`(
   month = month(date)
 )]
 
-saveRDS(dt, file = "data/env/glorysDaily_2012_2021.rds")
+saveRDS(dt, file = "data/env/2000-2011/glorysDaily_2000_2011.rds")
 

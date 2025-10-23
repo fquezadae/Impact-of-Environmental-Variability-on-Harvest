@@ -15,19 +15,19 @@ library(lubridate)
 usuario <- Sys.info()[["user"]]
 dirdata <- paste0("C:/Users/", usuario, "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/")
 
-glo_dt <- readRDS("data/env/glorysDaily_2012_2025.rds")    # 0.083° ~ finer than wind
-chl_dt <- readRDS("data/env/chlDaily_2012_2025.rds")       # 4 km ~ finest
-win_dt <- readRDS("data/env/WindDaily_2012_2025.rds")      # 0.125° ~ coarsest (10km ap)
+glo_dt <- readRDS("data/env/2000-2011/glorysDaily_2000_2011.rds")    # 0.083° ~ finer than wind
+chl_dt <- readRDS("data/env/2000-2011/chlDaily_2000_2011.rds")       # 4 km ~ finest
+win_dt <- readRDS("data/env/2000-2011/WindDaily_2000_2011.rds")      # 0.25° ~ coarsest (40km ap)
 
 #-----------------------------
 # Define target coarse resolution
 #-----------------------------
-coarse_res <- 0.125
+coarse_res <- 0.25
 
 #-----------------------------
 # Function to aggregate any dataset to coarse grid
 #-----------------------------
-aggregate_to_coarse <- function(dt, vars, coarse_res = 0.125){
+aggregate_to_coarse <- function(dt, vars, coarse_res = 0.25){
   
   dt <- copy(dt)
   dt[, lon_coarse := floor(lon / coarse_res) * coarse_res + coarse_res/2]
@@ -46,14 +46,14 @@ aggregate_to_coarse <- function(dt, vars, coarse_res = 0.125){
 #-----------------------------
 # Apply aggregation to finer datasets
 #-----------------------------
-# GLORYS 0.083° -> aggregate to 0.125° grid
+# GLORYS 0.083° -> aggregate to 0.25° grid
 glo_vars <- c("sst", "so", "current_speed", "current_direction")
 glo_agg <- aggregate_to_coarse(glo_dt, glo_vars, coarse_res)
 glo_agg <- glo_agg[, .(lon = lon_coarse,
                        lat = lat_coarse,
                        date,
                        sst, so, current_speed, current_direction)]
-# CHL 4 km -> aggregate to 0.125° grid
+# CHL 4 km -> aggregate to 0.25° grid
 chl_vars <- c("chl")  # replace with your actual variable names in chl_dt
 chl_agg <- aggregate_to_coarse(chl_dt, chl_vars, coarse_res)
 chl_agg <- chl_agg[, .(lon = lon_coarse,
@@ -61,7 +61,7 @@ chl_agg <- chl_agg[, .(lon = lon_coarse,
                        date,
                        chl)]
 
-# Wind is already 0.125° -> just select relevant columns
+# Wind is already 0.25° -> just select relevant columns
 win_vars <- c("speed_mean", "speed_min", "speed_max",
               "dir_mean", "dir_min", "dir_max")
 win_dt <- win_dt[, c("lon","lat","date", win_vars), with=FALSE]
@@ -89,6 +89,6 @@ min(env_merged$lat)
 max(env_merged$date)
 min(env_merged$date)
 
-saveRDS(env_merged, file="data/env/EnvMergedDaily_2012_2025_0.125deg.rds")
+saveRDS(env_merged, file="data/env/2000-2011/EnvMergedDaily_2000_2011_0.25deg.rds")
 
 

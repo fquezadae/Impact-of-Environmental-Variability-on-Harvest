@@ -92,8 +92,8 @@ env_coast_dt <- env_dt %>%
 #---------------------------------
 # Guardar dataset final
 #---------------------------------
-saveRDS(env_coast_dt,
-        file = "data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
+# saveRDS(env_coast_dt,
+#         file = "data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
 
 #---------------------------------
 # Chequeo rápido
@@ -119,6 +119,8 @@ ggplot() +
   scale_color_viridis_c(option = "plasma", name = "Distancia costa (km)") +
   coord_sf(xlim = c(-82, -70), ylim = c(-42, -30)) +
   theme_minimal() +
-  labs(title = "Zona marítima chilena (≤ 200 nm, solo mar)",
-       subtitle = "Grid ambiental 0.125° filtrado frente a Chile continental",
-       x = "Longitud", y = "Latitud")
+  labs(x = "Longitud", y = "Latitud")
+
+# title = "Zona marítima chilena (≤ 200 nm, solo mar)",
+# subtitle = "Grid ambiental 0.125° filtrado frente a Chile continental",
+       
