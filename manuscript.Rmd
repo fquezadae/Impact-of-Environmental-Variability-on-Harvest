@@ -1177,8 +1177,6 @@ Following @Kasperski2015-jm, the optimization problem will be conducted for the 
 
 ## Stock biomass model
 
-The results for the stock biomass model are reported in Table. The joint Wald test for the wind covariate ($\chi^2(3) = 3.85$, $p = 0.28$) indicates no significant joint influence of wind on biomass dynamics once SST and chlorophyll variability are accounted for. Consequently, wind was excluded from the final specification to improve model parsimony, given its indirect effect through upwelling-driven productivity already captured by the chlorophyll term.
-
 
 ```{r database_for_biomass_est, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -1578,12 +1576,21 @@ tab <- kbl(
 ```
 
 
-As shown in Table \ref{tab:SUR_results}, the SUR estimates indicate...
+<!-- The results for the stock biomass model are reported in Table. The joint Wald test for the wind covariate ($\chi^2(3) = 3.85$, $p = 0.28$) indicates no significant joint influence of wind on biomass dynamics once SST and chlorophyll variability are accounted for. Consequently, wind was excluded from the final specification to improve model parsimony, given its indirect effect through upwelling-driven productivity already captured by the chlorophyll term. -->
 
-```{r insert_SUR_table, results='asis', echo=FALSE}
-cat(tab)
-```
 
+
+Table \ref{tab:SUR_results} reports the Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for sardine (Strangomera bentincki), anchovy (Engraulis ringens), and jack mackerel (Trachurus murphyi) in Central–Southern Chile. The SUR framework was selected to jointly estimate the three equations, allowing for correlated disturbances that capture contemporaneous environmental and management shocks shared across species. The residual correlations confirm this interdependence, with negative correlations between sardine and both anchovy (ρ = –0.47) and jack mackerel (ρ = –0.60), and a positive correlation between anchovy and jack mackerel (ρ = +0.66). These patterns are consistent with the alternating dominance of sardine and anchovy documented in previous studies (Yáñez et al., 2014), and with the idea that these species experience common environmental forcing but respond differently depending on prevailing conditions.
+
+For the sardine equation, several coefficients are statistically significant and biologically coherent. Chlorophyll-a concentration exerts a strong positive effect on sardine biomass (p < 0.05), suggesting that higher primary productivity leads to improved feeding conditions and recruitment success. This aligns with the species’ reliance on coastal upwelling productivity. Sea surface temperature (SST) enters non-linearly, with a negative linear effect and a positive squared term, indicating a concave response: sardine biomass increases under moderately warm conditions but declines at extreme temperatures, reflecting a thermal optimum consistent with earlier findings for small pelagics in the Humboldt Current (Yáñez et al., 2014; Fuenzalida et al., 2007). The negative and significant effect of jack mackerel biomass (p < 0.10) suggests competitive or spatial displacement effects, where offshore expansion of jack mackerel may constrain sardine distribution or resource availability. Conversely, the positive interaction between sardine and jack mackerel biomasas implies some degree of co-movement under favorable conditions, perhaps linked to shared environmental drivers rather than direct biological facilitation. Overall, the sardine equation explains about 57 % of the variation in future biomass, a reasonable fit given the short time series and the strong environmental variability of the region.
+
+The anchovy equation exhibits a high explanatory power (adjusted R² ≈ 0.81) but fewer significant environmental effects. The most robust relationship is a positive and significant effect of jack mackerel biomass (p < 0.01), which likely reflects common environmental forcing rather than a direct ecological interaction, since both species respond to large-scale oceanographic conditions (e.g., upwelling intensity, thermocline depth). SST and chlorophyll are not statistically significant, although their coefficients suggest mild positive responses. This lack of strong environmental effects may be due to anchovy’s coastal confinement, where fine-scale variability in wind-driven upwelling and local retention processes are more relevant than broad-scale SST or chlorophyll averages. Interactions with sardine biomass are not statistically significant, but the sign pattern (positive anchovy–sardine, negative anchovy–jack) remains consistent with the alternation of dominance across regimes: anchovy tends to prevail during cooler, nutrient-rich periods, while sardine dominates under warmer conditions (Yáñez et al., 2014).
+
+In contrast, jack mackerel shows no statistically significant relationships with any predictor, including environmental covariates or inter-species interactions. The signs of coefficients are plausible—positive with its own lagged biomass and negative with sardine—but all estimates are imprecise. This lack of significance likely reflects the different spatial and temporal scales at which jack mackerel operates. Unlike sardine and anchovy, jack mackerel is a wide-ranging, semi-pelagic species whose biomass dynamics are influenced by oceanic rather than coastal processes—such as mesoscale eddies, current advection, and offshore upwelling—poorly captured by nearshore SST or chlorophyll indicators. In addition, recruitment and adult movement for jack mackerel are strongly modulated by large-scale climatic oscillations (e.g., ENSO, PDO) and by industrial fishing pressure, both of which are outside the scope of the present specification.
+
+Overall, the SUR results highlight heterogeneous environmental sensitivities and potential inter-species dependencies within the Chilean small pelagic complex. Sardine biomass is closely tied to primary productivity and exhibits a non-linear thermal response, while anchovy dynamics appear more stable and less dependent on short-term environmental fluctuations. The weak or null relationships for jack mackerel underscore its decoupled dynamics from nearshore environmental variability. The joint estimation confirms that species share correlated residual shocks, consistent with a system where climate forcing and regional management simultaneously affect multiple stocks. These findings support the interpretation that environmental variability plays a key but species-specific role in shaping the biomass trajectories of pelagic fish assemblages in Central–Southern Chile.
+
+In line with Fuenzalida et al. (2007) and Garreaud et al. (2009), projections of strengthened coastal winds and warmer surface waters may enhance upwelling intensity and potentially increase productivity, benefiting sardine recruitment while limiting anchovy dominance during future warm phases. However, the weak response of jack mackerel suggests that offshore dynamics may remain largely unaffected or even counteract nearshore productivity gains. Hence, while regional warming and wind intensification could transiently favor sardine, the broader trophic and spatial dynamics within the small pelagic complex will likely remain modulated by long-term oscillations and large-scale climatic variability.
 
 <!-- Consistent with previous literature, environmental forcing showed heterogeneous effects across species.  For instance, the sardine equation displayed a positive curvature in SST (*p* ≈ 0.09) and chlorophyll (*p* ≈ 0.05), suggesting biomass increases around intermediate to warm conditions and moderate productivity.  In contrast, anchoveta biomass responded positively to jack mackerel biomass and marginally to SST², whereas wind effects were weak or insignificant in all equations. -->
 
@@ -1598,6 +1605,13 @@ cat(tab)
 <!-- - “Anchovy dominates during cold inter-decadal periods, while sardine prevail during warm inter-decadal periods. Such inter-decadal variations in SST also influence recruitment, as documented in anchovies off the Peruvian coast” (Cahuín et al. 2009). -->
 
 <!-- Thus, while current empirical models show limited short-term wind effects, the projected strengthening of coastal winds and long-term warming of the Chilean coast (Fuenzalida et al. 2007) may substantially alter the productivity and spatial overlap of small pelagic species in future decades. -->
+
+```{r insert_SUR_table, results='asis', echo=FALSE}
+cat(tab)
+```
+
+
+
 
 
 ## Trip level costo function

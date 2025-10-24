@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.24)  24 OCT 2025 18:04
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.24)  24 OCT 2025 18:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1076,9 +1076,14 @@ Missing character: There is no ₄ (U+2084) in font [lmroman10-regular]:mapping=
 Missing character: There is no ₉ (U+2089) in font [lmroman10-regular]:mapping=tex-text;!
 Missing character: There is no ₂ (U+2082) in font [lmroman10-regular]:mapping=tex-text;!
 Missing character: There is no ₄ (U+2084) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no ρ (U+03C1) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no ρ (U+03C1) in font [lmroman10-regular]:mapping=tex-text;!
+Missing character: There is no ρ (U+03C1) in font [lmroman10-regular]:mapping=tex-text;!
 
 
 [19]
+Missing character: There is no ≈ (U+2248) in font [lmroman10-regular]:mapping=tex-text;!
+
 
 [20]
 
@@ -1090,7 +1095,9 @@ Missing character: There is no ₄ (U+2084) in font [lmroman10-regular]:mapping=
 
 [24]
 
-[25] (./manuscript.aux)
+[25]
+
+[26] (./manuscript.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-10-09>
@@ -1105,4 +1112,4 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  90i,12n,114p,1728b,532s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on manuscript.pdf (25 pages).
+Output written on manuscript.pdf (26 pages).
