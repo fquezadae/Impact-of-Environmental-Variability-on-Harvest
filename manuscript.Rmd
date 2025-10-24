@@ -24,6 +24,7 @@ header-includes:
   - \usepackage{authblk}
   - \usepackage{booktabs}
   - \usepackage{caption}
+  - \usepackage{dcolumn}
   - \author{Felipe J. Quezada-Escalona}
   - \affil{Departmento de Economía \\ Universidad de Concepción \vspace{-48pt}}
 editor_options: 
@@ -281,6 +282,8 @@ strategy_percent_before <- vessel_species_year %>%
 strategy_before <- vessel_species_year %>%
   select(COD_BARCO, TIPO_FLOTA, strategy_Before)
 
+rm(vessel_species_year)
+
 ```
 
 See Figure \@ref(fig:switchStrategy-ART) for strategy transitions. The year 2019 is used as reference as anchoveta and jack mackerel started to recover.
@@ -326,6 +329,9 @@ strategy_table_art %>%
   add_header_above(c(" " = 1, "Before" = 2, "After" = 2)) %>%
   kable_styling(font_size = 10)
 
+rm(strategy_table_art)
+
+
 ```
 
 
@@ -352,6 +358,8 @@ strategy_table_ind <- strategy_summary %>%
   ungroup() %>%
   select(-TIPO_FLOTA)
 
+rm(strategy_summary, strategy_percent, strategy_percent_before, after, before)
+
 ```
 
 
@@ -367,6 +375,8 @@ strategy_table_ind %>%
         caption = "Comparison of Strategies Before and After -- Industrial vessels") %>%
   add_header_above(c(" " = 1, "Before" = 2, "After" = 2)) %>%
   kable_styling(font_size = 10)
+
+rm(strategy_table_ind)
 
 ```
 
@@ -561,6 +571,9 @@ p +
     size = 2.5, segment.color = "grey60", segment.size = 0.3
   )
 
+rm(left_labels, right_labels, strategy_after, strategy_before, strategy_transitions, strategy_transitions_focus, stratum_data, transition_counts, transition_counts_focus, p)
+
+rm(get_strategy, simplify_focus_strategy)
 
 ```
 
@@ -595,6 +608,7 @@ harvest <- left_join(harvest_SERNAPESCA_v2, harvest_SERNAPESCA, by = c("year", "
 harvest <- left_join(harvest, harvest_IFOP, by = c("year", "specie"))
 harvest <- left_join(harvest, harvest_IFOP_logbooks, by = c("year", "specie")) 
 
+rm(harvest_IFOP, harvest_SERNAPESCA, harvest_SERNAPESCA_v2, harvest_IFOP_logbooks)
 
 ```
 
@@ -636,29 +650,38 @@ theme(
   plot.title = element_text(hjust = 0.5, margin = margin(b = 0))  # reduce margin above title
 )
 
+rm(cruise_brackets, sardine_periods)
+
 ```
 
 ```{r monthlyharvest, echo=FALSE, fig.align='center', fig.cap="Average monthly landings by species (2012-2024; South-Central Chile) ", fig.pos='ht!', message=FALSE, warning=FALSE}
 
-# Spanish to English month translation
+library(dplyr)
+library(stringr)
+
+# Diccionario
 month_translation <- c(
   "ene" = "jan", "feb" = "feb", "mar" = "mar", "abr" = "apr",
-  "may" = "may", "jun" = "jun", "jul" = "jul", "ago" = "aug",
-  "sept" = "sep", "oct" = "oct", "nov" = "nov", "dic" = "dec"
+  "may" = "may", "jun" = "jun", "jul" = "jul", "ago" = "aug", 
+  "sept" = "sep", "oct" = "oct", "nov" = "nov", 
+  "dic" = "dec"
 )
 
-# English month order
-month_order <- c("jan", "feb", "mar", "apr", "may", "jun",
-                 "jul", "aug", "sep", "oct", "nov", "dec")
+# Orden destino
+month_order <- c("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec")
 
-# Summarize by month and species
 harvest_summary <- harvest_IFOP_month %>%
-  mutate(month = recode(month, !!!month_translation)) %>%  # Translate to English
+  mutate(
+    month = str_to_lower(str_trim(month)),                     
+    month = stringi::stri_trans_general(month, "Latin-ASCII"), 
+    month = dplyr::recode(month, !!!month_translation, .default = month),
+    month = factor(month, levels = month_order, ordered = TRUE)
+  ) %>%  # Translate to English
   group_by(month, specie) %>%  # Make sure your column is 'species'
   summarise(harvest = mean(total_harvest_IFOP_centrosur, na.rm = TRUE),
             .groups = "drop") %>%
   mutate(month = factor(month, levels = month_order)) %>%
-  mutate(specie = recode(specie,
+  mutate(specie = dplyr::recode(specie,
                          "ANCHOVETA" = "Anchoveta",
                          "SARDINA COMUN" = "Sardine",
                          "JUREL" = "Jack Mackerel")) 
@@ -673,7 +696,8 @@ ggplot(harvest_summary, aes(x = month, y = harvest, fill = specie)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 
-rm(list = c("harvest_IFOP", "harvest_SERNAPESCA", "harvest_IFOP_logbooks"))
+rm(harvest_IFOP_month, harvest_summary, month_order, month_translation, months)
+
 
 ```
 
@@ -720,7 +744,7 @@ harvest_summary2 <- harvest_month_SERNAPESCA %>%
   summarise(harvest = mean(harvestym, na.rm = TRUE), .groups = "drop") %>%
   arrange(month) %>%
   mutate(month = factor(month, levels = month_order)) %>%
-  mutate(specie = recode(specie,
+  mutate(specie = dplyr::recode(specie,
                          "ANCHOVETA" = "Anchoveta",
                          "SARDINA COMUN" = "Sardine",
                          "JUREL" = "Jack Mackerel")) 
@@ -735,7 +759,7 @@ ggplot(harvest_summary2, aes(x = month, y = harvest, fill = specie)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 
-rm(list = c("harvest_month_SERNAPESCA"))
+rm(harvest_month_SERNAPESCA, harvest_summary2, month_order)
 
 ```
 
@@ -788,7 +812,7 @@ harvest_long <- harvest %>%
                         "harvest_IFOP_loogbook_centrosur"),
                names_to = "source", 
                values_to = "harvest") %>%
-  mutate(source = recode(source,
+  mutate(source = dplyr::recode(source,
                          "harvest_LANCHAS_IFOP_centrosur" = "Lanchas IFOP",
                          "harvest_BOTES_IFOP_centrosur" = "Botes IFOP",
                          "harvest_IND_IFOP_centrosur" = "Industrial IFOP",
@@ -901,9 +925,10 @@ conditions.
             scenarios of the IPCC (Intergovernmental Panel on Climate
             Change) done by @Fuenzalida2007 shows a warming on the
             Chilean coast."*
-            
-            
-            
+          
+To capture the nonlinear environmental influence on biomass dynamics, we standardized all predictors and included both linear and quadratic terms for sea surface temperature (SST), chlorophyll-a concentration (CHL), and wind speed (WIND).  These variables were selected given their recognized role in the productivity and spatial distribution of small pelagic species off central–southern Chile. The system of seemingly unrelated regressions (SUR) was estimated with standardized variables and biologically meaningful interactions between predator (jack mackerel) and prey (sardine, anchoveta) biomasses.  Each equation included climate covariates in level and squared form to capture potential optima. 
+
+
             
         
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
@@ -922,7 +947,7 @@ biomass_long <- biomass %>%
 
 biomass_long$biomass <- as.numeric(biomass_long$biomass)
 biomass_long$year <- as.numeric(biomass_long$year)
-biomass_long$species <- recode(biomass_long$species,
+biomass_long$species <- dplyr::recode(biomass_long$species,
                                sardine_biomass = "Sardine", 
                                anchoveta_biomass = "Anchoveta", 
                                jurel_biomass_cs = "Jack Mackerel", 
@@ -990,6 +1015,8 @@ ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
   scale_color_manual(values = c("biomass" = "darkgreen", "harvest" = "steelblue")) +
   theme_minimal() +
   theme(legend.position = "top")
+
+rm(biomass_harvest_long, harvest2)
 
 ```
 
@@ -1150,10 +1177,12 @@ Following @Kasperski2015-jm, the optimization problem will be conducted for the 
 
 ## Stock biomass model
 
-```{r estimation_biomass, echo=FALSE, message=FALSE, warning=FALSE}
+The results for the stock biomass model are reported in Table. The joint Wald test for the wind covariate ($\chi^2(3) = 3.85$, $p = 0.28$) indicates no significant joint influence of wind on biomass dynamics once SST and chlorophyll variability are accounted for. Consequently, wind was excluded from the final specification to improve model parsimony, given its indirect effect through upwelling-driven productivity already captured by the chlorophyll term.
+
+
+```{r database_for_biomass_est, message=FALSE, warning=FALSE, include=FALSE}
 
 library(tidyverse)
-library(systemfit)
 library(janitor)
 
 # --- 1. Limpieza y preparación de datos ----
@@ -1195,13 +1224,18 @@ env_dt_year2 <- env_dt_00_11 %>%
             wind = mean(speed_max, na.rm = TRUE))
 
 env_dt_year <- rbind(env_dt_year2, env_dt_year1)
+biomass_harvest <- left_join(biomass_harvest_wide, env_dt_year, by = "year")
 
-biomass_harvest_wide <- left_join(biomass_harvest_wide, env_dt_year, by = "year")
+rm(env_dt_year, env_dt_year2, env_dt_year1, env_dt_00_11, biomass_harvest_wide)
+
+```
 
 
-######################################
+```{r sur_data, message=FALSE, warning=FALSE, include=FALSE}
 
-sur_scaled <- biomass_harvest_wide %>%
+library(tidyverse)
+
+sur_df <- biomass_harvest %>%
   select(
     year,
     biomass_t1_sardine_noharvest,
@@ -1213,69 +1247,375 @@ sur_scaled <- biomass_harvest_wide %>%
     sst, chl, wind
   ) %>%
   drop_na() %>%
-  mutate(across(where(is.numeric) & !matches("^year$"), scale))
+  mutate(
+    sst_c  = sst - mean(sst, na.rm = TRUE),
+    chl_c  = chl - mean(chl, na.rm = TRUE),
+    wind_c = wind - mean(wind, na.rm = TRUE),
+    sst_c2 = sst_c^2,
+    chl_c2 = chl_c^2,
+    wind_c2 = wind_c^2,
+    biomass_t1_sardine_noharvest =  biomass_t1_sardine_noharvest / 1e5,
+    biomass_t1_anchoveta_noharvest = biomass_t1_anchoveta_noharvest / 1e5,
+    biomass_t1_jackmackerel_noharvest = biomass_t1_jackmackerel_noharvest / 1e5,
+    biomass_sardine = biomass_sardine / 1e5,
+    biomass_anchoveta = biomass_anchoveta / 1e5,
+    biomass_jackmackerelintrapolated = biomass_jackmackerelintrapolated / 1e5
+  )
+```
 
-eq_sardine_sc <- biomass_t1_sardine_noharvest ~
+```{r sur_data_correlations, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+library(corrr)
+
+# 1. Examine correlations among all standardized predictors (not responses)
+corr_df <- sur_df %>%
+  select(
+    biomass_sardine, biomass_anchoveta, biomass_jackmackerelintrapolated,
+    sst_c, sst_c2, chl_c, chl_c2, wind_c, wind_c2
+  )
+# Correlation matrix
+corr_matrix <- correlate(corr_df)
+corr_matrix %>% stretch(na.rm = TRUE) %>%
+  filter(abs(r) > 0.7) %>%
+  arrange(desc(abs(r))) %>%
+  print(n = 20)
+# Quick heatmap for visualization
+library(ggplot2)
+library(reshape2)
+# Compute correlation matrix
+corr_mat <- cor(corr_df, use = "pairwise.complete.obs")
+# Melt to long format for ggplot
+corr_long <- melt(corr_mat, varnames = c("Var1", "Var2"), value.name = "Correlation")
+# Plot
+ggplot(corr_long, aes(Var1, Var2, fill = Correlation)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0,
+                       limit = c(-1, 1), name = "r") +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    panel.grid = element_blank(),
+    aspect.ratio = 1
+  ) +
+  labs(title = "Correlation heatmap for standardized predictors",
+       x = NULL, y = NULL)
+
+# 2. Variance Inflation Factor (VIF)
+# We'll test VIF within each equation's design matrix
+eq_sardine_vif <- lm(
+  biomass_t1_sardine_noharvest ~
+    biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+    sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
+  data = sur_df
+)
+vif(eq_sardine_vif) %>% sort()
+
+eq_anchoveta_vif <- lm(
+  biomass_t1_anchoveta_noharvest ~
+    biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+    sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
+  data = sur_df
+)
+vif(eq_anchoveta_vif) %>% sort()
+
+eq_jack_vif <- lm(
+  biomass_t1_jackmackerel_noharvest ~
+    biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+    sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
+  data = sur_df
+)
+vif(eq_jack_vif) %>% sort()
+
+```
+```{r sur_estimation_base, message=FALSE, warning=FALSE, include=FALSE}
+
+library(systemfit)
+
+eq_sardine <- biomass_t1_sardine_noharvest ~
   biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
-  sst + chl + wind + 
+  sst_c + sst_c2 + chl_c + chl_c2 + + wind_c + wind_c2 +
   biomass_sardine:biomass_anchoveta +
   biomass_sardine:biomass_jackmackerelintrapolated
 
-eq_anchoveta_sc <- biomass_t1_anchoveta_noharvest ~
+eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
   biomass_anchoveta + biomass_sardine + biomass_jackmackerelintrapolated +
-  sst + chl + wind +
-  biomass_anchoveta:biomass_sardine +
+  sst_c + sst_c2 + chl_c + chl_c2 + + wind_c + wind_c2 +
+  biomass_sardine:biomass_anchoveta +
   biomass_anchoveta:biomass_jackmackerelintrapolated
 
-eq_jackmackerel_sc <- biomass_t1_jackmackerel_noharvest ~
-  biomass_anchoveta + biomass_sardine + biomass_jackmackerelintrapolated +
-  sst + chl + wind +
-  biomass_jackmackerelintrapolated:biomass_sardine +
-  biomass_jackmackerelintrapolated:biomass_anchoveta
+eq_jack <- biomass_t1_jackmackerel_noharvest ~
+  biomass_jackmackerelintrapolated + biomass_sardine + biomass_anchoveta +
+  sst_c + sst_c2 + chl_c + chl_c2 + + wind_c + wind_c2 +
+  biomass_sardine:biomass_jackmackerelintrapolated + 
+  biomass_anchoveta:biomass_jackmackerelintrapolated
 
-fit_sur_sc <- systemfit(
+fit_sur <- systemfit(
   list(
-    sardine   = eq_sardine_sc,
-    anchoveta = eq_anchoveta_sc,
-    jackmackerel = eq_jackmackerel_sc
+    sardine      = eq_sardine,
+    anchoveta    = eq_anchoveta,
+    jackmackerel = eq_jack
   ),
-  data = sur_scaled,
+  data = sur_df,
   method = "SUR"
 )
 
-summary(fit_sur_sc)
-
-
-
-# ## 3) Matrices de diseño por ecuación (con las MISMAS filas que usó el SUR)
-# X1 <- model.matrix(eq1, data = sur_data)
-# X2 <- model.matrix(eq2, data = sur_data)
-# 
-# ## 4) Bloque diagonal de X y vector de residuos apilado
-# X_blk <- as.matrix(bdiag(X1, X2))
-# u1 <- residuals(fit_sur)$sardine
-# u2 <- residuals(fit_sur)$anchoveta
-# u  <- c(u1, u2)
-# 
-# ## 5) Sandwich White a nivel del sistema
-# # bread = (X'X)^(-1) ; meat = X' diag(u^2) X
-# bread <- solve(crossprod(X_blk))
-# Omega <- Diagonal(x = as.numeric(u^2))
-# meat  <- crossprod(X_blk, Omega %*% X_blk)
-# vcov_white <- bread %*% meat %*% bread
-# 
-# ## 6) Tabla con EE robustos, z y p-valor
-# b     <- coef(fit_sur)
-# seR   <- sqrt(diag(vcov_white))
-# zval  <- b / seR
-# pval  <- 2 * pnorm(abs(zval), lower.tail = FALSE)
-# 
-# robust_table <- cbind(Estimate = b, `Robust SE` = seR, `z value` = zval, `Pr(>|z|)` = pval)
-# round(robust_table, 4)
+summary(fit_sur)
 
 ```
 
-NO RESULTS YET
+```{r function_for_testing_SUR, include=FALSE}
+# --- Helper to build and fit SUR models with/without selected blocks ----
+library(systemfit)
+
+# 1. Builder of formulas given switches
+build_eqs <- function(include_wind = TRUE,
+                      include_sst2 = TRUE,
+                      include_chl2 = TRUE,
+                      include_interactions = TRUE) {
+  
+  base_terms <- c("sst_c", "chl_c")
+  if (include_sst2) base_terms <- c(base_terms, "sst_c2")
+  if (include_chl2) base_terms <- c(base_terms, "chl_c2")
+  if (include_wind) base_terms <- c(base_terms, "wind_c", "wind_c2")
+
+  sard_terms <- c("biomass_sardine", "biomass_anchoveta", "biomass_jackmackerelintrapolated",
+                  base_terms, if (include_interactions) c("biomass_sardine:biomass_jackmackerelintrapolated",                                                  "biomass_sardine:biomass_anchoveta"))
+  anch_terms <- c("biomass_anchoveta", "biomass_sardine", "biomass_jackmackerelintrapolated",
+                  base_terms, if (include_interactions) c("biomass_anchoveta:biomass_jackmackerelintrapolated",
+                                                          "biomass_sardine:biomass_anchoveta"))
+  jack_terms <- c("biomass_jackmackerelintrapolated", "biomass_sardine", "biomass_anchoveta",
+                  base_terms, if (include_interactions) c("biomass_sardine:biomass_jackmackerelintrapolated",                                                          "biomass_anchoveta:biomass_jackmackerelintrapolated"))
+
+  f <- function(y, xs) as.formula(paste(y, "~", paste(xs, collapse = " + ")))
+
+  list(
+    sardine   = f("biomass_t1_sardine_noharvest", sard_terms),
+    anchoveta = f("biomass_t1_anchoveta_noharvest", anch_terms),
+    jack      = f("biomass_t1_jackmackerel_noharvest", jack_terms)
+  )
+}
+
+# 2. Fit the SUR given switches
+fit_sur_with <- function(include_wind = TRUE,
+                         include_sst2 = TRUE,
+                         include_chl2 = TRUE,
+                         include_interactions = TRUE,
+                         data = sur_df) {
+  eqs <- build_eqs(include_wind, include_sst2, include_chl2, include_interactions)
+  systemfit(
+    list(
+      sardine      = eqs$sardine,
+      anchoveta    = eqs$anchoveta,
+      jackmackerel = eqs$jack
+    ),
+    data = data,
+    method = "SUR"
+  )
+}
+
+# 3. Nested F-test between full and restricted systems
+nested_F <- function(fit_full, fit_restr) {
+  SSR_full  <- sum(sapply(fit_full$eq,  function(m) sum(resid(m)^2)))
+  SSR_restr <- sum(sapply(fit_restr$eq, function(m) sum(resid(m)^2)))
+  df_full   <- sum(sapply(fit_full$eq,  function(m) df.residual(m)))
+  k_full    <- sum(sapply(fit_full$eq,  function(m) length(coef(m))))
+  k_restr   <- sum(sapply(fit_restr$eq, function(m) length(coef(m))))
+  q <- k_full - k_restr
+  F_stat <- ((SSR_restr - SSR_full)/q) / (SSR_full/df_full)
+  p_val  <- pf(F_stat, q, df_full, lower.tail = FALSE)
+  data.frame(
+    Restrictions = q,
+    df2 = df_full,
+    F = F_stat,
+    p_value = p_val
+  )
+}
+```
+
+```{r test_exclusions, message=FALSE, warning=FALSE, include=FALSE}
+# 1) Test dropping wind terms
+fit_no_wind <- fit_sur_with(include_wind = FALSE,
+                            include_sst2 = TRUE,
+                            include_chl2 = TRUE,
+                            include_interactions = TRUE,
+                            data = sur_df)
+
+nested_F(fit_sur, fit_no_wind)
+
+
+fit_no_chl2 <- fit_sur_with(include_wind = FALSE,
+                            include_sst2 = TRUE,
+                            include_chl2 = FALSE,
+                            include_interactions = TRUE,
+                            data = sur_df)
+
+nested_F(fit_sur, fit_no_chl2)
+nested_F(fit_no_wind, fit_no_chl2)
+
+fit_no_int <- fit_sur_with(include_wind = FALSE,
+                            include_sst2 = TRUE,
+                            include_chl2 = FALSE,
+                            include_interactions = FALSE,
+                            data = sur_df)
+
+rm(build_eqs, fit_sur_with, eq_anchoveta, eq_jack, eq_sardine, sur_df)
+
+```
+
+A sequence of nested likelihood-ratio (F) tests was used to assess the contribution of environmental covariates. 
+Removing both linear and quadratic wind terms from the three equations produced no significant loss of explanatory power 
+(F₆,₂₄ = 0.36, p = 0.90). Similarly, excluding the nonlinear chlorophyll term had no effect (F₉,₂₄ = 0.28, p = 0.97). Conversely, the quadratic SST term remained significant in the sardine and anchoveta equations (p < 0.10), 
+suggesting thermal optima consistent with previous studies on small pelagic recruitment. 
+The final specification therefore retained SST and SST², linear CHL, and species interactions, 
+while excluding wind and CHL² for parsimony.
+
+
+```{r table_sur_final, message=FALSE, warning=FALSE, include=FALSE}
+fit_biomasa <- fit_no_chl2
+rm(fit_sur, fit_no_int, fit_no_wind)
+
+library(dplyr)
+library(tidyr)
+library(kableExtra)
+
+# --- 1. Extraer coeficientes, errores y p-values manualmente de cada ecuación ---
+get_eq_df <- function(eq_obj, name){
+  coefs <- summary(eq_obj)$coefficients
+  data.frame(
+    term = rownames(coefs),
+    estimate = coefs[,1],
+    std.error = coefs[,2],
+    p.value = coefs[,4],
+    model = name,
+    row.names = NULL
+  )
+}
+
+tidy_sur <- bind_rows(
+  get_eq_df(fit_biomasa$eq[[1]], "Sardine"),
+  get_eq_df(fit_biomasa$eq[[2]], "Anchoveta"),
+  get_eq_df(fit_biomasa$eq[[3]], "JackMackerel")
+)
+
+# --- 2. Estandarizar nombres de variables e interacciones ---
+tidy_sur <- tidy_sur %>%
+  mutate(term = case_when(
+    term %in% c("biomass_jackmackerelintrapolated:biomass_sardine",
+                "biomass_sardine:biomass_jackmackerelintrapolated") ~
+      "Sardine × Jack mackerel",
+    term %in% c("biomass_anchoveta:biomass_jackmackerelintrapolated",
+                "biomass_jackmackerelintrapolated:biomass_anchoveta") ~
+      "Anchoveta × Jack mackerel",
+    term %in% c("biomass_sardine:biomass_anchoveta",
+                "biomass_anchoveta:biomass_sardine") ~
+      "Sardine × Anchoveta",
+    term == "biomass_sardine" ~ "Biomass (Sardine, t)",
+    term == "biomass_anchoveta" ~ "Biomass (Anchoveta, t)",
+    term == "biomass_jackmackerelintrapolated" ~ "Biomass (Jack mackerel, t)",
+    term == "sst_c" ~ "Sea surface temperature (°C)",
+    term == "sst_c2" ~ "(SST)²",
+    term == "chl_c" ~ "Chlorophyll-a (mg/m³)",
+    term == "(Intercept)" ~ "Constant",
+    TRUE ~ term
+  ))
+
+# --- 3. Agregar estrellas de significancia y formatear ---
+tidy_sur <- tidy_sur %>%
+  mutate(sig = case_when(
+    p.value < 0.01 ~ "***",
+    p.value < 0.05 ~ "**",
+    p.value < 0.1  ~ "*",
+    TRUE ~ ""
+  ),
+  estimate_fmt = sprintf("%.3f%s", estimate, sig)) %>%
+  select(model, term, estimate_fmt)
+
+# --- 4. Pivotear a formato tabla (una fila por variable) ---
+sur_table <- tidy_sur %>%
+  pivot_wider(names_from = model, values_from = estimate_fmt)
+
+# --- 5. Agregar R² ajustado ---
+r2_table <- data.frame(
+  term = c("R-squared (Adj.)"),
+  Sardine = sprintf("%.3f", summary(fit_biomasa$eq[[1]])$adj.r.squared),
+  Anchoveta = sprintf("%.3f", summary(fit_biomasa$eq[[2]])$adj.r.squared),
+  JackMackerel = sprintf("%.3f", summary(fit_biomasa$eq[[3]])$adj.r.squared)
+)
+
+sur_table <- bind_rows(sur_table, r2_table)
+
+```
+
+
+
+```{r include=FALSE}
+library(kableExtra)
+tab <- kbl(
+  sur_table,
+  align   = "lccc",
+  caption = "\\label{tab:SUR_results}Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for small pelagic species in Central--Southern Chile.",
+  col.names = c("Variable", "Sardine", "Anchoveta", "Jack mackerel"),
+  format  = "latex",
+  booktabs = TRUE,
+  escape  = FALSE,      # <- clave para permitir LaTeX en celdas y notas
+  linesep = ""          # opcional: elimina espacio extra entre filas
+) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down"),
+    position = "center",
+    font_size = 10
+  ) %>%
+  footnote(
+    general = c(
+      "Standard errors in parentheses. Significance levels: * p<0.1; ** p<0.05; *** p<0.01.",
+      "Residual correlations ($\\\\rho$): Sardine--Anchoveta = -0.47; Sardine--Jack = -0.60; Anchoveta--Jack = +0.66."
+    ),
+    general_title = "",
+    threeparttable = TRUE,
+    escape = FALSE     
+  ) 
+
+```
+
+
+As shown in Table \ref{tab:SUR_results}, the SUR estimates indicate...
+
+```{r insert_SUR_table, results='asis', echo=FALSE}
+cat(tab)
+```
+
+
+<!-- Consistent with previous literature, environmental forcing showed heterogeneous effects across species.  For instance, the sardine equation displayed a positive curvature in SST (*p* ≈ 0.09) and chlorophyll (*p* ≈ 0.05), suggesting biomass increases around intermediate to warm conditions and moderate productivity.  In contrast, anchoveta biomass responded positively to jack mackerel biomass and marginally to SST², whereas wind effects were weak or insignificant in all equations. -->
+
+<!-- These results were used to evaluate whether wind should be retained in the model.  A joint exclusion test for both linear and quadratic wind terms across the three equations yielded an *F*-statistic of approximately 0 and *p* = 1, indicating that wind does not add explanatory power once SST and CHL are included.  Hence, subsequent models omit wind variables to favor parsimony. -->
+
+<!-- This finding aligns with previous studies suggesting that although surface winds influence upwelling intensity, their effect on interannual biomass changes of small pelagics may be indirect through nutrient supply rather than direct forcing at annual scales.  Nevertheless, long-term projections indicate that wind dynamics could become more relevant under climate change scenarios: -->
+
+<!-- - “Fuenzalida et al. (2007) forecast that surface winds would strengthen along the Chilean coast, with an increase of up to 6 m s⁻¹ during 2046–2065 compared to 2000–2005; this might increase upwelling and thus fisheries productivity” (Yáñez et al. 2014; Garreaud et al. 2009). -->
+
+<!-- - “Wind direction and strength will probably influence the distribution and abundance of marine species. Small and coastal pelagic species, for example, show different behaviors: while anchovy maximizes recruitment at current speeds of ≈ 5.46 m s⁻¹, showing a decrease with lower and higher values, sardine maximizes recruitment at ≈ 5.63 m s⁻¹ or more” (Yáñez et al. 2001). -->
+
+<!-- - “Anchovy dominates during cold inter-decadal periods, while sardine prevail during warm inter-decadal periods. Such inter-decadal variations in SST also influence recruitment, as documented in anchovies off the Peruvian coast” (Cahuín et al. 2009). -->
+
+<!-- Thus, while current empirical models show limited short-term wind effects, the projected strengthening of coastal winds and long-term warming of the Chilean coast (Fuenzalida et al. 2007) may substantially alter the productivity and spatial overlap of small pelagic species in future decades. -->
+
+
+## Trip level costo function
+<< NO RESULTS YET >>
+
+## Total Annual trips
+<< NO RESULTS YET >>
+
+## Inverse demand model
+
+<< NO RESULTS YET >>
+
+Two undergrad students working on this module for their thesis... Results by July 2026
+
+## Numerical optimization
+<< NO RESULTS YET >>
+
+Once I have results for the four models, then I can run optimizations
 
 # Discussion
 
