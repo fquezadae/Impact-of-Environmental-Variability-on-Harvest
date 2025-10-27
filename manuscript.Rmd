@@ -54,7 +54,7 @@ rm(usuario)
 
 # Introduction
 
-The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others. The literature that studies fishers’ responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that they can adopt the following adaptive strategies: (i) reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj]; (ii) continue following the same strategy; or (iii) exit the fishery and find alternative employment [@Powell2022-wj]. Among these strategies, reallocating effort to alternative species has been identified as a potentially effective response to climate change [@Young2018-kk]. Diversification of target species has also been linked to reduced income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and greater resilience to both climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
+The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others [@sumaila2011]. The literature that studies fishers’ responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that they can adopt the following adaptive strategies: (i) reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj]; (ii) continue following the same strategy; or (iii) exit the fishery and find alternative employment [@Powell2022-wj]. Among these strategies, reallocating effort to alternative species has been identified as a potentially effective response to climate change [@Young2018-kk]. Diversification of target species has also been linked to reduced income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and greater resilience to both climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
 This emphasis on diversification aligns with broader evidence from food-producing sectors. As @sjcruz_jmp highlights, climate variability substantially affects agriculture and fisheries, where income depends heavily on environmental fluctuations (e.g., temperature, rainfall) and market forces (e.g., input costs) [@Kasperski2013-jz; @Carter2018]. With variability expected to reduce productivity, income risk is likely to rise [@Carter2018; @Free2019]. Diversification—whether within a sector (e.g., switching crops or species) or across sectors—is often promoted as an adaptive strategy [@Abbott2023-sb]. However, these strategies can be costly for resource-dependent communities with limited capital and skills [@Cherdchuchai2006; @Ellis2000], and the role of switching costs in shaping diversification remains poorly understood.
 
@@ -148,6 +148,11 @@ biomass <- readRDS("data/biomass/biomass_dt.rds")
 logbooks <- readRDS("data/logbooks/logbooks.rds")
 
 ```
+
+
+
+## Switching patterns
+
 
 ```{r harvest_substitution_after, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -577,6 +582,7 @@ rm(get_strategy, simplify_focus_strategy)
 
 ```
 
+## Fishing seasons
 
 ```{r harvest_data, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -702,7 +708,7 @@ rm(harvest_IFOP_month, harvest_summary, month_order, month_translation, months)
 ```
 
 
-```{r monthlyharvestSP, echo=FALSE, fig.align='center', fig.cap="Average monthly landings by species (2012-2024; South-Central Chile) ", fig.pos='ht!', message=FALSE, warning=FALSE}
+```{r monthlyharvestSP, eval=FALSE, fig.align='center', fig.cap="Average monthly landings by species (2012-2024; South-Central Chile) ", fig.pos='ht!', message=FALSE, warning=FALSE, include=FALSE}
 library(stringi)
 
 harvest_month_SERNAPESCA <- read.csv(
@@ -879,10 +885,8 @@ knitr::include_graphics("figs/env_data_map.pdf")
 
 ### Stock dynamics
 
-<!-- SANCHO -- Longitudinalmente se distribuyen desde la -->
-<!-- línea base media de la costa hasta las 30 millas náuticas hacia el oeste. -->
+To estimate stock dynamics, we use annual data on species-specific biomass (stock abundance) and vessel landings within Chile’s Exclusive Economic Zone (EEZ). Following @Kasperski2015-jm, the baseline model for the interannual growth of each species $i$ is represented by a discrete logistic function that accounts for intra- and inter-species interactions:
 
-To estimate stock dynamics, we use annual data on stock abundance and vessel landings. Following @Kasperski2015-jm, the base model for the growth of each species follows a discrete logistic function: 
 \begin{equation}
 x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
 \label{eq1}
@@ -892,133 +896,13 @@ where $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is t
 x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
 \label{eq2}
 \end{equation} 
-where $\rho_i$ are the coefficient for the environmental covariates. Specifically, we included as environmental covariates the sea surface temperature and chlorophyll levels averages for the South-Central chile region. We include only data within the EEZ Chilean region and 
+where $\rho_i$ are the coefficient for the environmental covariates.
+
+Environmental conditions were summarized annually using sea surface temperature (SST) and chlorophyll-a concentration (CHL), both averaged over the South-Central Chile region within the EEZ. These variables were selected due to their recognized influence on small pelagic productivity and spatial distribution [@Axbard2016]. To capture potential nonlinear responses, both linear and quadratic terms for SST and CHL were included. Early specifications also tested linear and quadratic wind effects, but excluding them did not significantly reduce explanatory power ($\text{F}_{6,24} = 0.36$, $p\text{-value} = 0.89$). SST serves as a proxy for large-scale oceanographic regimes (warm vs. cold phases) that shape recruitment success and species dominance along the Humboldt Current System. Anchovy tends to dominate during cold, nutrient-rich phases, while sardine prevail under warmer conditions [@cahuin2009; @Yáñez2014]. CHL captures interannual variations in primary productivity, which are critical for sustaining the planktonic base of pelagic food webs. As emphasized by @sumaila2011, “Changes in primary productivity and planktonic community structure affect the amount of energy transferred to higher trophic levels and, eventually, the productivity of trophic groups that contribute to fisheries catches” [see also @jennings2008; @cheung2008]. Thus, chlorophyll acts as an indicator of ecosystem energy available to forage fish.
+
+The SUR framework is particularly suited to this multi-species context, as it allows for contemporaneous correlation among residuals that arise from shared environmental shocks and trophic linkages. Cross-species interaction terms are specified between predator (jack mackerel) and prey (anchoveta, sardine) pairs, enabling the model to capture both biological coupling and indirect effects of environmental variability transmitted across species.
 
 
-As shown in Figure \@ref(fig:biomass), biomass levels vary by species,
-and there is some interrelation between them. It is also clear that
-these biomass levels are affected by the harvests that occurred during
-those periods. For instance, in the case of jack mackerel, an abrupt
-decline in biomass is observed, likely due to a combination of
-overexploitation of the resource and unfavorable environmental
-conditions.
-
--   From [@Yáñez2014]:
-    -   *"@Fuenzalida2007 forecast that surface winds would strengthen
-        in the coast of Chile, with an increase of 6 m/s in some areas
-        of Chile during the period 2046-2065 in comparison to 2000–2005;
-        this might increase upwelling and thus, fisheries productivity
-        [@garreaud2009]."*
-        -   *"Wind direction and strength will probably influence the
-            distribution and abundance of marine species. Small and
-            coastal pelagic species, for example, show different
-            behaviors: while anchovy maximizes recruitment at current
-            speeds of 5.46 m/s, showing an important decrease with lower
-            and higher values, sardine maximizes recruitment at 5.63 m/s
-            or more [@yanez2001].*
-    -   *Anchovy dominates during cold inter-decadal periods, while
-        sardine prevail during warm inter-decadal periods. Such
-        interdecadal variations in SST also influence recruitment, a
-        situation that has been documented in anchovies off the Peruvian
-        coast [@cahuin2009]."*
-        -   *Longer term predictions based on two global warming
-            scenarios of the IPCC (Intergovernmental Panel on Climate
-            Change) done by @Fuenzalida2007 shows a warming on the
-            Chilean coast."*
-          
-To capture the nonlinear environmental influence on biomass dynamics, we standardized all predictors and included both linear and quadratic terms for sea surface temperature (SST), chlorophyll-a concentration (CHL), and wind speed (WIND).  These variables were selected given their recognized role in the productivity and spatial distribution of small pelagic species off central–southern Chile. The system of seemingly unrelated regressions (SUR) was estimated with standardized variables and biologically meaningful interactions between predator (jack mackerel) and prey (sardine, anchoveta) biomasses.  Each equation included climate covariates in level and squared form to capture potential optima. 
-
-
-            
-        
-```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
-
-library(ggplot2)
-library(tidyr)
-library(scales)
-library(viridis)
-
-biomass_long <- biomass %>%
-  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_biomass_cs_intra),
-               names_to = "species", 
-               values_to = "biomass") %>%
-  filter(!is.na(biomass)) %>%
-  arrange(species, year)
-
-biomass_long$biomass <- as.numeric(biomass_long$biomass)
-biomass_long$year <- as.numeric(biomass_long$year)
-biomass_long$species <- dplyr::recode(biomass_long$species,
-                               sardine_biomass = "Sardine", 
-                               anchoveta_biomass = "Anchoveta", 
-                               jurel_biomass_cs = "Jack Mackerel", 
-                               jurel_biomass_cs_intra = "Jack Mackerel (intrapolated)")
-
-biomass <- biomass_long %>% filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel", "Jack Mackerel (intrapolated)"))
-
-
-# Plot
-ggplot(biomass, aes(x = year, y = biomass, color = species, group = species)) +
-  geom_smooth(se = TRUE, method = "loess", span = 0.4, linetype = "solid") +
-  scale_y_continuous(labels = scales::comma) +  # Or use scale_y_log10(labels = comma) to compress
-  labs(x = "Year",
-       y = "Biomass (tons)",
-       color = "Species") +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    axis.text.y = element_text(angle = 0, hjust = 1),
-    legend.position = "right" 
-  ) + 
-  scale_color_viridis_d(option = "D")
-
-
-rm(list = c("biomass_long"))
-
-```
-
-Adding harvest:
-
-```{r harvestbiomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass vs harvest of small pelagic species in CentralSouth Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
-
-library(tidyverse)
-
-harvest2 <- harvest %>%
-  select(c(specie, year, total_harvest_sernapesca_v2_centro_sur)) %>%
-  mutate(specie = dplyr::recode(specie,
-                          "SARDINA COMUN" = "Sardine",
-                          "JUREL" = "Jack Mackerel",
-                          "ANCHOVETA" = "Anchoveta"
-                          )) %>%
-  rename(harvest = total_harvest_sernapesca_v2_centro_sur) %>%
-  rename(species = specie)
-
-harvest2 <- bind_rows(
-  harvest2,
-  harvest2 %>%
-    filter(species == "Jack Mackerel") %>%
-    mutate(species = "Jack Mackerel (intrapolated)")
-)
-
-biomass_harvest <- full_join(biomass, harvest2, by = c("species" = "species", "year" = "year")) %>% arrange(species, year)
-
-biomass_harvest_long <- biomass_harvest %>%
-  pivot_longer(cols = c(biomass, harvest),
-               names_to = "variable",
-               values_to = "value")
-
-ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
-  geom_line(size = 1, na.rm = TRUE) +  
-  # geom_point(size = 2, na.rm = TRUE) + 
-  # geom_smooth(se = FALSE, span = 0.4, method = "loess", na.rm = TRUE) + # <- smoothing
-  facet_wrap(~species, scales = "free_y") +
-  labs(x = "Year", y = "Value (tons)", color = "Variable") +
-  scale_color_manual(values = c("biomass" = "darkgreen", "harvest" = "steelblue")) +
-  theme_minimal() +
-  theme(legend.position = "top")
-
-rm(biomass_harvest_long, harvest2)
-
-```
 
 ### Trip level cost functions
 
@@ -1122,24 +1006,16 @@ accumulation of "bad weather days" as an explanatory variable to
 incorporate weather conditions into this decision, thus
 $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
 
-### Inverse demand model for outputs
+### Inverse demand model 
 
-The price of each species is modeled using an inverse demand model, which assumes weak separability between the species into consideration and other products [@Kasperski2015-jm]. The price of a species $i$ in year $y$ is the following:
+The price of each species is modeled using an Inverse Almost Ideal Demand System (IADS). The price of a species $i$ in year $y$ is the following:
 
 \begin{equation}
-p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
+\ln p_{iy} = \sum_j^n \gamma_j \ln h_{j,y} + \gamma_{H} \ln H + \gamma_{FM} \ln P^\text{FishMeal} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
 \label{eq6}
 \end{equation}
 
-The system formed by \eqref{eq6} can be estimated using maximum
-likelihood. Note that harvest may be endogenous in this system due to
-simultaneity. @Kasperski2015-jm solves this by assuming that the TAC is
-exogenous, and the catch, in general, is determined by this quota. We
-can relax this assumption by considering that all variables in the
-inverse demand equations are endogenous by estimating a vector
-autoregressive (VAR) model [@juselius2006cointegrated]. In other words,
-harvest $h_{vg}$ has its own equations in the system.
-
+Note that harvest may be endogenous in this system due to simultaneity. For this reason, the system formed by \eqref{eq6} will be estimated using a Three Stage Least Squares (3SLS) procedure, where h_j{j,y} would be instrumented by variables that affect the fishers' supply function such as SST, Chl, and fuel prices.
 
 <!-- Comment: One concern I have regards the endogeneity of factors determining the outcomes of fishing effort on a fishing
 trip (where, when, how long, and for what, and how much), climate conditions (temperature, wave, and wind),
@@ -1176,6 +1052,104 @@ Following @Kasperski2015-jm, the optimization problem will be conducted for the 
 # Results
 
 ## Stock biomass model
+
+
+As shown in Figure \@ref(fig:biomass), biomass levels vary by species, and there is some interrelation between them. It is also clear that these biomass levels are affected by the harvests that occurred during those periods. For instance, in the case of jack mackerel, an abrupt decline in biomass is observed, likely due to a combination of
+overexploitation of the resource and unfavorable environmental conditions.
+        
+```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
+
+library(ggplot2)
+library(tidyr)
+library(scales)
+library(viridis)
+
+biomass_long <- biomass %>%
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_biomass_cs_intra),
+               names_to = "species", 
+               values_to = "biomass") %>%
+  filter(!is.na(biomass)) %>%
+  arrange(species, year)
+
+biomass_long$biomass <- as.numeric(biomass_long$biomass)
+biomass_long$year <- as.numeric(biomass_long$year)
+biomass_long$species <- dplyr::recode(biomass_long$species,
+                               sardine_biomass = "Sardine", 
+                               anchoveta_biomass = "Anchoveta", 
+                               jurel_biomass_cs = "Jack Mackerel", 
+                               jurel_biomass_cs_intra = "Jack Mackerel (intrapolated)")
+
+biomass <- biomass_long %>% filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel", "Jack Mackerel (intrapolated)"))
+
+
+# Plot
+ggplot(biomass, aes(x = year, y = biomass, color = species, group = species)) +
+  geom_smooth(se = TRUE, method = "loess", span = 0.4, linetype = "solid") +
+  scale_y_continuous(labels = scales::comma) +  # Or use scale_y_log10(labels = comma) to compress
+  labs(x = "Year",
+       y = "Biomass (tons)",
+       color = "Species") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.y = element_text(angle = 0, hjust = 1),
+    legend.position = "right" 
+  ) + 
+  scale_color_viridis_d(option = "D")
+
+
+rm(list = c("biomass_long"))
+
+```
+
+Adding harvest:
+
+```{r harvestbiomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass vs harvest of small pelagic species in CentralSouth Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
+
+library(tidyverse)
+
+harvest2 <- harvest %>%
+  select(c(specie, year, total_harvest_sernapesca_v2_centro_sur)) %>%
+  mutate(specie = dplyr::recode(specie,
+                          "SARDINA COMUN" = "Sardine",
+                          "JUREL" = "Jack Mackerel",
+                          "ANCHOVETA" = "Anchoveta"
+                          )) %>%
+  rename(harvest = total_harvest_sernapesca_v2_centro_sur) %>%
+  rename(species = specie)
+
+harvest2 <- bind_rows(
+  harvest2,
+  harvest2 %>%
+    filter(species == "Jack Mackerel") %>%
+    mutate(species = "Jack Mackerel (intrapolated)")
+)
+
+biomass_harvest <- full_join(biomass, harvest2, by = c("species" = "species", "year" = "year")) %>% arrange(species, year)
+
+biomass_harvest_long <- biomass_harvest %>%
+  pivot_longer(cols = c(biomass, harvest),
+               names_to = "variable",
+               values_to = "value")
+
+ggplot(biomass_harvest_long, aes(x = year, y = value, color = variable)) +
+  geom_line(size = 1, na.rm = TRUE) +  
+  # geom_point(size = 2, na.rm = TRUE) + 
+  # geom_smooth(se = FALSE, span = 0.4, method = "loess", na.rm = TRUE) + # <- smoothing
+  facet_wrap(~species, scales = "free_y") +
+  labs(x = "Year", y = "Value (tons)", color = "Variable") +
+  scale_color_manual(values = c("biomass" = "darkgreen", "harvest" = "steelblue")) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+rm(biomass_harvest_long, harvest2)
+
+```
+
+
+
+<!-- ESTIMACIONES DE BIOMASA -->
+
 
 
 ```{r database_for_biomass_est, message=FALSE, warning=FALSE, include=FALSE}
@@ -1257,8 +1231,10 @@ sur_df <- biomass_harvest %>%
     biomass_t1_jackmackerel_noharvest = biomass_t1_jackmackerel_noharvest / 1e5,
     biomass_sardine = biomass_sardine / 1e5,
     biomass_anchoveta = biomass_anchoveta / 1e5,
-    biomass_jackmackerelintrapolated = biomass_jackmackerelintrapolated / 1e5
-  )
+    biomass_jackmackerelintrapolated = biomass_jackmackerelintrapolated / 1e5,
+    biomass_sardine_c = biomass_sardine - mean(biomass_sardine, na.rm = TRUE),
+    biomass_anchoveta_c = biomass_anchoveta - mean(biomass_anchoveta, na.rm = TRUE),
+    biomass_jackmackerelintrapolated_c = biomass_jackmackerelintrapolated - mean(biomass_jackmackerelintrapolated, na.rm = TRUE))
 ```
 
 ```{r sur_data_correlations, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
@@ -1302,7 +1278,9 @@ ggplot(corr_long, aes(Var1, Var2, fill = Correlation)) +
 # We'll test VIF within each equation's design matrix
 eq_sardine_vif <- lm(
   biomass_t1_sardine_noharvest ~
-    biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+    biomass_sardine_c + I(biomass_sardine_c^2) +  
+    biomass_sardine_c:biomass_anchoveta_c +
+    biomass_sardine_c:biomass_jackmackerelintrapolated_c +
     sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
   data = sur_df
 )
@@ -1310,7 +1288,9 @@ vif(eq_sardine_vif) %>% sort()
 
 eq_anchoveta_vif <- lm(
   biomass_t1_anchoveta_noharvest ~
-    biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+    biomass_anchoveta_c + I(biomass_anchoveta_c^2) +
+    biomass_sardine_c:biomass_anchoveta_c + 
+    biomass_anchoveta_c:biomass_jackmackerelintrapolated_c + 
     sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
   data = sur_df
 )
@@ -1318,34 +1298,37 @@ vif(eq_anchoveta_vif) %>% sort()
 
 eq_jack_vif <- lm(
   biomass_t1_jackmackerel_noharvest ~
-    biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
+    biomass_jackmackerelintrapolated_c + I(biomass_jackmackerelintrapolated_c^2) +
+    biomass_sardine_c:biomass_jackmackerelintrapolated_c + 
+    biomass_anchoveta_c:biomass_jackmackerelintrapolated_c + 
     sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
   data = sur_df
 )
 vif(eq_jack_vif) %>% sort()
 
 ```
+
 ```{r sur_estimation_base, message=FALSE, warning=FALSE, include=FALSE}
 
 library(systemfit)
 
 eq_sardine <- biomass_t1_sardine_noharvest ~
-  biomass_sardine + biomass_anchoveta + biomass_jackmackerelintrapolated +
-  sst_c + sst_c2 + chl_c + chl_c2 + + wind_c + wind_c2 +
-  biomass_sardine:biomass_anchoveta +
-  biomass_sardine:biomass_jackmackerelintrapolated
+  biomass_sardine_c + I(biomass_sardine_c^2) +
+  sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2 +
+  biomass_sardine_c:biomass_anchoveta_c +
+  biomass_sardine_c:biomass_jackmackerelintrapolated_c
 
 eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
-  biomass_anchoveta + biomass_sardine + biomass_jackmackerelintrapolated +
-  sst_c + sst_c2 + chl_c + chl_c2 + + wind_c + wind_c2 +
-  biomass_sardine:biomass_anchoveta +
-  biomass_anchoveta:biomass_jackmackerelintrapolated
+  biomass_anchoveta_c + I(biomass_anchoveta_c^2) +
+  sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2 +
+  biomass_sardine_c:biomass_anchoveta_c +
+  biomass_anchoveta_c:biomass_jackmackerelintrapolated_c
 
 eq_jack <- biomass_t1_jackmackerel_noharvest ~
-  biomass_jackmackerelintrapolated + biomass_sardine + biomass_anchoveta +
-  sst_c + sst_c2 + chl_c + chl_c2 + + wind_c + wind_c2 +
-  biomass_sardine:biomass_jackmackerelintrapolated + 
-  biomass_anchoveta:biomass_jackmackerelintrapolated
+  biomass_jackmackerelintrapolated_c + I(biomass_jackmackerelintrapolated_c^2) +
+  sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2 +
+  biomass_sardine_c:biomass_jackmackerelintrapolated_c + 
+  biomass_anchoveta_c:biomass_jackmackerelintrapolated_c
 
 fit_sur <- systemfit(
   list(
@@ -1376,13 +1359,15 @@ build_eqs <- function(include_wind = TRUE,
   if (include_chl2) base_terms <- c(base_terms, "chl_c2")
   if (include_wind) base_terms <- c(base_terms, "wind_c", "wind_c2")
 
-  sard_terms <- c("biomass_sardine", "biomass_anchoveta", "biomass_jackmackerelintrapolated",
-                  base_terms, if (include_interactions) c("biomass_sardine:biomass_jackmackerelintrapolated",                                                  "biomass_sardine:biomass_anchoveta"))
-  anch_terms <- c("biomass_anchoveta", "biomass_sardine", "biomass_jackmackerelintrapolated",
-                  base_terms, if (include_interactions) c("biomass_anchoveta:biomass_jackmackerelintrapolated",
-                                                          "biomass_sardine:biomass_anchoveta"))
-  jack_terms <- c("biomass_jackmackerelintrapolated", "biomass_sardine", "biomass_anchoveta",
-                  base_terms, if (include_interactions) c("biomass_sardine:biomass_jackmackerelintrapolated",                                                          "biomass_anchoveta:biomass_jackmackerelintrapolated"))
+  sard_terms <- c("biomass_sardine_c", "I(biomass_sardine_c^2)",
+                  base_terms, if (include_interactions) c("biomass_sardine_c:biomass_jackmackerelintrapolated_c",
+                                                          "biomass_sardine_c:biomass_anchoveta_c"))
+  anch_terms <- c("biomass_anchoveta_c", "I(biomass_anchoveta_c^2)", 
+                  base_terms, if (include_interactions) c("biomass_anchoveta_c:biomass_jackmackerelintrapolated_c",
+                                                          "biomass_sardine_c:biomass_anchoveta_c"))
+  jack_terms <- c("biomass_jackmackerelintrapolated_c", "I(biomass_jackmackerelintrapolated_c^2)",
+                  base_terms, if (include_interactions) c("biomass_sardine_c:biomass_jackmackerelintrapolated_c",
+                                                          "biomass_anchoveta_c:biomass_jackmackerelintrapolated_c"))
 
   f <- function(y, xs) as.formula(paste(y, "~", paste(xs, collapse = " + ")))
 
@@ -1440,37 +1425,24 @@ fit_no_wind <- fit_sur_with(include_wind = FALSE,
 
 nested_F(fit_sur, fit_no_wind)
 
-
-fit_no_chl2 <- fit_sur_with(include_wind = FALSE,
-                            include_sst2 = TRUE,
-                            include_chl2 = FALSE,
-                            include_interactions = TRUE,
-                            data = sur_df)
-
-nested_F(fit_sur, fit_no_chl2)
-nested_F(fit_no_wind, fit_no_chl2)
-
 fit_no_int <- fit_sur_with(include_wind = FALSE,
                             include_sst2 = TRUE,
-                            include_chl2 = FALSE,
+                            include_chl2 = TRUE,
                             include_interactions = FALSE,
                             data = sur_df)
+
+nested_F(fit_sur, fit_no_int)
+nested_F(fit_no_wind, fit_no_int)
 
 rm(build_eqs, fit_sur_with, eq_anchoveta, eq_jack, eq_sardine, sur_df)
 
 ```
 
-A sequence of nested likelihood-ratio (F) tests was used to assess the contribution of environmental covariates. 
-Removing both linear and quadratic wind terms from the three equations produced no significant loss of explanatory power 
-(F₆,₂₄ = 0.36, p = 0.90). Similarly, excluding the nonlinear chlorophyll term had no effect (F₉,₂₄ = 0.28, p = 0.97). Conversely, the quadratic SST term remained significant in the sardine and anchoveta equations (p < 0.10), 
-suggesting thermal optima consistent with previous studies on small pelagic recruitment. 
-The final specification therefore retained SST and SST², linear CHL, and species interactions, 
-while excluding wind and CHL² for parsimony.
 
 
 ```{r table_sur_final, message=FALSE, warning=FALSE, include=FALSE}
-fit_biomasa <- fit_no_chl2
-rm(fit_sur, fit_no_int, fit_no_wind)
+fit_biomasa <- fit_no_wind
+# rm(fit_sur, fit_no_int, fit_no_wind)
 
 library(dplyr)
 library(tidyr)
@@ -1498,21 +1470,25 @@ tidy_sur <- bind_rows(
 # --- 2. Estandarizar nombres de variables e interacciones ---
 tidy_sur <- tidy_sur %>%
   mutate(term = case_when(
-    term %in% c("biomass_jackmackerelintrapolated:biomass_sardine",
-                "biomass_sardine:biomass_jackmackerelintrapolated") ~
+    term %in% c("biomass_jackmackerelintrapolated_c:biomass_sardine_c",
+                "biomass_sardine_c:biomass_jackmackerelintrapolated_c") ~
       "Sardine × Jack mackerel",
-    term %in% c("biomass_anchoveta:biomass_jackmackerelintrapolated",
-                "biomass_jackmackerelintrapolated:biomass_anchoveta") ~
+    term %in% c("biomass_anchoveta_c:biomass_jackmackerelintrapolated_c",
+                "biomass_jackmackerelintrapolated_c:biomass_anchoveta_c") ~
       "Anchoveta × Jack mackerel",
-    term %in% c("biomass_sardine:biomass_anchoveta",
-                "biomass_anchoveta:biomass_sardine") ~
+    term %in% c("biomass_sardine_c:biomass_anchoveta_c",
+                "biomass_anchoveta_c:biomass_sardine_c") ~
       "Sardine × Anchoveta",
-    term == "biomass_sardine" ~ "Biomass (Sardine, t)",
-    term == "biomass_anchoveta" ~ "Biomass (Anchoveta, t)",
-    term == "biomass_jackmackerelintrapolated" ~ "Biomass (Jack mackerel, t)",
-    term == "sst_c" ~ "Sea surface temperature (°C)",
-    term == "sst_c2" ~ "(SST)²",
-    term == "chl_c" ~ "Chlorophyll-a (mg/m³)",
+    term == "biomass_sardine_c" ~ "Biomass (t)",
+    term == "biomass_anchoveta_c" ~ "Biomass (t)",
+    term == "biomass_jackmackerelintrapolated_c" ~ "Biomass (t)",
+    term == "I(biomass_sardine_c^2)" ~ "Biomass sq (t)",
+    term == "I(biomass_anchoveta_c^2)" ~ "Biomass sq (t)",
+    term == "I(biomass_jackmackerelintrapolated_c^2)" ~ "Biomass sq (t)",
+    term == "sst_c" ~ "SST",
+    term == "sst_c2" ~ "(SST) sq",
+    term == "chl_c" ~ "Chlorophyll-a",
+    term == "chl_c2" ~ "Chlorophyll-a sq",
     term == "(Intercept)" ~ "Constant",
     TRUE ~ term
   ))
@@ -1566,7 +1542,7 @@ tab <- kbl(
   footnote(
     general = c(
       "Standard errors in parentheses. Significance levels: * p<0.1; ** p<0.05; *** p<0.01.",
-      "Residual correlations ($\\\\rho$): Sardine--Anchoveta = -0.47; Sardine--Jack = -0.60; Anchoveta--Jack = +0.66."
+      "Residual correlations ($\\\\rho$): Sardine--Anchoveta = -0.44; Sardine--Jack = -0.72; Anchoveta--Jack = +0.70."
     ),
     general_title = "",
     threeparttable = TRUE,
@@ -1576,43 +1552,14 @@ tab <- kbl(
 ```
 
 
-<!-- The results for the stock biomass model are reported in Table. The joint Wald test for the wind covariate ($\chi^2(3) = 3.85$, $p = 0.28$) indicates no significant joint influence of wind on biomass dynamics once SST and chlorophyll variability are accounted for. Consequently, wind was excluded from the final specification to improve model parsimony, given its indirect effect through upwelling-driven productivity already captured by the chlorophyll term. -->
-
-
-
-Table \ref{tab:SUR_results} reports the Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for sardine (Strangomera bentincki), anchovy (Engraulis ringens), and jack mackerel (Trachurus murphyi) in Central–Southern Chile. The SUR framework was selected to jointly estimate the three equations, allowing for correlated disturbances that capture contemporaneous environmental and management shocks shared across species. The residual correlations confirm this interdependence, with negative correlations between sardine and both anchovy (ρ = –0.47) and jack mackerel (ρ = –0.60), and a positive correlation between anchovy and jack mackerel (ρ = +0.66). These patterns are consistent with the alternating dominance of sardine and anchovy documented in previous studies (Yáñez et al., 2014), and with the idea that these species experience common environmental forcing but respond differently depending on prevailing conditions.
-
-For the sardine equation, several coefficients are statistically significant and biologically coherent. Chlorophyll-a concentration exerts a strong positive effect on sardine biomass (p < 0.05), suggesting that higher primary productivity leads to improved feeding conditions and recruitment success. This aligns with the species’ reliance on coastal upwelling productivity. Sea surface temperature (SST) enters non-linearly, with a negative linear effect and a positive squared term, indicating a concave response: sardine biomass increases under moderately warm conditions but declines at extreme temperatures, reflecting a thermal optimum consistent with earlier findings for small pelagics in the Humboldt Current (Yáñez et al., 2014; Fuenzalida et al., 2007). The negative and significant effect of jack mackerel biomass (p < 0.10) suggests competitive or spatial displacement effects, where offshore expansion of jack mackerel may constrain sardine distribution or resource availability. Conversely, the positive interaction between sardine and jack mackerel biomasas implies some degree of co-movement under favorable conditions, perhaps linked to shared environmental drivers rather than direct biological facilitation. Overall, the sardine equation explains about 57 % of the variation in future biomass, a reasonable fit given the short time series and the strong environmental variability of the region.
-
-The anchovy equation exhibits a high explanatory power (adjusted R² ≈ 0.81) but fewer significant environmental effects. The most robust relationship is a positive and significant effect of jack mackerel biomass (p < 0.01), which likely reflects common environmental forcing rather than a direct ecological interaction, since both species respond to large-scale oceanographic conditions (e.g., upwelling intensity, thermocline depth). SST and chlorophyll are not statistically significant, although their coefficients suggest mild positive responses. This lack of strong environmental effects may be due to anchovy’s coastal confinement, where fine-scale variability in wind-driven upwelling and local retention processes are more relevant than broad-scale SST or chlorophyll averages. Interactions with sardine biomass are not statistically significant, but the sign pattern (positive anchovy–sardine, negative anchovy–jack) remains consistent with the alternation of dominance across regimes: anchovy tends to prevail during cooler, nutrient-rich periods, while sardine dominates under warmer conditions (Yáñez et al., 2014).
-
-In contrast, jack mackerel shows no statistically significant relationships with any predictor, including environmental covariates or inter-species interactions. The signs of coefficients are plausible—positive with its own lagged biomass and negative with sardine—but all estimates are imprecise. This lack of significance likely reflects the different spatial and temporal scales at which jack mackerel operates. Unlike sardine and anchovy, jack mackerel is a wide-ranging, semi-pelagic species whose biomass dynamics are influenced by oceanic rather than coastal processes—such as mesoscale eddies, current advection, and offshore upwelling—poorly captured by nearshore SST or chlorophyll indicators. In addition, recruitment and adult movement for jack mackerel are strongly modulated by large-scale climatic oscillations (e.g., ENSO, PDO) and by industrial fishing pressure, both of which are outside the scope of the present specification.
-
-Overall, the SUR results highlight heterogeneous environmental sensitivities and potential inter-species dependencies within the Chilean small pelagic complex. Sardine biomass is closely tied to primary productivity and exhibits a non-linear thermal response, while anchovy dynamics appear more stable and less dependent on short-term environmental fluctuations. The weak or null relationships for jack mackerel underscore its decoupled dynamics from nearshore environmental variability. The joint estimation confirms that species share correlated residual shocks, consistent with a system where climate forcing and regional management simultaneously affect multiple stocks. These findings support the interpretation that environmental variability plays a key but species-specific role in shaping the biomass trajectories of pelagic fish assemblages in Central–Southern Chile.
-
-In line with Fuenzalida et al. (2007) and Garreaud et al. (2009), projections of strengthened coastal winds and warmer surface waters may enhance upwelling intensity and potentially increase productivity, benefiting sardine recruitment while limiting anchovy dominance during future warm phases. However, the weak response of jack mackerel suggests that offshore dynamics may remain largely unaffected or even counteract nearshore productivity gains. Hence, while regional warming and wind intensification could transiently favor sardine, the broader trophic and spatial dynamics within the small pelagic complex will likely remain modulated by long-term oscillations and large-scale climatic variability.
-
-<!-- Consistent with previous literature, environmental forcing showed heterogeneous effects across species.  For instance, the sardine equation displayed a positive curvature in SST (*p* ≈ 0.09) and chlorophyll (*p* ≈ 0.05), suggesting biomass increases around intermediate to warm conditions and moderate productivity.  In contrast, anchoveta biomass responded positively to jack mackerel biomass and marginally to SST², whereas wind effects were weak or insignificant in all equations. -->
-
-<!-- These results were used to evaluate whether wind should be retained in the model.  A joint exclusion test for both linear and quadratic wind terms across the three equations yielded an *F*-statistic of approximately 0 and *p* = 1, indicating that wind does not add explanatory power once SST and CHL are included.  Hence, subsequent models omit wind variables to favor parsimony. -->
-
-<!-- This finding aligns with previous studies suggesting that although surface winds influence upwelling intensity, their effect on interannual biomass changes of small pelagics may be indirect through nutrient supply rather than direct forcing at annual scales.  Nevertheless, long-term projections indicate that wind dynamics could become more relevant under climate change scenarios: -->
-
-<!-- - “Fuenzalida et al. (2007) forecast that surface winds would strengthen along the Chilean coast, with an increase of up to 6 m s⁻¹ during 2046–2065 compared to 2000–2005; this might increase upwelling and thus fisheries productivity” (Yáñez et al. 2014; Garreaud et al. 2009). -->
-
-<!-- - “Wind direction and strength will probably influence the distribution and abundance of marine species. Small and coastal pelagic species, for example, show different behaviors: while anchovy maximizes recruitment at current speeds of ≈ 5.46 m s⁻¹, showing a decrease with lower and higher values, sardine maximizes recruitment at ≈ 5.63 m s⁻¹ or more” (Yáñez et al. 2001). -->
-
-<!-- - “Anchovy dominates during cold inter-decadal periods, while sardine prevail during warm inter-decadal periods. Such inter-decadal variations in SST also influence recruitment, as documented in anchovies off the Peruvian coast” (Cahuín et al. 2009). -->
-
-<!-- Thus, while current empirical models show limited short-term wind effects, the projected strengthening of coastal winds and long-term warming of the Chilean coast (Fuenzalida et al. 2007) may substantially alter the productivity and spatial overlap of small pelagic species in future decades. -->
+Table \ref{tab:SUR_results} reports the Seemingly Unrelated Regression (SUR) estimates for annual biomass dynamics of sardine, anchoveta, and jack mackerel in central–southern Chile. The adjusted $R^2$ values...
 
 ```{r insert_SUR_table, results='asis', echo=FALSE}
 cat(tab)
 ```
 
 
-
-
+**TAREA:** ¿Como usar errores robustos en un SUR?
 
 ## Trip level costo function
 << NO RESULTS YET >>
@@ -1646,7 +1593,12 @@ Link to the work made in the U.S. West Coast. Similar weather, but different dev
 
 # Conclusions
 
-NO CONCLUSION YET
+
+- From @sumaila2011: "A shift in species’ geographic range will thus affect the distribution and composition of fisheries resources. This may affect fishing operations, the allocation of catch shares and the effectiveness of fisheries management measures"
+
+- About using CHL for future predictions. From @sumaila2011: "However, our understanding of the magnitude and direction of climate change effects on primary productivity is uncertain. For example, projections of primary production based on an empirical relationship estimate increases of 0.7–8.1% by 2050 relative to 2000 (ref. 39), whereas outputs from four Earth-system models suggest a possible decrease of 2–20% by 2100 relative to pre-industrial conditions12. The opposite trends and the large regional differences of the estimates highlight the uncertainty in the projection of large-scale changes in primary productivity". 
+
+- Although the present model captures the historical relationships between biomass, temperature, and productivity, future strengthening of coastal winds and warming of the Chilean coast (Fuenzalida et al. 2007; Garreaud et al. 2009) could shift these dynamics, altering species overlap and fishery composition.
 
 
 ## Future research question

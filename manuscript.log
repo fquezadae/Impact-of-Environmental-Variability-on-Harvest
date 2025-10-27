@@ -1,11 +1,11 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.24)  24 OCT 2025 18:12
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.27)  27 OCT 2025 17:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **manuscript.tex
 (./manuscript.tex
 LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-10-09>
+L3 programming layer <2025-10-24>
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/size11.clo
@@ -140,7 +140,7 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/unicode-math/unicode-math.sty (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2025-10-09 L3 programming layer (loader) 
+Package: expl3 2025-10-24 L3 programming layer (loader) 
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 File: l3backend-xetex.def 2025-10-09 L3 backend support: XeTeX
 \g__graphics_track_int=\count294
@@ -1004,25 +1004,23 @@ Missing character: There is no ≈ (U+2248) in font [lmroman10-regular]:mapping=
 
 [5]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 248.
+(Font)              scaled to size 10.0pt on input line 250.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 7.0pt on input line 248.
+(Font)              scaled to size 7.0pt on input line 250.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 10.00092pt on input line 248.
+(Font)              scaled to size 10.00092pt on input line 250.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 7.00064pt on input line 248.
+(Font)              scaled to size 7.00064pt on input line 250.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 9.99893pt on input line 248.
+(Font)              scaled to size 9.99893pt on input line 250.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 6.99925pt on input line 248.
+(Font)              scaled to size 6.99925pt on input line 250.
 File: manuscript_files/figure-latex/switchStrategy-ART-1.pdf Graphic file (type pdf)
 <manuscript_files/figure-latex/switchStrategy-ART-1.pdf>
 File: manuscript_files/figure-latex/switchStrategy-IND-1.pdf Graphic file (type pdf)
 <manuscript_files/figure-latex/switchStrategy-IND-1.pdf>
 File: manuscript_files/figure-latex/monthlyharvest-1.pdf Graphic file (type pdf)
 <manuscript_files/figure-latex/monthlyharvest-1.pdf>
-File: manuscript_files/figure-latex/monthlyharvestSP-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/monthlyharvestSP-1.pdf>
 
 
 [6]
@@ -1030,15 +1028,14 @@ File: manuscript_files/figure-latex/monthlyharvestSP-1.pdf Graphic file (type pd
 [7]
 
 [8]
-File: manuscript_files/figure-latex/harvestsource-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/harvestsource-1.pdf>
-
 
 [9]
+File: manuscript_files/figure-latex/harvestsource-1.pdf Graphic file (type pdf)
+<manuscript_files/figure-latex/harvestsource-1.pdf>
 File: figs/env_data_map.pdf Graphic file (type pdf)
 <figs/env_data_map.pdf>
 
-Overfull \hbox (134.501pt too wide) in paragraph at lines 379--380
+Overfull \hbox (134.501pt too wide) in paragraph at lines 374--375
  [][] 
  []
 
@@ -1046,44 +1043,36 @@ Overfull \hbox (134.501pt too wide) in paragraph at lines 379--380
 
 [10]
 
+LaTeX Warning: Text page 11 contains only floats.
+
+
+
 [11]
-
-LaTeX Warning: Text page 12 contains only floats.
-
-
 
 [12]
 
 [13]
-File: manuscript_files/figure-latex/biomass-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/biomass-1.pdf>
-File: manuscript_files/figure-latex/harvestbiomass-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/harvestbiomass-1.pdf>
-
 
 [14]
 
 [15]
 
 [16]
+File: manuscript_files/figure-latex/biomass-1.pdf Graphic file (type pdf)
+<manuscript_files/figure-latex/biomass-1.pdf>
+File: manuscript_files/figure-latex/harvestbiomass-1.pdf Graphic file (type pdf)
+<manuscript_files/figure-latex/harvestbiomass-1.pdf>
+
 
 [17]
 
-[18]
-Missing character: There is no ₆ (U+2086) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ₂ (U+2082) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ₄ (U+2084) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ₉ (U+2089) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ₂ (U+2082) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ₄ (U+2084) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ρ (U+03C1) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ρ (U+03C1) in font [lmroman10-regular]:mapping=tex-text;!
-Missing character: There is no ρ (U+03C1) in font [lmroman10-regular]:mapping=tex-text;!
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
+
+
+[18]
 
 [19]
-Missing character: There is no ≈ (U+2248) in font [lmroman10-regular]:mapping=tex-text;!
-
 
 [20]
 
@@ -1093,23 +1082,19 @@ Missing character: There is no ≈ (U+2248) in font [lmroman10-regular]:mapping=
 
 [23]
 
-[24]
-
-[25]
-
-[26] (./manuscript.aux)
+[24] (./manuscript.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-10-09>
+L3 programming layer <2025-10-24>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20781 strings out of 470480
- 383434 string characters out of 5486028
- 964081 words of memory out of 5000000
- 48770 multiletter control sequences out of 15000+600000
+ 20774 strings out of 470480
+ 382845 string characters out of 5486028
+ 964238 words of memory out of 5000000
+ 48764 multiletter control sequences out of 15000+600000
  636282 words of font info for 114 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,12n,114p,1728b,532s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,114p,1779b,489s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on manuscript.pdf (26 pages).
+Output written on manuscript.pdf (24 pages).
