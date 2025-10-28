@@ -60,7 +60,9 @@ This emphasis on diversification aligns with broader evidence from food-producin
 
 In the fisheries context, switching between species requires not only the skills but also the appropriate gear and permits [@Frawley2021-cw; @Powell2022-wj]. Even if these conditions are met, diversification may still be constrained by port infrastructure, markets, and regulations [@Beaudreau2019-xg; @Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which adaptation strategy to adopt is not straightforward and depends on multiple factors. Moreover, fishers may respond differently to similar circumstances depending on their goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
 
-In this research, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed of anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (*Strangomera bentincki*), among others. The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. Through this research, we aim to gain a deeper understanding of how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelations to study the effect of climate variability on harvest decisions and substitution between species, and to determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile. We expect to find significant effects of climate variables on species stock dynamics, the cost of fishing during a trip, and the number of trips a vessel takes. These environmental effects might influence optimal harvest levels and prices in local markets. <!-- We also expect to find significant interrelations between species stock and harvest, and that the composition of the catch will vary depending on the climate scenario we use for future -->
+In this research, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed of anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (*Strangomera bentincki*), among others. The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. Through this research, we aim to gain a deeper understanding of how Chilean fishers and fishing communities will adapt to climate change. According to @Cheung2010, the Chilean Exclusive Economic Zone (EEZ) is projected to experience one of the largest losses in maximum catch potential due to climate change. However, the Southeast Pacific remains one of the least studied regions regarding the impacts of climate change on fisheries [@sumaila2011].
+
+To address our research question, we will estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelations to study the effect of climate variability on harvest decisions and substitution between species, and to determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile. We expect to find significant effects of climate variables on species stock dynamics, the cost of fishing during a trip, and the number of trips a vessel takes. These environmental effects might influence optimal harvest levels and prices in local markets. <!-- We also expect to find significant interrelations between species stock and harvest, and that the composition of the catch will vary depending on the climate scenario we use for future -->
 <!-- predictions. -->
 
 Under a changing climate, studying the effect of climatic variability on fishers' harvest decisions and landings is relevant for understanding fishing communities' adaptive capacities and strategies in response to climate change, thereby enabling the design of potential mitigation measures in response to these changes by policymakers. Countries have different institutions, cultures, and norms, leading to differing responses based on the study's location. For this reason, conducting this research based on the Chilean fishing industry is necessary to develop local policies that aim to reduce climate change impacts on fisheries. While there is some literature on the effect of climate change on Chilean fisheries, I am unaware of local-level studies that consider a multiple-species framework and the interrelationship between the local market and fishing decisions seen under a variable climate context.[^1]
@@ -781,21 +783,15 @@ rm(harvest_month_SERNAPESCA, harvest_summary2, month_order)
 
 To fulfill the research's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the annual stock dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization procedure.
 
+
 ## Data
 
+We use data requested from the Chilean Fisheries Development Institute (Instituto de Fomento Pesquero, IFOP) covering the 2012–2024 period. The dataset includes trip-level microdata, which contain detailed records on vessel identifiers, departure and arrival times, vessel capacity, fleet and gear type, ports of departure and landing, fishery codes, haul timing and location, species composition, retained catch, and trip activity. In addition, we requested annual information on stock abundance and vessel landings by port, county, region, country, and species.  Finally, we use ex-vessel prices, reported monthly or annually by port, county, region, country, and species. These prices reflect those paid by processing plants to fishers at the point of first sale and are obtained through IFOP’s landing surveys, which do not necessarily cover all market transactions.
 
--   **SOLICITADO A IFOP 2012-2024:**
-    -   Stock abundance and vessel landings (annual by
-        port/county/region/country and species)
-    -   Data at the trip level ([IFOP data
-        observatory?](ifop.dataobservatory.net)]).
-    -   Ex-vessel prices (monthly or annual by
-        port/county/region/country and species)
+<!-- How different are SERNAPESCA and IFOP harvest data? (Figura -->
+<!-- \@ref(fig:harvestsource)) -->
 
-How different are SERNAPESCA and IFOP harvest data? (Figura
-\@ref(fig:harvestsource))
-
-```{r harvestsource, echo=FALSE, fig.align='center', fig.cap="Desembarques anuales (IFOP vs SERNAPESCA)", fig.pos='ht!', message=FALSE, warning=FALSE}
+```{r harvestsource, eval=FALSE, fig.align='center', fig.cap="Desembarques anuales (IFOP vs SERNAPESCA)", fig.pos='ht!', message=FALSE, warning=FALSE, include=FALSE}
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -842,45 +838,38 @@ rm(harvest_long)
 
 ```
 
-For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels [@GLORYS12V1]. Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at ~4 km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly in the case of winds) for the 2012–2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S.
+For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels [@GLORYS12V1]. Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at ~4 km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly in the case of winds) for the 2012–2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S (Figure \@ref(fig:figEnvData))
  
 
-```{r figEnvData, echo=FALSE, fig.align='center', fig.cap="Geographical extent of the study area used for environmental covariates limited to the Chilean Exclusive Economic Zone", message=FALSE, warning=FALSE, fig.pos='ht!'}
+```{r figEnvData, echo=FALSE, fig.align='center', fig.cap="Geographical extent of the study area used for environmental covariates limited to the Chilean Exclusive Economic Zone", message=FALSE, warning=FALSE, fig.pos='ht!', out.width='80%'}
 
 knitr::include_graphics("figs/env_data_map.pdf")
 
 ```
  
-  - Future (2040–2050):
-          - OracleBio -- Unfurtunally only decadal projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution) -- no winds;
-          - CMIP6 for winds? (~100 km).
-        
--   **POR SOLICITAR:**
-   -   Other data?
-        -   Average wage pay to crew member per hour
-        -   Diesel cost.
-        -   Permits by vessels
-        -   Quota prices?
--   @Birkenbach2024:
-    -   *Day at sea price captures elements of forward-looking behavior
-        and information. @reimer2022structural similarly argue that
-        including a quota price captures forward looking behavior and
-        allows one to simplify the dynamic model to a static one.*
-    -   *Data on wind speed and direction were collected from NOAA’s
-        National Center for Atmospheric Prediction’s high-resolution
-        North American Regional Reanalysis dataset and averaged to the
-        daily level for each stock centroid location, defined as gear
-        and month-specific average latitudes and longitudes where
-        fishing occurs for each stock.*
-        
-- Also
-  - Quota price? Auction market but also secondary market if available
-  - Quota level, by area/fishing organization for Artisanal, and TAC for industrial with ITQ levels by vessel?
-  - If no data, mybe intrapolate prices from other auctions????
-  - Reallocations of quotas?
-  
-  
 
+### To be requested
+
+**Historical:**
+
+- Average wage pay to crew member per hour
+- Diesel cost.
+- Permits by vessels
+- Quota prices?
+  - Auction market but also secondary market if available
+    - If no data, maybe intrapolate prices from other auctions?
+  - Captures elements of forward-looking behavior and information [@Birkenbach2024]. @reimer2022structural similarly argue that including a quota price captures forward looking behavior and allows one to simplify the dynamic model to a static one.
+- Quota by area/fishing organization for Artisanal, and TAC for industrial with ITQ (by vessel?)
+- Reallocations of quotas?
+  
+  
+### Future data for projections
+
+- OracleBio 
+  - Unfurtunally, only decadal (e.g., 2040–2050) projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution)
+  - No winds; CMIP6 for winds? (~100 km).
+        
+  
 ## Econometrics models
 
 ### Stock dynamics
@@ -1580,28 +1569,24 @@ Once I have results for the four models, then I can run optimizations
 
 # Discussion
 
-If ITQ in this fishery in Chile: **The theoretical findings on multispecies harvest patterns in @Birkenbach2020-nh give rise to nuanced hypotheses about how behavior and outcomes will change after the adoption of catch shares. For example, a secure property right to catch fish at any time in the fishing season allows firms to spread the catch of stocks with high prices and downward-sloping demand over a longer fishing season. This minimizes market gluts that steer product toward lower priced frozen markets [@homans2005] and can result in higher prices for those species. Fishermen might also shift their efforts toward lower-priced species with cheaper quota or toward non-catch-share fisheries, intensifying the race to fish for those species during
-portions of the season [@asche2007; @cunningham2016spillovers].** -- However, we do not include other species than jack mackerel, sardine and anchovy that might be caught by thise fleet. This would require to expand the model by **N** species, which would increase dimensionality of the model. WE NEED PERMITS TO CHECK IF ACTUALLY THIS HAPPEN! (Still problem with Open-Access)
+- From @sumaila2011: "A shift in species’ geographic range will thus affect the distribution and composition of fisheries resources. This may affect fishing operations, the allocation of catch shares and the effectiveness of fisheries management measures"
+- For the ITQ fisheries (i.e., industrial jack mackerel?: 
+  - The theoretical findings on multispecies harvest patterns in @Birkenbach2020-nh give rise to nuanced hypotheses about how behavior and outcomes will change after the adoption of catch shares. For example, a secure property right to catch fish at any time in the fishing season allows firms to spread the catch of stocks with high prices and downward-sloping demand over a longer fishing season. This minimizes market gluts that steer product toward lower priced frozen markets [@homans2005] and can result in higher prices for those species. Fishermen might also shift their efforts toward lower-priced species with cheaper quota or toward non-catch-share fisheries, intensifying the race to fish for those species during portions of the season [@asche2007; @cunningham2016spillovers].
+    - However, we do not include other species than jack mackerel, sardine and anchovy that might be caught by thise fleet. This would require  too expand the model by **N** species, which would increase dimensionality of the model. 
+    - We need permits to check if actually this happen (... still problem with Open-Access fisheries that do not require permits)
+- Although the present model captures the historical relationships between biomass, temperature, and productivity, future strengthening of coastal winds and warming of the Chilean coast (Fuenzalida et al. 2007; Garreaud et al. 2009) could shift these dynamics, altering species overlap and fishery composition.
+- About using CHL for future predictions. 
+  - From @sumaila2011: "However, our understanding of the magnitude and direction of climate change effects on primary productivity is uncertain. For example, projections of primary production based on an empirical relationship estimate increases of 0.7–8.1% by 2050 relative to 2000 (ref. 39), whereas outputs from four Earth-system models suggest a possible decrease of 2–20% by 2100 relative to pre-industrial conditions12. The opposite trends and the large regional differences of the estimates highlight the uncertainty in the projection of large-scale changes in primary productivity". 
 
-## Potential extension of the project
-
-Several other extensions to the model can be incorporated to be improved. For instance, the geographical space where fishermen operate is relevant, as depending on the location chosen and when to participate, the set of potential choices would vary [@Reimer2017-jw]. As I mentioned above, it is possible to extend the stock dynamic model by considering different locations. The model would also require that the participation decision, which is captured by the Poisson model on the annual number of trips, should then consider the decision to participate in a determined fishing ground, connecting the multi-species model of @Kasperski2015-jm to the literature of location choice modeling [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
-
-## Damage function for the fisheries sector
-
-Link to the work made in the U.S. West Coast. Similar weather, but different development. We would need to also have estimate of the dose-response function in other latitudes, with significantly different temperatures...
 
 # Conclusions
 
-
-- From @sumaila2011: "A shift in species’ geographic range will thus affect the distribution and composition of fisheries resources. This may affect fishing operations, the allocation of catch shares and the effectiveness of fisheries management measures"
-
-- About using CHL for future predictions. From @sumaila2011: "However, our understanding of the magnitude and direction of climate change effects on primary productivity is uncertain. For example, projections of primary production based on an empirical relationship estimate increases of 0.7–8.1% by 2050 relative to 2000 (ref. 39), whereas outputs from four Earth-system models suggest a possible decrease of 2–20% by 2100 relative to pre-industrial conditions12. The opposite trends and the large regional differences of the estimates highlight the uncertainty in the projection of large-scale changes in primary productivity". 
-
-- Although the present model captures the historical relationships between biomass, temperature, and productivity, future strengthening of coastal winds and warming of the Chilean coast (Fuenzalida et al. 2007; Garreaud et al. 2009) could shift these dynamics, altering species overlap and fishery composition.
+NO YET!
 
 
 ## Future research question
+
+- Several other extensions to the model can be incorporated to be improved. For instance, the geographical space where fishermen operate is relevant, as depending on the location chosen and when to participate, the set of potential choices would vary [@Reimer2017-jw]. As I mentioned above, it is possible to extend the stock dynamic model by considering different locations. The model would also require that the participation decision, which is captured by the Poisson model on the annual number of trips, should then consider the decision to participate in a determined fishing ground, connecting the multispecies model of @Kasperski2015-jm to the literature of location choice modeling [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
 
 - Does higher quota allocation of jack mackerel, a predator for anchovy and sardine, helps small scale sector actually?
 
