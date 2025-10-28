@@ -1,6 +1,11 @@
 ---
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
-  using a Multi-Species Approach"
+  using a Multi-Species Approach 
+  \\newline
+  
+  \\vspace{6pt}
+  
+  \\large\\textbf{REALLY EARLY DRAFT – PLEASE DO NOT CITE}"
 author: "Felipe J. Quezada-Escalona"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
@@ -784,7 +789,7 @@ rm(harvest_month_SERNAPESCA, harvest_summary2, month_order)
 To fulfill the research's objectives, and following @Kasperski2015-jm, the research entails five different stages: (i) estimating the annual stock dynamics of each species included in the model, (ii) estimating trip level cost functions, (iii) estimating total annual trips, (iv) estimate the inverse demand model for outputs (i.e., price responses to supply), and (v) conduct numerical optimization to examine how harvest and profits levels evolve over time. The numeral optimization uses estimated parameters from the previous four stages to conduct the optimization procedure.
 
 
-## Data
+## Historical data
 
 We use data requested from the Chilean Fisheries Development Institute (Instituto de Fomento Pesquero, IFOP) covering the 2012–2024 period. The dataset includes trip-level microdata, which contain detailed records on vessel identifiers, departure and arrival times, vessel capacity, fleet and gear type, ports of departure and landing, fishery codes, haul timing and location, species composition, retained catch, and trip activity. In addition, we requested annual information on stock abundance and vessel landings by port, county, region, country, and species.  Finally, we use ex-vessel prices, reported monthly or annually by port, county, region, country, and species. These prices reflect those paid by processing plants to fishers at the point of first sale and are obtained through IFOP’s landing surveys, which do not necessarily cover all market transactions.
 
@@ -850,8 +855,6 @@ knitr::include_graphics("figs/env_data_map.pdf")
 
 ### To be requested
 
-**Historical:**
-
 - Average wage pay to crew member per hour
 - Diesel cost.
 - Permits by vessels
@@ -863,7 +866,7 @@ knitr::include_graphics("figs/env_data_map.pdf")
 - Reallocations of quotas?
   
   
-### Future data for projections
+## Future data for projections
 
 - OracleBio 
   - Unfurtunally, only decadal (e.g., 2040–2050) projections for different scenarios for SST, salinity, currents and chlorophyll (4km resolution)
