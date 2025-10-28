@@ -1,11 +1,7 @@
 ---
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
-  using a Multi-Species Approach 
-  \\newline
-  
-  \\vspace{6pt}
-  
-  \\large\\textbf{REALLY EARLY DRAFT – PLEASE DO NOT CITE}"
+  using a Multi-Species Approach"
+subtitle: "\\begin{center}{\\color{red}\\Large\\textbf{REALLY EARLY DRAFT – PLEASE DO NOT CITE}}\\end{center}"
 author: "Felipe J. Quezada-Escalona"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
@@ -59,13 +55,13 @@ rm(usuario)
 
 # Introduction
 
-The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others [@sumaila2011]. The literature that studies fishers’ responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that they can adopt the following adaptive strategies: (i) reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj]; (ii) continue following the same strategy; or (iii) exit the fishery and find alternative employment [@Powell2022-wj]. Among these strategies, reallocating effort to alternative species has been identified as a potentially effective response to climate change [@Young2018-kk]. Diversification of target species has also been linked to reduced income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and greater resilience to both climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
+The distribution and abundance of marine resources are changing in response to environmental conditions such as global ocean warming [@Poloczanska2013-qq]. Climate change will shift species distribution in the future, leading to reduced species availability in some areas and increased availability in others [@sumaila2011]. <!-- @sumaila2011: The economic consequences of climate change on fisheries might manifest themselves through changes in the price and value of catches, fishing costs, fishers’ incomes, earnings to fishing companies, discount rates and economic rent (that is, the surplus after all costs, including ‘normal’ profits, have been covered), as well as throughout the global economy. --> The literature that studies fishers’ responses to either changes in fish availability or policies that restrict access to fisheries [e.g., @Stafford2018-pq; @Vasquez_Caballero2023-ip] has identified that they can adopt the following adaptive strategies: (i) reduce or reallocate fishing effort, either to another species or to another location [@Gonzalez-Mon2021-kj]; (ii) continue following the same strategy; or (iii) exit the fishery and find alternative employment [@Powell2022-wj]. Among these strategies, reallocating effort to alternative species has been identified as a potentially effective response to climate change [@Young2018-kk]. Diversification of target species has also been linked to reduced income variability [e.g., @Kasperski2013-jz; @Sethi2014-bn] and greater resilience to both climate shocks [@Cline2017-dp; @Fisher2021-lw] and interannual oceanographic variability [@Aguilera2015-wo; @Finkbeiner2015-bs].
 
 This emphasis on diversification aligns with broader evidence from food-producing sectors. As @sjcruz_jmp highlights, climate variability substantially affects agriculture and fisheries, where income depends heavily on environmental fluctuations (e.g., temperature, rainfall) and market forces (e.g., input costs) [@Kasperski2013-jz; @Carter2018]. With variability expected to reduce productivity, income risk is likely to rise [@Carter2018; @Free2019]. Diversification—whether within a sector (e.g., switching crops or species) or across sectors—is often promoted as an adaptive strategy [@Abbott2023-sb]. However, these strategies can be costly for resource-dependent communities with limited capital and skills [@Cherdchuchai2006; @Ellis2000], and the role of switching costs in shaping diversification remains poorly understood.
 
 In the fisheries context, switching between species requires not only the skills but also the appropriate gear and permits [@Frawley2021-cw; @Powell2022-wj]. Even if these conditions are met, diversification may still be constrained by port infrastructure, markets, and regulations [@Beaudreau2019-xg; @Kasperski2013-jz; @Powell2022-wj]. Therefore, deciding which adaptation strategy to adopt is not straightforward and depends on multiple factors. Moreover, fishers may respond differently to similar circumstances depending on their goals, skills, and preferences [@Zhang2011-wv; @Jardine2020-um; @Powell2022-wj].
 
-In this research, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed of anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (*Strangomera bentincki*), among others. The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. Through this research, we aim to gain a deeper understanding of how Chilean fishers and fishing communities will adapt to climate change. According to @Cheung2010, the Chilean Exclusive Economic Zone (EEZ) is projected to experience one of the largest losses in maximum catch potential due to climate change. However, the Southeast Pacific remains one of the least studied regions regarding the impacts of climate change on fisheries [@sumaila2011].
+In this research, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed of anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), sardine (*Strangomera bentincki*), among others. The SPF is the most important in terms of catches in the country, accounting for almost 94% of the total Chilean catch in 2019 [@SUBPESCA2020]. Through this research, we aim to gain a deeper understanding of how Chilean fishers and fishing communities will adapt to climate change. According to @Cheung2010, the Chilean Exclusive Economic Zone (EEZ) is projected to experience one of the largest losses in maximum catch potential due to climate change. <!-- Caviedes, C. N. & Fik, T. J. in Climate Variability, Climate Change and Fisheries (ed. Glantz, M.) 355–375 (Cambridge Univ. Press, 1992): "During the 1997–1998 El Niño event, Chilean and Peruvian pelagic marine landings declined by about 50%, resulting in a drop in fishmeal export values by about US$8.2 billion. This huge drop generated negative economic effects and caused severe hardship (lost jobs, incomes and earnings) in both countries"--> However, the Southeast Pacific remains one of the least studied regions regarding the impacts of climate change on fisheries [@sumaila2011].
 
 To address our research question, we will estimate a multi-species harvesting model based on @Kasperski2015-jm. This model considers species' economic and biological interrelations to study the effect of climate variability on harvest decisions and substitution between species, and to determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile. We expect to find significant effects of climate variables on species stock dynamics, the cost of fishing during a trip, and the number of trips a vessel takes. These environmental effects might influence optimal harvest levels and prices in local markets. <!-- We also expect to find significant interrelations between species stock and harvest, and that the composition of the catch will vary depending on the climate scenario we use for future -->
 <!-- predictions. -->
@@ -900,6 +896,8 @@ The SUR framework is particularly suited to this multi-species context, as it al
 
 
   <!-- - 80 and 300 m$^3$ holds sardine and anchovy; More than 800 m$^3$, likely jack mackerel. @Pena-Torres2017-gn dummy for $H \leq 370 \ \text{m}^3$, $370 \ \text{m}^3 < H \leq 790 \ \text{m}^3$, $H > 790 \ \text{m}^3$ ... Also use age of vessel to check technical obsolescence (year trip, year ship was built) -->
+  
+ - @sumaila2011: "Capital costs, that is, the cost of vessels, fishing gear, processing plants and so on, would be affected by climate change if additional capital for fishing and process ing operations is required to adapt to climate change impacts on the quantity, composition and distribution of fisheries resources65. Changes in migratory routes and fish distribution would affect travel time, which can lead to increases or decreases in fuel and ice cost depending on catch levels and patterns, and the management regime in place."
 
 
 
@@ -941,10 +939,8 @@ the following restrictions are imposed when estimating \eqref{eq4}:
       \sum_m^M \alpha_{g,w_m} = 1 \ \text{and} \ \sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0 \quad i=1,\ldots,(2n + M + k); \ g = 1,\ldots, G.
       \end{equation*}
 
-Data at the trip level is available upon request from the Chilean
-Fisheries Research Institute (IFOP), which registers geo-referenced
-catch information on the Chilean fleet's fishing operation per trip [see
-e.g. @Pena-Torres2017-gn and [IFOP data
+Data at the trip level is available upon request from the Chilean Fisheries Research Institute (IFOP), which registers geo-referenced
+catch information on the Chilean fleet's fishing operation per trip [see e.g. @Pena-Torres2017-gn and [IFOP data
 observatory](ifop.dataobservatory.net)]. As inputs we can use the time
 spent at sea during a trip, where the price is the average wage pay to
 crew member per hour, and the distance traveled during a trip, where the
@@ -1094,7 +1090,7 @@ rm(list = c("biomass_long"))
 
 ```
 
-Adding harvest:
+Figure \@ref(fig:harvestbiomass) show biomass adding harvest
 
 ```{r harvestbiomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass vs harvest of small pelagic species in CentralSouth Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
@@ -1546,6 +1542,11 @@ tab <- kbl(
 
 Table \ref{tab:SUR_results} reports the Seemingly Unrelated Regression (SUR) estimates for annual biomass dynamics of sardine, anchoveta, and jack mackerel in central–southern Chile. The adjusted $R^2$ values...
 
+
+Some facts:
+  - Herrick, S. F. Jr, et al. in Climate Change and Small Pelagic Fish (eds Checkley, D. M., Roy, C., Alheit, J. & Oozeki, Y.) 256–274 (Cambridge Univ. Press, 2009): "Sardine is known to be more productive during warm-water regimes in the California Current ecosystem."
+  
+
 ```{r insert_SUR_table, results='asis', echo=FALSE}
 cat(tab)
 ```
@@ -1580,7 +1581,13 @@ Once I have results for the four models, then I can run optimizations
 - Although the present model captures the historical relationships between biomass, temperature, and productivity, future strengthening of coastal winds and warming of the Chilean coast (Fuenzalida et al. 2007; Garreaud et al. 2009) could shift these dynamics, altering species overlap and fishery composition.
 - About using CHL for future predictions. 
   - From @sumaila2011: "However, our understanding of the magnitude and direction of climate change effects on primary productivity is uncertain. For example, projections of primary production based on an empirical relationship estimate increases of 0.7–8.1% by 2050 relative to 2000 (ref. 39), whereas outputs from four Earth-system models suggest a possible decrease of 2–20% by 2100 relative to pre-industrial conditions12. The opposite trends and the large regional differences of the estimates highlight the uncertainty in the projection of large-scale changes in primary productivity". 
-
+- About prices [@sumaila2011]:
+  - "Everything being equal, when climate change reduces fish supply, fish price should increase, which could be large enough to balance out the loss in gross revenues due to reduced catches. However, consumers may seek substitutes as prices increase, thereby dampening the demand for fish and reducing the potential for price increases."
+  - "Ex-vessel revenues can be affected by climate change through effects first on the quantity, quality and distribution of catches, and then, on ex-vessel prices of fish."
+- Adaptation  [@sumaila2011]:
+  - "When climate change affects the composition and productivity of exploited species in a region, some fishers can adapt by switching target species or gear type81 or by moving to marginally productive areas. Grafton, R. Q. Adaptation to climate change in marine capture fisheries. Mar. Policy 34, 606–615 (2010)."
+    - "For example, new fisheries have already developed for several southern species in the UK (for example, red mullet) as these species have started to migrate to the North Sea because of an increase in sea temperature. Beare, D. J. et al. Long-term increase in prevalence of North Sea fishes having southern biogeographic affinities. Mar. Ecol. Prog. Ser. 284, 269–278 (2004)."
+    - "The ability of fishers and fishing enterprises to adapt depends on a number of factors, including the mobility of the fishing fleet.       - "At present, the dominant hypothesis is that more technologically advanced fleets, usually located in rich northern countries, are more likely to be better prepared to adapt to climate change by moving to other fishing grounds and by shifting gears. MacNeil, M. A. et al. Transitional states in marine fisheries: adapting to predicted global change. Phil. Trans. R. Soc. B 365, 3753–3763 (2011)."
 
 # Conclusions
 
