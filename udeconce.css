@@ -7,7 +7,7 @@
 .title-slide {
   background-color: var(--udec-blue) !important;
   color: white !important;
-  background-image: url(https://raw.githubusercontent.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest/refs/heads/main/logo/Logo-UdeC-1-mag.png);
+  background-image: url(https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png);
   background-position: 6.5% 10%;
   background-size: 200px;
   background-repeat: no-repeat;
@@ -79,4 +79,19 @@ span.udecgold {
   color: #f59f18;
   font-weight: 700;
 }
+
+.example-box {
+  background-color: #f5f5f5;   /* gris claro */
+  border-left: 6px solid #004b87; /* azul UdeC o el color que prefieras */
+  padding: 10px 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  font-size: 0.95em;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.example-box b {
+  color: #004b87; /* título en azul */
+}
+
 

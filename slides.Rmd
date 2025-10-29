@@ -2,7 +2,7 @@
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile"
 subtitle: "Using a Multi-Species Approach"
 author: "Felipe J. Quezada-Escalona"
-date: "Departamento de Economía" #"Last update: `r Sys.Date()`"
+date: "Encuentro EfD Chile 2025"
 output: 
   xaringan::moon_reader:
     self_contained: true
@@ -31,7 +31,7 @@ citeopt <- list(max.names=3, longnamesfirst = FALSE)
 ```
 
 ```{r use-logo, echo=FALSE}
-xaringanExtra::use_logo("https://raw.githubusercontent.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest/088d0bab630a8da78df8a546f30138ba56324573/logo/udec2.png")
+xaringanExtra::use_logo("https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png")
 ```
 
 # Introduction
@@ -300,17 +300,30 @@ layout: false
 
 class: inverse, center, middle
 
-# Thank you!
+# ¡Muchas gracias!
+
+<span style="color:#f59f18; font-size:1.3em; font-weight:bold;">¿Preguntas?</span>
+
+<div style="margin-top: 50px;"></div>
+
 
 **Felipe J. Quezada-Escalona**  
 
-Department of Economics
+<img src="https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png" width="250">
 
-<img src="https://raw.githubusercontent.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest/refs/heads/main/logo/Logo-UdeC-1-mag.png" width="150">
+<a href="https://felipequezada.com" target="_blank" style="
+  font-size:1em;
+  background:linear-gradient(#f59f18);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-decoration:none;
+">
+🌐 felipequezada.com
+</a>
 
-
-<span style="color:#f59f18;">Questions?</span>
-
+```{r message=FALSE, warning=FALSE, include=FALSE}
+pagedown::chrome_print("slides.html", output = "slides.pdf")
+```
 
 ---
 
