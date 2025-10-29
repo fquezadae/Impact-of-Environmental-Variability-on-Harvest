@@ -1338,24 +1338,31 @@ library(systemfit)
 
 # 1. Builder of formulas given switches
 build_eqs <- function(include_wind = TRUE,
-                      include_sst2 = TRUE,
-                      include_chl2 = TRUE,
+                      include_sst = TRUE,
+                      include_chl = TRUE,
                       include_interactions = TRUE) {
   
-  base_terms <- c("sst_c", "chl_c")
-  if (include_sst2) base_terms <- c(base_terms, "sst_c2")
-  if (include_chl2) base_terms <- c(base_terms, "chl_c2")
-  if (include_wind) base_terms <- c(base_terms, "wind_c", "wind_c2")
+
 
   sard_terms <- c("biomass_sardine_c", "I(biomass_sardine_c^2)",
-                  base_terms, if (include_interactions) c("biomass_sardine_c:biomass_jackmackerelintrapolated_c",
-                                                          "biomass_sardine_c:biomass_anchoveta_c"))
+                  if (include_interactions) c("biomass_sardine_c:biomass_jackmackerelintrapolated_c",
+                                              "biomass_sardine_c:biomass_anchoveta_c"),
+                  if (include_sst) c("sst_c", "sst_c2"),  
+                  if (include_chl) c("chl_c", "chl_c2"), 
+                  if (include_wind) c("wind_c", "wind_c2"))
+  
   anch_terms <- c("biomass_anchoveta_c", "I(biomass_anchoveta_c^2)", 
-                  base_terms, if (include_interactions) c("biomass_anchoveta_c:biomass_jackmackerelintrapolated_c",
-                                                          "biomass_sardine_c:biomass_anchoveta_c"))
+                  if (include_interactions) c("biomass_anchoveta_c:biomass_jackmackerelintrapolated_c",
+                                                          "biomass_sardine_c:biomass_anchoveta_c"),
+                  if (include_sst) c("sst_c", "sst_c2"),  
+                  if (include_chl) c("chl_c", "chl_c2"), 
+                  if (include_wind) c("wind_c", "wind_c2"))
   jack_terms <- c("biomass_jackmackerelintrapolated_c", "I(biomass_jackmackerelintrapolated_c^2)",
-                  base_terms, if (include_interactions) c("biomass_sardine_c:biomass_jackmackerelintrapolated_c",
-                                                          "biomass_anchoveta_c:biomass_jackmackerelintrapolated_c"))
+                  if (include_interactions) c("biomass_sardine_c:biomass_jackmackerelintrapolated_c",
+                                                          "biomass_anchoveta_c:biomass_jackmackerelintrapolated_c"),
+                  if (include_sst) c("sst_c", "sst_c2"),  
+                  if (include_chl) c("chl_c", "chl_c2"), 
+                  if (include_wind) c("wind_c", "wind_c2"))
 
   f <- function(y, xs) as.formula(paste(y, "~", paste(xs, collapse = " + ")))
 
@@ -1368,11 +1375,11 @@ build_eqs <- function(include_wind = TRUE,
 
 # 2. Fit the SUR given switches
 fit_sur_with <- function(include_wind = TRUE,
-                         include_sst2 = TRUE,
-                         include_chl2 = TRUE,
+                         include_sst = TRUE,
+                         include_chl = TRUE,
                          include_interactions = TRUE,
                          data = sur_df) {
-  eqs <- build_eqs(include_wind, include_sst2, include_chl2, include_interactions)
+  eqs <- build_eqs(include_wind, include_sst, include_chl, include_interactions)
   systemfit(
     list(
       sardine      = eqs$sardine,
@@ -1406,16 +1413,25 @@ nested_F <- function(fit_full, fit_restr) {
 ```{r test_exclusions, message=FALSE, warning=FALSE, include=FALSE}
 # 1) Test dropping wind terms
 fit_no_wind <- fit_sur_with(include_wind = FALSE,
-                            include_sst2 = TRUE,
-                            include_chl2 = TRUE,
+                            include_sst = TRUE,
+                            include_chl = TRUE,
                             include_interactions = TRUE,
                             data = sur_df)
 
 nested_F(fit_sur, fit_no_wind)
 
+fit_no_env <- fit_sur_with(include_wind = FALSE,
+                            include_sst = FALSE,
+                            include_chl = FALSE,
+                            include_interactions = TRUE,
+                            data = sur_df)
+
+nested_F(fit_no_wind, fit_no_env)
+
+
 fit_no_int <- fit_sur_with(include_wind = FALSE,
-                            include_sst2 = TRUE,
-                            include_chl2 = TRUE,
+                            include_sst = TRUE,
+                            include_chl = TRUE,
                             include_interactions = FALSE,
                             data = sur_df)
 
@@ -1541,6 +1557,8 @@ tab <- kbl(
 
 
 Table \ref{tab:SUR_results} reports the Seemingly Unrelated Regression (SUR) estimates for annual biomass dynamics of sardine, anchoveta, and jack mackerel in central–southern Chile. The adjusted $R^2$ values...
+
+Including sea surface temperature (SST) and chlorophyll (CHL) significantly improves model performance , leading us to reject the exclusion of environmental covariates at the 10% significance level (F = 1.908; $p$-value = 0.07).
 
 
 Some facts:

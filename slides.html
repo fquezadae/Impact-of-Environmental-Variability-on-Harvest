@@ -364,6 +364,7 @@ top:1em;right:1em;
 ## Big picture
 
 - Marine resource distribution is changing due to climate variability &lt;a name=cite-Poloczanska2013-qq&gt;&lt;/a&gt;([Poloczanska, Brown, Sydeman et al., 2013](#bib-Poloczanska2013-qq)).
+
 - Thus, harvest levels would be affected by climate variability &lt;a name=cite-Quezada2023-hc&gt;&lt;/a&gt;([Quezada, Tommasi, Frawley et al., 2023](#bib-Quezada2023-hc))
 
 ## Why a Multi-Species Model?
@@ -477,14 +478,6 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 ## Base model
 
 `$$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n$$`
-- where: 
-  - `\(x_{iy}\)` is the fish stock by species `\(i=1,\ldots,n\)` in year `\(y\)`, `\(n\)` is the total number of species, 
-  - `\(h_{iy}\)` is the annual harvest of species `\(i\)` on year `\(y\)`, 
-  - `\(r_i\)` is the intrinsic growth rate of the resource `\(i\)`,
-  - `\(\eta_i\)` is a density-dependent factor related to the carrying capacity, 
-  - `\(\alpha_{ij}\)` are the interaction parameters between species. 
-- Follows logistic + interspecies interaction
-- System of `\(n\)` growth equations can be estimated simultaneously using SUR (¿endogeneity?)
 
 
 
@@ -492,14 +485,17 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 
 # Model 1: Stock Dynamics 
 
-## Model with the environment
-
-
-Following &lt;a name=cite-Richter2018&gt;&lt;/a&gt;[Richter, Eikeset, Van Soest et al. (2018)](https://doi.org/10.1007/s10640-016-0106-3): 
-
 `$$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n$$`
+- where: 
+  - `\(x_{iy}\)` is the fish stock by species `\(i=1,\ldots,n\)` in year `\(y\)`, `\(n\)` is the total number of species, 
+  - `\(h_{iy}\)` is the annual harvest of species `\(i\)` on year `\(y\)`, 
+  - `\(r_i\)` is the intrinsic growth rate of the resource `\(i\)`,
+  - `\(\eta_i\)` is a density-dependent factor related to the carrying capacity, 
+  - `\(\alpha_{ij}\)` are the interaction parameters between species. 
+  - `\(Env_{iy}\)` includes environmental covariates (SST and chlorophyll)
 
-- Adds environmental covariates (e.g., SST and chlorophyll)
+- System of `\(n\)` growth equations can be estimated simultaneously using SUR (¿endogeneity?)
+  - SST and CHL improves model (F = 1.908; `\(p\)`-value = 0.07).
 
 
 ---
@@ -753,13 +749,6 @@ In: _Can. J. Fish. Aquat. Sci._. Just-IN.
 Wilen](#cite-Reimer2017-jw) (2017). &quot;Fisheries Production: Management
 Institutions, Spatial Choice, and the Quest for Policy Invariance&quot;. In:
 _Mar. Resour. Econ._ 32.2, pp. 143-168.
-
-&lt;a name=bib-Richter2018&gt;&lt;/a&gt;[Richter, A., A. M. Eikeset, D. Van Soest,
-et al.](#cite-Richter2018) (2018). &quot;Optimal Management Under
-Institutional Constraints: Determining a Total Allowable Catch for
-Different Northeast Arctic Cod Fishery Fleet Segments&quot;. In:
-_Environmental and Resource Economics_ 69, pp. 811-835. DOI:
-[10.1007/s10640-016-0106-3](https://doi.org/10.1007%2Fs10640-016-0106-3).
 
 &lt;a name=bib-SUBPESCA2020&gt;&lt;/a&gt;[SUBPESCA](#cite-SUBPESCA2020) (2020).
 _Informe Sectorial de Pesca y Acuicultura 2019_. Accessed: 02-04-2025.

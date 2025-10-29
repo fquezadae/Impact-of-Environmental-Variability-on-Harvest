@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.27)  28 OCT 2025 16:53
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.27)  29 OCT 2025 16:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1052,11 +1052,12 @@ File: manuscript_files/figure-latex/biomass-1.pdf Graphic file (type pdf)
 File: manuscript_files/figure-latex/harvestbiomass-1.pdf Graphic file (type pdf)
 <manuscript_files/figure-latex/harvestbiomass-1.pdf>
 
+
+[17]
+
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-
-[17]
 
 [18]
 
@@ -1085,6 +1086,6 @@ Here is how much of TeX's memory you used:
  48755 multiletter control sequences out of 15000+600000
  636282 words of font info for 114 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,12n,114p,1779b,532s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,114p,1779b,536s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on manuscript.pdf (25 pages).
