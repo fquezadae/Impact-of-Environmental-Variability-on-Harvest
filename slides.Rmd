@@ -311,38 +311,40 @@ class: inverse, center, middle
 pagedown::chrome_print("slides.html", output = "slides.pdf")
 ```
 
----
+<!-- --- -->
 
-# Temas de investigación en curso
+<!-- # Temas de investigación en curso -->
 
 
-- Modelos de elección discreta para el estudio del efecto de cambios en la distribución de especies pelágicas en las decisiones de pesca en la costa oeste de EEUU (localización, especie y participación)  -- Enviado a *Ecological Economics*
-  - ¿Hacer lo mismo para Chile? Idea: basados en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`, crear contrafactuales para fraccionamiento, o cambios en variables climáticas. Validar con periodos observados.
-  - ¿Como endogeneizar los precios en modelos de eleccion discreta, los cuales dependen de la frecuencia en que pescadores participan? (ojo: no es lo mismo que instrumentar)
-  
-- Colaborando con NOAA Fisheries en:
-  - El desarrollo de proyecciones de desembarque futuro bajo distintos modelos climáticos que afectan la distribución de especies.
-  - La incorporación de un modelo de teoría de juegos a modelos de evaluación de stock que consideran especies transfronterizas.
-  
----
+<!-- - Modelos de elección discreta para el estudio del efecto de cambios en la distribución de especies pelágicas en las decisiones de pesca en la costa oeste de EEUU (localización, especie y participación)  -- Enviado a *Ecological Economics* -->
+<!--   - ¿Hacer lo mismo para Chile? Idea: basados en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`, crear contrafactuales para fraccionamiento, o cambios en variables climáticas. Validar con periodos observados. -->
+<!--   - ¿Como endogeneizar los precios en modelos de eleccion discreta, los cuales dependen de la frecuencia en que pescadores participan? (ojo: no es lo mismo que instrumentar) -->
 
-# Areas de posible colaboración con INCAR2/SE
+<!-- - Colaborando con NOAA Fisheries en: -->
+<!--   - El desarrollo de proyecciones de desembarque futuro bajo distintos modelos climáticos que afectan la distribución de especies. -->
+<!--   - La incorporación de un modelo de teoría de juegos a modelos de evaluación de stock que consideran especies transfronterizas. -->
 
-- Impacto de la variación climática (u otro shock exógeno?) en las decisiones de cosecha de centros de cultivos (o productores de pequeña escala)? 
-  - Algo similar a lo hecho con SPF para USA
-  - Es como lo que hace Adams con HAB pero tal vez con modelo de elección discreta en vez de modelo de causalidad -- Crear contrafactuales como en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`.
+<!-- --- -->
 
-- Relación entre las etapas de producción en áreas estuarinas y marinas (ejemplo: ¿La eficiencia técnica en agua dulce predice eficiencia técnica en etapa de agua salada?).
+<!-- # Areas de posible colaboración con INCAR2/SE -->
 
-- Estimar patrones de sustitución de demanda de salmón en *XX* país usando modelo BLP, y como estos patrones se pudieron ver afectados por algún evento (e.g., marea roja) -- Idea de Manuel
+<!-- - Impacto de la variación climática (u otro shock exógeno?) en las decisiones de cosecha de centros de cultivos (o productores de pequeña escala)?  -->
+<!--   - Algo similar a lo hecho con SPF para USA -->
+<!--   - Es como lo que hace Adams con HAB pero tal vez con modelo de elección discreta en vez de modelo de causalidad -- Crear contrafactuales como en `r Citet(bib, "Birkenbach2024", .opts = citeopt)`. -->
 
----
+<!-- - Relación entre las etapas de producción en áreas estuarinas y marinas (ejemplo: ¿La eficiencia técnica en agua dulce predice eficiencia técnica en etapa de agua salada?). -->
 
-# Areas de posible colaboración con INCAR2/SE
+<!-- - Estimar patrones de sustitución de demanda de salmón en *XX* país usando modelo BLP, y como estos patrones se pudieron ver afectados por algún evento (e.g., marea roja) -- Idea de Manuel -->
 
-- ¿Conectar el modelo para SPF ha elaborar en el proyecto FONDECYT a los costos de alimentación de la acuicultura en Chile? (Comentario de Jorge cuando me adjudique el FONDECYT)​
+<!-- --- -->
 
-- Early Warning System usando indicadores económicos (Estoy inscrito en ese tema en la línea de Renato -- Adams Ceballos le interesa participar)
+<!-- # Areas de posible colaboración con INCAR2/SE -->
+
+<!-- - ¿Conectar el modelo para SPF ha elaborar en el proyecto FONDECYT a los costos de alimentación de la acuicultura en Chile? (Comentario de Jorge cuando me adjudique el FONDECYT)​ -->
+
+<!-- - Early Warning System usando indicadores económicos (Estoy inscrito en ese tema en la línea de Renato -- Adams Ceballos le interesa participar) -->
+
+<!-- --- -->
 
 ---
 
