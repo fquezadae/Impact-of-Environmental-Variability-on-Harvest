@@ -38,9 +38,26 @@ xaringanExtra::use_logo("https://fquezadae.github.io/Slides-Econometria/figs/dep
 
 ## Big picture
 
-- Marine resource distribution is changing due to climate variability `r Citep(bib, "Poloczanska2013-qq", .opts = citeopt)`.
+- Marine resource distribution and abundance is changing due to climate variability, with heterogenous spatial effects `r Citep(bib, "Poloczanska2013-qq", "@sumaila2011", .opts = citeopt)`.
 
-- Thus, harvest levels would be affected by climate variability `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`
+- Harvest levels would be affected `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`, as well as price and value of catches, fishing costs, fishers’ incomes, among others `r Citep(bib, "sumaila2011", .opts = citeopt)`
+
+
+---
+
+# Introduction
+
+## Research question
+
+How fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multispecies small pelagic fishery (SPF) in Chile.
+
+  - How do fishers **substitute between species**?
+  - Contribute to the sparse local multi-species economic modeling literature in Chile
+    - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice models.
+    
+---
+
+#
 
 ## Why a Multi-Species Model?
 
@@ -58,14 +75,14 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 ---
 
 # Introduction
+
 ## Relevance
 - Under multispecies harvesting is not straighforward to study fisher harvest decisions
-  - Responses to availability vary by (i) port infrastructur, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+  - Responses to availability vary by (i) port infrastructure, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
   - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
 - Understand fishers’ adaptive capacity
   - Inform climate-resilient fisheries policies in Chile
-- Contribute to the sparse local multi-species economic modeling literature in Chile
-  - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice.
+
 
 ---
 
@@ -82,23 +99,6 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
   - Total annual trips
   - Catch levels
 
-## Research Questions
-
-- How will **fishing decisions, catch levels, and prices** evolve under different climate scenarios?
-- How do fishers **substitute between species**?
-
----
-
-# Introduction
-
-
-## Hypotheses
-
-- Reduced availability → Switch if expected revenue > expected cost in other fishery
-- Otherwise → Decrease effort or exit
-- Behavior is **heterogeneous**:
-  - Geography
-  - Gear type `r Citep(bib, "Reimer2017-jw", .opts = citeopt)`
 
 ---
 
