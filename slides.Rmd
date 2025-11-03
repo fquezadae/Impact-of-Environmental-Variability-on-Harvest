@@ -42,32 +42,6 @@ xaringanExtra::use_logo("https://fquezadae.github.io/Slides-Econometria/figs/dep
 
 - Harvest levels would be affected `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`, as well as price and value of catches, fishing costs, fishers’ incomes, among others `r Citep(bib, "sumaila2011", .opts = citeopt)`
 
-
----
-
-# Introduction
-
-## Research question
-
-How fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multispecies small pelagic fishery (SPF) in Chile.
-
-  - How do fishers **substitute between species**?
-  - Contribute to the sparse local multi-species economic modeling literature in Chile
-    - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice models.
-    
----
-
-#
-
-## Why a Multi-Species Model?
-
-- Diversification improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
-- Fishers respond to change by:
-  - Maintaining the current strategy
-  - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
-  - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-  
-  
 ???
 
 Recordar que uno apreta C para clonar, P para Presenter View, H para tener un mapa de las teclas
@@ -76,29 +50,42 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 
 # Introduction
 
-## Relevance
-- Under multispecies harvesting is not straighforward to study fisher harvest decisions
-  - Responses to availability vary by (i) port infrastructure, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-  - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
-- Understand fishers’ adaptive capacity
-  - Inform climate-resilient fisheries policies in Chile
+## Research question
 
+How will fishing decisions, aggregate catch levels, and the price of marine resources be affected under different climatic scenarios in the multispecies small pelagic fishery (SPF) in Chile?
 
+  - How do fishers **substitute between species**?
+  - Contribute to the limited local literature on multi-species economic modeling in Chile
+    - Understand fishers’ adaptive capacity helps to inform climate-resilient fisheries policies in Chile
+    - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice models.
+  - We will focus in **climate variability** to estimate short-run responses.
+    - i.e., climate change effect without adaptation `r Citep(bib, "auffhammer2018", .opts = citeopt)`
+    
 ---
 
 # Introduction
 
-## Case Study: Chile’s Small Pelagic Fishery (SPF)
+## Why a Multi-Species Model?
+
+- Diversification is a good strategy:
+  - Improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
+- Fishers respond to environmental variability by:
+  - Maintaining the current strategy
+  - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
+  - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+- Under multispecies harvesting is not straighforward to study fisher harvest decisions
+  - Responses to availability vary by (i) port infrastructure, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
+  - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
+  
+
+---
+
+# Chile’s Small Pelagic Fishery (SPF)
 
 - Anchoveta, Jack mackerel, Sardine
-- ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
-- Climate variability will impact:
-  - Species composition
-  - Prices
-  - Trip cost
-  - Total annual trips
-  - Catch levels
-
+  - ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
+  - Mostly harvested with purse-seiners
+  
 
 ---
 
@@ -106,11 +93,15 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 
 **Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:**
 
-1. Estimate stock dynamics
-2. Estimate trip-level costs
-3. Estimate annual trips
-4. Estimate inverse demand
-5. Simulate climate change effects on profits/harvest
+1. Econometrics models
+  - Estimate stock dynamics
+  - Estimate trip-level costs
+  - Estimate annual trips
+  - Estimate inverse demand
+
+2. Simulations 
+  - Obtain optimal harvest and quota levels
+  - Simulate climate change effects on profits, harvest and prices.
 
 ---
 
