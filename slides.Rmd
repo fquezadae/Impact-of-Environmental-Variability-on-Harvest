@@ -82,11 +82,37 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 
 # Chile’s Small Pelagic Fishery (SPF)
 
-- Anchoveta, Jack mackerel, Sardine
-  - ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
-  - Mostly harvested with purse-seiners
-  
+## Some facts
 
+- Mainly composed by anchoveta, Jack mackerel, Sardine
+- ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
+- Mostly harvested with purse-seiners
+- In the Central-South (CS) region (Valparaiso-Los Lagos) all three species play a major role.
+- SPF have been used primarily for fishmeal and fish oil production [@Pena-Torres2017-gn] (~85% of jack mackerel for reduction)
+  
+## Regulations
+- Quota (TAC); divided between the small-scale and indutrial sector
+- Industrial sector operates under ITQ
+- RAE (*Regimen Artesanal de Extracción*) in some areas for small-scale fishery
+  - Allocates regional quota to area or fishermen organization (i.e., catch shares)
+- Anchoveta and sardine are regulated as a mixed-species fishery
+  
+---
+
+# Chile’s Small Pelagic Fishery (SPF)
+## Status of the stocks (CS)
+
+- Anchoveta: 
+  - Collapsed until 2018, 
+  - Overexploited in 2019, and has 
+  - Since 2020, within MSY limits. 
+
+- Sardine:
+  - Within MSY levels, except in 2021 and 2023 (overexploited)
+
+- Jack mackerel:
+  - Overexploited until 2018, then within MSY limits. 
+    
 ---
 
 # Methodology Overview
@@ -107,35 +133,62 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 
 # Data Sources
 
-### Requested (2012–2024)
 
-- Stock abundance
-- Annual landings
-- Trip-level data
-- Ex-vessel prices
-
-### Retrieving from Climate Model Intercomparison Project (CMIP)
-
-- Sea Surface Temperature (historical and projections)
-- Chlorophyll (historical and projections)
-- Salinity  (historical and projections)
-- Wind Speed  (historical and projections)
-- Wave height  (historical and projections)
-- Precipitations  (historical and projections)
-
-**Note:** Requested in lower resolution to Fabian Tapia (Oceanographic, UdeC)
+- From IFOP:
+  - Trip-level data
+    - ID, departure and arrival times, vessel capacity, fleet and gear type, ports of departure and landing, haul timing and location, species, retained catch. 
+  - Annual stock abundance
+  - Monthly landings by port.  
+  - Prices paid by processing plants (IFOP surveys; month-region)
 
 ---
 
 # Data Sources
 
-### To Be Requested
+## Environmental covariates:
 
-- Crew wages (maybe INE?) 
-- Fuel prices
-- Vessel permits
-- TAC 
-- Quota prices (auction/secondary market?)
+From E.U. Copernicus Marine Service Information: 
+
+- Global Ocean Physics Reanalysis `r Citep(bib, "GLORYS12V1", .opts = citeopt)`
+- Daily salinity, sea surface temperature, and current speed and direction.
+- Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset `r Citep(bib, "WIND_GLO_PHY", .opts = citeopt)`
+    - Hourly wind speed and direction at the surface
+- Global Ocean Colour dataset `r Citep(bib, "GlobColour", .opts = citeopt)` 
+    - Chlorophyll-a concentrations were obtained from the . 
+
+Information:
+- 2012–2024
+- Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S
+- Coarsest resolution: ~ 10km
+
+---
+
+# Data Sources
+
+## To be requested
+
+- Average wage pay to crew member per hour (available?)
+- Diesel cost.
+- Permits by vessels
+- Quota prices (auction or secondary markets, if available)
+  - Captures forward-looking behavior and information [@Birkenbach2024]. @reimer2022structural
+  - Simplify the dynamic model to a static one.
+- Quota by area/fishing organization for small-scale sector, and ITQ for industrial (by vessel?)
+  - Information about Reallocations of quotas
+  
+
+---
+
+# Data Sources
+
+## Data for projections
+
+OracleBio:
+  - Only decadal (e.g., 2040–2050) projections
+  - Different climate scenarios
+  - SST, salinity, currents and chlorophyll (4km resolution)
+  - No winds; CMIP6 for winds? (~100 km).
+
 
 ---
 
@@ -150,7 +203,7 @@ $$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy
   - $\alpha_{ij}$ are the interaction parameters between species. 
   - $Env_{iy}$ includes environmental covariates (SST and chlorophyll)
 
-- System of $n$ growth equations can be estimated simultaneously using SUR (¿endogeneity?)
+- System of $n$ growth equations can be estimated simultaneously using SUR
   - SST and CHL improves model (F = 1.908; $p$-value = 0.07).
 
 
@@ -158,72 +211,62 @@ $$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy
 
 # Model 2: Trip-Level Costs
 
-## Base model
-
-
 $$C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}$$
 where: 
 - $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$:
   - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance traveled?)
   - $w$ is a matrix of variable input prices, 
-- $\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
+- $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
   - $h_{vg}$ is a matrix of harvest quantities, 
   - $x$ is a matrix of given stock levels of the species of interest, and 
   - $Z_v$ is a matrix of given vessel characteristics. 
-
----
-
-# Model 2: Trip-Level Costs
-
-## Model with the environment
-
-To link this function to climate variability
-- Include additional environmental variables $Env$ to $\mathbf{X}_{vg}$ 
-  - e.g., wind intensity and wave conditions in each trip at the harvest location, upon data availability.
-- Therefore, the augmented $X_{vg}$ matrix becomes $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
-- The model can be estimated with **SUR**. 
+  - $Env$ is a matrix of **environmental covariates**
+    - e.g., wind intensity and wave conditions in each trip at the harvest location? (or within a port radius?)
 
 ---
 
 # Model 3: Total Annual Trips
 
-The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
-`r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`: 
+The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution: 
 $$Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}$$
 where 
-- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a matrix of explanatory variables, 
+- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$ is a matrix of explanatory variables, 
 - $\beta_g$ is a vector of coefficients to be estimated, 
 - $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
 - $\bar{q}$ is the annual quota level. 
-
-Additionally, we can add the accumulation of *bad weather days?* as an explanatory variable to incorporate weather conditions into this decision, thus: - $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
-- Other variables? e.g., state dependency?
+- $Env$ include variables that reflect annual weather conditions
+  - Accumulation of *bad weather days*? or *number of storms*?
+- Other variables? State dependency?
 
 ---
 
 # Model 4: Inverse Demand
 
-The price of each species is modeled using an **inverse demand model**. The price of a species $i$ in
-year $y$ is the following:
-$$p_{iy} = \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta  +\epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 2,\ldots,n, i \neq j.$$
+The price of each species is modeled using an Inverse Almost Ideal Demand System (IADS). The price of a species $i$ in year $y$ is the following:
 
-- The system can be estimated using 2SLS, instrumenting harvest with climate variables and other cost shifters.
-  - Undergrad student analyzing the option to estimate a supply-demand system with 3SLS for each species (6 equations simultaneously?)
-- Other variables for the demand? 
-- Endogeneity of substitute prices?
+$$\ln p_{iy} = \sum_j^n \gamma_j \ln h_{j,y} + \gamma_{H} \ln H_y + \gamma_{FM} \ln P^\text{FishMeal}_y + \epsilon_{iy}$$
+where:
+- $H_y = \sum h_{j,y}$
+- $P^\text{FishMeal}_y$ is the fish meal world price
 
-Maybe then see if we need to estimate a AR(1) model?? (**HELP LEO!!!**):
-$$p_{iy} = \gamma_i p_{i,y-1} + \sum_j^n \gamma_j p_{j,y-1} + \gamma_{h_i} h_{iy} + x'\beta + \epsilon_{iy}$$
+
+Harvest may be endogenous 
+  - Three Stage Least Squares (3SLS) procedure, 
+  - $h_{j,y}$ instrumented by variables that affect supply function such as *SST*, *Chl*, and fuel prices.
+  
+Two undergrad students working on this module for their thesis... 
+  - Results by July 2026
+  - If they have time, analyze long-run and short-run dynamics with a VEC
 
 ---
 
 # Integration and Simulation
 
 Use models parameters to:
-- Conduct numerical optimization for different climate scenarios
-- Obtain the optimal **harvest** and **quota** conditional on climate scenario
+
+- Obtain the optimal **harvest** and **quota** using historical data
+- Conduct numerical optimization to obtain optimal **harvest** and **quota** conditional on climate scenario.
 - Evaluate **profits** and **species substitution**
-- I need future projection for climate/environmental variables (?)
 
 
 ---
@@ -270,7 +313,16 @@ of the fishery
   - **Fishing costs**
   - **Trip frequency**
 - Catch composition shifts with climate
-- Localized market effects
+- Effect on prices, at least on the short-run
+
+
+---
+
+# Preliminary results
+
+
+WORK ON THIS!
+
 
 ---
 layout: false
