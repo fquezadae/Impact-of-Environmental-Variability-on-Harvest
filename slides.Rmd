@@ -150,11 +150,11 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 From E.U. Copernicus Marine Service Information: 
 
 - Global Ocean Physics Reanalysis `r Citep(bib, "GLORYS12V1", .opts = citeopt)`
-- Daily salinity, sea surface temperature, and current speed and direction.
+  - Daily salinity, sea surface temperature, and current speed and direction
 - Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset `r Citep(bib, "WIND_GLO_PHY", .opts = citeopt)`
     - Hourly wind speed and direction at the surface
 - Global Ocean Colour dataset `r Citep(bib, "GlobColour", .opts = citeopt)` 
-    - Chlorophyll-a concentrations were obtained from the . 
+    - Chlorophyll-a concentration
 
 Some information:
 - 2012–2024
@@ -320,11 +320,29 @@ of the fishery
 
 ## Stock dynamics
 
-```{r insert_SUR_table, results='asis', echo=FALSE}
+```{r sur_table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+library(dplyr)
+library(knitr)
+library(kableExtra)
 
-tab <- readRDS("tables/table_SUR_stock.rds")
-cat(tab)
+sur_df <- readRDS("tables/table_SUR_stock.rds")
+sur_df <- sur_df %>% mutate(across(everything(), ~ifelse(is.na(.), "&mdash;", .)))
 
+kbl(
+  sur_df,
+  format = "html",
+  align  = c("l","r","r","r"),
+  col.names = c("", "<i>Sardine</i>", "<i>Anchoveta</i>", "<i>Jack mackerel</i>"),
+  caption = "Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for small pelagic species in Central–Southern Chile.",
+  escape = FALSE
+) |>
+  add_header_above(c(" " = 1, "Species" = 3)) |>
+  kable_styling(full_width = FALSE, bootstrap_options = c("condensed", "hover", "responsive")) |>
+  column_spec(1, width = "14em") |>
+  footnote(
+    general = "Entries are coefficients; significance: * p<0.10, ** p<0.05, *** p<0.01. Quadratic terms shown with “sq”; interactions use ×.",
+    threeparttable = TRUE
+  )
 ```
 
 
