@@ -156,7 +156,7 @@ From E.U. Copernicus Marine Service Information:
 - Global Ocean Colour dataset `r Citep(bib, "GlobColour", .opts = citeopt)` 
     - Chlorophyll-a concentrations were obtained from the . 
 
-Information:
+Some information:
 - 2012–2024
 - Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S
 - Coarsest resolution: ~ 10km
@@ -277,12 +277,10 @@ Use models parameters to:
 
 In each year, a vessel maximizes profits by choosing their optimal number of
 trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
-$$
-\begin{align*}
+$$\begin{align*}
 \max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
-\end{align*}
-$$
+\end{align*}$$
 
 - where:
   - $\rho$ is the intra-annual discount factor, 
@@ -320,8 +318,14 @@ of the fishery
 
 # Preliminary results
 
+## Stock dynamics
 
-WORK ON THIS!
+```{r insert_SUR_table, results='asis', echo=FALSE}
+
+tab <- readRDS("tables/table_SUR_stock.rds")
+cat(tab)
+
+```
 
 
 ---
@@ -350,8 +354,9 @@ class: inverse, center, middle
 🌐 felipequezada.com
 </a>
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 pagedown::chrome_print("slides.html", output = "slides.pdf")
+
 ```
 
 <!-- --- -->

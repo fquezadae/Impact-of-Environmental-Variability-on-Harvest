@@ -1521,6 +1521,7 @@ r2_table <- data.frame(
 )
 
 sur_table <- bind_rows(sur_table, r2_table)
+saveRDS(sur_table, "tables/table_SUR_stock.rds")
 
 ```
 
@@ -1552,6 +1553,7 @@ tab <- kbl(
     threeparttable = TRUE,
     escape = FALSE     
   ) 
+
 
 ```
 

@@ -481,7 +481,7 @@ From E.U. Copernicus Marine Service Information:
 - Global Ocean Colour dataset  
     - Chlorophyll-a concentrations were obtained from the . 
 
-Information:
+Some information:
 - 2012–2024
 - Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S
 - Coarsest resolution: ~ 10km
@@ -602,12 +602,10 @@ Use models parameters to:
 
 In each year, a vessel maximizes profits by choosing their optimal number of
 trips `\(T_g\)` and harvest levels per trip `\(h_{g\tau}\)` given a gear type:
-$$
-`\begin{align*}
+`$$\begin{align*}
 \max_{h_{gt}, T_g} \quad \pi_{vgt} &amp; = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} &amp; = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
-\end{align*}`
-$$
+\end{align*}$$`
 
 - where:
   - `\(\rho\)` is the intra-annual discount factor, 
@@ -645,8 +643,38 @@ of the fishery
 
 # Preliminary results
 
+## Stock dynamics
 
-WORK ON THIS!
+\begin{table}[!h]
+\centering
+\caption{\label{tab:SUR_results}Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for small pelagic species in Central--Southern Chile.}
+\centering
+\resizebox{\ifdim\width&gt;\linewidth\linewidth\else\width\fi}{!}{
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{lccc}
+\toprule
+Variable &amp; Sardine &amp; Anchoveta &amp; Jack mackerel\\
+\midrule
+Constant &amp; 23.781*** &amp; 10.355*** &amp; 25.891***\\
+Biomass (t) &amp; 0.353* &amp; 1.260*** &amp; 1.035***\\
+Biomass sq (t) &amp; -0.011 &amp; -0.209*** &amp; -0.022**\\
+SST &amp; -12.377 &amp; -4.985 &amp; 5.168\\
+(SST) sq &amp; 52.233* &amp; -2.526 &amp; -46.039\\
+Chlorophyll-a &amp; 70.441** &amp; -6.189 &amp; -15.631\\
+Chlorophyll-a sq &amp; 155.277 &amp; 59.220 &amp; 438.550\\
+Sardine × Jack mackerel &amp; 0.012 &amp; NA &amp; -0.008\\
+Sardine × Anchoveta &amp; 0.017 &amp; -0.010 &amp; NA\\
+Anchoveta × Jack mackerel &amp; NA &amp; 0.011 &amp; 0.045\\
+R-squared (Adj.) &amp; 0.516 &amp; 0.279 &amp; 0.732\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item Standard errors in parentheses. Significance levels: * p&lt;0.1; ** p&lt;0.05; *** p&lt;0.01.
+\item Residual correlations (`\(\rho\)`): Sardine--Anchoveta = -0.44; Sardine--Jack = -0.72; Anchoveta--Jack = +0.70.
+\end{tablenotes}
+\end{threeparttable}}
+\end{table}
 
 
 ---
