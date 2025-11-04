@@ -1,10 +1,10 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.10.27)  29 OCT 2025 16:42
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.11.4)  4 NOV 2025 17:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **manuscript.tex
 (./manuscript.tex
-LaTeX2e <2025-06-01> patch level 1
+LaTeX2e <2025-11-01>
 L3 programming layer <2025-10-24>
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
@@ -29,7 +29,7 @@ File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package xcolor Info: Driver file: xetex.def on input line 274.
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-def/xetex.def
-File: xetex.def 2025/09/29 v5.0o Graphics/color driver for xetex
+File: xetex.def 2025/11/01 v5.0p Graphics/color driver for xetex
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)
 Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
 Package xcolor Info: Model `RGB' extended on input line 1365.
@@ -68,7 +68,7 @@ Package: iftex 2024/12/12 v1.0g TeX engine tests
 \Gm@layoutvoffset=\dimen156
 \Gm@dimlist=\toks18
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2025/06/16 v2.17y AMS math features
+Package: amsmath 2025/07/09 v2.17z AMS math features
 \@mathmargin=\skip51
 For additional information on amsmath, use the `?' option.
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -128,8 +128,8 @@ LaTeX Info: Redefining \Relbar on input line 970.
 \multlinegap=\skip52
 \multlinetaggap=\skip53
 \mathdisplay@stack=\toks23
-LaTeX Info: Redefining \[ on input line 2949.
-LaTeX Info: Redefining \] on input line 2950.
+LaTeX Info: Redefining \[ on input line 2950.
+LaTeX Info: Redefining \] on input line 2951.
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
@@ -173,7 +173,7 @@ Package: fontspec-xetex 2025/09/29 v2.9g Font selection for XeLaTeX and LuaLaTeX
 \l__fontspec_tmpb_dim=\dimen167
 \l__fontspec_tmpc_dim=\dimen168
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
-Package: fontenc 2024/12/21 v2.1c Standard LaTeX package
+Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/fontspec/fontspec.cfg))) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/fix-cm.sty
 Package: fix-cm 2020/11/24 v1.1t fixes to LaTeX
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/ts1enc.def
@@ -346,7 +346,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
-Package: longtable 2024-12-18 v4.23 Multi-page Table package (DPC)
+Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
 \LTleft=\skip54
 \LTright=\skip55
 \LTpre=\skip56
@@ -383,7 +383,7 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@lastruleclass=\count319
 \@thisrulewidth=\dimen182
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/array.sty
-Package: array 2025/06/08 v2.6j Tabular extension package (FMi)
+Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
 \col@sep=\dimen183
 \ar@mcellbox=\box60
 \extrarowheight=\dimen184
@@ -458,7 +458,7 @@ Package caption Info: longtable package is loaded.
 (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/caption/ltcaption.sty
 Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
 )) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/dcolumn.sty
-Package: dcolumn 2023/07/08 v1.06 decimal alignment package (DPC)
+Package: dcolumn 2025/10/21 v1.06 decimal alignment package (DPC)
 ) (c:/Users/FACEA/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
 \multirow@colwidth=\skip67
@@ -941,13 +941,9 @@ Package caption Info: threeparttable package is loaded.
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package hyperref Info: Link coloring ON on input line 151.
-
-
 [1
 
-]
-
-[2]
+] [2]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 7.665pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
@@ -994,15 +990,9 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 5.99936pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 4.99947pt on input line 169.
-
-
 [3]
 Missing character: There is no ≈ (U+2248) in font [lmroman10-regular]:mapping=tex-text;!
-
-
-[4]
-
-[5]
+[4] [5]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 10.0pt on input line 259.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
@@ -1016,76 +1006,36 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 6.99925pt on input line 259.
 File: manuscript_files/figure-latex/switchStrategy-ART-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/switchStrategy-ART-1.pdf>
+<use manuscript_files/figure-latex/switchStrategy-ART-1.pdf>
 File: manuscript_files/figure-latex/switchStrategy-IND-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/switchStrategy-IND-1.pdf>
+<use manuscript_files/figure-latex/switchStrategy-IND-1.pdf>
 File: manuscript_files/figure-latex/monthlyharvest-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/monthlyharvest-1.pdf>
-
-
-[6]
-
-[7]
-
-[8]
-
-[9]
-
-[10]
+<use manuscript_files/figure-latex/monthlyharvest-1.pdf>
+[6] [7] [8] [9] [10]
 File: figs/env_data_map.pdf Graphic file (type pdf)
-<figs/env_data_map.pdf>
-
-
-[11]
-
-[12]
-
-[13]
-
-[14]
-
-[15]
-
-[16]
+<use figs/env_data_map.pdf>
+[11] [12] [13] [14] [15] [16]
 File: manuscript_files/figure-latex/biomass-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/biomass-1.pdf>
+<use manuscript_files/figure-latex/biomass-1.pdf>
 File: manuscript_files/figure-latex/harvestbiomass-1.pdf Graphic file (type pdf)
-<manuscript_files/figure-latex/harvestbiomass-1.pdf>
-
-
+<use manuscript_files/figure-latex/harvestbiomass-1.pdf>
 [17]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-
-
-[18]
-
-[19]
-
-[20]
-
-[21]
-
-[22]
-
-[23]
-
-[24]
-
-[25] (./manuscript.aux)
+[18] [19] [20] [21] [22] [23] [24] [25] (./manuscript.aux)
  ***********
-LaTeX2e <2025-06-01> patch level 1
+LaTeX2e <2025-11-01>
 L3 programming layer <2025-10-24>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20764 strings out of 470480
- 382252 string characters out of 5486028
- 963240 words of memory out of 5000000
- 48755 multiletter control sequences out of 15000+600000
+ 20777 strings out of 470271
+ 382409 string characters out of 5478633
+ 966734 words of memory out of 5000000
+ 48976 multiletter control sequences out of 15000+600000
  636282 words of font info for 114 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 90i,12n,114p,1779b,536s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,12n,114p,1779b,538s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on manuscript.pdf (25 pages).

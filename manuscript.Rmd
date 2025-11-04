@@ -466,7 +466,7 @@ right_labels <- stratum_data %>%
          stratum = str_wrap(stratum, width = 20))
 
 # Agregar etiquetas con repel
-p +
+p <- p +
   geom_text_repel(
     data = left_labels,
     aes(x = x, y = y, label = stratum),
@@ -482,6 +482,10 @@ p +
     size = 2.5, segment.color = "grey60", segment.size = 0.3
   )
 
+p
+
+ggsave("figs/strategy_transitions_ART.svg", p,
+       device = svglite::svglite, width = 10, height = 6, units = "in")
 
 ```
 
@@ -563,7 +567,7 @@ right_labels <- stratum_data %>%
          stratum = str_wrap(stratum, width = 20))
 
 # Agregar etiquetas con repel
-p +
+p <- p +
   geom_text_repel(
     data = left_labels,
     aes(x = x, y = y, label = stratum),
@@ -578,6 +582,11 @@ p +
     hjust = 0, nudge_x = 0.1, direction = "y",
     size = 2.5, segment.color = "grey60", segment.size = 0.3
   )
+
+p
+
+ggsave("figs/strategy_transitions_IND.svg", p,
+       device = svglite::svglite, width = 10, height = 6, units = "in")
 
 rm(left_labels, right_labels, strategy_after, strategy_before, strategy_transitions, strategy_transitions_focus, stratum_data, transition_counts, transition_counts_focus, p)
 

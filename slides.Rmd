@@ -19,6 +19,7 @@ output:
 options(htmltools.dir.version = FALSE)
 ```
 
+
 ```{r refmanager, include=FALSE}
 library(RefManageR)
 source(here::here("helper.R"))
@@ -80,6 +81,14 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 
 ---
 
+layout: false
+
+class: inverse, center, middle
+
+# Chile’s Small Pelagic Fishery
+
+---
+
 # Chile’s Small Pelagic Fishery (SPF)
 
 ## Some facts
@@ -100,6 +109,7 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 ---
 
 # Chile’s Small Pelagic Fishery (SPF)
+
 ## Status of the stocks (CS)
 
 - Anchoveta: 
@@ -115,9 +125,17 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
     
 ---
 
+layout: false
+
+class: inverse, center, middle
+
+# Methods and data
+
+---
+
 # Methodology Overview
 
-**Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:**
+Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:
 
 1. Econometrics models
   - Estimate stock dynamics
@@ -145,21 +163,31 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 
 # Data Sources
 
-## Environmental covariates:
+## Environmental covariates
 
-From E.U. Copernicus Marine Service Information: 
+From E.U. Copernicus Marine Service Information:
 
 - Global Ocean Physics Reanalysis `r Citep(bib, "GLORYS12V1", .opts = citeopt)`
   - Daily salinity, sea surface temperature, and current speed and direction
 - Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset `r Citep(bib, "WIND_GLO_PHY", .opts = citeopt)`
-    - Hourly wind speed and direction at the surface
-- Global Ocean Colour dataset `r Citep(bib, "GlobColour", .opts = citeopt)` 
-    - Chlorophyll-a concentration
+  - Hourly wind speed and direction at the surface
+- Global Ocean Colour dataset `r Citep(bib, "GlobColour", .opts = citeopt)`
+  - Chlorophyll-a concentration
 
-Some information:
+**Some information:**
 - 2012–2024
-- Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S
-- Coarsest resolution: ~ 10km
+- Chilean EEZ (32°S to 41°S)
+- Coarsest resolution: ~10 km
+
+
+---
+
+# Data Sources
+
+## Environmental covariates
+
+![](figs/env_data_map.svg)
+
 
 ---
 
@@ -171,8 +199,8 @@ Some information:
 - Diesel cost.
 - Permits by vessels
 - Quota prices (auction or secondary markets, if available)
-  - Captures forward-looking behavior and information [@Birkenbach2024]. @reimer2022structural
-  - Simplify the dynamic model to a static one.
+  - Captures forward-looking behavior and information `r Citep(bib, "Birkenbach2024", .opts = citeopt)`.
+  - Simplify the dynamic model to a static one `r Citep(bib, "reimer2022structural", .opts = citeopt)`.
 - Quota by area/fishing organization for small-scale sector, and ITQ for industrial (by vessel?)
   - Information about Reallocations of quotas
   
@@ -183,12 +211,30 @@ Some information:
 
 ## Data for projections
 
-OracleBio:
+Bio-ORACLE:
   - Only decadal (e.g., 2040–2050) projections
   - Different climate scenarios
   - SST, salinity, currents and chlorophyll (4km resolution)
   - No winds; CMIP6 for winds? (~100 km).
+  
+  
+---
 
+# Data Sources
+
+## Data for projections
+
+
+![](figs/oracle.png){width=10%}
+
+
+---
+
+layout: false
+
+class: inverse, center, middle
+
+# Econometrics models
 
 ---
 
@@ -203,8 +249,7 @@ $$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy
   - $\alpha_{ij}$ are the interaction parameters between species. 
   - $Env_{iy}$ includes environmental covariates (SST and chlorophyll)
 
-- System of $n$ growth equations can be estimated simultaneously using SUR
-  - SST and CHL improves model (F = 1.908; $p$-value = 0.07).
+The system of $n$ growth equations can be estimated simultaneously using SUR
 
 
 ---
@@ -230,33 +275,41 @@ where:
 The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution: 
 $$Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}$$
 where 
-- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$ is a matrix of explanatory variables, 
+- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$ is a matrix of explanatory variables,
+  - $p$ is a matrix of species prices, 
+  - $w$ is a matrix of variable input prices, 
+  - $h_{vg}$ is a matrix of harvest quantities, 
+  - $\bar{q}$ is the annual quota level.
+  - $Z_v$ is a matrix of given vessel characteristics. 
+  - $Env$ include variables that reflect annual weather conditions
+    - Accumulation of *bad weather days*? or *number of storms*?
+  - Other variables? State dependency?
 - $\beta_g$ is a vector of coefficients to be estimated, 
 - $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
-- $\bar{q}$ is the annual quota level. 
-- $Env$ include variables that reflect annual weather conditions
-  - Accumulation of *bad weather days*? or *number of storms*?
-- Other variables? State dependency?
 
 ---
 
 # Model 4: Inverse Demand
 
-The price of each species is modeled using an Inverse Almost Ideal Demand System (IADS). The price of a species $i$ in year $y$ is the following:
+The price of each species is modeled using an Inverse Almost Ideal Demand System (IADS). The log of the price $p_{iy}$ of a species $i$ in year $y$ is the following:
 
 $$\ln p_{iy} = \sum_j^n \gamma_j \ln h_{j,y} + \gamma_{H} \ln H_y + \gamma_{FM} \ln P^\text{FishMeal}_y + \epsilon_{iy}$$
 where:
 - $H_y = \sum h_{j,y}$
 - $P^\text{FishMeal}_y$ is the fish meal world price
 
-
 Harvest may be endogenous 
   - Three Stage Least Squares (3SLS) procedure, 
   - $h_{j,y}$ instrumented by variables that affect supply function such as *SST*, *Chl*, and fuel prices.
   
-Two undergrad students working on this module for their thesis... 
-  - Results by July 2026
-  - If they have time, analyze long-run and short-run dynamics with a VEC
+
+---
+
+layout: false
+
+class: inverse, center, middle
+
+# Numerical optimization
 
 ---
 
@@ -301,52 +354,137 @@ $$\begin{align*}
 of the fishery 
 
 
-
 ---
 
-# Expected Results
+layout: false
 
-- Climate variability affects:
-  - **Stock** dynamics
-  - **Fishing costs**
-  - **Trip frequency**
-- Catch composition shifts with climate
-- Effect on prices, at least on the short-run
-
-
----
+class: inverse, center, middle
 
 # Preliminary results
 
-## Stock dynamics
 
-```{r sur_table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
-library(dplyr)
-library(knitr)
-library(kableExtra)
+---
 
-sur_df <- readRDS("tables/table_SUR_stock.rds")
-sur_df <- sur_df %>% mutate(across(everything(), ~ifelse(is.na(.), "&mdash;", .)))
+# Is there any subtitution?
 
-kbl(
-  sur_df,
-  format = "html",
-  align  = c("l","r","r","r"),
-  col.names = c("", "<i>Sardine</i>", "<i>Anchoveta</i>", "<i>Jack mackerel</i>"),
-  caption = "Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for small pelagic species in Central–Southern Chile.",
-  escape = FALSE
-) |>
-  add_header_above(c(" " = 1, "Species" = 3)) |>
-  kable_styling(full_width = FALSE, bootstrap_options = c("condensed", "hover", "responsive")) |>
-  column_spec(1, width = "14em") |>
-  footnote(
-    general = "Entries are coefficients; significance: * p<0.10, ** p<0.05, *** p<0.01. Quadratic terms shown with “sq”; interactions use ×.",
-    threeparttable = TRUE
-  )
+## Small-scale vessels
+
+```{r fig_strategy_transitions_ART, echo=FALSE, fig.align='center', out.width='95%'}
+knitr::include_graphics("figs/strategy_transitions_ART.svg")
+```
+
+---
+
+# Is there any subtitution?
+
+## Industrial vessels
+
+```{r fig_strategy_transitions_IND, echo=FALSE, fig.align='center', out.width='95%'}
+knitr::include_graphics("figs/strategy_transitions_IND.svg")
 ```
 
 
 ---
+
+
+# Stock dynamics
+
+```{r sur_table, message=FALSE, warning=FALSE, include=FALSE}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(gt)
+
+sur_df <- readRDS("tables/table_SUR_stock.rds")
+
+# Build a clean gt table with section dividers + smaller text
+# nice em dashes for NA
+sur_df <- sur_df %>% mutate(across(-term, ~ifelse(is.na(.), "-", .)))
+
+# row indices for groups
+idx_bio  <- 1:3
+idx_env  <- 4:7
+idx_xsp  <- 8:10
+idx_fit  <- 11
+
+tab <- sur_df |>
+  gt(rowname_col = "term") |>
+  # Header + spanner
+  tab_header(
+    title = md("**Seemingly Unrelated Regression (SUR) estimates of biomass dynamics for small pelagic species in Central–Southern Chile.**")
+  ) |>
+  tab_spanner(label = "Species", columns = c(Sardine, Anchoveta, `JackMackerel`)) |>
+  cols_label(
+    Sardine = md("*Sardine*"),
+    Anchoveta = md("*Anchoveta*"),
+    `JackMackerel` = md("*Jack mackerel*")
+  ) |>
+  # Group rows (top → bottom order)
+  tab_row_group(label = "Biomass dynamics",        rows = idx_bio) |>
+  tab_row_group(label = "Environmental effects",   rows = idx_env) |>
+  tab_row_group(label = "Cross-species interactions", rows = idx_xsp) |>
+  tab_row_group(label = "Model fit",               rows = idx_fit) |>
+  row_group_order(c("Biomass dynamics","Environmental effects","Cross-species interactions","Model fit")) |>
+  # Compact, clean theme
+  opt_table_font(font = list(google_font("Source Serif 4"), default_fonts())) |>
+  tab_options(
+    table.width = px(820),
+    table.font.size = px(15),         # adjust if you need smaller/bigger
+    data_row.padding = px(3),
+    row_group.padding = px(6),
+    heading.title.font.size = px(18),
+    column_labels.background.color = "white",
+    table.border.top.color = "black",
+    table.border.top.width = px(2),
+    table.border.bottom.color = "black",
+    table.border.bottom.width = px(2),
+    row_group.background.color = "#f7f7f7",
+    row_group.border.top.color = "#bdbdbd",
+    row_group.border.top.width = px(1),
+    row_group.border.bottom.color = "#bdbdbd",
+    row_group.border.bottom.width = px(1)
+  ) |>
+  # crisp inner gridlines
+  tab_style(
+    style = cell_borders(sides = "top", color = "#d0d0d0", weight = px(1)),
+    locations = cells_body(rows = everything())
+  ) |>
+  # note
+  tab_source_note(md("Entries are coefficients; significance: * p<0.10, ** p<0.05, *** p<0.01. Quadratic terms shown with “sq”; interactions use ×."))
+
+# Save as a crisp PNG (works 100% in xaringan)
+gtsave(tab, "tables/table_SUR_stock.png", vwidth = 4000, vheight = 3600, zoom = 10)
+```
+
+```{r include_sur_table, echo=FALSE, fig.align='center', out.width='80%'}
+knitr::include_graphics("tables/table_SUR_stock.png")
+```
+
+
+---
+
+# Stock dynamics
+
+- SST and CHL improves model performance (F = 1.908; $p$-value = 0.07).
+  - Test if I can exclude interactions terms
+- Herrick, et al. (2009): "Sardine is known to be more productive during warm-water regimes in the California Current ecosystem."
+- Need to calculate robust standard error (by hand?)
+
+---
+
+# What is next?
+
+- Finish biomass estimations
+- Start soon with total annual trips 
+  - Hopefully a short paper can came up from that work
+- Two undergrad students working on the inverse demand (i.e. price) module for their thesis... 
+  - Results by July 2026
+  - If they have time, they will also analyze long-run and short-run dynamics with a VEC
+  - Write paper from their dissertation
+  
+
+---
+
 layout: false
 
 class: inverse, center, middle
@@ -371,6 +509,7 @@ class: inverse, center, middle
 ">
 🌐 felipequezada.com
 </a>
+
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 pagedown::chrome_print("slides.html", output = "slides.pdf")
@@ -434,6 +573,14 @@ print_bib_rmd(bib, start = 6, stop = 10)
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
 print_bib_rmd(bib, start = 11, stop = 15)
+```
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 16, stop = 20)
 ```
 
 

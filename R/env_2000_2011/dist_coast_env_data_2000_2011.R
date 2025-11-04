@@ -111,7 +111,7 @@ sea_plot     <- st_transform(sea_area, 4326)
 grid_plot    <- st_as_sf(grid_filtered, crs = 32719) %>%
   st_transform(4326)
 
-ggplot() +
+p <- ggplot() +
   geom_sf(data = buffer_plot, fill = "lightblue", color = NA, alpha = 0.3) +
   geom_sf(data = sea_plot, fill = "lightblue", color = "blue", alpha = 0.2) +
   geom_sf(data = chile_plot, fill = "gray60", color = "black") +
@@ -122,3 +122,6 @@ ggplot() +
   labs(title = "Zona marítima chilena (≤ 200 nm, solo mar)",
        subtitle = "Grid ambiental 0.125° filtrado frente a Chile continental",
        x = "Longitud", y = "Latitud")
+
+ggsave("figs/env_data_map.svg", p,
+       device = svglite::svglite)
