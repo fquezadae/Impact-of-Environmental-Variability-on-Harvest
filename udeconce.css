@@ -95,3 +95,27 @@ span.udecgold {
 }
 
 
+/* Columnas clásicas de xaringan (remark) */
+.pull-left, .pull-right {
+  box-sizing: border-box;
+  display: block;
+  vertical-align: top;
+}
+
+.pull-left  { float: left;  width: 48%; padding-right: 1.0rem; }
+.pull-right { float: right; width: 48%; padding-left:  1.0rem; }
+
+/* Asegura que lo de abajo no se suba sobre las columnas */
+.remark-slide-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Restaura viñetas por si algún tema las anuló */
+.remark-slide-content ul, .remark-slide-content ol {
+  list-style: disc;
+  margin-left: 1.2em;
+  padding-left: 0.2em;
+}
+.remark-slide-content li { margin: 0.15em 0; }

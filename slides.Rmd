@@ -39,7 +39,7 @@ xaringanExtra::use_logo("https://fquezadae.github.io/Slides-Econometria/figs/dep
 
 ## Big picture
 
-- Marine resource distribution and abundance is changing due to climate variability, with heterogenous spatial effects `r Citep(bib, "Poloczanska2013-qq", "@sumaila2011", .opts = citeopt)`.
+- Marine resource distribution and abundance is changing due to climate variability, with heterogenous spatial effects `r Citep(bib, "Poloczanska2013-qq", "sumaila2011", .opts = citeopt)`.
 
 - Harvest levels would be affected `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`, as well as price and value of catches, fishing costs, fishers’ incomes, among others `r Citep(bib, "sumaila2011", .opts = citeopt)`
 
@@ -74,9 +74,11 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
   - Maintaining the current strategy
   - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
   - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-- Under multispecies harvesting is not straighforward to study fisher harvest decisions
-  - Responses to availability vary by (i) port infrastructure, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-  - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)`
+  
+
+<!-- - Under multispecies harvesting is not straighforward to study fisher harvest decisions -->
+<!--   - Responses to availability vary by (i) port infrastructure, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)` -->
+<!--   - Different fishers, different choices `r Citep(bib, "Jardine2020-um", "Zhang2011-wv", .opts = citeopt)` -->
   
 
 ---
@@ -84,6 +86,8 @@ How will fishing decisions, aggregate catch levels, and the price of marine reso
 layout: false
 
 class: inverse, center, middle
+
+
 
 # Chile’s Small Pelagic Fishery
 
@@ -97,7 +101,7 @@ class: inverse, center, middle
 - ~94% of national catch `r Citep(bib, "SUBPESCA2020", .opts = citeopt)`
 - Mostly harvested with purse-seiners
 - In the Central-South (CS) region (Valparaiso-Los Lagos) all three species play a major role.
-- SPF have been used primarily for fishmeal and fish oil production [@Pena-Torres2017-gn] (~85% of jack mackerel for reduction)
+- SPF have been used primarily for fishmeal and fish oil production `r Citep(bib, "Pena-Torres2017-gn", .opts = citeopt)` (~85% of jack mackerel for reduction)
   
 ## Regulations
 - Quota (TAC); divided between the small-scale and indutrial sector
@@ -114,7 +118,7 @@ class: inverse, center, middle
 
 - Anchoveta: 
   - Collapsed until 2018, 
-  - Overexploited in 2019, and has 
+  - Overexploited in 2019, 
   - Since 2020, within MSY limits. 
 
 - Sardine:
@@ -128,6 +132,8 @@ class: inverse, center, middle
 layout: false
 
 class: inverse, center, middle
+
+
 
 # Methods and data
 
@@ -151,34 +157,14 @@ Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:
 
 # Data Sources
 
+## Harvest and biomass data
 
-- From IFOP:
-  - Trip-level data
-    - ID, departure and arrival times, vessel capacity, fleet and gear type, ports of departure and landing, haul timing and location, species, retained catch. 
-  - Annual stock abundance
-  - Monthly landings by port.  
-  - Prices paid by processing plants (IFOP surveys; month-region)
-
----
-
-# Data Sources
-
-## Environmental covariates
-
-From E.U. Copernicus Marine Service Information:
-
-- Global Ocean Physics Reanalysis `r Citep(bib, "GLORYS12V1", .opts = citeopt)`
-  - Daily salinity, sea surface temperature, and current speed and direction
-- Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset `r Citep(bib, "WIND_GLO_PHY", .opts = citeopt)`
-  - Hourly wind speed and direction at the surface
-- Global Ocean Colour dataset `r Citep(bib, "GlobColour", .opts = citeopt)`
-  - Chlorophyll-a concentration
-
-**Some information:**
-- 2012–2024
-- Chilean EEZ (32°S to 41°S)
-- Coarsest resolution: ~10 km
-
+From IFOP:
+- Trip-level data:
+  - ID, departure and arrival times, vessel capacity, fleet and gear type, ports of departure and landing, haul timing and location, species, retained catch. 
+- Annual stock abundance by macro region (e.g. south-central Chile)
+- Monthly landings by port/species.  
+- Prices paid by processing plants (IFOP surveys; month-region)
 
 ---
 
@@ -186,7 +172,23 @@ From E.U. Copernicus Marine Service Information:
 
 ## Environmental covariates
 
-![](figs/env_data_map.svg)
+<style>
+.pull-left { width: 45% !important; }
+.pull-right { width: 53% !important; }
+</style>
+
+.pull-left[
+For the period 2012-2025:
+
+- Daily salinity, sea surface temperature, and current speed and direction `r Citep(bib, "GLORYS12V1", .opts = citeopt)`
+- Hourly wind speed and direction at the surface `r Citep(bib, "WIND_GLO_PHY", .opts = citeopt)`
+- Chlorophyll-a concentration `r Citep(bib, "GlobColour", .opts = citeopt)`
+]
+
+.pull-right[
+<img src="figs/env_data_map.svg" style="width:100%; max-width:100%; height:auto; display:block; margin:0 auto;">
+]
+
 
 
 ---
@@ -211,21 +213,19 @@ From E.U. Copernicus Marine Service Information:
 
 ## Data for projections
 
-Bio-ORACLE:
-  - Only decadal (e.g., 2040–2050) projections
-  - Different climate scenarios
-  - SST, salinity, currents and chlorophyll (4km resolution)
-  - No winds; CMIP6 for winds? (~100 km).
-  
-  
----
+.pull-left[
 
-# Data Sources
+**Bio-ORACLE**
 
-## Data for projections
+- Only decadal (e.g., 2040–2050) projections
+- Different climate scenarios
+- SST, salinity, currents and chlorophyll (4km resolution)
+- No winds; CMIP6 for winds? (~100 km).
+]
+.pull-right[
+  <img src="figs/oracle.png" style="width:100%; max-width:100%; height:auto; display:block; margin:0 auto;">
+]
 
-
-![](figs/oracle.png){width=10%}
 
 
 ---
@@ -234,6 +234,8 @@ layout: false
 
 class: inverse, center, middle
 
+
+
 # Econometrics models
 
 ---
@@ -241,13 +243,13 @@ class: inverse, center, middle
 # Model 1: Stock Dynamics 
 
 $$x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n$$
-- where: 
-  - $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, 
-  - $h_{iy}$ is the annual harvest of species $i$ on year $y$, 
-  - $r_i$ is the intrinsic growth rate of the resource $i$,
-  - $\eta_i$ is a density-dependent factor related to the carrying capacity, 
-  - $\alpha_{ij}$ are the interaction parameters between species. 
-  - $Env_{iy}$ includes environmental covariates (SST and chlorophyll)
+where: 
+- $x_{iy}$ is the fish stock by species $i=1,\ldots,n$ in year $y$, $n$ is the total number of species, 
+- $h_{iy}$ is the annual harvest of species $i$ on year $y$, 
+- $r_i$ is the intrinsic growth rate of the resource $i$,
+- $\eta_i$ is a density-dependent factor related to the carrying capacity, 
+- $\alpha_{ij}$ are the interaction parameters between species. 
+- $Env_{iy}$ includes **environmental covariates** (SST and chlorophyll)
 
 The system of $n$ growth equations can be estimated simultaneously using SUR
 
@@ -257,41 +259,48 @@ The system of $n$ growth equations can be estimated simultaneously using SUR
 # Model 2: Trip-Level Costs
 
 $$C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}$$
-where: 
-- $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$:
-  - $z_{vg}^*$ is the optimal quantity of input used, (e.g., crew members, time spent at sea, distance traveled?)
-  - $w$ is a matrix of variable input prices, 
-- $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
-  - $h_{vg}$ is a matrix of harvest quantities, 
-  - $x$ is a matrix of given stock levels of the species of interest, and 
-  - $Z_v$ is a matrix of given vessel characteristics. 
-  - $Env$ is a matrix of **environmental covariates**
-    - e.g., wind intensity and wave conditions in each trip at the harvest location? (or within a port radius?)
+
+where $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$ conditional on gear used $g=1,\ldots,G$  -- Mostly purse seiners!
+- $w$ is a matrix of variable input prices.
+- $z_{vg}^*$ is the optimal quantity of input used
+  - Crew members?
+  - Time spent at sea?
+  - Distance traveled?
+  
+
+---
+
+# Model 2: Trip-Level Costs
+
+$$C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}$$
+where $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
+- $h_{vg}$ is a matrix of harvest quantities, 
+- $x$ is a matrix of given stock levels of the species of interest, and 
+- $Z_v$ is a matrix of given vessel characteristics. 
+- $Env$ is a matrix of **environmental covariates**
+  - e.g., wind intensity and wave conditions in each trip at the harvest location (or within a port radius?)
 
 ---
 
 # Model 3: Total Annual Trips
 
-The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution: 
+The number of trips a vessel will take in a given year is assumed to follow a Poison distribution: 
 $$Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}$$
-where 
-- $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$ is a matrix of explanatory variables,
-  - $p$ is a matrix of species prices, 
-  - $w$ is a matrix of variable input prices, 
-  - $h_{vg}$ is a matrix of harvest quantities, 
-  - $\bar{q}$ is the annual quota level.
-  - $Z_v$ is a matrix of given vessel characteristics. 
-  - $Env$ include variables that reflect annual weather conditions
-    - Accumulation of *bad weather days*? or *number of storms*?
-  - Other variables? State dependency?
-- $\beta_g$ is a vector of coefficients to be estimated, 
-- $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
+where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$ is a matrix of explanatory variables,
+- $p$ is a matrix of species prices, 
+- $\bar{q}$ is the annual quota level.
+- $Env$ include variables that reflect **annual weather conditions**
+  - Accumulation of *bad weather days*? 
+  - *number of storms*?
+- Other variables? State dependency?
+
+$\beta_g$ is a vector of coefficients to be estimated, and $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$.
 
 ---
 
 # Model 4: Inverse Demand
 
-The price of each species is modeled using an Inverse Almost Ideal Demand System (IADS). The log of the price $p_{iy}$ of a species $i$ in year $y$ is the following:
+The price of each species is modeled using an Inverse Almost Ideal Demand System (IAIDS). The log of the price $p_{iy}$ of a species $i$ in year $y$ is the following:
 
 $$\ln p_{iy} = \sum_j^n \gamma_j \ln h_{j,y} + \gamma_{H} \ln H_y + \gamma_{FM} \ln P^\text{FishMeal}_y + \epsilon_{iy}$$
 where:
@@ -309,11 +318,13 @@ layout: false
 
 class: inverse, center, middle
 
+
+
 # Numerical optimization
 
 ---
 
-# Integration and Simulation
+# Numerical optimization
 
 Use models parameters to:
 
@@ -340,11 +351,7 @@ $$\begin{align*}
   - $\omega$ is a vector of shares of $\bar{q}$, and 
   - $h_{lt}=0$ for all $l\neq g$.
 
----
-
-# Numerical optimization
-
-## Some considerations
+???
 
 - The vector of shares is obtained from historical data on harvest. 
 - The optimal profit from the maximization problem is $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, 
@@ -359,6 +366,8 @@ of the fishery
 layout: false
 
 class: inverse, center, middle
+
+
 
 # Preliminary results
 
@@ -389,7 +398,7 @@ knitr::include_graphics("figs/strategy_transitions_IND.svg")
 
 # Stock dynamics
 
-```{r sur_table, message=FALSE, warning=FALSE, include=FALSE}
+```{r sur_table, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 library(dplyr)
 library(knitr)
 library(kableExtra)
@@ -460,34 +469,31 @@ gtsave(tab, "tables/table_SUR_stock.png", vwidth = 4000, vheight = 3600, zoom = 
 knitr::include_graphics("tables/table_SUR_stock.png")
 ```
 
-
----
-
-# Stock dynamics
-
 - SST and CHL improves model performance (F = 1.908; $p$-value = 0.07).
-  - Test if I can exclude interactions terms
+
+???
+
 - Herrick, et al. (2009): "Sardine is known to be more productive during warm-water regimes in the California Current ecosystem."
-- Need to calculate robust standard error (by hand?)
 
 ---
 
-# What is next?
+# What’s Next?
 
 - Finish biomass estimations
-- Start soon with total annual trips 
-  - Hopefully a short paper can came up from that work
-- Two undergrad students working on the inverse demand (i.e. price) module for their thesis... 
-  - Results by July 2026
-  - If they have time, they will also analyze long-run and short-run dynamics with a VEC
-  - Write paper from their dissertation
-  
+- Start soon with total annual trips
+  - Hopefully, a short paper can come out of that work
+- Two undergraduate students are working on the inverse demand (i.e., price) module for their theses
+  - Results expected by July 2026
+  - If time allows, they will also analyze long-run and short-run dynamics using a VEC model
+  - Plan to write a paper based on their dissertations
 
 ---
 
 layout: false
 
 class: inverse, center, middle
+
+
 
 # ¡Muchas gracias!
 
@@ -510,8 +516,16 @@ class: inverse, center, middle
 🌐 felipequezada.com
 </a>
 
+<br>
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+<br>
+
+<span style="font-size:0.8em; color:lightgray;">
+I gratefully acknowledge financial support for this research from ANID-Chile, under project Fondecyt Iniciación No. 11250223.
+</span>
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
 pagedown::chrome_print("slides.html", output = "slides.pdf")
 
 ```
@@ -553,6 +567,8 @@ pagedown::chrome_print("slides.html", output = "slides.pdf")
 
 ---
 
+
+
 # References
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
@@ -560,6 +576,8 @@ print_bib_rmd(bib, start = 1, stop = 5)
 ```
 
 ---
+
+
 
 # References
 
@@ -569,6 +587,8 @@ print_bib_rmd(bib, start = 6, stop = 10)
 
 ---
 
+
+
 # References
 
 ```{r, results='asis', echo=FALSE, warning=FALSE}
@@ -576,6 +596,8 @@ print_bib_rmd(bib, start = 11, stop = 15)
 ```
 
 ---
+
+
 
 # References
 
