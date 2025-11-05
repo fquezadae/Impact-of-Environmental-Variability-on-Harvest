@@ -37,11 +37,30 @@ xaringanExtra::use_logo("https://fquezadae.github.io/Slides-Econometria/figs/dep
 
 # Introduction
 
-## Big picture
 
+<style>
+.pull-left { width: 45% !important; }
+.pull-right { width: 53% !important; }
+</style>
+
+.pull-left[
 - Marine resource distribution and abundance is changing due to climate variability, with heterogenous spatial effects `r Citep(bib, "Poloczanska2013-qq", "sumaila2011", .opts = citeopt)`.
 
-- Harvest levels would be affected `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`, as well as price and value of catches, fishing costs, fishers’ incomes, among others `r Citep(bib, "sumaila2011", .opts = citeopt)`
+- Harvest levels would be affected `r Citep(bib, "Quezada2023-hc", .opts = citeopt)`, 
+  - Prices and value of catches, fishing costs, fishers’ incomes, among others `r Citep(bib, "sumaila2011", .opts = citeopt)`
+]
+
+.pull-right[
+<img src="figs/catch_potential.jpeg" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto;">
+
+
+<span style="font-size:0.55em; display:block; text-align:right; margin-top:4px;">
+**Source:** `r Citet(bib, "Cheung2010", .opts = citeopt)`
+</span>
+
+]
+
+
 
 ???
 
@@ -56,25 +75,27 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 How will fishing decisions, aggregate catch levels, and the price of marine resources be affected under different climatic scenarios in the multispecies small pelagic fishery (SPF) in Chile?
 
   - How do fishers **substitute between species**?
-  - Contribute to the limited local literature on multi-species economic modeling in Chile
-    - Understand fishers’ adaptive capacity helps to inform climate-resilient fisheries policies in Chile
-    - See `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)` for ENSO effects in Jack Mackerel fishery using discrete choice models.
+  - Contribute to the limited local literature on multi-species economic modeling and climate variability in Chile (e.g., `r Citet(bib, "Pena-Torres2017-gn", .opts = citeopt)`)
+  - Understand fishers’ adaptive capacity helps to inform climate-resilient fisheries policies
   - We will focus in **climate variability** to estimate short-run responses.
-    - i.e., climate change effect without adaptation `r Citep(bib, "auffhammer2018", .opts = citeopt)`
+    - *i.e.*, climate change effect without adaptation `r Citep(bib, "auffhammer2018", .opts = citeopt)`
+    - Upper-bound estimates
     
----
+    
+    
+    
+<!-- --- -->
 
-# Introduction
+<!-- # Introduction -->
 
-## Why a Multi-Species Model?
+<!-- ## Why a Multi-Species Model? -->
 
-- Diversification is a good strategy:
-  - Improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)`
-- Fishers respond to environmental variability by:
-  - Maintaining the current strategy
-  - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`**
-  - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)`
-  
+<!-- - Diversification is a good strategy: -->
+<!--   - Improves income stability and climate resilience `r Cite(bib, "Kasperski2013-jz", "Finkbeiner2015-bs", .opts = citeopt)` -->
+<!-- - Fishers respond to environmental variability by: -->
+<!--   - Maintaining the current strategy -->
+<!--   - **Reallocating effort to other species/areas `r Citep(bib, "Gonzalez-Mon2021-kj", .opts = citeopt)`** -->
+<!--   - Exiting the fishery `r Citep(bib, "Powell2022-wj", .opts = citeopt)` -->
 
 <!-- - Under multispecies harvesting is not straighforward to study fisher harvest decisions -->
 <!--   - Responses to availability vary by (i) port infrastructure, (ii) market access, and (iii) regulations `r Citep(bib, "Powell2022-wj", .opts = citeopt)` -->
@@ -149,9 +170,10 @@ Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:
   - Estimate annual trips
   - Estimate inverse demand
 
-2. Simulations 
-  - Obtain optimal harvest and quota levels
-  - Simulate climate change effects on profits, harvest and prices.
+2. Simulations
+  - Use models parameters to:
+    - Obtain the optimal **harvest** and **quota** (historical and for different climate scenarios).
+    - Evaluate effects on harvest, prices and **profits**, and **species substitution**
 
 ---
 
@@ -159,10 +181,10 @@ Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:
 
 ## Harvest and biomass data
 
-From IFOP:
+From IFOP (2012-2025):
 - Trip-level data:
   - ID, departure and arrival times, vessel capacity, fleet and gear type, ports of departure and landing, haul timing and location, species, retained catch. 
-- Annual stock abundance by macro region (e.g. south-central Chile)
+- Annual stock biomass by macro region and species (e.g. south-central Chile) -- (1999-2025)
 - Monthly landings by port/species.  
 - Prices paid by processing plants (IFOP surveys; month-region)
 
@@ -172,13 +194,9 @@ From IFOP:
 
 ## Environmental covariates
 
-<style>
-.pull-left { width: 45% !important; }
-.pull-right { width: 53% !important; }
-</style>
 
 .pull-left[
-For the period 2012-2025:
+For the period 2000-2025:
 
 - Daily salinity, sea surface temperature, and current speed and direction `r Citep(bib, "GLORYS12V1", .opts = citeopt)`
 - Hourly wind speed and direction at the surface `r Citep(bib, "WIND_GLO_PHY", .opts = citeopt)`
@@ -204,7 +222,8 @@ For the period 2012-2025:
   - Captures forward-looking behavior and information `r Citep(bib, "Birkenbach2024", .opts = citeopt)`.
   - Simplify the dynamic model to a static one `r Citep(bib, "reimer2022structural", .opts = citeopt)`.
 - Quota by area/fishing organization for small-scale sector, and ITQ for industrial (by vessel?)
-  - Information about Reallocations of quotas
+  
+<!-- - Information about reallocations of quotas -->
   
 
 ---
@@ -217,11 +236,15 @@ For the period 2012-2025:
 
 **Bio-ORACLE**
 
-- Only decadal (e.g., 2040–2050) projections
-- Different climate scenarios
-- SST, salinity, currents and chlorophyll (4km resolution)
-- No winds; CMIP6 for winds? (~100 km).
+- Advantages:
+  - Different climate scenarios
+  - SST, salinity, currents and chlorophyll (4km resolution)
+
+- Disvantages
+  - Only decadal (e.g., 2040–2050) projections
+  - No winds; CMIP6 for winds? (~100 km).
 ]
+
 .pull-right[
   <img src="figs/oracle.png" style="width:100%; max-width:100%; height:auto; display:block; margin:0 auto;">
 ]
@@ -249,7 +272,7 @@ where:
 - $r_i$ is the intrinsic growth rate of the resource $i$,
 - $\eta_i$ is a density-dependent factor related to the carrying capacity, 
 - $\alpha_{ij}$ are the interaction parameters between species. 
-- $Env_{iy}$ includes **environmental covariates** (SST and chlorophyll)
+- $Env_{iy}$ includes year–macroregion averages of **environmental covariates** (SST and chlorophyll-a).
 
 The system of $n$ growth equations can be estimated simultaneously using SUR
 
@@ -311,54 +334,6 @@ Harvest may be endogenous
   - Three Stage Least Squares (3SLS) procedure, 
   - $h_{j,y}$ instrumented by variables that affect supply function such as *SST*, *Chl*, and fuel prices.
   
-
----
-
-layout: false
-
-class: inverse, center, middle
-
-
-
-# Numerical optimization
-
----
-
-# Numerical optimization
-
-Use models parameters to:
-
-- Obtain the optimal **harvest** and **quota** using historical data
-- Conduct numerical optimization to obtain optimal **harvest** and **quota** conditional on climate scenario.
-- Evaluate **profits** and **species substitution**
-
-
----
-
-# Numerical optimization
-
-## Vessel maximization problem
-
-In each year, a vessel maximizes profits by choosing their optimal number of
-trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
-$$\begin{align*}
-\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
-\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
-\end{align*}$$
-
-- where:
-  - $\rho$ is the intra-annual discount factor, 
-  - $\omega$ is a vector of shares of $\bar{q}$, and 
-  - $h_{lt}=0$ for all $l\neq g$.
-
-???
-
-- The vector of shares is obtained from historical data on harvest. 
-- The optimal profit from the maximization problem is $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, 
-  - $h_{vgty}^*$ is the optimal harvest per trip.
-  - $T_{vgy}^*$ optimal total number of trips.
-- Optimal quota level, per year and by species, is obtained by solving the social-planner optimization problem to maximize the net value
-of the fishery 
 
 
 ---
@@ -529,6 +504,51 @@ I gratefully acknowledge financial support for this research from ANID-Chile, un
 pagedown::chrome_print("slides.html", output = "slides.pdf")
 
 ```
+
+
+
+---
+
+layout: false
+
+class: inverse, center, middle
+
+
+# Appendix A: Numerical optimization
+
+---
+
+# Appendix A: Numerical optimization
+
+## Vessel maximization problem
+
+In each year, a vessel maximizes profits by choosing their optimal number of
+trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
+$$\begin{align*}
+\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
+\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
+\end{align*}$$
+
+- where:
+  - $\rho$ is the intra-annual discount factor, 
+  - $\omega$ is a vector of shares of $\bar{q}$, and 
+  - $h_{lt}=0$ for all $l\neq g$.
+
+???
+
+- The vector of shares is obtained from historical data on harvest. 
+- The optimal profit from the maximization problem is $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, 
+  - $h_{vgty}^*$ is the optimal harvest per trip.
+  - $T_{vgy}^*$ optimal total number of trips.
+- Optimal quota level, per year and by species, is obtained by solving the social-planner optimization problem to maximize the net value
+of the fishery 
+
+
+
+
+
+
+
 
 <!-- --- -->
 
