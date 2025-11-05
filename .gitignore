@@ -2,3 +2,7 @@
 *.nc
 *.exe
 .RDataTmp
+/data/harvest
+/data/logbooks
+/data/biomass
+/data/env
