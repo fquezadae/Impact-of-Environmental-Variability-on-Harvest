@@ -164,16 +164,15 @@ class: inverse, center, middle
 
 Based on `r Citet(bib, "Kasperski2015-jm", .opts = citeopt)`:
 
-1. Econometrics models
+- Econometrics models
   - Estimate stock dynamics
   - Estimate trip-level costs
   - Estimate annual trips
   - Estimate inverse demand
 
-2. Simulations
-  - Use models parameters to:
-    - Obtain the optimal **harvest** and **quota** (historical and for different climate scenarios).
-    - Evaluate effects on harvest, prices and **profits**, and **species substitution**
+- Use parameters to:
+  - Obtain the optimal **harvest** and **quota** conditional on climate variables.
+  - Simulate the effects on harvest, prices and **profits**, and **species substitution** of different climate scenarios.
 
 ---
 
@@ -289,19 +288,8 @@ where $C_{vg}= w z_{vg}^*$ is the total cost incurred by vessel $v=1,\ldots,V_g$
   - Crew members?
   - Time spent at sea?
   - Distance traveled?
-  
-
----
-
-# Model 2: Trip-Level Costs
-
-$$C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}$$
-where $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$ is a matrix of explanatory variables, and $\mathbf{X}_{ivg}$ represents the *i*th column of the $\mathbf{X}_{vg}$:
-- $h_{vg}$ is a matrix of harvest quantities, 
-- $x$ is a matrix of given stock levels of the species of interest, and 
-- $Z_v$ is a matrix of given vessel characteristics. 
-- $Env$ is a matrix of **environmental covariates**
-  - e.g., wind intensity and wave conditions in each trip at the harvest location (or within a port radius?)
+- $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$ is a matrix of explanatory variables:
+  - $Env$ is a matrix of **environmental covariates** (e.g., wind intensity and wave conditions in each trip)
 
 ---
 
@@ -310,14 +298,10 @@ where $\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$ is a matrix of explanatory va
 The number of trips a vessel will take in a given year is assumed to follow a Poison distribution: 
 $$Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}$$
 where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$ is a matrix of explanatory variables,
-- $p$ is a matrix of species prices, 
-- $\bar{q}$ is the annual quota level.
+- $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$
 - $Env$ include variables that reflect **annual weather conditions**
   - Accumulation of *bad weather days*? 
-  - *number of storms*?
-- Other variables? State dependency?
-
-$\beta_g$ is a vector of coefficients to be estimated, and $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$.
+  - *Number of storms*?
 
 ---
 
@@ -334,8 +318,6 @@ Harvest may be endogenous
   - Three Stage Least Squares (3SLS) procedure, 
   - $h_{j,y}$ instrumented by variables that affect supply function such as *SST*, *Chl*, and fuel prices.
   
-
-
 ---
 
 layout: false
@@ -500,9 +482,44 @@ I gratefully acknowledge financial support for this research from ANID-Chile, un
 </span>
 
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-pagedown::chrome_print("slides.html", output = "slides.pdf")
+---
 
+
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 1, stop = 5)
+```
+
+---
+
+
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 6, stop = 10)
+```
+
+---
+
+
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 11, stop = 15)
+```
+
+---
+
+
+
+# References
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+print_bib_rmd(bib, start = 16, stop = 20)
 ```
 
 
@@ -547,6 +564,11 @@ of the fishery
 
 
 
+```{r save_pdf,message=FALSE, warning=FALSE, include=FALSE}
+pagedown::chrome_print("slides.html", output = "slides.pdf")
+
+```
+
 
 
 
@@ -585,45 +607,7 @@ of the fishery
 
 <!-- --- -->
 
----
 
-
-
-# References
-
-```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 1, stop = 5)
-```
-
----
-
-
-
-# References
-
-```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 6, stop = 10)
-```
-
----
-
-
-
-# References
-
-```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 11, stop = 15)
-```
-
----
-
-
-
-# References
-
-```{r, results='asis', echo=FALSE, warning=FALSE}
-print_bib_rmd(bib, start = 16, stop = 20)
-```
 
 
 
