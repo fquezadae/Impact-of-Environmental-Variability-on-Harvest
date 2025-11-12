@@ -74,6 +74,9 @@ Under a changing climate, studying the effect of climatic variability on fishers
 
 Because predator–prey links couple these species, reductions in anchoveta or sardine availability may reflect not only environmental drivers but also changes in predation pressure from jack mackerel [@Alheit2004; @Arancibia2019-FIPA]. Thus, even fishers who do not target jack mackerel can face induced changes in catch rates and revenues through ecosystem feedbacks. We hypothesize that if the availability of a main target species decreases, fishers will switch to the closest substitute when expected revenues (net of switching costs) exceed expected costs; otherwise they may reduce effort or exit the fishery. We also expect cross-fleet spillovers: in Chile, jack mackerel is predominantly harvested by the industrial purse-seine fleet, whereas anchoveta and sardine have substantial artisanal and industrial participation. Shocks in one component can propagate across fleets via both biology and markets, in addition to economic linkages (bycatch constraints, shared gear, and market spillovers). This strengthens the case for a multi-species framework that models joint dynamics and substitution rather than single-species responses. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation—as it determines the availability of other species [@Reimer2017-jw]—and the gear type used.
 
+
+-- ADD the fact that the government define the TAC using sa single species model. This modelling effort allow to move further to a better management of the SPF fishery by using a multispecies approach to obtain optimal TAC
+
 <!-- Los dos primeros, recordó, son especies clave para la cadena trófica marina, ya que alimentan a peces de mayor valor como corvina, lenguado o congrio, hoy cada vez más escasos.
 LINK: https://www.diarioconcepcion.cl/economia/2025/10/07/sector-pesquero-nueva-resolucion-de-la-camara-baja-mantiene-la-discrepancia-entre-biobio-y-nuble.html -->
 
@@ -862,7 +865,6 @@ knitr::include_graphics("figs/env_data_map.pdf")
 
 ### To be requested
 
-- Average wage pay to crew member per hour
 - Diesel cost.
 - Permits by vessels
 - Quota prices?
@@ -870,8 +872,7 @@ knitr::include_graphics("figs/env_data_map.pdf")
     - If no data, maybe intrapolate prices from other auctions?
   - Captures elements of forward-looking behavior and information [@Birkenbach2024]. @reimer2022structural similarly argue that including a quota price captures forward looking behavior and allows one to simplify the dynamic model to a static one.
 - Quota by area/fishing organization for Artisanal, and TAC for industrial with ITQ (by vessel?)
-- Reallocations of quotas?
-  
+
   
 ## Future data for projections
 
@@ -900,6 +901,14 @@ where $\rho_i$ are the coefficient for the environmental covariates.
 Environmental conditions were summarized annually using sea surface temperature (SST) and chlorophyll-a concentration (CHL), both averaged over the South-Central Chile region within the EEZ. These variables were selected due to their recognized influence on small pelagic productivity and spatial distribution [@Axbard2016]. To capture potential nonlinear responses, both linear and quadratic terms for SST and CHL were included. Early specifications also tested linear and quadratic wind effects, but excluding them did not significantly reduce explanatory power ($\text{F}_{6,24} = 0.36$, $p\text{-value} = 0.89$). SST serves as a proxy for large-scale oceanographic regimes (warm vs. cold phases) that shape recruitment success and species dominance along the Humboldt Current System. Anchovy tends to dominate during cold, nutrient-rich phases, while sardine prevail under warmer conditions [@cahuin2009; @Yáñez2014]. CHL captures interannual variations in primary productivity, which are critical for sustaining the planktonic base of pelagic food webs. As emphasized by @sumaila2011, “Changes in primary productivity and planktonic community structure affect the amount of energy transferred to higher trophic levels and, eventually, the productivity of trophic groups that contribute to fisheries catches” [see also @jennings2008; @cheung2008]. Thus, chlorophyll acts as an indicator of ecosystem energy available to forage fish.
 
 The SUR framework is particularly suited to this multi-species context, as it allows for contemporaneous correlation among residuals that arise from shared environmental shocks and trophic linkages. Cross-species interaction terms are specified between predator (jack mackerel) and prey (anchoveta, sardine) pairs, enabling the model to capture both biological coupling and indirect effects of environmental variability transmitted across species.
+
+
+- To add here:
+  - Some species might be more resistant to changes in SST and CHL
+  - Jack Mackerel biomass why doifferent than Anchoveta and Sardine biomass..
+  - Sardine and Anchoveta they move together
+  - BE CLEAR THAT EACH SPECIES HAVE ITS OWN EQUATION
+
 
 
 
@@ -988,6 +997,8 @@ Add
   - liters/hours x hours trip x fuel price
   - crew member x harvest x price x share
   - certification cost per landed ton x landing
+  
+
 
 ### Total annual trips
 
@@ -1004,6 +1015,13 @@ $\bar{q}$ is the annual quota level. Additionally, we can add the
 accumulation of "bad weather days" as an explanatory variable to
 incorporate weather conditions into this decision, thus
 $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+
+
+De Dresdner 2014: 
+- Regulacion: Numero de dias de vedas / Cuota anual
+- Precios: Precio proceso + Precio Diesel (promedio meses de mayor productividad en la pesquería (marzo a junio y octubre a diciembre).
+- Agregar Precio quota?
+
 
 ### Inverse demand model 
 
@@ -1024,6 +1042,8 @@ and input and output prices. While Kasperski assumes that total allowable catche
 <!-- No era que el paper estimaba un IAIDS. Sino que al precio ex-vessel a ser un % del FOB justifica que sea una variable exógena para la IAIDS que nosotros estimaremos. Así capturar las desviaciones del mercado internacional se transmitan directamente al precio ex-vessel. El otro aspecto era el siguiente: En las estimaciones MCO para la VIII Región, el Precio de la Harina de Pescado * Dólar presenta un signo negativo y significativo sobre el número agregado de viajes anuales, aunque en la XIV Región el signo es positivo [11 (254, 398). Lo que podría implicar que la reaccion de la flota al FOB es heterogénea por región  
 R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque entonces la contribución de su trabajo sigue siendo alta. Solo usan FOB como exógena, por lo tanto, nuestra metodología sigue siendo la misma, de estimar sin incluir FOB, luego incluyéndolo, ver qué pasa con el coeficiente de Q, para ver si hay algo más en la determinación de precios a corto plazo. Luego, si hay tiempo, ver si de hecho el precio FOB depende de desembarques chilenos. En cuanto a la heterogeneidad, a mí me da la impresión de que ese texto de hecho está indicando esta endogeneidad que estamos tratando de capturar! Es posible que la XIV no tenga efecto en el FOB, por lo que lo que vemos es un efecto insesgado para esa región, pero que en la VIII, que es una productora grande de pequeños pelágicos, sí tenga un efecto en el precio FOB, por lo tanto, el coeficiente negativo que obtienen de hecho está sesgado por endogeneidad!! Yo usaría ese texto como justificación de su estudio... -->
 
+- DIFERENCIAR ENTRE CONSUMO HUMANO DIRECTO e INDIRECTO???
+
 
 ## Numerical optimization
 
@@ -1037,6 +1057,10 @@ where $\rho$ is the intra-annual discount factor, $\omega$ is a vector of shares
 must solve the social-planner optimization problem to maximize the net value of the fishery by choosing the quota levels per year and by species.
 
 Following @Kasperski2015-jm, the optimization problem will be conducted for the next 25 years. I will use different climate scenarios and compare different optimal outcomes between them by using future projections for the environmental variables included in the model.
+
+
+- Note that the optimal quota would that we would find using historical data might differ from the actual quota set by the regulator as they model is for single species.
+
 
 ## Projections
 
@@ -1619,6 +1643,9 @@ Once I have results for the four models, then I can run optimizations
   - "When climate change affects the composition and productivity of exploited species in a region, some fishers can adapt by switching target species or gear type81 or by moving to marginally productive areas. Grafton, R. Q. Adaptation to climate change in marine capture fisheries. Mar. Policy 34, 606–615 (2010)."
     - "For example, new fisheries have already developed for several southern species in the UK (for example, red mullet) as these species have started to migrate to the North Sea because of an increase in sea temperature. Beare, D. J. et al. Long-term increase in prevalence of North Sea fishes having southern biogeographic affinities. Mar. Ecol. Prog. Ser. 284, 269–278 (2004)."
     - "The ability of fishers and fishing enterprises to adapt depends on a number of factors, including the mobility of the fishing fleet.       - "At present, the dominant hypothesis is that more technologically advanced fleets, usually located in rich northern countries, are more likely to be better prepared to adapt to climate change by moving to other fishing grounds and by shifting gears. MacNeil, M. A. et al. Transitional states in marine fisheries: adapting to predicted global change. Phil. Trans. R. Soc. B 365, 3753–3763 (2011)."
+    
+    
+- we did not added production risk.... risk preferences? maybe using random coefficients?  Discusse!!!
 
 # Conclusions
 
@@ -1629,7 +1656,14 @@ NO YET!
 
 - Several other extensions to the model can be incorporated to be improved. For instance, the geographical space where fishermen operate is relevant, as depending on the location chosen and when to participate, the set of potential choices would vary [@Reimer2017-jw]. As I mentioned above, it is possible to extend the stock dynamic model by considering different locations. The model would also require that the participation decision, which is captured by the Poisson model on the annual number of trips, should then consider the decision to participate in a determined fishing ground, connecting the multispecies model of @Kasperski2015-jm to the literature of location choice modeling [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz].
 
+  - About the DCM?
+    - Including other economic activity would be relevant, as aquaculture is become more relevant in the country, where some fishermen have swith to small-scale aquaculture practice.
+    - Outside option...
+  
+
 - Does higher quota allocation of jack mackerel, a predator for anchovy and sardine, helps small scale sector actually?
+
+
 
 
 # Repository
