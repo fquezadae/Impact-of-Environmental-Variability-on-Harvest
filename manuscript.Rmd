@@ -908,6 +908,8 @@ The SUR framework is particularly suited to this multi-species context, as it al
   - Jack Mackerel biomass why doifferent than Anchoveta and Sardine biomass..
   - Sardine and Anchoveta they move together
   - BE CLEAR THAT EACH SPECIES HAVE ITS OWN EQUATION
+  
+- PROBAR CON SOLO INTERACCION CON MACKEREL!!! (Pray and predator model)
 
 
 
