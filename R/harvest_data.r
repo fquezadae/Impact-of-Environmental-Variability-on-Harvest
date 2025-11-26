@@ -7,11 +7,12 @@ if (usuario == "felip") {
   dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else if (usuario == "FACEA") {
   dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else {
   stop("Usuario no reconocido. Defina el directorio correspondiente.")
 }
 rm(usuario)
-
 library(readxl)
 library(dplyr)
 library(tidyr)

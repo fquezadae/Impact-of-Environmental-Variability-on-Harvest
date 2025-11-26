@@ -46,6 +46,8 @@ if (usuario == "felip") {
   dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else if (usuario == "FACEA") {
   dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else {
   stop("Usuario no reconocido. Defina el directorio correspondiente.")
 }
@@ -139,8 +141,8 @@ Fishery with restricted access to new operators (just artisanal?)
 
 ```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
 
-env_dt <- readRDS("data/env/EnvCoastDaily_2012_2025_0.125deg.rds")
-env_dt_00_11 <- readRDS("data/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds")
+env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
+env_dt_00_11 <- readRDS(paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"))
 
 ```
 
@@ -854,6 +856,8 @@ rm(harvest_long)
 ```
 
 For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels [@GLORYS12V1]. Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at ~4 km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly in the case of winds) for the 2012–2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S (Figure \@ref(fig:figEnvData))
+
+In the case of jack mackerel biomass, there  were year with no cruise in South-central Chile to conduct acoustics biomass estimations ()
  
 
 ```{r figEnvData, echo=FALSE, fig.align='center', fig.cap="Geographical extent of the study area used for environmental covariates limited to the Chilean Exclusive Economic Zone", message=FALSE, warning=FALSE, fig.pos='ht!', out.width='80%'}
@@ -901,7 +905,6 @@ where $\rho_i$ are the coefficient for the environmental covariates.
 Environmental conditions were summarized annually using sea surface temperature (SST) and chlorophyll-a concentration (CHL), both averaged over the South-Central Chile region within the EEZ. These variables were selected due to their recognized influence on small pelagic productivity and spatial distribution [@Axbard2016]. To capture potential nonlinear responses, both linear and quadratic terms for SST and CHL were included. Early specifications also tested linear and quadratic wind effects, but excluding them did not significantly reduce explanatory power ($\text{F}_{6,24} = 0.36$, $p\text{-value} = 0.89$). SST serves as a proxy for large-scale oceanographic regimes (warm vs. cold phases) that shape recruitment success and species dominance along the Humboldt Current System. Anchovy tends to dominate during cold, nutrient-rich phases, while sardine prevail under warmer conditions [@cahuin2009; @Yáñez2014]. CHL captures interannual variations in primary productivity, which are critical for sustaining the planktonic base of pelagic food webs. As emphasized by @sumaila2011, “Changes in primary productivity and planktonic community structure affect the amount of energy transferred to higher trophic levels and, eventually, the productivity of trophic groups that contribute to fisheries catches” [see also @jennings2008; @cheung2008]. Thus, chlorophyll acts as an indicator of ecosystem energy available to forage fish.
 
 The SUR framework is particularly suited to this multi-species context, as it allows for contemporaneous correlation among residuals that arise from shared environmental shocks and trophic linkages. Cross-species interaction terms are specified between predator (jack mackerel) and prey (anchoveta, sardine) pairs, enabling the model to capture both biological coupling and indirect effects of environmental variability transmitted across species.
-
 
 - To add here:
   - Some species might be more resistant to changes in SST and CHL
@@ -1079,8 +1082,7 @@ Following @Kasperski2015-jm, the optimization problem will be conducted for the 
 ## Stock biomass model
 
 
-As shown in Figure \@ref(fig:biomass), biomass levels vary by species, and there is some interrelation between them. It is also clear that these biomass levels are affected by the harvests that occurred during those periods. For instance, in the case of jack mackerel, an abrupt decline in biomass is observed, likely due to a combination of
-overexploitation of the resource and unfavorable environmental conditions.
+As shown in Figure \@ref(fig:biomass), biomass levels vary by species, and there is some interrelation between them. It is also clear that these biomass levels are affected by the harvests that occurred during those periods. For instance, in the case of jack mackerel, an abrupt decline in biomass is observed, likely due to a combination of overexploitation of the resource and unfavorable environmental conditions.
         
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000–2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
