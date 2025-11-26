@@ -1303,6 +1303,9 @@ ggplot(corr_long, aes(Var1, Var2, fill = Correlation)) +
 
 # 2. Variance Inflation Factor (VIF)
 # We'll test VIF within each equation's design matrix
+
+
+
 eq_sardine_vif <- lm(
   biomass_t1_sardine_noharvest ~
     biomass_sardine_c + I(biomass_sardine_c^2) +  
@@ -1311,7 +1314,7 @@ eq_sardine_vif <- lm(
     sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
   data = sur_df
 )
-vif(eq_sardine_vif) %>% sort()
+car::vif(eq_sardine_vif) %>% sort()
 
 eq_anchoveta_vif <- lm(
   biomass_t1_anchoveta_noharvest ~
@@ -1321,7 +1324,7 @@ eq_anchoveta_vif <- lm(
     sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
   data = sur_df
 )
-vif(eq_anchoveta_vif) %>% sort()
+car::vif(eq_anchoveta_vif) %>% sort()
 
 eq_jack_vif <- lm(
   biomass_t1_jackmackerel_noharvest ~
@@ -1331,7 +1334,7 @@ eq_jack_vif <- lm(
     sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2,
   data = sur_df
 )
-vif(eq_jack_vif) %>% sort()
+car::vif(eq_jack_vif) %>% sort()
 
 ```
 
