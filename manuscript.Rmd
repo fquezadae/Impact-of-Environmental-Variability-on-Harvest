@@ -1177,6 +1177,8 @@ rm(biomass_harvest_long, harvest2)
 
 <!-- ESTIMACIONES DE BIOMASA -->
 
+ESTIMAR CON JACKMACKEREL SIN INTERPOLAR!!!!!
+
 
 
 ```{r database_for_biomass_est, message=FALSE, warning=FALSE, include=FALSE}
@@ -1336,6 +1338,40 @@ eq_jack_vif <- lm(
 )
 car::vif(eq_jack_vif) %>% sort()
 
+```
+```{r sur_estimation_base, message=FALSE, warning=FALSE, include=FALSE}
+
+library(systemfit)
+
+eq_sardine <- biomass_t1_sardine_noharvest ~
+  biomass_sardine_c + I(biomass_sardine_c^2) +
+  sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2 +
+  biomass_sardine_c:biomass_anchoveta_c +
+  biomass_sardine_c:biomass_jackmackerel_c
+
+eq_anchoveta <- biomass_t1_anchoveta_noharvest ~
+  biomass_anchoveta_c + I(biomass_anchoveta_c^2) +
+  sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2 +
+  biomass_sardine_c:biomass_anchoveta_c +
+  biomass_anchoveta_c:biomass_jackmackerelintrapolated_c
+
+eq_jack <- biomass_t1_jackmackerel_noharvest ~
+  biomass_jackmackerelintrapolated_c + I(biomass_jackmackerelintrapolated_c^2) +
+  sst_c + sst_c2 + chl_c + chl_c2 + wind_c + wind_c2 +
+  biomass_sardine_c:biomass_jackmackerelintrapolated_c + 
+  biomass_anchoveta_c:biomass_jackmackerelintrapolated_c
+
+fit_sur <- systemfit(
+  list(
+    sardine      = eq_sardine,
+    anchoveta    = eq_anchoveta,
+    jackmackerel = eq_jack
+  ),
+  data = sur_df,
+  method = "SUR"
+)
+
+summary(fit_sur)
 ```
 
 ```{r sur_estimation_base, message=FALSE, warning=FALSE, include=FALSE}
