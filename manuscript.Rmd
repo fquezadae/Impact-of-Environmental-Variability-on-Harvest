@@ -1906,38 +1906,38 @@ Overall, the model captures distinct species‐specific responses to environment
 
 ```{r SUR_results, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-cat("\\begin{table}[!htbp] \\centering\n")
-cat("\\caption{Sistema SUR estimado con lavaan (MLR, errores robustos)}\n")
+cat("\\begin{table}[!htbp]\n")
+cat("\\centering\n")
+cat("\\caption{Seemingly Unrelated Regression (SUR) estimates of biomass dynamics}\n")
 cat("\\label{tab:SUR_results}\n")
 
-# --- TABLA ---
 stargazer(
   lm_sard, lm_anch, lm_jack,
   type = "latex",
   header = FALSE,
-  float = FALSE,              # no crear entorno table extra
+  float = FALSE,              # prevents stargazer from creating a duplicate table env
   title = "",
   label = "",
-  column.labels = c("Sardina", "Anchoveta", "Jurel"),
+  column.labels = c("Sardine", "Anchovy", "Jack mackerel"),
   column.separate = c(1, 1, 1),
-  dep.var.labels = "Biomasa t+1",
+  dep.var.labels = "Biomass (t+1)",
   dep.var.caption = "",
   dep.var.labels.include = FALSE,
   covariate.labels = c(
-    "Biomasa sardina (t)",
-    "Biomasa sardina (t)$^2$",
-    "Biomasa anchoveta (t)",
-    "Biomasa anchoveta (t)$^2$",
-    "Biomasa jurel (t)",
-    "Biomasa jurel (t)$^2$",
-    "SST (centrada)",
+    "Sardine biomass (t)",
+    "Sardine biomass (t)$^2$",
+    "Anchovy biomass (t)",
+    "Anchovy biomass (t)$^2$",
+    "Jack mackerel biomass (t)",
+    "Jack mackerel biomass (t)$^2$",
+    "SST",
     "SST$^2$",
-    "Clorofila-a",
-    "Clorofila-a$^2$",
-    "Interacción sardina--anchoveta",
-    "Interacción sardina--jurel",
-    "Interacción anchoveta--jurel",
-    "Constante"
+    "Chlorophyll-a",
+    "Chlorophyll-a$^2$",
+    "Sardine × Anchovy",
+    "Sardine × Jack mackerel",
+    "Anchovy × Jack mackerel",
+    "Constant"
   ),
   se = list(se_sard, se_anch, se_jack),
   digits = 3,
@@ -1945,16 +1945,19 @@ stargazer(
   omit.stat = c("f"),
   no.space = TRUE,
   font.size = "footnotesize",
-  notes = "*p$<0.1$; **p$<0.05$; ***p$<0.01$. Errores estandar robustos (MLR, lavaan).",
+  notes = "*$p<0.1$; **$p<0.05$; ***$p<0.01$. Robust standard errors in parenthesis.",
   notes.append = FALSE
 )
 
 cat("\\end{table}\n")
 
+
 ```
 
 
 ## Trip level costo function
+
+EMPEZAR A ESTIMAR ESTO!!!! USANDO LOGBOOKS
 
 \<\< NO RESULTS YET \>\>
 
