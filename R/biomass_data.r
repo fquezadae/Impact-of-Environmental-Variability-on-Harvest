@@ -127,7 +127,6 @@ r2_glm(model4)
 r2_glm(model5)
 
 
-
 # Add GLM predictions (always >= 0)
 jurel_biomass <- jurel_biomass %>% 
   mutate(
