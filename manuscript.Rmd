@@ -1236,24 +1236,19 @@ price x share - certification cost per landed ton x landing
 
 ### Total annual trips
 
-The number of trips a vessel will take in a given year for each gear
-type used is assumed to follow a Poison distribution
-[@Kasperski2015-jm]: \begin{equation}
+The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
+[@Kasperski2015-jm]: 
+\begin{equation}
 Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
 \label{eq5}
-\end{equation} where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a
-$(3n+M+k+1)×V_g$ matrix of explanatory variables, $\beta_g$ is a
-$(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the
-number of trips taken by vessel $v$ using gear type $g$ in year $y$, and
-$\bar{q}$ is the annual quota level. Additionally, we can add the
-accumulation of "bad weather days" as an explanatory variable to
-incorporate weather conditions into this decision, thus
-$U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+\end{equation} 
 
-De Dresdner 2014: - Regulacion: Numero de dias de vedas / Cuota anual -
-Precios: Precio proceso + Precio Diesel (promedio meses de mayor
-productividad en la pesquería (marzo a junio y octubre a diciembre). -
-Agregar Precio quota?
+where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, $\beta_g$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and $\bar{q}$ is the annual quota level. Additionally, we can add the accumulation of "bad weather days" as an explanatory variable to incorporate weather conditions into this decision, thus $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+
+De Dresdner 2014: 
+- Regulacion: Numero de dias de vedas / Cuota anual 
+- Precios: Precio proceso + Precio Diesel (promedio meses de mayor productividad en la pesquería (marzo a junio y octubre a diciembre). 
+- Agregar Precio quota?
 
 ### Inverse demand model
 
