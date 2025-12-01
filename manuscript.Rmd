@@ -129,7 +129,9 @@ the well-being (e.g., profits) of fishers and fishing communities in
 Chile. We expect to find significant effects of climate variables on
 species stock dynamics, the cost of fishing during a trip, and the
 number of trips a vessel takes. These environmental effects might
-influence optimal harvest levels and prices in local markets.
+influence optimal harvest levels and prices in local markets. 
+
+Take into consideration the economic interaction between species is relevant to include how firms adjust to changes in policies, as relative prices between species might change. Also, cost complementarities between trageiting multispcies should be consideredn as it might be cheaper to harvest two species instead of one... In this paper we allow for economic interaction between species by allowing vessel to have multiple-output production and the output price to be dependent on other species, similar to @Kasperski2015-jm.
 <!-- We also expect to find significant interrelations between species stock and harvest, and that the composition of the catch will vary depending on the climate scenario we use for future -->
 <!-- predictions. -->
 
@@ -238,6 +240,7 @@ The Chilean fishing sector is managed primarily through a Total Allowable Catch 
 
 Anchoveta and sardine are regulated as a mixed-species fishery: although each has its own quota, substitution between them is permitted. A share
 of industrial quota is also periodically reassigned to the artisanal sector.
+
 
 Since 2013, the industrial sector has operated under an individual transferable quota (ITQ) system, known as Transferable Fishing Licenses
 (*Licencias Transables de Pesca, LTP*). Class A licenses were allocated based on historical catches, while Class B licenses—up to 15% of the

@@ -103,7 +103,7 @@
 <text x='163.54' y='383.81' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='50.20px' lengthAdjust='spacingAndGlyphs'>JackMackerel &amp;</text>
 <text x='163.54' y='394.05' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='33.59px' lengthAdjust='spacingAndGlyphs'>Anchoveta</text>
 <text x='163.54' y='351.10' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='31.20px' lengthAdjust='spacingAndGlyphs'>Sardine &amp;</text>
-<text x='163.54' y='361.34' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='43.50px' lengthAdjust='spacingAndGlyphs'>JackMackerel</text>
+<text x='163.54' y='361.35' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='43.50px' lengthAdjust='spacingAndGlyphs'>JackMackerel</text>
 <text x='163.56' y='303.86' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='66.38px' lengthAdjust='spacingAndGlyphs'>Sardine &amp; Anchoveta</text>
 <text x='163.55' y='183.65' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='24.50px' lengthAdjust='spacingAndGlyphs'>Sardine</text>
 <text x='163.54' y='98.95' text-anchor='end' style='font-size: 7.11px; font-family: "Arial";' textLength='17.78px' lengthAdjust='spacingAndGlyphs'>Other</text>
@@ -115,7 +115,7 @@
 <line x1='595.46' y1='381.16' x2='565.31' y2='377.20' style='stroke-width: 0.64; stroke: #999999;' />
 <line x1='595.46' y1='355.84' x2='564.94' y2='373.21' style='stroke-width: 0.64; stroke: #999999;' />
 <line x1='595.43' y1='324.49' x2='565.35' y2='324.49' style='stroke-width: 0.64; stroke: #999999;' />
-<line x1='595.45' y1='259.15' x2='565.35' y2='259.15' style='stroke-width: 0.64; stroke: #999999;' />
+<line x1='595.45' y1='259.14' x2='565.35' y2='259.15' style='stroke-width: 0.64; stroke: #999999;' />
 <line x1='595.45' y1='241.02' x2='565.35' y2='241.02' style='stroke-width: 0.64; stroke: #999999;' />
 <line x1='595.44' y1='134.25' x2='565.35' y2='134.25' style='stroke-width: 0.64; stroke: #999999;' />
 <line x1='595.46' y1='41.71' x2='565.09' y2='29.32' style='stroke-width: 0.64; stroke: #999999;' />
