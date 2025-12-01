@@ -210,6 +210,19 @@ fact, about 85% of jack mackerel landings, on a yearly average between
 activities, including San Antonio, Tomé, Talcahuano, San Vicente,
 Coronel, Lota, and Corral.
 
+
+
+"La pesquería de sardina común (Strangomera bentincki) y anchoveta (Engraulis ringens)
+de la zona centro sur de Chile se caracteriza por ser una pesquería mixta. A pesar de contener
+especies distintas, éstas conviven y se reproducen en un mismo hábitat. Las artes de pesca
+utilizadas para capturar estas especies no permiten diferenciarlas." [@dresdner2013]
+
+"La pesquería de sardina común y anchoveta ha sido por largos años una de las pesquerías
+más importante de Chile. La disminución paulatina de los desembarques de jurel (Trachurus
+murphyi) ha llevado a la sardina común a posicionarse como el principal recurso pelágico
+extraído, seguido por la anchoveta" [@dresdner2013]
+
+
 ## Status of the stocks
 
 Historically, anchoveta in the Central-South was considered collapsed
@@ -221,24 +234,14 @@ overexploited until 2018 but has since been harvested within MSY limits.
 
 ## Quota allocation
 
-The Chilean fishing sector is managed primarily through a Total
-Allowable Catch (TAC; *Cuota Global*), which is divided between the
-industrial and artisanal sectors. A small share (≈2%) is reserved for
-research, with additional portions allocated to contingency and human
-consumption. The TAC is subdivided by region and season, and unused
-quotas may be reassigned during the fishing year.
+The Chilean fishing sector is managed primarily through a Total Allowable Catch (TAC; *Cuota Global*), which is divided between the industrial and artisanal sectors. A small share (≈2%) is reserved for research, with additional portions allocated to contingency and human consumption. The TAC is subdivided by region and season, and unused quotas may be reassigned during the fishing year.
 
-Anchoveta and sardine are regulated as a mixed-species fishery: although
-each has its own quota, substitution between them is permitted. A share
-of industrial quota is also periodically reassigned to the artisanal
-sector.
+Anchoveta and sardine are regulated as a mixed-species fishery: although each has its own quota, substitution between them is permitted. A share
+of industrial quota is also periodically reassigned to the artisanal sector.
 
-Since 2013, the industrial sector has operated under an individual
-transferable quota (ITQ) system, known as Transferable Fishing Licenses
-(*Licencias Transables de Pesca, LTP*). Class A licenses were allocated
-based on historical catches, while Class B licenses—up to 15% of the
-industrial fraction—are auctioned, with the first auctions held in 2015.
-These sealed-bid, first-price auctions aimed to broaden access and limit
+Since 2013, the industrial sector has operated under an individual transferable quota (ITQ) system, known as Transferable Fishing Licenses
+(*Licencias Transables de Pesca, LTP*). Class A licenses were allocated based on historical catches, while Class B licenses—up to 15% of the
+industrial fraction—are auctioned, with the first auctions held in 2015. These sealed-bid, first-price auctions aimed to broaden access and limit
 concentration but have faced challenges such as low participation,
 difficulties in reflecting economies of scale, and signs of potential
 coordinated bidding [@peña_torres_2022_MRE].
@@ -283,12 +286,12 @@ with the biological and economic interdependencies of fish stocks.
 
 ### Limited entry
 
-Fishery with restricted access to new operators (just artisanal?)
+Fishery with restricted access to new operators
 
 ### Biological closures for recruitment
 
 -   Jack mackerel is open through all year.
--   Sardine and anchovy: In southern-central Chile, December–April
+-   Sardine and anchovy: In southern-central Chile, December–March
     (fixed period: January to February).
 
 ### Biological closures for reproduction
@@ -309,8 +312,7 @@ Fishery with restricted access to new operators (just artisanal?)
 
 ### Maximum harvest levels
 
--   All species: Maximum catch limit per vessel owner (LMC) for
-    industrial vessels
+-   All species: Maximum catch limit per vessel owner (LMC) for industrial vessels, based on the industrial share of the TAC.
 
 ```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -1845,6 +1847,8 @@ Cross-species effects reveal one notable ecological interaction: anchoveta bioma
 
 Overall, the model captures distinct species‐specific responses to environmental variability. Sardine biomass is strongly driven by ocean productivity, anchoveta by density dependence and thermal conditions, and jack mackerel by a combination of persistence and nonlinear temperature responses. 
 
+The R$^2$ seems to be good, considering the high variability that small pelagic species exhibits in their stock. 
+
 
 
 
@@ -2005,9 +2009,12 @@ Once I have results for the four models, then I can run optimizations
 -   we did not added production risk.... risk preferences? maybe using
     random coefficients? Discusse!!!
 
+_ Julio Peña: Mejorar transferibilidad multispecie de las cuotas, y entre sectores artesanales e industrial
+
 # Conclusions
 
 NO YET!
+
 
 ## Future research question
 
