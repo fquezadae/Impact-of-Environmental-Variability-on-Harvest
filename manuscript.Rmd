@@ -1250,6 +1250,8 @@ Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_
 
 where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, $\beta_g$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and $\bar{q}$ is the annual quota level. Additionally, we can add the accumulation of "bad weather days" as an explanatory variable to incorporate weather conditions into this decision, thus $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
 
+WHERE ISN THE SHARE OF THE QUOTA? QUOTA FOR EACH SPECIE???
+
 De Dresdner 2014: 
 - Regulacion: Numero de dias de vedas / Cuota anual 
 - Precios: Precio proceso + Precio Diesel (promedio meses de mayor productividad en la pesquería (marzo a junio y octubre a diciembre). 
@@ -1292,7 +1294,7 @@ quota and profits, we conduct numerical optimization for different
 climate scenarios using the parameters estimates for the stock dynamic,
 cost functions, total annual trips and inverse demand equations. In each
 year, a vessel maximizes profits by choosing their optimal number of
-trips $T_g$ and harvest levels per trip $h_{g\tau}$ given a gear type:
+trips $T$ and optimal portfolio of harvest on each trip $h_{\tau}$:
 \begin{align}
 \max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
 \textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
@@ -1316,8 +1318,15 @@ projections for the environmental variables included in the model.
 -   Note that the optimal quota would that we would find using
     historical data might differ from the actual quota set by the
     regulator as they model is for single species.
+  
+- We assume that quota is not tradable, but allocated individually to each vessel. This avoid to consider other vessle participation decision on vessel yeraly maximization process [@Kasperski2015-jm].
+
 
 ## Projections
+
+
+According @Kasperski2015-jm, the model presented in this project is more suitable for long-term projections of fish population and profits than intra-anuial impacts of short-term management action. Therefore, is suitable to studyn long term effect of climate variability. However, based on Aufhammer, because we are using short-term variability instead of decadal vsariability, then our model is onlpy able to capture the impact of climate without adaptation.
+
 
 *From [@Yáñez2014]*:
 
