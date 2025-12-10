@@ -1156,7 +1156,7 @@ The SUR framework is particularly suited to this multi-species setting, as it al
 Two different estimations (one for industrial, 1 for small scale- both use purse seine...)
 
 Just usea real SPF trips (consider 95% of total revenue...)
-DO I HAVE DATA IN CREW SIZE???? Opportunity cost... (paid by time at sea x hourly wage)
+DO I HAVE DATA IN CREW SIZE???? Opportunity cost... (paid by time at sea x hourly wage) -- MAYBE USE TIPO EMBARCACION TO LINK CREW SIZE!??? USE BODEGA SIZE TO LINK CREW SIZE???
 Fixed cost excluded. Should not affect as econ decision made at the margins (optimization behavior)
 hard to use share of revenue, as how they implement this depend on each operator
 
@@ -1164,7 +1164,7 @@ hard to use share of revenue, as how they implement this depend on each operator
 
 -   @sumaila2011: "Capital costs, that is, the cost of vessels, fishing
     gear, processing plants and so on, would be affected by climate
-    change if additional capital for fishing and process ing operations
+    change if additional capital for fishing and processing operations
     is required to adapt to climate change impacts on the quantity,
     composition and distribution of fisheries resources65. Changes in
     migratory routes and fish distribution would affect travel time,
@@ -1172,10 +1172,12 @@ hard to use share of revenue, as how they implement this depend on each operator
     depending on catch levels and patterns, and the management regime in
     place."
 
-Ignoring trip subscript, the cost functions vary by vessel
+We estimate restricted cost function for both small-scale and industrical vessel. The inputs that we assume fixed are vessel characteristics and the population of each species. 
+
+Ignoring trip subscript, the quadratic approximation of the cost functions vary by vessel
 $v=1,\ldots,V_g$ and gear used $g=1,\ldots,G$, where $V_g$ is the number
-of observations using gear type $g$, and $G$ is the total number of
-available (or observed) gears: \begin{equation}
+of observations by fleet $g$, and $G$ is the total number of
+fleets: \begin{equation}
 C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
 \label{eq3}
 \end{equation} where $C_{vg}= w z_{vg}^*$,
@@ -1199,8 +1201,10 @@ by Shepard's Lemma: \begin{equation}
 
 Similar to stock dynamics, the system of equations formed by \eqref{eq3}
 and \eqref{eq4} can be estimated using SUR. To comply with economic
-theory, and to reduce even more the number of parameters to estimate,
-the following restrictions are imposed when estimating \eqref{eq4}:
+theory, and 
+
+To ensure that the estimated cost function is consistent with microeconomic theory, we impose the standard regularity conditions of symmetry and linear homogeneity in input prices.
+
 
 1.  Symmetry of the cost function, where \begin{equation*}
       \alpha_{g,\mathbf{X}_i\mathbf{X}_j} = \alpha_{g,\mathbf{X}_j\mathbf{X}_i} \quad \forall \quad i=1,\ldots,(2n + M + k); \ i \neq j; \ g = 1,\ldots, G.
@@ -1209,18 +1213,12 @@ the following restrictions are imposed when estimating \eqref{eq4}:
 2.  Linear homogeneity in input prices, where \begin{equation*}
       \sum_m^M \alpha_{g,w_m} = 1 \ \text{and} \ \sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0 \quad i=1,\ldots,(2n + M + k); \ g = 1,\ldots, G.
       \end{equation*}
+      
+These restrictions reduce even more the number of parameters to estimate in \eqref{eq4}. Symmetry guarantees that the function is twice differentiable with consistent mixed partial derivatives, allowing it to be interpreted as a valid dual cost function. Linear homogeneity (adding-up) ensures that the cost function is homogeneous of degree one in input prices, so that proportional changes in all prices translate into proportional changes in total cost. These restrictions ensure theoretical coherence and prevent the model from being a purely statistical approximation.
 
-Data at the trip level is available upon request from the Chilean
-Fisheries Research Institute (IFOP), which registers geo-referenced
-catch information on the Chilean fleet's fishing operation per trip [see
-e.g. @Pena-Torres2017-gn and [IFOP data
-observatory](ifop.dataobservatory.net)]. As inputs we can use the time
-spent at sea during a trip, where the price is the average wage pay to
-crew member per hour, and the distance traveled during a trip, where the
-price of distance traveled is the diesel cost. Therefore, the total cost
-function $C_{vg}= w z_{vg}^*$ for vessel $v$, using gear $g$ in a trip
-would be sum of the total cost of distance travelled plus the total cost
-of the time spent at sea.
+A potential concern is the endogeneity between harvest and costs. However, following Kasperski (2015), we assume that vessel optimization occurs in two stages. In the first stage, vessels choose the cost-minimizing combination of inputs for any given vector of outputs. In the second stage, they choose their optimal output mix to maximize profits. Under this sequential decision process, outputs are treated as exogenous when estimating the restricted cost function, because they are taken as given in the underlying cost-minimization problem.
+
+Data at the trip level is available upon request from the Chilean Fisheries Research Institute (IFOP), which registers geo-referenced catch information on the Chilean fleet's fishing operation per trip [see e.g. @Pena-Torres2017-gn and [IFOP data observatory](ifop.dataobservatory.net)]. As inputs we can use the time spent at sea during a trip, where the price is the average wage pay to crew member per hour, and the distance traveled during a trip, where the price of distance traveled is the diesel cost. Therefore, the total cost function $C_{vg}= w z_{vg}^*$ for vessel $v$, using gear $g$ in a trip would be sum of the total cost of distance travelled plus the total cost of the time spent at sea.
 
 **Note:** *Depending on the type of vessel, this cost should change.
 Some vessels are more efficient, other one are more heavy. How to
