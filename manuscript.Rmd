@@ -338,6 +338,8 @@ logbooks <- readRDS("data/logbooks/logbooks.rds")
 
 ## Switching patterns
 
+ARE THIS SPF TRIPS?????
+
 ```{r harvest_substitution_after, message=FALSE, warning=FALSE, include=FALSE}
 
 library(dplyr)
@@ -1147,9 +1149,16 @@ rm(biomass_long, biomass2)
 
 ```
 
-The SUR framework is particularly suited to this multi-species setting, as it allows for contemporaneous correlation among residuals that naturally arise from shared environmental shocks, trophic linkages, and imperfectly observed ecological processes. Cross-species interaction terms are specified between predator (jack mackerel) and prey (anchoveta, sardine) pairs, enabling the model to capture both direct biological coupling and environmental spillovers transmitted across species. We estimate a three-equation SUR system using the SEM framework implemented in lavaan, freely allowing the error terms across biomass equations to be correlated. The model is estimated via robust maximum likelihood (MLR), yielding SUR coefficients with Huber–White robust standard errors.
+The SUR framework is particularly suited to this multi-species setting, as it allows for contemporaneous correlation among residuals that naturally arise from shared non-observed environmental shocks, trophic linkages, and imperfectly observed ecological processes. Cross-species interaction terms are specified between predator (jack mackerel) and prey (anchoveta, sardine) pairs, enabling the model to capture both direct biological coupling and environmental spillovers transmitted across species. We estimate a three-equation SUR system using the SEM framework implemented in lavaan, freely allowing the error terms across biomass equations to be correlated. The model is estimated via robust maximum likelihood (MLR), yielding SUR coefficients with Huber–White robust standard errors.
 
 ### Trip level cost functions
+
+Two different estimations (one for industrial, 1 for small scale- both use purse seine...)
+
+Just usea real SPF trips (consider 95% of total revenue...)
+DO I HAVE DATA IN CREW SIZE???? Opportunity cost... (paid by time at sea x hourly wage)
+Fixed cost excluded. Should not affect as econ decision made at the margins (optimization behavior)
+hard to use share of revenue, as how they implement this depend on each operator
 
 <!-- - 80 and 300 m$^3$ holds sardine and anchovy; More than 800 m$^3$, likely jack mackerel. @Pena-Torres2017-gn dummy for $H \leq 370 \ \text{m}^3$, $370 \ \text{m}^3 < H \leq 790 \ \text{m}^3$, $H > 790 \ \text{m}^3$ ... Also use age of vessel to check technical obsolescence (year trip, year ship was built) -->
 
@@ -1240,6 +1249,8 @@ Add - liters/hours x hours trip x fuel price - crew member x harvest x
 price x share - certification cost per landed ton x landing
 
 ### Total annual trips
+
+Just usea real SPF trips (consider 95% of total revenue...)
 
 The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
 [@Kasperski2015-jm]: 
