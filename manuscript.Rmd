@@ -1364,9 +1364,7 @@ According @Kasperski2015-jm, the model presented in this project is more suitabl
 
 ## Stock biomass model
 
-
-PROBAR CON SOLO INTERACCION CON MACKEREL!!! (Pray and predator model)
-
+**ADD: Classic logistic growth curves**
 
 
 Figure \@ref(fig:harvestbiomass) show biomass adding harvest
