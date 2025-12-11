@@ -1248,16 +1248,24 @@ price x share - certification cost per landed ton x landing
 
 ### Total annual trips
 
-Just usea real SPF trips (consider 95% of total revenue...)
+**Just use real SPF trips (consider 95% of total revenue...)**
 
-The number of trips a vessel will take in a given year for each gear type used is assumed to follow a Poison distribution
+- Variables:
+  - Input prices
+  - Output prices (by species) -- Vessels' average prices foe each species weighted by the proportion of each product form
+  - Annual harvest allocated to each vessel (vessel/species) -- MAYBE SE SHARES????
+  - Annual TAC level (by species)
+  - Fixed vessel characteristics
+
+
+The number of trips a vessel will take in a given year is assumed to follow a Poison distribution
 [@Kasperski2015-jm]: 
 \begin{equation}
-Pr\left[T^{*}_{vgy} = t_v\right] = \frac{exp^{-exp(U^{'}_{vg}\beta_g)}exp(U^{'}_{vg}\beta_g)^{t_v}}{t_v !}
+Pr\left[T^{*}_{vy} = t_v\right] = \frac{exp^{-exp(U^{'}_{v}\beta)}exp(U^{'}_{v}\beta)^{t_v}}{t_v !}
 \label{eq5}
 \end{equation} 
 
-where $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, $\beta_g$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and $\bar{q}$ is the annual quota level. Additionally, we can add the accumulation of "bad weather days" as an explanatory variable to incorporate weather conditions into this decision, thus $U_{vg}=[p,w,h_{vg},\bar{q},Z_{vg}, Env]$
+where $U_{v}=[p,w,h_{v},\bar{q},Z_{v}]$ is a $(3n+M+k+1)×V_g$ matrix of explanatory variables, $\beta$ is a $(3n+M+k+1)\times1$ matrix of coefficients to be estimated, $t_v$ is the number of trips taken by vessel $v$ using gear type $g$ in year $y$, and $\bar{q}$ is the annual quota level. Additionally, we can add the accumulation of "bad weather days" as an explanatory variable to incorporate weather conditions into this decision, thus $U_{vg}=[p,w,h_{v},\bar{q},Z_{v}, Env]$
 
 WHERE ISN THE SHARE OF THE QUOTA? QUOTA FOR EACH SPECIE???
 
@@ -1265,6 +1273,29 @@ De Dresdner 2014:
 - Regulacion: Numero de dias de vedas / Cuota anual 
 - Precios: Precio proceso + Precio Diesel (promedio meses de mayor productividad en la pesquería (marzo a junio y octubre a diciembre). 
 - Agregar Precio quota?
+
+
+``The estimates for each vessel-type combination are used to determine the optimal
+number of trips each vessel will take over the course of a year in the numerical optimization
+as a result of **changing prices, quotas, and individual annual harvests**. Combining
+the number of trips each vessel takes, each vessel’s share of the total annual quota, and the cost functions associated with their trip
+level harvest, the model can now calculate the total cost of harvesting any level of output.
+The following section estimates an inverse demand model for all species jointly to provide
+estimates of the price impacts of increased harvesting.''
+
+Hay ENDOGENEIDAD??? NUMERO DE VIAJES CON PRECIO???? Y CANTIDAD???
+
+
+```{r poisson, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+pois_trips <- glm(
+  trips ~ log(harvest_total) + log(p_diesel) + log(w_crew) + factor(gear) + Z,
+  family = poisson(link = "log"),
+  data   = trips_df
+)
+
+```
+
+
 
 ### Inverse demand model
 
@@ -1295,6 +1326,7 @@ R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque ent
 ```
 
 -   DIFERENCIAR ENTRE CONSUMO HUMANO DIRECTO e INDIRECTO? Ricardo y Arnol usan solo información de procesamiento. Darle una vuelta a esto
+- NECESITO MODELO ANUAL??? SIMPLE CON REZAGOS DE CANTIDAD??? O MAS SIMPLE SIGUIENDO A KASPERSKI PERO INSTRUMENTANDO LA CANTIDAD???
 
 ## Numerical optimization
 
@@ -1329,6 +1361,280 @@ projections for the environmental variables included in the model.
     regulator as they model is for single species.
   
 - We assume that quota is not tradable, but allocated individually to each vessel. This avoid to consider other vessle participation decision on vessel yeraly maximization process [@Kasperski2015-jm].
+
+```{r simulations, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# Ejemplo de estructura de datos simulados
+sim_grid <- data.frame(
+  vessel_id  = ...,    # id barco
+  gear       = ...,    # arte
+  year       = ...,    # año
+  H_total    = ...,    # harvest anual óptimo del modelo dinámico (ton)
+  p_diesel   = ...,    # precios insumos
+  w_crew     = ...,
+  # Z: características fijas de la embarcación
+  length     = ...,
+  hp         = ...,
+  tonnage    = ...
+)
+
+#---------------------------------------------#
+# 1) Función: Poisson + costo viaje -> costo anual
+#---------------------------------------------#
+
+library(dplyr)
+
+compute_annual_cost <- function(sim_grid,
+                                pois_model,
+                                cost_model,
+                                harvest_var   = "H_total",
+                                trips_var     = "trips_hat",
+                                htrip_var     = "h_trip",
+                                cost_trip_var = "cost_trip_hat",
+                                cost_ann_var  = "cost_annual_hat") {
+  
+  df <- sim_grid
+  
+  # 1. Predicción de viajes anuales con el Poisson
+  #    Nota: para Poisson, E[T] = exp(η), donde η = Xβ
+  eta_trips <- predict(pois_model, newdata = df, type = "link")
+  df[[trips_var]] <- exp(eta_trips)     # T_hat
+  
+  # 2. Harvest por viaje (H_total / T_hat)
+  #    Evita divisiones por cero poniendo un mínimo a T_hat
+  df[[trips_var]][df[[trips_var]] < 1e-6] <- 1e-6
+  
+  df[[htrip_var]] <- df[[harvest_var]] / df[[trips_var]]
+  
+  # 3. Preparar 'newdata' para el modelo de costo por viaje
+  #    Asumimos que el cost_model usa log(harvest_trip) como regressor.
+  #    Creamos una columna 'harvest_trip' temporal para el predict().
+  
+  df_cost <- df
+  
+  df_cost$harvest_trip <- df_cost[[htrip_var]]
+  
+  # 4. Predecir costo por viaje
+  #    Si tu modelo está en log(cost_trip), hay que exponentiar:
+  cost_link <- predict(cost_model, newdata = df_cost, type = "response")
+  # OJO: 
+  # - Si el modelo es log(cost_trip) ~ ..., entonces type="response" ya devuelve exp(η).
+  # - Si el modelo es cost_trip ~ ..., usa type="response" directamente.
+  
+  df[[cost_trip_var]] <- cost_link
+  
+  # 5. Costo anual = T_hat * costo por viaje
+  df[[cost_ann_var]] <- df[[trips_var]] * df[[cost_trip_var]]
+  
+  return(df)
+}
+
+
+```
+
+```{r modelo npv}
+
+#-------------------------------
+# PARÁMETROS BÁSICOS
+#-------------------------------
+
+S <- 3          # número de especies (ej: sardina, anchoveta, jurel)
+T_hor <- 20     # horizonte en años
+rho <- 0.05     # tasa de descuento
+
+species_names <- c("sardine", "anchovy", "jack")
+
+# B0: biomasa inicial por especie (vector de longitud S)
+B0 <- c(
+  sardine = 500,   # reemplazar por dato real
+  anchovy = 400,
+  jack    = 600
+)
+
+# Aquí podrías tener un data.frame con clima por año (si quieres ya integrarlo)
+# climate_df: year x variables SST, CHL, etc.
+# climate_df[year, ] se usa dentro de biomass_dynamics()
+
+
+#-------------------------------
+# 1) DINÁMICA DE BIOMASA
+#-------------------------------
+# Esta función DEBE usar tus coeficientes SUR estimados.
+# Aquí dejo una forma “genérica” para que la reemplaces.
+
+biomass_dynamics <- function(B_t, H_t, climate_row, sur_params) {
+  # B_t: vector biomasa en t (longitud S)
+  # H_t: vector harvest en t (longitud S)
+  # climate_row: fila con SST_t, CHL_t, etc.
+  # sur_params: lista con coeficientes de tu SUR
+  
+  # EJEMPLO MUY SIMPLE (placeholder: REEMPLAZAR CON TU SUR)
+  # B_{t+1} = B_t + r_s * B_t * (1 - B_t/K_s) - H_t + efecto_clima
+
+  r  <- sur_params$r          # vector r_s
+  K  <- sur_params$K          # vector K_s
+  sst <- climate_row$sst
+  chl <- climate_row$chl
+
+  climate_effect <- sur_params$gamma_sst * sst + sur_params$gamma_chl * chl  # vector
+
+  growth <- r * B_t * (1 - B_t / K) + climate_effect
+  B_next <- pmax(B_t + growth - H_t, 1e-6)  # evitar biomasa negativa
+
+  return(B_next)
+}
+
+
+#-------------------------------
+# 2) DEMANDA INVERSA
+#-------------------------------
+# Debes enchufar aquí tu modelo estimado (anual o agregado).
+# Recibe harvest total por especie en el año y devuelve precios.
+
+inverse_demand <- function(H_t, demand_params) {
+  # H_t: vector harvest anual (S)
+  # demand_params: lista con coeficientes de tu modelo de demanda inversa
+  
+  # EJEMPLO: p_s = a_s + b_s * H_s + c_s * H_otros  (placeholder)
+  a <- demand_params$a   # vector a_s
+  b <- demand_params$b   # matriz (SxS) o algo similar
+  
+  p_t <- a + as.numeric(b %*% H_t)
+  p_t <- pmax(p_t, 1e-4) # evitar precios <= 0
+  
+  return(p_t)
+}
+
+
+#-------------------------------
+# 3) COSTO ANUAL C(H)
+#-------------------------------
+# Aquí usas el bloque del PASO 1:
+# harvest anual óptimo por barco/flota -> Poisson -> costo anual total.
+# Para el NPV, lo que importa es el costo agregado por especie o flota.
+
+annual_cost <- function(H_t, year, scenario, cost_env) {
+  # H_t: vector harvest anual (por especie o por flota, según tu diseño)
+  # year: año t
+  # scenario: etiqueta de clima si la usas
+  # cost_env: lista con:
+  #   - modelos poisson
+  #   - modelos costo por viaje
+  #   - shares por barco
+  #   - precios de insumos, etc.
+  
+  # 1. Construir un data.frame "sim_grid" con:
+  #    vessel_id, gear, year, H_total (por barco), precios insumos, Z...
+  sim_grid <- build_sim_grid_for_year(
+    H_t      = H_t,
+    year     = year,
+    scenario = scenario,
+    cost_env = cost_env
+  )
+  
+  # 2. Aplicar la función del PASO 1:
+  sim_grid_out <- compute_annual_cost(
+    sim_grid   = sim_grid,
+    pois_model = cost_env$pois_model,
+    cost_model = cost_env$cost_model
+  )
+  
+  # 3. Sumar costos de todos los barcos/flotas:
+  C_total <- sum(sim_grid_out$cost_annual_hat)
+  
+  return(C_total)
+}
+
+
+#-------------------------------
+# 4) FUNCIÓN OBJETIVO NPV
+#-------------------------------
+# Los controles son las fracciones de explotación q_{s,t} = H_{s,t} / B_{s,t}
+# OJO: usamos PARÁMETRO q_vec = vector (S*(T_hor)) con q_{s,t}.
+
+npv_objective <- function(q_vec,
+                          B0,
+                          sur_params,
+                          demand_params,
+                          cost_env,
+                          climate_df,
+                          scenario = "base",
+                          rho = 0.05) {
+  
+  # Reorganizamos q_vec (vector largo) en matriz S x T
+  q_mat <- matrix(q_vec, nrow = S, ncol = T_hor,
+                  dimnames = list(species_names, paste0("year", 1:T_hor)))
+  
+  # Inicialización
+  B_t <- B0
+  npv  <- 0
+  
+  for (t in 1:T_hor) {
+    # 1. Harvest anual: H_t = q_{t} * B_t
+    q_t <- q_mat[, t]
+    q_t <- pmin(pmax(q_t, 0), 0.75)  # restringir 0 <= q <= 0.75 (ejemplo)
+    
+    H_t <- q_t * B_t
+    
+    # 2. Precios vía demanda inversa
+    p_t <- inverse_demand(H_t, demand_params)
+    
+    # 3. Costo anual total (usando módulo de viaje)
+    C_t <- annual_cost(H_t, year = t, scenario = scenario, cost_env = cost_env)
+    
+    # 4. Ingresos anuales
+    revenue_t <- sum(p_t * H_t)
+    
+    # 5. Beneficio anual
+    profit_t <- revenue_t - C_t
+    
+    # 6. Descuento
+    npv <- npv + profit_t / ((1 + rho)^(t - 1))
+    
+    # 7. Actualizar biomasa usando SUR + clima
+    climate_row <- climate_df[climate_df$year == t & climate_df$scenario == scenario, ]
+    B_t <- biomass_dynamics(B_t, H_t, climate_row, sur_params)
+  }
+  
+  # Optim usamos minimización, así que devolvemos -NPV
+  return(-npv)
+}
+
+
+#-------------------------------
+# 5) LLAMAR A OPTIM
+#-------------------------------
+
+# Valores iniciales para q (por ejemplo, 0.1 para todas las especies/años)
+q0 <- rep(0.1, S * T_hor)
+
+# Cotas para q: [0, 0.75]
+lower_q <- rep(0,   S * T_hor)
+upper_q <- rep(0.75, S * T_hor)
+
+# Llamada a optim (L-BFGS-B permite bounds)
+opt_res <- optim(
+  par     = q0,
+  fn      = npv_objective,
+  method  = "L-BFGS-B",
+  lower   = lower_q,
+  upper   = upper_q,
+  B0      = B0,
+  sur_params    = sur_params,
+  demand_params = demand_params,
+  cost_env      = cost_env,
+  climate_df    = climate_df,
+  scenario      = "GFDL",      # o "base", "IPSL", lo que definas
+  rho           = rho
+)
+
+opt_res$value        # -NPV óptimo
+q_opt_vec <- opt_res$par
+q_opt_mat <- matrix(q_opt_vec, nrow = S, ncol = T_hor,
+                    dimnames = list(species_names, paste0("year", 1:T_hor)))
+
+
+```
+
 
 
 ## Projections
@@ -1943,6 +2249,104 @@ Two undergrad students working on this module for their thesis...
 Results by July 2026
 
 ## Numerical optimization
+
+```{r proyecciones, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+# climate_df
+#   year scenario  sst   chl
+# 1 2000  "hist"   ...   ...
+# 2 2001  "hist"   ...   ...
+# ...
+# N 2025  "GFDL"   ...   ...
+# N+1 2026 "GFDL"  ...   ...
+# ...
+# M 2050  "GFDL"   ...   ...
+
+climate_df <- climate_df |>
+  group_by(scenario) |>
+  mutate(
+    sst_anom = (sst - mean(sst[year %in% 1995:2020 & scenario == "hist"])) / sd(sst[year %in% 1995:2020 & scenario == "hist"]),
+    chl_anom = (chl - mean(chl[year %in% 1995:2020 & scenario == "hist"])) / sd(chl[year %in% 1995:2020 & scenario == "hist"])
+  )
+
+
+npv_objective <- function(q_vec,
+                          B0,
+                          sur_params,
+                          demand_params,
+                          cost_env,
+                          climate_df,
+                          scenario = "GFDL",
+                          rho = 0.05) {
+  
+  q_mat <- matrix(q_vec, nrow = S, ncol = T_hor,
+                  dimnames = list(species_names, paste0("year", 1:T_hor)))
+  
+  B_t <- B0
+  npv <- 0
+  
+  # Suponemos que t = 1 corresponde a un año base, por ejemplo 2025
+  start_year <- 2025
+  
+  for (t in 1:T_hor) {
+    
+    year_t <- start_year + (t - 1)
+    
+    # 1. Harvest anual
+    q_t <- q_mat[, t]
+    q_t <- pmin(pmax(q_t, 0), 0.75)
+    H_t <- q_t * B_t
+    
+    # 2. Precios vía demanda inversa
+    p_t <- inverse_demand(H_t, demand_params)
+    
+    # 3. Costo anual (usa Poisson + costo por viaje por debajo)
+    C_t <- annual_cost(H_t, year = year_t, scenario = scenario, cost_env = cost_env)
+    
+    revenue_t <- sum(p_t * H_t)
+    profit_t  <- revenue_t - C_t
+    
+    npv <- npv + profit_t / ((1 + rho)^(t - 1))
+    
+    # 4. Obtener las variables ambientales de ese año y escenario
+    climate_row <- climate_df[climate_df$year == year_t & 
+                              climate_df$scenario == scenario, ]
+    
+    # 5. Actualizar biomasa usando SUR + clima proyectado
+    B_t <- biomass_dynamics(B_t, H_t, climate_row, sur_params)
+  }
+  
+  return(-npv)
+}
+
+
+
+biomass_dynamics <- function(B_t, H_t, climate_row, sur_params) {
+  # Ejemplo:
+  sst_anom <- climate_row$sst_anom
+  chl_anom <- climate_row$chl_anom
+  
+  # g_s(B_t, SST, CHL) estimado con SUR
+  # Aquí enchufas tus coeficientes reales:
+  growth <- with(sur_params, {
+    r * B_t * (1 - B_t / K) +
+      beta_sst * sst_anom +
+      beta_chl * chl_anom +
+      beta_inter * (sst_anom * chl_anom) # solo si lo tienes
+  })
+  
+  B_next <- pmax(B_t + growth - H_t, 1e-6)
+  return(B_next)
+}
+
+
+opt_GFDL <- optim(..., scenario = "GFDL", ...)
+opt_IPSL <- optim(..., scenario = "IPSL", ...)
+opt_HADL <- optim(..., scenario = "HADL", ...)
+
+
+```
+
 
 \<\< NO RESULTS YET \>\>
 
