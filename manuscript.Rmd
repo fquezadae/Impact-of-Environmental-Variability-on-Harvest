@@ -1962,8 +1962,116 @@ Results by July 2026
 ## Total Annual trips
 
 
+```{r poisson_dt, message=FALSE, warning=FALSE, include=FALSE}
+
+library(dplyr)
+library(fixest)
+library(lubridate)
 
 
+# (A) Define aquí tus especies SPF
+spf_codes <- c(26, 33, 114)  
+
+# Dfinir viajes
+log_spf <- logbooks %>%
+  arrange(COD_BARCO, FECHA_HORA_ZARPE, FECHA_LANCE) %>%
+  group_by(COD_BARCO) %>%
+  mutate(
+    new_trip = case_when(
+      NUMERO_LANCE_EX == 1 ~ 1L,
+      is.na(lag(FECHA_HORA_ZARPE)) ~ 1L,
+      FECHA_HORA_ZARPE != lag(FECHA_HORA_ZARPE) ~ 1L,
+      TRUE ~ 0L
+    ),
+    trip_seq = cumsum(new_trip)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    trip_id = paste(COD_BARCO, trip_seq, sep = "_")
+  )
+
+
+# Viajes por barco–año
+trips_vy <- log_spf %>%
+  distinct(COD_BARCO, year, trip_id) %>%
+  count(COD_BARCO, year, name = "T_vy")
+
+
+Mode <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA)
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+log_spf <- log_spf %>%
+  mutate(
+    TIPO_EMB_clean = if_else(
+      TIPO_EMB %in% c("1", "2", "3"),
+      NA_character_,
+      TIPO_EMB
+    )
+  )
+
+vessel_chars <- log_spf %>%
+  group_by(COD_BARCO) %>%
+  summarise(
+    TIPO_FLOTA = Mode(TIPO_FLOTA),
+    TIPO_EMB   = Mode(TIPO_EMB_clean),
+    CAPACIDAD_BODEGA = median(CAPACIDAD_BODEGA, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+vessel_chars <- vessel_chars %>%
+  mutate(
+    TIPO_EMB = replace_na(TIPO_EMB, "UNK")
+  )
+
+poisson_df <- trips_vy %>%
+  left_join(vessel_chars, by = "COD_BARCO")
+
+```
+
+Because industrial and artisanal vessels operate under distinct technological and regulatory environments, we estimate separate effort models for each fleet segment. This approach allows the responsiveness of fishing trips to prices, quotas, and environmental conditions to differ across fleets, while remaining consistent with the structure of the bioeconomic simulation.
+
+
+```{r est_poisson, message=FALSE, warning=FALSE, include=FALSE}
+library(MASS)
+
+pois_ind <- glm.nb(
+  T_vy ~ CAPACIDAD_BODEGA +
+         TIPO_EMB,
+  data = poisson_df %>% filter(TIPO_FLOTA == "IND")
+)
+
+pois_art <- glm.nb(
+  T_vy ~ CAPACIDAD_BODEGA +
+         TIPO_EMB,
+  data = poisson_df %>% filter(TIPO_FLOTA == "ART")
+)
+
+```
+
+```{r tabla_poisson, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+library(stargazer)
+
+stargazer(
+  pois_ind, pois_art,
+  type = "latex",
+  title = "Annual Fishing Trips (Negative Binomial Models)",
+  column.labels = c("Industrial fleet", "Artisanal fleet"),
+  dep.var.labels = "Number of trips per vessel-year",
+  omit.stat = c("aic", "bic"),
+  no.space = TRUE,
+  digits = 3,
+  star.cutoffs = c(0.1, 0.05, 0.01),
+  notes = c(
+    "Negative binomial models estimated separately by fleet segment.",
+    "Allocated harvest is computed from historical vessel shares and aggregate TAC.",
+  )
+)
+
+```
 
 
 \<\< NO RESULTS YET \>\>
