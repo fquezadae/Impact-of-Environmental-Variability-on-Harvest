@@ -2064,11 +2064,15 @@ stargazer(
   omit.stat = c("aic", "bic"),
   no.space = TRUE,
   digits = 3,
+  font.size = "footnotesize",
   star.cutoffs = c(0.1, 0.05, 0.01),
+
   notes = c(
     "Negative binomial models estimated separately by fleet segment.",
-    "Allocated harvest is computed from historical vessel shares and aggregate TAC.",
-  )
+    "Allocated harvest is computed from historical vessel shares and aggregate TAC."
+  ),
+  notes.append = FALSE,
+  notes.line.sep = "\\\\"
 )
 
 ```
