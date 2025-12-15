@@ -960,12 +960,6 @@ rm(harvest_month_SERNAPESCA, harvest_summary2, month_order)
 
 # Data and methodology
 
-<!-- SEE HOW FAR VESSEL TRAVEL -- 80 longitud aprox... IM USING 165 nm -->
-
-<!-- USE DIFFERENT LENGHT EQUATIONS? (INTEAD OF GEAR?) -->
-
-<!-- Shift in spatial distribution of jack mackerel out of EEZ during El Niño events -->
-
 To fulfill the research's objectives, and following @Kasperski2015-jm,
 the research entails five different stages: (i) estimating the annual
 stock dynamics of each species included in the model, (ii) estimating
@@ -975,6 +969,9 @@ supply), and (v) conduct numerical optimization to examine how harvest
 and profits levels evolve over time. The numeral optimization uses
 estimated parameters from the previous four stages to conduct the
 optimization procedure.
+
+<!-- Following the bioeconomic literature on regulated fisheries (e.g. Richter et al., 2018), we model a fishery composed of multiple fleet segments that differ in cost structure, harvesting technology, and catch quality, which in turn implies segment-specific output prices (Asche et al., 2015). -->
+
 
 ## Historical data
 
@@ -1078,6 +1075,7 @@ knitr::include_graphics("figs/env_data_map.pdf")
 
 ## Econometrics models
 
+
 ### Stock dynamics
 
 To estimate stock dynamics, we use annual data on species-specific biomass (stock abundance) and vessel landings within Chile’s Exclusive Economic Zone (EEZ). Following @Kasperski2015-jm, the baseline model for the interannual growth of each species $i$ is represented by a discrete logistic function that accounts for intra- and inter-species interactions:
@@ -1153,7 +1151,7 @@ The SUR framework is particularly suited to this multi-species setting, as it al
 
 ### Trip level cost functions
 
-Two different estimations (one for industrial, 1 for small scale- both use purse seine...)
+Two different estimations (one for industrial, 1 for small scale- both use purse seine...): **"Trip-level costs are modeled as a function of expected effort and segment-specific parameters, reflecting differences in technology and operational costs across fleet segments."**
 
 Just usea real SPF trips (consider 95% of total revenue...)
 DO I HAVE DATA IN CREW SIZE???? Opportunity cost... (paid by time at sea x hourly wage) -- MAYBE USE TIPO EMBARCACION TO LINK CREW SIZE!??? USE BODEGA SIZE TO LINK CREW SIZE???
@@ -1251,6 +1249,11 @@ price x share - certification cost per landed ton x landing
 
 We model the annual number of fishing trips taken by vessel $v$ in year $y$ as a Poisson count process following @Kasperski2015-jm. Since our logbooks only include purse-seine trips, the unit of observation is a vessel--year. Separate models are estimated by fleet segment (industrial versus artisanal), allowing effort responses to differ across sectors.
 
+
+"allowing technological heterogeneity across fleet segments"
+
+
+
 \begin{equation}
 T_{vy} \sim \text{Poisson}(\lambda_{vy}), \qquad 
 \lambda_{vy} = \exp\!\left(U_{vy}'\beta\right),
@@ -1319,6 +1322,14 @@ R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque ent
 
 -   DIFERENCIAR ENTRE CONSUMO HUMANO DIRECTO e INDIRECTO? Ricardo y Arnol usan solo información de procesamiento. Darle una vuelta a esto
 - NECESITO MODELO ANUAL??? SIMPLE CON REZAGOS DE CANTIDAD??? O MAS SIMPLE SIGUIENDO A KASPERSKI PERO INSTRUMENTANDO LA CANTIDAD???
+
+
+- SEPARAR MODELO POR FLOTA IND Y ART???
+  - "On the demand side, we assume an inverse demand structure where the output price depends on the segment that has landed the catch because of differences in quality, but also on the total catch of all boats, due to an adverse effect of aggregate landings on the sales price."
+
+
+
+
 
 ## Numerical optimization
 
@@ -2570,15 +2581,18 @@ NO YET!
     the literature of location choice modeling [e.g., @Dupont1993-jn;
     @Smith2005-us; @Hicks2020-mz].
 
-    -   About the DCM?
-        -   Including other economic activity would be relevant, as
-            aquaculture is become more relevant in the country, where
-            some fishermen have swith to small-scale aquaculture
-            practice.
-        -   Outside option...
+  -   About the DCM?
+    -   Including other economic activity would be relevant, as
+        aquaculture is become more relevant in the country, where
+        some fishermen have swith to small-scale aquaculture
+        practice.
+    -   Outside option...
 
 -   Does higher quota allocation of jack mackerel, a predator for
     anchovy and sardine, helps small scale sector actually?
+    
+    
+- From @KASPERSKI201655: "In this paper, optimality refers to maximizing the net present value of the harvests of the combined three fisheries and does not consider other ecological or social objectives which would be important to consider in an ecosystem based fisheries management approach."
 
 # Repository
 
