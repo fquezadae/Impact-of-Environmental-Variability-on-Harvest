@@ -1247,12 +1247,7 @@ price x share - certification cost per landed ton x landing
 
 ### Total annual trips
 
-We model the annual number of fishing trips taken by vessel $v$ in year $y$ as a Poisson count process following @Kasperski2015-jm. Since our logbooks only include purse-seine trips, the unit of observation is a vessel--year. Separate models are estimated by fleet segment (industrial versus artisanal), allowing effort responses to differ across sectors.
-
-
-"allowing technological heterogeneity across fleet segments"
-
-
+We model the annual number of fishing trips taken by vessel $v$ in year $y$ as a count process following @Kasperski2015-jm. Since the available logbook data only record purse-seine operations, the unit of observation is a vessel–year. Separate effort models are estimated for the industrial and artisanal fleets, allowing fishing activity to respond differently to economic conditions and regulatory constraints across sectors. This specification explicitly accommodates technological heterogeneity across fleet segments, reflecting differences in vessel capacity, operating scale, and production technology.
 
 \begin{equation}
 T_{vy} \sim \text{Poisson}(\lambda_{vy}), \qquad 
@@ -1287,8 +1282,6 @@ The vector $Env_y$ captures operating and regulatory constraints, including the 
 Quota prices are not included explicitly in the trip equation. Instead, the economic scarcity of quota is captured implicitly through aggregate TAC levels and vessel-level allocated harvest. In the simulation stage, quota scarcity generates shadow values that affect optimal harvest and effort decisions through profits rather than through an explicit quota price term.
 
 Trips, harvest, and prices may be jointly determined within the year, implying potential endogeneity in reduced-form trip regressions. However, the purpose of Eq. \eqref{eq:poisson_trips} is not causal identification but rather to provide an empirically grounded behavioral relationship that maps changes in prices, quotas, and environmental conditions into expected fishing effort for use in the bioeconomic simulation.
-
-
 
 
 
@@ -2024,6 +2017,39 @@ log_spf <- log_spf %>%
     )
   )
 
+
+# Calculate harvest
+harvest_vys <- log_spf %>%
+  filter(COD_ESPECIE %in% spf_codes) %>%
+  group_by(TIPO_FLOTA, COD_ESPECIE, COD_BARCO, year) %>%
+  summarise(
+    H_vys = sum(CAPTURA_RETENIDA, na.rm = TRUE)/1000,
+    .groups = "drop"
+  )
+
+harvest_vy_wide <- harvest_vys %>%
+  select(COD_BARCO, year, COD_ESPECIE, H_vys) %>%
+  pivot_wider(
+    names_from  = COD_ESPECIE,
+    values_from = H_vys,
+    names_prefix = "H_",
+    values_fill = 0
+  )
+
+# shares_vsf <- log_spf %>%
+#   filter(COD_ESPECIE %in% spf_codes) %>%
+#   group_by(TIPO_FLOTA, COD_ESPECIE, COD_BARCO) %>%
+#   summarise(
+#     H_vsf = sum(CAPTURA_RETENIDA, na.rm = TRUE),
+#     .groups = "drop"
+#   ) %>%
+#   group_by(TIPO_FLOTA, COD_ESPECIE) %>%
+#   mutate(
+#     share_vsf = H_vsf / sum(H_vsf)
+#   ) %>%
+#   ungroup()
+
+# Get vessel characteristics
 vessel_chars <- log_spf %>%
   group_by(COD_BARCO) %>%
   summarise(
@@ -2039,7 +2065,8 @@ vessel_chars <- vessel_chars %>%
   )
 
 poisson_df <- trips_vy %>%
-  left_join(vessel_chars, by = "COD_BARCO")
+  left_join(vessel_chars, by = "COD_BARCO") %>%
+  left_join(harvest_vy_wide, by = c("COD_BARCO", "year"))
 
 ```
 
@@ -2050,14 +2077,12 @@ Because industrial and artisanal vessels operate under distinct technological an
 library(MASS)
 
 pois_ind <- glm.nb(
-  T_vy ~ CAPACIDAD_BODEGA +
-         TIPO_EMB,
+  T_vy ~ CAPACIDAD_BODEGA + H_26 + H_33 + H_114 + TIPO_EMB,
   data = poisson_df %>% filter(TIPO_FLOTA == "IND")
 )
 
 pois_art <- glm.nb(
-  T_vy ~ CAPACIDAD_BODEGA +
-         TIPO_EMB,
+  T_vy ~ CAPACIDAD_BODEGA + H_26 + H_33 + H_114 + TIPO_EMB,
   data = poisson_df %>% filter(TIPO_FLOTA == "ART")
 )
 
@@ -2066,25 +2091,34 @@ pois_art <- glm.nb(
 ```{r tabla_poisson, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 library(stargazer)
 
+cat("\\begin{table}[!htbp]\n")
+cat("\\centering\n")
+cat("\\caption{Annual Fishing Trips (Negative Binomial Models)}\n")
+cat("\\label{tab:poisson_results}\n")
+
 stargazer(
   pois_ind, pois_art,
   type = "latex",
-  title = "Annual Fishing Trips (Negative Binomial Models)",
+  header = FALSE,
+  float = FALSE,              # prevents stargazer from creating a duplicate table env
+  title = "",
+  label = "",
   column.labels = c("Industrial fleet", "Artisanal fleet"),
+  column.separate = c(1, 1),
   dep.var.labels = "Number of trips per vessel-year",
-  omit.stat = c("aic", "bic"),
-  no.space = TRUE,
+  dep.var.caption = "",
+  dep.var.labels.include = FALSE,
   digits = 3,
+  single.row = TRUE,
+  omit.stat = c("f"),
+  no.space = TRUE,
   font.size = "footnotesize",
-  star.cutoffs = c(0.1, 0.05, 0.01),
-
-  notes = c(
-    "Negative binomial models estimated separately by fleet segment.",
-    "Allocated harvest is computed from historical vessel shares and aggregate TAC."
-  ),
-  notes.append = FALSE,
-  notes.line.sep = "\\\\"
+  notes = c("Negative binomial models estimated separately by fleet segment.", "Allocated harvest is computed from historical vessel shares and aggregate TAC."),
+  notes.append = FALSE
 )
+
+cat("\\end{table}\n")
+
 
 ```
 
