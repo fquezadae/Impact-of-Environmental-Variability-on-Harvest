@@ -8,13 +8,14 @@ rm(list = ls())
 gc()
 
 # Define directory
-
 usuario <- Sys.info()[["user"]]
 # computador <- Sys.info()[["nodename"]]  # Alternativamente puedes usar esto
 if (usuario == "felip") {
   dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else if (usuario == "FACEA") {
   dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else {
   stop("Usuario no reconocido. Defina el directorio correspondiente.")
 }

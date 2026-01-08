@@ -15,6 +15,8 @@ if (usuario == "felip") {
   dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else if (usuario == "FACEA") {
   dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
 } else {
   stop("Usuario no reconocido. Defina el directorio correspondiente.")
 }
@@ -25,6 +27,7 @@ library(readxl)
 library(tidyverse)
 
 #Anchovy and sardine biomass
+
 anch_sard_biomass <- read_excel(paste0(dirdata, "IFOP/3. ESTIMACIONES CRUCERO ACUSTICO.xlsx"), sheet = "SARDINA-ANCHOVETA")
 anch_sard_biomass <- anch_sard_biomass[, c(1, 2, 3, 4)]
 anch_sard_biomass <- anch_sard_biomass[-1, ]
@@ -79,72 +82,102 @@ model1 <- glm(
   )
 
 model2 <- glm(
-  jurel_biomass_cs ~ jurel_biomass_no + sb_chl_per_ecu + jurel_biomass_no:sb_chl_per_ecu,
-  family = Gamma(link = "log"), 
-  data = jurel_biomass
-  )
-
-model3 <- glm(
   jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2),
   family = Gamma(link = "log"),
   data = jurel_biomass)
 
+model3 <- glm(
+  jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + sb_chl_per_ecu,
+  family = Gamma(link = "log"), 
+  data = jurel_biomass
+)
+
 model4 <- glm(
-  jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + sb_chl_per_ecu + I(sb_chl_per_ecu^2) + jurel_biomass_no:sb_chl_per_ecu,
+  jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + jurel_biomass_no:sb_chl_per_ecu,
   family = Gamma(link = "log"),
   data = jurel_biomass)
+
+model5 <- glm(
+  jurel_biomass_cs ~ jurel_biomass_no + I(jurel_biomass_no^2) + I(sb_chl_per_ecu^2) + jurel_biomass_no:sb_chl_per_ecu,
+  family = Gamma(link = "log"),
+  data = jurel_biomass)
+
+library(stargazer)
+
+stargazer(model1, model2, model3, model4, model5,
+          type = "text",
+          title = "Modelos Gamma con Enlace Log para Biomasa de Jurel",
+          dep.var.labels = "jurel_biomass_cs",
+          column.labels = c("M1", "M2", "M3", "M4", "M5"),
+          digits = 4,
+          no.space = TRUE)
+
+library(pscl)
+pR2(model1)["McFadden"]
+pR2(model2)["McFadden"]
+pR2(model3)["McFadden"]
+pR2(model4)["McFadden"]
+pR2(model5)["McFadden"]
+
+r2_glm <- function(model) cor(model$y, model$fitted)^2
+r2_glm(model1)
+r2_glm(model2)
+r2_glm(model3)
+r2_glm(model4)
+r2_glm(model5)
+
 
 # Add GLM predictions (always >= 0)
 jurel_biomass <- jurel_biomass %>% 
   mutate(
     jurel_biomass_cs_p1 = predict(model1, newdata = ., type = "response"),
-    jurel_biomass_cs_p1 = pmax(jurel_biomass_cs_p1, total_harvest_sernapesca_v2_centro_sur),
     jurel_biomass_cs_p2 = predict(model2, newdata = ., type = "response"),
-    jurel_biomass_cs_p2 = pmax(jurel_biomass_cs_p2, total_harvest_sernapesca_v2_centro_sur),
     jurel_biomass_cs_p3 = predict(model3, newdata = ., type = "response"),
-    jurel_biomass_cs_p3 = pmax(jurel_biomass_cs_p3, total_harvest_sernapesca_v2_centro_sur),
     jurel_biomass_cs_p4 = predict(model4, newdata = ., type = "response"),
-    jurel_biomass_cs_p4 = pmax(jurel_biomass_cs_p4, total_harvest_sernapesca_v2_centro_sur),
-  ) %>%
+    jurel_biomass_cs_p5 = predict(model5, newdata = ., type = "response")) %>%
   mutate(
     jurel_biomass_cs_p1 = ifelse(jurel_biomass_cs_p1 > 0, jurel_biomass_cs_p1, NA),
     jurel_biomass_cs_p2 = ifelse(jurel_biomass_cs_p2 > 0, jurel_biomass_cs_p2, NA),
     jurel_biomass_cs_p3 = ifelse(jurel_biomass_cs_p3 > 0, jurel_biomass_cs_p3, NA),
-    jurel_biomass_cs_p4 = ifelse(jurel_biomass_cs_p4 > 0, jurel_biomass_cs_p4, NA)
-  ) %>%
+    jurel_biomass_cs_p4 = ifelse(jurel_biomass_cs_p4 > 0, jurel_biomass_cs_p4, NA),
+    jurel_biomass_cs_p5 = ifelse(jurel_biomass_cs_p5 > 0, jurel_biomass_cs_p5, NA),
+    jurel_biomass_cs_p5 = ifelse(jurel_biomass_cs_p5 > 1*10^9, NA, jurel_biomass_cs_p5)) %>%
   mutate(jurel_biomass_cs_intra = ifelse(is.na(jurel_biomass_cs), 
-                                         jurel_biomass_cs_p1, 
+                                         jurel_biomass_cs_p5, 
                                          jurel_biomass_cs)) %>%
   dplyr::select(c(year, jurel_biomass_cs, jurel_biomass_cs_intra))
 
-# library(ggplot2)
-# library(tidyr)
-# 
-# jurel_biomass %>%
-#   select(year,
-#          jurel_biomass_cs,
-#          jurel_biomass_cs_p1) %>%
-#   pivot_longer(
-#     cols = starts_with("jurel_biomass_cs"),
-#     names_to = "model",
-#     values_to = "predicted_biomass"
-#   ) %>%
-#   ggplot(aes(x = year, y = predicted_biomass, color = model)) +
-#   geom_smooth(linewidth = 1) +
-#   # geom_line(linewidth = 1) +
-#   # geom_point(size = 2) +
-#   labs(
-#     title = "Predicciones de Biomasa (Modelos GLM 1–4)",
-#     x = "Año",
-#     y = "Biomasa Predicha (t)",
-#     color = "Modelo"
-#   ) +
-#   theme_minimal(base_size = 13) 
+library(ggplot2)
+library(tidyr)
+
+jurel_biomass %>%
+  select(year,
+         jurel_biomass_cs,
+         jurel_biomass_cs_intra) %>%
+  pivot_longer(
+    cols = starts_with("jurel_biomass_cs"),
+    names_to = "model",
+    values_to = "predicted_biomass"
+  ) %>%
+  ggplot(aes(x = year, y = predicted_biomass, color = model)) +
+  geom_smooth(linewidth = 1) +
+  # geom_line(linewidth = 1) +
+  # geom_point(size = 2) +
+  labs(
+    title = "Predicciones de Biomasa (Modelos GLM 5)",
+    x = "Año",
+    y = "Biomasa Predicha (t)",
+    color = "Modelo"
+  ) +
+  theme_minimal(base_size = 13)
 
 
 # Merge databse
 biomass <- full_join(anch_sard_biomass, jurel_biomass, by = c("year")) %>% arrange(year)
+
+
 rm(list = c("anch_sard_biomass", "jurel_biomass"))
+
 
 
 # Save data
