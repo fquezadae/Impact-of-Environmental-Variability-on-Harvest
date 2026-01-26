@@ -21,6 +21,7 @@ if (usuario == "felip") {
 }
 rm(usuario)
 
+
 # Load packages 
 
 library(readxl)
@@ -32,18 +33,49 @@ logbooks <-
              sheet = "bIt_2001_2024_comercial") %>%
   filter(REGION %in% c(5,6,7,8,9,10,14,16))
 
-### Get species name in logbooks
+### Get species name and ports in logbooks
 species <- 
   read_excel(
     paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"), 
     sheet = "PESQUERIAS_MAESTRO_ESPECIE") %>%
   dplyr::select(c('COD_ESPECIE', 'NOMBRE_ESPECIE'))
+
 logbooks <- left_join(logbooks, species, by = "COD_ESPECIE") 
-logbooks$year <- year(logbooks$FECHA_HORA_RECALADA)
-logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)  
 rm(list = c("species"))
 
+
+puertos <- read_excel(
+  paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"), 
+  sheet = "PESQUERIAS_MAESTRO_PUERTOS"
+) %>%
+  select(
+    CODIGO_PUERTO,
+    NOMBRE_PUERTO
+  )
+
+logbooks <- logbooks %>%
+  left_join(
+    puertos,
+    by = c("PUERTO_ZARPE" = "CODIGO_PUERTO")
+  ) %>%
+  rename(PUERTO_ZARPE_NOMBRE = NOMBRE_PUERTO)
+
+logbooks <- logbooks %>%
+  left_join(
+    puertos,
+    by = c("PUERTO_RECALADA" = "CODIGO_PUERTO")
+  ) %>%
+  rename(PUERTO_RECALADA_NOMBRE = NOMBRE_PUERTO)
+
+
+rm(list = c("puertos"))
+
+
 ### Save logbooks
+
+logbooks$year <- year(logbooks$FECHA_HORA_RECALADA)
+logbooks$month <- month(logbooks$FECHA_HORA_RECALADA)  
+
 saveRDS(logbooks, "data/logbooks/logbooks.rds")
 
 
