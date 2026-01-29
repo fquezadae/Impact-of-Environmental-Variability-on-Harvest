@@ -934,7 +934,7 @@ harvest_summary2 <- harvest_month_SERNAPESCA %>%
   ) %>%
   group_by(month, year, specie) %>%
   summarise(harvestym = sum(toneladas, na.rm = TRUE), .groups = "drop") %>%
-  filter(year >= 2012) %>%
+  filter(year >= 2013) %>%
   group_by(month, specie) %>%
   summarise(harvest = mean(harvestym, na.rm = TRUE), .groups = "drop") %>%
   arrange(month) %>%
@@ -976,7 +976,7 @@ optimization procedure.
 ## Historical data
 
 We use data requested from the Chilean Fisheries Development Institute
-(Instituto de Fomento Pesquero, IFOP) covering the 2012–2024 period. The
+(Instituto de Fomento Pesquero, IFOP) covering the 2013–2024 period. The
 dataset includes trip-level microdata, which contain detailed records on
 vessel identifiers, departure and arrival times, vessel capacity, fleet
 and gear type, ports of departure and landing, fishery codes, haul
@@ -1040,7 +1040,7 @@ rm(harvest_long)
 
 ```
 
-For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels [@GLORYS12V1]. Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at \~4 km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly in the case of winds) for the 2012–2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S (Figure \@ref(fig:figEnvData))
+For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels [@GLORYS12V1]. Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at \~4 km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly in the case of winds) for the 2013–2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S (Figure \@ref(fig:figEnvData))
 
 To address the years in which no acoustic survey was conducted in south-central Chile—or in which insufficient information was available to produce a stock assessment—we imputed missing jack mackerel biomass values using an auxiliary generalized linear model (GLM) with a Gamma distribution and a log link. The model specifies the log of expected biomass in the south-central region as a nonlinear function of (i) northern jack mackerel biomass, (ii) its squared term, (iii) the squared biomass index estimated by the South Pacific Regional Fisheries Management Organisation (OROP-PS) within the exclusive economic zones of Chile, Ecuador, and Peru, and (iv) an interaction between northern biomass and the SPRFMO biomass index. We estimated five alternative specifications and selected the preferred one based on the Akaike Information Criterion and the squared correlation between observed and fitted values—used here as a pseudo-R² measure. The selected model provides an excellent fit (pseudo-R² $\approx$ 0.97). In two years, however, the model produced extreme and biologically implausible predictions; in those cases, we replaced the estimated values with NA to avoid propagating outliers in subsequent analyses.
   
