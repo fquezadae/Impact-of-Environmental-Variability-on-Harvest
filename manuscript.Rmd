@@ -1109,7 +1109,7 @@ library(scales)
 library(viridis)
 
 biomass_long <- biomass %>%
-  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_biomass_cs_intra),
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_cs_interp_primary),
                names_to = "species", 
                values_to = "biomass") %>%
   filter(!is.na(biomass)) %>%
@@ -1121,7 +1121,7 @@ biomass_long$species <- dplyr::recode(biomass_long$species,
                                sardine_biomass = "Sardine", 
                                anchoveta_biomass = "Anchoveta", 
                                jurel_biomass_cs = "Jack Mackerel", 
-                               jurel_biomass_cs_intra = "Jack Mackerel (intrapolated)")
+                               jurel_cs_interp_primary = "Jack Mackerel (intrapolated)")
 
 biomass <- biomass_long %>% filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel", "Jack Mackerel (intrapolated)"))
 
@@ -1888,7 +1888,7 @@ make_se_vec <- function(lm_obj, eq_obj) {
 se_sard <- make_se_vec(lm_sard, eq_sard)
 se_anch <- make_se_vec(lm_anch, eq_anch)
 se_jack <- make_se_vec(lm_jack, eq_jack)
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                 
 ```
 
 The three species exhibit strong interannual persistence and significant density dependence, consistent with discrete logistic growth. Sardine biomass responds positively to chlorophyll-a concentration and negatively to SST, indicating that productivity-rich and cooler conditions enhance its growth. This SST response contrasts with evidence from the California Current, where sardine abundance tends to increase under warm regimes [@Herrick2009]. **IS THIS TRUE FOR CHILE?** Anchoveta shows a similar negative response to temperature, together with pronounced density dependence, reflecting its high environmental sensitivity. In contrast, jack mackerel displays weaker environmental dependence, but its SST quadratic term is significant, suggesting a thermal optimum and reduced biomass under extreme temperatures.
