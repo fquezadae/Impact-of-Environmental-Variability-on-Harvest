@@ -344,9 +344,8 @@ prices_wide %>%
 # Annual averages, centered — same convention as SUR biomass model
 # Requires env_dt and env_dt_00_11 objects from manuscript
 # =========================================================================
-# If running standalone (not from .rmd), load the env data here:
-# env_dt       <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
-# env_dt_00_11 <- readRDS(paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"))
+env_dt       <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
+env_dt_00_11 <- readRDS(paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"))
 
 env_annual <- bind_rows(env_dt_00_11, env_dt) %>%
   mutate(year = year(date)) %>%
@@ -363,8 +362,18 @@ env_annual <- bind_rows(env_dt_00_11, env_dt) %>%
     wind_c = wind_mean - mean(wind_mean, na.rm = TRUE)
   )
 
+
 # =========================================================================
-# 9. DIESEL PRICE (w_y)  [PENDING]
+# 9. VEDA DAYS (fixed calendar from SUBPESCA)
+# =========================================================================
+
+veda_fixed <- tibble(
+  year           = 2012L:2024L,
+  days_closed_sa = 151L   # Ago-Oct (92) + Ene-Feb (59)
+)
+
+# =========================================================================
+# 10. DIESEL PRICE (w_y)  [PENDING]
 # Source: Banco Central de Chile
 # URL: https://si3.bcentral.cl -> Estadísticas -> Precios -> Combustibles
 # Serie: Precio del petróleo diesel (CLP/litro o USD/barril)
@@ -381,35 +390,30 @@ cat("\n[PENDING] Diesel price: download from Banco Central combustibles series.\
 diesel_y <- tibble(year = integer(), diesel_price_real = double())
 
 
+
+
 # =========================================================================
-# 10. DAYS CLOSED TO FISHING — VEDA (days_closed_y)  [PENDING]
-# Source: SUBPESCA resoluciones de veda biológica
-# Sardina + anchoveta CS: Dec-Feb (recruitment) + Jul-Sep (reproduction)
-# Jack mackerel: no seasonal closure
-#
-# Construction steps:
-#   1. Read each resolution: start date, end date, species, zone
-#   2. Compute calendar days per species-year
-#   3. Aggregate to annual total days closed (sardina+anchoveta share same dates)
-#
-# Fixed calendar approximation (use until resolutions are coded):
+# DÍAS DE MAL CLIMA (wind threshold = 10 m/s)
+# Agregado anual: promedio entre puntos espaciales del área CS
 # =========================================================================
 
-# Fixed calendar approximation for sardina+anchoveta CS
-# Based on Ley de Pesca and typical resolution patterns
-# UPDATE with exact dates from SUBPESCA resolutions
 
-veda_fixed <- tibble(
-  year = 2012:2024,
-  # Dec-Feb recruitment veda: ~60 days (Jan + Feb of year t + Dec of year t-1)
-  # Jul-Sep reproduction veda: ~60-92 days depending on resolution
-  # Typical: 90 days recruitment + 60 days reproduction = 150 total
-  # Adjust per year when you have the actual resolutions
-  days_closed_sa = 150L
-)
+# Bounding box: zona de pesca efectiva CS (p05-p95 de lances)
+lat_min_cs <- -40.8
+lat_max_cs <- -33.6
+lon_min_cs <- -78.4
+lon_max_cs <- -72.2
 
-cat("\n[APPROXIMATION] Veda days: using fixed 150-day calendar.",
-    "\nUpdate with exact dates from SUBPESCA resolutions.\n")
+# ¿Qué puertos de zarpe hay y cuántos viajes por puerto?
+log_spf %>%
+  group_by(PUERTO_ZARPE) %>%
+  summarise(
+    n_trips   = n_distinct(trip_id),
+    n_vessels = n_distinct(COD_BARCO),
+    .groups   = "drop"
+  ) %>%
+  arrange(desc(n_trips)) %>%
+  print(n = 20)
 
 
 # =========================================================================
@@ -417,73 +421,116 @@ cat("\n[APPROXIMATION] Veda days: using fixed 150-day calendar.",
 # =========================================================================
 
 poisson_df <- trips_vy %>%
-  left_join(vessel_chars,                                      by = "COD_BARCO") %>%
-  left_join(harvest_vy_wide,                                   by = c("COD_BARCO", "year")) %>%
-  left_join(halloc,                                            by = c("COD_BARCO", "year")) %>%
-  left_join(prices_wide,                                       by = "year") %>%
+  left_join(vessel_chars,                                       by = "COD_BARCO") %>%
+  left_join(harvest_vy_wide,                                    by = c("COD_BARCO", "year")) %>%
+  left_join(halloc,                                             by = c("COD_BARCO", "year")) %>%
+  left_join(prices_wide,                                        by = "year") %>%
   left_join(env_annual %>% select(year, sst_c, chl_c, wind_c), by = "year") %>%
-  left_join(veda_fixed,                                        by = "year") %>%
-  left_join(diesel_y,                                          by = "year") %>%
-  # Replace NA harvest with 0 (vessel did not catch that species that year)
+  left_join(veda_fixed,                                         by = "year") %>%
   mutate(across(starts_with("H_"), ~replace_na(., 0)))
 
-# Log capacity (reduces skewness, common in fleet models)
 poisson_df <- poisson_df %>%
-  mutate(log_bodega = log(CAPACIDAD_BODEGA))
+  filter(year >= 2013)
 
+cat("Vessel-years 2013-2024:", nrow(poisson_df), "\n")
 
-# =========================================================================
-# 12. COVERAGE DIAGNOSTIC
-# =========================================================================
-
-cat("\n====== FINAL DATASET COVERAGE ======\n")
-cat("Total vessel-years:", nrow(poisson_df), "\n")
-cat("Year range:", range(poisson_df$year, na.rm = TRUE), "\n\n")
-
-cat("By fleet:\n")
 poisson_df %>%
   group_by(TIPO_FLOTA) %>%
   summarise(
     n_vessel_years = n(),
     n_vessels      = n_distinct(COD_BARCO),
-    mean_trips     = round(mean(T_vy, na.rm = TRUE), 1),
-    median_trips   = median(T_vy, na.rm = TRUE),
-    .groups = "drop"
+    mean_trips     = round(mean(T_vy), 1),
+    .groups        = "drop"
   ) %>%
   print()
 
 cat("\nVariable availability (% non-missing):\n")
 poisson_df %>%
   summarise(across(
-    c(T_vy, CAPACIDAD_BODEGA, H_alloc_vy,
+    c(T_vy, log_bodega, H_alloc_vy,
       price_jurel, price_sardina, price_anchov,
-      sst_c, chl_c, days_closed_sa, diesel_price_real),
+      sst_c, chl_c, days_closed_sa),
     ~round(100 * mean(!is.na(.)), 1)
   )) %>%
   pivot_longer(everything(), names_to = "variable", values_to = "pct_nonmissing") %>%
   print()
 
-cat("\nT_vy distribution (IND):\n")
-summary(poisson_df$T_vy[poisson_df$TIPO_FLOTA == "IND"])
-cat("T_vy distribution (ART):\n")
-summary(poisson_df$T_vy[poisson_df$TIPO_FLOTA == "ART"])
-
 
 # =========================================================================
-# 13. SAVE
+# 12. SAVE
 # =========================================================================
 
+# Save
 dir.create("data/trips", showWarnings = FALSE, recursive = TRUE)
 saveRDS(poisson_df, file = "data/trips/poisson_dt.rds")
+cat("✓ Saved: data/trips/poisson_dt.rds\n")
+cat("  Rows:", nrow(poisson_df), "\n")
+cat("  Cols:", paste(names(poisson_df), collapse = ", "), "\n")
 
-cat("\n✓ Saved: data/trips/poisson_dt.rds\n")
-cat("  Columns:", paste(names(poisson_df), collapse = ", "), "\n")
-cat("\nData availability status:\n")
-cat("  [x] T_vy, vessel chars, harvest   : from logbooks\n")
-cat("  [x] H_alloc_vy (TAC proxy)        : omega_vs x fleet harvest\n")
-cat("  [x] Ex-vessel prices (nominal)    : IFOP PRECIO sheet\n")
-cat("  [x] SST, CHL (centered)           : Copernicus\n")
-cat("  [x] Veda days (approximation)     : fixed calendar\n")
-cat("  [ ] Diesel price                  : PENDING (Banco Central)\n")
-cat("  [ ] TAC oficial                   : PENDING (SUBPESCA)\n")
-cat("  [ ] Deflator IPC                  : PENDING (Banco Central)\n")
+# Distribución T_vy por flota — decide Poisson vs NB
+cat("\nT_vy distribution:\n")
+poisson_df %>%
+  group_by(TIPO_FLOTA) %>%
+  summarise(
+    n      = n(),
+    mean   = round(mean(T_vy), 1),
+    var    = round(var(T_vy), 1),
+    ratio  = round(var(T_vy) / mean(T_vy), 1),  # >1 = overdispersion
+    median = median(T_vy),
+    max    = max(T_vy),
+    .groups = "drop"
+  ) %>%
+  print
+
+
+
+
+
+
+
+# =========================================================================
+# ESTIMATION: Negative Binomial, separate by fleet
+# Current spec: available variables
+# Pending: diesel price, official TAC
+# =========================================================================
+library(MASS)
+library(sandwich)
+library(lmtest)
+
+df_ind <- poisson_df %>% filter(TIPO_FLOTA == "IND")
+df_art <- poisson_df %>% filter(TIPO_FLOTA == "ART")
+
+nb_ind <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    sst_c + chl_c + days_closed_sa +
+    TIPO_EMB,
+  data = df_ind
+)
+
+nb_art <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    sst_c + chl_c + days_closed_sa +
+    TIPO_EMB,
+  data = df_art
+)
+
+# Robust SEs clustered by vessel
+se_ind <- coeftest(nb_ind,
+                   vcov = vcovCL(nb_ind, cluster = ~COD_BARCO, data = df_ind))
+se_art <- coeftest(nb_art,
+                   vcov = vcovCL(nb_art, cluster = ~COD_BARCO, data = df_art))
+
+cat("====== INDUSTRIAL ======\n")
+print(se_ind)
+cat("\n====== ARTISANAL ======\n")
+print(se_art)
+
+
+
+
+
+
+
+
