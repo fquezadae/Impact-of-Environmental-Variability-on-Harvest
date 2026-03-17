@@ -249,27 +249,21 @@ prices_raw <- read_excel(
   sheet = "PRECIO"
 )
 
-# CS regions in the price survey
 cs_regions_prices <- c(5, 8, 9, 10, 14, 16)
 
-# Peak fishing months by species
-# Sardina + anchoveta CS: open Mar-Jun (summer) and Oct-Nov (spring)
-#   Closed: Dec-Feb (recruitment veda) and Jul-Sep (reproduction veda)
-# Jurel CS: no seasonal closure; main season Jan-Jun
 peak_months <- list(
-  "SARDINA COMUN" = c(3L, 4L, 5L, 6L, 10L, 11L),
-  "ANCHOVETA"     = c(3L, 4L, 5L, 6L, 10L, 11L),
-  "JUREL"         = c(1L, 2L, 3L, 4L, 5L, 6L)
+  "SARDINA COMUN" = c(3L, 4L, 5L, 6L, 11L, 12L),
+  "ANCHOVETA"     = c(3L, 4L, 5L, 6L, 11L, 12L),
+  "JUREL"         = 1L:12L
 )
 
 prices_cs <- prices_raw %>%
   filter(
     RG         %in% cs_regions_prices,
-    TIPO_MP    == 1,                          # fresh resource (ex-vessel)
+    TIPO_MP    == 1,
     NM_RECURSO %in% names(peak_months),
     !is.na(PRECIO), PRECIO > 0
   ) %>%
-  # Keep peak months only, by species
   filter(
     (NM_RECURSO == "SARDINA COMUN" & MES %in% peak_months[["SARDINA COMUN"]]) |
       (NM_RECURSO == "ANCHOVETA"     & MES %in% peak_months[["ANCHOVETA"]])     |
@@ -277,12 +271,13 @@ prices_cs <- prices_raw %>%
   ) %>%
   rename(year = ANIO, price_nominal = PRECIO)
 
-# Diagnostic: plant-month observations per species-year
-cat("\nPrice obs per species-year (after CS + peak-month filter):\n")
+# Diagnóstico: cobertura por especie-año
+cat("Obs por especie-año (CS + peak months + TIPO_MP=1):\n")
 prices_cs %>%
   count(year, NM_RECURSO) %>%
-  pivot_wider(names_from = NM_RECURSO, values_from = n) %>%
-  print(n = 20)
+  pivot_wider(names_from = NM_RECURSO, values_from = n, values_fill = 0) %>%
+  print(n = 15)
+
 
 # Annual average price per species (simple mean across plants and months)
 # NOTE: switch to quantity-weighted mean if you merge with PROCESO volumes
@@ -314,25 +309,34 @@ prices_sy_nominal <- prices_cs %>%
 prices_sy <- prices_sy_nominal %>%
   mutate(price_real = price_nominal)
 
+
 cat("\n[NOTE] Prices are nominal (pesos/ton).",
     "Deflate with IPC once available.\n")
 
 # Wide format for model merge
 prices_wide <- prices_sy %>%
-  select(year, NM_RECURSO, price_real) %>%
+  select(year, NM_RECURSO, price_nominal) %>%
   pivot_wider(
     names_from  = NM_RECURSO,
-    values_from = price_real,
-    names_prefix = "price_"
+    values_from = price_nominal
   ) %>%
   rename(
-    price_jurel   = `price_JUREL`,
-    price_sardina = `price_SARDINA COMUN`,
-    price_anchov  = `price_ANCHOVETA`
-  )
+    price_jurel   = JUREL,
+    price_sardina = `SARDINA COMUN`,
+    price_anchov  = ANCHOVETA
+  ) %>%
+  mutate(year = as.integer(year))
 
-cat("\nAnnual price series (nominal pesos/ton):\n")
+cat("Precios nominales anuales (pesos/ton):\n")
 print(prices_wide, n = 15)
+
+
+# Diagnóstico: variación relativa entre especies
+cat("\nRatio precio sardina/anchoveta (debería ser ~1, pesquería mixta):\n")
+prices_wide %>%
+  mutate(ratio_sa = round(price_sardina / price_anchov, 2)) %>%
+  select(year, price_sardina, price_anchov, ratio_sa) %>%
+  print(n = 15)
 
 
 # =========================================================================
@@ -351,14 +355,13 @@ env_annual <- bind_rows(env_dt_00_11, env_dt) %>%
     sst_mean  = mean(sst,       na.rm = TRUE),
     chl_mean  = mean(chl,       na.rm = TRUE),
     wind_mean = mean(speed_max, na.rm = TRUE),
-    .groups = "drop"
+    .groups   = "drop"
   ) %>%
   mutate(
     sst_c  = sst_mean  - mean(sst_mean,  na.rm = TRUE),
     chl_c  = chl_mean  - mean(chl_mean,  na.rm = TRUE),
     wind_c = wind_mean - mean(wind_mean, na.rm = TRUE)
   )
-
 
 # =========================================================================
 # 9. DIESEL PRICE (w_y)  [PENDING]
