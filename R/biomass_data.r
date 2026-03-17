@@ -446,3 +446,19 @@ saveRDS(biomass, file = "data/biomass/biomass_dt.rds")
 cat("\n✓ Saved: data/biomass/biomass_dt.rds\n")
 cat("  Columns:", paste(names(biomass), collapse = ", "), "\n")
 
+
+
+
+# Export for students (Excel)
+library(writexl)
+
+biomass_for_students <- biomass %>%
+  select(year, sardine_biomass, anchoveta_biomass,
+         jurel_biomass_cs, jurel_cs_interp_primary, jurel_cs_source)
+
+write_xlsx(biomass_for_students, path = "data/biomass/biomass_for_students.xlsx")
+
+cat("✓ Saved: data/biomass/biomass_for_students.xlsx\n")
+
+rm(biomass_for_students)
+
