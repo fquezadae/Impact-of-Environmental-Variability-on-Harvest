@@ -262,21 +262,35 @@ rm(prices_cs, prices_sy_nominal, ipc_approx)
 # Catch-weighted centroid over full sample — time-invariant.
 # sd_lat diagnostic flags vessels with unstable fishing locations.
 
+# Recalcular COG con grados decimales y filtrar outliers
 cog_vessel <- log_spf %>%
-  filter(!is.na(LATITUD), !is.na(LONGITUD),
-         !is.na(CAPTURA_RETENIDA), CAPTURA_RETENIDA > 0) %>%
+  filter(
+    !is.na(lat_deg), !is.na(lon_deg),
+    lat_deg < -30, lat_deg > -46,       # Chile CS range
+    lon_deg < -70, lon_deg > -80,       # coastal Chile
+    !is.na(CAPTURA_RETENIDA), CAPTURA_RETENIDA > 0
+  ) %>%
   group_by(COD_BARCO) %>%
   summarise(
-    cog_lat = weighted.mean(LATITUD,  w = CAPTURA_RETENIDA),
-    cog_lon = weighted.mean(LONGITUD, w = CAPTURA_RETENIDA),
+    cog_lat = weighted.mean(lat_deg, w = CAPTURA_RETENIDA),
+    cog_lon = weighted.mean(lon_deg, w = CAPTURA_RETENIDA),
     n_hauls = n(),
-    sd_lat  = sd(LATITUD),
+    sd_lat  = sd(lat_deg),
     .groups = "drop"
   ) %>%
-  mutate(cog_stable = sd_lat <= 0.5)   # ~55 km threshold
+  mutate(
+    cog_stable = case_when(
+      n_hauls == 1     ~ TRUE,
+      sd_lat <= 0.5    ~ TRUE,
+      TRUE             ~ FALSE
+    ),
+    reg_zone = if_else(cog_lat >= -38.4, "V_VIII", "IX_XIV")
+  )
 
-cat("\nCOG: ", nrow(cog_vessel), "vessels.",
-    sum(cog_vessel$cog_stable, na.rm = TRUE), "with stable range (sd_lat ≤ 0.5°)\n")
+cat("COG vessels:", nrow(cog_vessel), "\n")
+cat("Stable (sd_lat ≤ 0.5° or single haul):", sum(cog_vessel$cog_stable), "\n")
+summary(cog_vessel$sd_lat)
+cog_vessel %>% count(reg_zone)
 
 
 # =========================================================================
@@ -349,7 +363,8 @@ bad_weather_grid <- env_dt %>%
 days_bad_weather_vy <- cog_with_grid %>%
   select(COD_BARCO, grid_lat, grid_lon) %>%
   left_join(bad_weather_grid,
-            by = c("grid_lat" = "lat", "grid_lon" = "lon")) %>%
+            by = c("grid_lat" = "lat", "grid_lon" = "lon"),
+            relationship = "many-to-many") %>%
   select(COD_BARCO, year, days_bad_weather)
 
 cat("Bad weather days: ", nrow(days_bad_weather_vy), "vessel-years\n")
@@ -357,6 +372,21 @@ cat("  Mean:", round(mean(days_bad_weather_vy$days_bad_weather, na.rm = TRUE), 1
     " Median:", median(days_bad_weather_vy$days_bad_weather, na.rm = TRUE), "\n")
 
 rm(env_dt, env_grid, bad_weather_grid, cog_with_grid)
+
+
+
+veda_by_zone <- expand_grid(
+  year     = 2013:2024,
+  reg_zone = c("V_VIII", "IX_XIV")
+) %>%
+  mutate(
+    days_closed_vy = case_when(
+      reg_zone == "V_VIII" ~ 151L,
+      reg_zone == "IX_XIV" ~ 182L
+    )
+  )
+
+
 
 
 # =========================================================================

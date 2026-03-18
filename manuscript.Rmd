@@ -1257,7 +1257,9 @@ price x share - certification cost per landed ton x landing
 
 ### Total annual trips
 
-We model the annual number of fishing trips taken by vessel $v$ in year $y$ as a count process following @Kasperski2015-jm. Since the available logbook data only record purse-seine operations, the unit of observation is a vessel–year. Separate effort models are estimated for the industrial and artisanal fleets, allowing fishing activity to respond differently to economic conditions and regulatory constraints across sectors. This specification explicitly accommodates technological heterogeneity across fleet segments, reflecting differences in vessel capacity, operating scale, and production technology.
+We model the annual number of fishing trips taken by vessel $v$ in year $y$ as a count process following @Kasperski2015-jm. Since the available logbook data only record purse-seine operations, the unit of observation is a vessel--year. Separate effort models are estimated for the industrial and artisanal fleets, allowing fishing activity to respond differently to economic conditions and regulatory constraints across sectors. This specification explicitly accommodates technological heterogeneity across fleet segments, reflecting differences in vessel capacity, operating scale, and production technology.
+
+The baseline specification is a Poisson model:
 
 \begin{equation}
 T_{vy} \sim \text{Poisson}(\lambda_{vy}), \qquad 
@@ -1265,18 +1267,20 @@ T_{vy} \sim \text{Poisson}(\lambda_{vy}), \qquad
 \label{eq:poisson_trips}
 \end{equation}
 
-where $T_{vy}$ denotes the total number of purse-seine trips recorded for vessel $v$ in year $y$. The vector of explanatory variables $U_{vy}$ includes output prices by species, input prices, vessel-level allocated harvest, aggregate total allowable catches (TACs), fixed vessel characteristics, and operating conditions:
+where $T_{vy}$ denotes the total number of purse-seine trips recorded for vessel $v$ in year $y$. Given substantial overdispersion in the data---the variance-to-mean ratio of $T_{vy}$ is 22.4 for the artisanal fleet and 4.9 for the industrial fleet---we estimate a negative binomial (NB) model, which nests the Poisson as a special case. A likelihood ratio test strongly rejects the Poisson restriction in both fleets ($p < 0.001$).
+
+The vector of explanatory variables $U_{vy}$ includes output prices by species, vessel-level allocated harvest, fixed vessel characteristics, and operating conditions:
 
 \begin{equation}
-U_{vy}=\big[p_{sy},\, w_y,\, H^{alloc}_{vy},\, \bar{Q}_y,\, Z_v,\, Env_y\big].
+U_{vy}=\big[p_{sy},\, H^{alloc}_{vy},\, Z_v,\, Env_{vy}\big].
 \label{eq:U_trips}
 \end{equation}
 
-Output prices $p_{sy}$ correspond to species-specific processed fish prices, while $w_y$ captures key variable input costs, including diesel prices. Consistent with @dresdner2013, prices are measured as annual averages over peak fishing months to reflect economically relevant conditions faced by vessels when planning annual effort.
+Output prices $p_{sy}$ correspond to species-specific ex-vessel prices paid by processing plants to fishers, obtained from IFOP's manufacturing survey and deflated to constant pesos using the consumer price index. Consistent with @dresdner2013, prices are measured as annual averages over peak fishing months to reflect the economically relevant conditions faced by vessels when planning annual effort.
 
-Because the objective of the model is to characterize vessels’ effort responses to changes in prices, quotas, and environmental conditions within the small pelagic fishery, we restrict attention to SPF trips recorded in logbooks. These trips account for approximately 95\% of observed fishing revenue and therefore capture the primary economic margin through which vessels adjust annual fishing effort.
+Because the objective of the model is to characterize vessels' effort responses to changes in prices, quotas, and environmental conditions within the small pelagic fishery, we restrict attention to SPF trips recorded in logbooks. These trips account for approximately 95\% of observed fishing revenue and therefore capture the primary economic margin through which vessels adjust annual fishing effort.
 
-Quota shares do not enter Eq.~\eqref{eq:poisson_trips} directly. Instead, shares are used to translate annual TACs into vessel-level allocated harvests, which then enter the trip equation. Let $\omega_{vs}$ denote vessel $v$'s historical share of landings of species $s$ within the purse-seine fleet. Given a candidate TAC $\bar{Q}_{sy}$ for species $s$ in year $y$, vessel-level allocated harvest is defined as:
+Quota shares do not enter Eq.~\eqref{eq:poisson_trips} directly. Instead, shares are used to translate annual TACs into vessel-level allocated harvests, which then enter the trip equation. Let $\omega_{vs}$ denote vessel $v$'s historical share of landings of species $s$ within the purse-seine fleet, computed over the full sample period. Given the TAC $\bar{Q}_{sy}$ for species $s$ in year $y$, vessel-level allocated harvest is defined as:
 
 \begin{equation}
 H^{alloc}_{vy,s}=\omega_{vs}\,\bar{Q}_{sy},
@@ -1285,13 +1289,16 @@ H^{alloc}_{vy}=\sum_{s} H^{alloc}_{vy,s}.
 \label{eq:Halloc}
 \end{equation}
 
-This construction is essential for the forward-looking simulation framework. When the social planner chooses aggregate TAC paths $\{\bar{Q}_{sy}\}$, Eq. \eqref{eq:Halloc} generates internally consistent vessel-level harvest allocations that can be combined with predicted trips and trip-level cost functions to compute total harvesting costs.
+This construction is essential for the forward-looking simulation framework. When the social planner chooses aggregate TAC paths $\{\bar{Q}_{sy}\}$, Eq.~\eqref{eq:Halloc} generates internally consistent vessel-level harvest allocations that can be combined with predicted trips and trip-level cost functions to compute total harvesting costs.
 
-The vector $Env_y$ captures operating and regulatory constraints, including the number of days closed to fishing due to seasonal bans (vedas), as well as environmental conditions that affect the feasibility of fishing operations, such as the number of bad weather days.
+The vector $Z_v$ contains time-invariant vessel characteristics, including hold capacity (log of cubic meters) and vessel type. Hold capacity determines the physical constraint on catch per trip and proxies for vessel scale.
+
+The vector $Env_{vy}$ captures operating and regulatory constraints that vary across both vessels and years. Unlike the environmental variables in the stock dynamics model, which reflect biological productivity (SST, chlorophyll-a), the variables in the trip equation capture conditions that affect the *feasibility* of fishing operations. Two vessel--year variables are constructed using each vessel's center of gravity (COG)---the catch-weighted centroid of its haul locations over the sample period. First, the number of days with adverse weather conditions is computed as the count of days per year in which wind speed exceeds 10~m/s at the environmental grid point nearest to the vessel's COG.\footnote{The wind threshold of 10~m/s corresponds approximately to Beaufort scale 5--6, at which purse-seine operations become difficult due to surface conditions. Robustness checks with alternative thresholds (8 and 12~m/s) are reported in Appendix~\ref{appendix-robustness}.} Second, the number of days closed due to biological closures (\textit{vedas}) is assigned based on the regulatory zone corresponding to the vessel's COG latitude. In the Centro-Sur region, sardine and anchoveta face seasonal closures for reproduction (August--October in regions V--VIII; July--October in regions IX--XIV) and recruitment (January--February in all regions), yielding 151 and 182 closed days per year, respectively. Jack mackerel has no biological closures.
 
 Quota prices are not included explicitly in the trip equation. Instead, the economic scarcity of quota is captured implicitly through aggregate TAC levels and vessel-level allocated harvest. In the simulation stage, quota scarcity generates shadow values that affect optimal harvest and effort decisions through profits rather than through an explicit quota price term.
 
-Trips, harvest, and prices may be jointly determined within the year, implying potential endogeneity in reduced-form trip regressions. However, the purpose of Eq. \eqref{eq:poisson_trips} is not causal identification but rather to provide an empirically grounded behavioral relationship that maps changes in prices, quotas, and environmental conditions into expected fishing effort for use in the bioeconomic simulation.
+Trips, harvest, and prices may be jointly determined within the year, implying potential endogeneity in reduced-form trip regressions. However, the purpose of Eq.~\eqref{eq:poisson_trips} is not causal identification but rather to provide an empirically grounded behavioral relationship that maps changes in prices, quotas, and environmental conditions into expected fishing effort for use in the bioeconomic simulation.
+
 
 
 
@@ -1933,167 +1940,120 @@ Results by July 2026
 
 \<\< NO RESULTS YET \>\>
 
-## Total Annual trips
 
+## Total Annual trips
 
 ```{r poisson_dt, message=FALSE, warning=FALSE, include=FALSE}
 
-library(dplyr)
-library(fixest)
-library(lubridate)
+# ---- Load pre-built dataset from poisson_model.R ----
+poisson_df <- readRDS("data/trips/poisson_dt.rds")
 
-
-# (A) Define aquí tus especies SPF
-spf_codes <- c(26, 33, 114)  
-
-# Dfinir viajes
-log_spf <- logbooks %>%
-  arrange(COD_BARCO, FECHA_HORA_ZARPE, FECHA_LANCE) %>%
-  group_by(COD_BARCO) %>%
-  mutate(
-    new_trip = case_when(
-      NUMERO_LANCE_EX == 1 ~ 1L,
-      is.na(lag(FECHA_HORA_ZARPE)) ~ 1L,
-      FECHA_HORA_ZARPE != lag(FECHA_HORA_ZARPE) ~ 1L,
-      TRUE ~ 0L
-    ),
-    trip_seq = cumsum(new_trip)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    trip_id = paste(COD_BARCO, trip_seq, sep = "_")
-  )
-
-
-# Viajes por barco–año
-trips_vy <- log_spf %>%
-  distinct(COD_BARCO, year, trip_id) %>%
-  count(COD_BARCO, year, name = "T_vy")
-
-
-Mode <- function(x) {
-  x <- x[!is.na(x)]
-  if (length(x) == 0) return(NA)
-  ux <- unique(x)
-  ux[which.max(tabulate(match(x, ux)))]
-}
-
-log_spf <- log_spf %>%
-  mutate(
-    TIPO_EMB_clean = if_else(
-      TIPO_EMB %in% c("1", "2", "3"),
-      NA_character_,
-      TIPO_EMB
-    )
-  )
-
-
-# Calculate harvest
-harvest_vys <- log_spf %>%
-  filter(COD_ESPECIE %in% spf_codes) %>%
-  group_by(TIPO_FLOTA, COD_ESPECIE, COD_BARCO, year) %>%
-  summarise(
-    H_vys = sum(CAPTURA_RETENIDA, na.rm = TRUE)/1000,
-    .groups = "drop"
-  )
-
-harvest_vy_wide <- harvest_vys %>%
-  select(COD_BARCO, year, COD_ESPECIE, H_vys) %>%
-  pivot_wider(
-    names_from  = COD_ESPECIE,
-    values_from = H_vys,
-    names_prefix = "H_",
-    values_fill = 0
-  )
-
-# shares_vsf <- log_spf %>%
-#   filter(COD_ESPECIE %in% spf_codes) %>%
-#   group_by(TIPO_FLOTA, COD_ESPECIE, COD_BARCO) %>%
-#   summarise(
-#     H_vsf = sum(CAPTURA_RETENIDA, na.rm = TRUE),
-#     .groups = "drop"
-#   ) %>%
-#   group_by(TIPO_FLOTA, COD_ESPECIE) %>%
-#   mutate(
-#     share_vsf = H_vsf / sum(H_vsf)
-#   ) %>%
-#   ungroup()
-
-# Get vessel characteristics
-vessel_chars <- log_spf %>%
-  group_by(COD_BARCO) %>%
-  summarise(
-    TIPO_FLOTA = Mode(TIPO_FLOTA),
-    TIPO_EMB   = Mode(TIPO_EMB_clean),
-    CAPACIDAD_BODEGA = median(CAPACIDAD_BODEGA, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-vessel_chars <- vessel_chars %>%
-  mutate(
-    TIPO_EMB = replace_na(TIPO_EMB, "UNK")
-  )
-
-poisson_df <- trips_vy %>%
-  left_join(vessel_chars, by = "COD_BARCO") %>%
-  left_join(harvest_vy_wide, by = c("COD_BARCO", "year"))
+df_ind <- poisson_df %>% filter(TIPO_FLOTA == "IND")
+df_art <- poisson_df %>% filter(TIPO_FLOTA == "ART")
 
 ```
-
-Because industrial and artisanal vessels operate under distinct technological and regulatory environments, we estimate separate effort models for each fleet segment. This approach allows the responsiveness of fishing trips to prices, quotas, and environmental conditions to differ across fleets, while remaining consistent with the structure of the bioeconomic simulation.
 
 
 ```{r est_poisson, message=FALSE, warning=FALSE, include=FALSE}
+
 library(MASS)
+library(sandwich)
+library(lmtest)
 
-pois_ind <- glm.nb(
-  T_vy ~ CAPACIDAD_BODEGA + H_26 + H_33 + H_114 + TIPO_EMB,
-  data = poisson_df %>% filter(TIPO_FLOTA == "IND")
+# ---- Negative Binomial estimation ----
+
+nb_ind <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB,
+  data = df_ind
 )
 
-pois_art <- glm.nb(
-  T_vy ~ CAPACIDAD_BODEGA + H_26 + H_33 + H_114 + TIPO_EMB,
-  data = poisson_df %>% filter(TIPO_FLOTA == "ART")
+nb_art <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB,
+  data = df_art
 )
+
+# ---- Robust SEs clustered by vessel ----
+se_ind <- sqrt(diag(vcovCL(nb_ind, cluster = df_ind$COD_BARCO)))
+se_art <- sqrt(diag(vcovCL(nb_art, cluster = df_art$COD_BARCO)))
+
+# ---- LR test NB vs Poisson ----
+pois_ind <- glm(formula(nb_ind), family = poisson, data = df_ind)
+pois_art <- glm(formula(nb_art), family = poisson, data = df_art)
+
+lr_ind <- as.numeric(2 * (logLik(nb_ind) - logLik(pois_ind)))
+lr_art <- as.numeric(2 * (logLik(nb_art) - logLik(pois_art)))
 
 ```
 
+Table \ref{tab:poisson_results} reports the negative binomial estimates separately for each fleet segment.
+
 ```{r tabla_poisson, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
 library(stargazer)
 
-cat("\\begin{table}[!htbp]\n")
-cat("\\centering\n")
-cat("\\caption{Annual Fishing Trips (Negative Binomial Models)}\n")
-cat("\\label{tab:poisson_results}\n")
-
 stargazer(
-  pois_ind, pois_art,
+  nb_ind, nb_art,
   type = "latex",
   header = FALSE,
-  float = FALSE,              # prevents stargazer from creating a duplicate table env
-  title = "",
-  label = "",
-  column.labels = c("Industrial fleet", "Artisanal fleet"),
+  float = TRUE,
+  title = paste0("Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = ",
+                  nrow(df_ind), ", $N_{ART}$ = ", nrow(df_art), ")"),
+  label = "tab:poisson_results",
+  column.labels = c("Industrial", "Artisanal"),
   column.separate = c(1, 1),
-  dep.var.labels = "Number of trips per vessel-year",
-  dep.var.caption = "",
   dep.var.labels.include = FALSE,
+  covariate.labels = c(
+    "Hold capacity (log m$^3$)",
+    "Allocated harvest ($H^{alloc}_{vy}$)",
+    "Price jack mackerel",
+    "Price sardine",
+    "Price anchoveta",
+    "Bad weather days",
+    "Veda days",
+    "Vessel type (UNK)",
+    "Vessel type (BR)",
+    "Vessel type (BRV)",
+    "Vessel type (L)",
+    "Vessel type (LM)",
+    "Constant"
+  ),
+  se = list(se_ind, se_art),
   digits = 3,
   single.row = TRUE,
   omit.stat = c("f"),
   no.space = TRUE,
   font.size = "footnotesize",
-  notes = c("Negative binomial models estimated separately by fleet segment.", "Allocated harvest is computed from historical vessel shares and aggregate TAC."),
-  notes.append = FALSE
+  notes = c(
+    "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
+    "Vessel-clustered robust SEs. Prices in constant 2018 pesos/ton.",
+    "Allocated harvest = historical vessel share $\\times$ lagged aggregate harvest.",
+    paste0("LR test NB vs Poisson: Industrial $\\chi^2$ = ",
+           round(lr_ind, 1), "; Artisanal $\\chi^2$ = ",
+           round(lr_art, 1), " (both $p < 0.001$).")
+  ),
+  notes.append = FALSE,
+  notes.align = "l"
 )
-
-cat("\\end{table}\n")
-
 
 ```
 
+Allocated harvest enters positively and is highly significant in both fleets, confirming that vessels with larger quota allocations undertake more trips per year. This variable provides the key linkage between the trip equation and the simulation framework: changes in aggregate TAC translate into vessel-level effort adjustments through the quota share mechanism.
 
-\<\< NO RESULTS YET \>\>
+The two fleets differ markedly in their price responsiveness. For the industrial fleet, the jack mackerel price is positive and significant, consistent with the fleet's primary orientation toward this species. Sardine and anchoveta prices have no detectable effect on industrial effort, reflecting the limited participation of industrial vessels in the sardine-anchoveta fishery. For the artisanal fleet, the anchoveta price enters with a negative and significant coefficient. This counterintuitive sign likely reflects simultaneity: years of low anchoveta availability produce both higher prices (through the inverse demand channel) and fewer trips (through reduced catch opportunities), generating a negative reduced-form correlation. As noted in Section 3, the purpose of this equation is not causal identification but rather to provide an empirically grounded mapping for the simulation, where prices are determined endogenously by the inverse demand module.
+
+Hold capacity is not significant for the industrial fleet, where vessels are relatively homogeneous in scale, but is positive and significant for the artisanal fleet. Among artisanal vessels, larger hold capacity is associated with more annual trips, consistent with larger vessels being more commercially active and better able to sustain operations across varying conditions.
+
+The environmental and regulatory variables show distinct patterns across fleets. For the industrial fleet, adverse weather days have a marginally significant negative effect ($p = 0.05$), while biological closure days are strongly negative and represent the largest effect in the model. This is consistent with the industrial fleet's dependence on sardine-anchoveta access during open seasons. For the artisanal fleet, adverse weather days are not significant at the 10 m/s threshold, suggesting that smaller vessels may be constrained by weather at lower wind speeds. The positive coefficient on closure days in the artisanal model reflects the current limitation that this variable varies only across regulatory zones (151 days for regions V--VIII versus 182 days for regions IX--XIV) and therefore captures locational differences in fishing activity rather than the causal effect of closures. Once year-specific closure dates from annual SUBPESCA resolutions are incorporated, this coefficient is expected to become negative.
+
+Vessel type dummies capture residual heterogeneity in fleet composition. Among artisanal vessels, larger vessel categories (L, BRV) are associated with substantially fewer trips relative to the baseline, reflecting differences in trip duration and operational patterns across vessel classes.
+
+
 
 ## Inverse demand model
 
