@@ -30,6 +30,8 @@ library(readxl)
 library(dplyr)
 library(tidyr)
 library(lubridate)
+library(stringr)
+
 
 # ---- Directory setup ----
 usuario <- Sys.info()[["user"]]
@@ -231,17 +233,51 @@ prices_sy_nominal <- prices_cs %>%
   summarise(price_nominal = mean(price_nominal, na.rm = TRUE),
             n_obs = n(), .groups = "drop")
 
-# Deflate with approximate IPC (replace with official Banco Central series)
-ipc_approx <- tibble(
-  year = 2012:2024,
-  ipc  = c(100.0, 101.8, 106.3, 110.7, 114.6, 117.1,
-           119.9, 123.3, 127.0, 131.7, 143.5, 153.8, 160.7)
-)
+# Serie: IPC General, variación mensual (%)
+# Fuente: Banco Central, base 2023=100
+
+ipc_monthly <- read_excel(
+  paste0(dirdata, "BancoCentral/PEM_VAR_IPC_BS23.xlsx"),
+  sheet = "Cuadro",
+  skip  = 2                    # skip title rows; row 3 = header
+) %>%
+  rename(date = 1, var_pct = 2) %>%
+  filter(!is.na(date), !is.na(var_pct)) %>%
+  mutate(
+    date    = as.Date(date),
+    year    = year(date),
+    month   = month(date),
+    var_pct = as.numeric(var_pct)
+  ) %>%
+  filter(year >= 2011)          # start one year before sample for cumulation
+
+# Accumulate monthly variations into an index
+# Base: December 2011 = 100 (so Jan 2012 starts accumulating)
+ipc_monthly <- ipc_monthly %>%
+  arrange(date) %>%
+  mutate(
+    factor  = 1 + var_pct / 100,
+    ipc_idx = cumprod(factor) * 100   # index with first obs = 100*(1+var/100)
+  )
+
+# Annual average index
+ipc_annual <- ipc_monthly %>%
+  group_by(year) %>%
+  summarise(ipc = mean(ipc_idx, na.rm = TRUE), .groups = "drop") %>%
+  filter(year >= 2012, year <= 2024)
+
+# Set base year
 base_year <- 2018
-base_ipc  <- ipc_approx$ipc[ipc_approx$year == base_year]
+base_ipc  <- ipc_annual$ipc[ipc_annual$year == base_year]
+
+cat("====== IPC OFICIAL ======\n")
+cat("Base year:", base_year, "= index", round(base_ipc, 2), "\n")
+ipc_annual %>%
+  mutate(ipc_rel = round(ipc / base_ipc, 4)) %>%
+  print(n = 15)
 
 prices_wide <- prices_sy_nominal %>%
-  left_join(ipc_approx, by = "year") %>%
+  left_join(ipc_annual, by = "year") %>%
   mutate(price_real = price_nominal * (base_ipc / ipc)) %>%
   select(year, NM_RECURSO, price_real) %>%
   pivot_wider(names_from = NM_RECURSO, values_from = price_real) %>%
@@ -249,11 +285,11 @@ prices_wide <- prices_sy_nominal %>%
          price_anchov = ANCHOVETA) %>%
   mutate(year = as.integer(year))
 
-cat("Prices: deflated to", base_year, "pesos (approx IPC).\n")
+cat("Prices: deflated to", base_year, "pesos (official IPC).\n")
 cat("  Jurel coverage:", sum(!is.na(prices_wide$price_jurel)), "of",
     nrow(prices_wide), "years\n")
 
-rm(prices_cs, prices_sy_nominal, ipc_approx)
+rm(prices_cs, prices_sy_nominal)
 
 
 # =========================================================================
@@ -261,6 +297,12 @@ rm(prices_cs, prices_sy_nominal, ipc_approx)
 # =========================================================================
 # Catch-weighted centroid over full sample — time-invariant.
 # sd_lat diagnostic flags vessels with unstable fishing locations.
+
+log_spf <- log_spf %>%
+  mutate(
+    lat_deg = -(floor(LATITUD / 10000) + (LATITUD %% 10000) / 6000),
+    lon_deg = -(floor(LONGITUD / 10000) + (LONGITUD %% 10000) / 6000)
+  )
 
 # Recalcular COG con grados decimales y filtrar outliers
 cog_vessel <- log_spf %>%
@@ -388,15 +430,173 @@ veda_by_zone <- expand_grid(
 
 
 
+# =========================================================================
+# 11. DIESEL — CNE (precio nominal $/litro, por región → vessel-year, real)
+# =========================================================================
+# Serie: Precios observados a público, promedio nominal por región ($/litro)
+# Fuente: CNE (ex-SERNAC hasta 2012)
+#
+# CSV columns (from header row):
+#   V2  = fecha ("enero/24")
+#   V3  = Región Metropolitana (13)
+#   V4  = XV Arica (15)
+#   V5  = I Iquique (1)
+#   V6  = II Antofagasta (2)
+#   V7  = III Copiapó (3)
+#   V8  = IV La Serena (4)
+#   V9  = V Valparaíso (5)
+#   V10 = VI Rancagua (6)
+#   V11 = VII Talca (7)
+#   V12 = XVI Chillán (16)
+#   V13 = VIII Concepción (8)
+#   V14 = IX Temuco (9)
+#   V15 = XIV Valdivia (14)
+#   V16 = X Puerto Montt (10)
+#   V17 = XI Coyhaique (11)
+#   V18 = XII Punta Arenas (12)
+#
+# CS regions for SPF: V(5), VIII(8), IX(9), XIV(14), X(10), XVI(16)
+# Corresponding columns: V9, V13, V14, V15, V16, V12
+
+diesel_raw <- read.csv(
+  paste0(dirdata, "CNE/precios_comb_liquidos_en_el_pais-2026-03-02(Petróleo Diesel).csv"),
+  sep          = ";",
+  fileEncoding = "Latin1",
+  header       = FALSE,
+  skip         = 9,
+  stringsAsFactors = FALSE
+)
+
+month_map <- c(
+  "enero" = 1, "febrero" = 2, "marzo" = 3, "abril" = 4,
+  "mayo" = 5, "junio" = 6, "julio" = 7, "agosto" = 8,
+  "septiembre" = 9, "octubre" = 10, "noviembre" = 11, "diciembre" = 12
+)
+
+# Helper: parse Chilean price format "1.050,5" → 1050.5
+parse_clp <- function(x) {
+  x <- str_trim(x)
+  x <- str_replace_all(x, "\\.", "")   # remove thousands separator
+  x <- str_replace(x, ",", ".")        # decimal comma → point
+  as.numeric(x)
+}
+
+# Select CS region columns and reshape to long format
+diesel_long <- diesel_raw %>%
+  select(fecha = V2,
+         reg_05 = V9,   # V Valparaíso
+         reg_16 = V12,  # XVI Chillán
+         reg_08 = V13,  # VIII Concepción
+         reg_09 = V14,  # IX Temuco
+         reg_14 = V15,  # XIV Valdivia
+         reg_10 = V16   # X Puerto Montt
+  ) %>%
+  filter(!is.na(fecha), str_detect(fecha, "/")) %>%
+  mutate(
+    fecha   = str_trim(fecha),
+    month_s = str_extract(fecha, "^[a-záéíóú]+"),
+    year_s  = str_extract(fecha, "\\d+$"),
+    month   = month_map[month_s],
+    year    = as.integer(ifelse(nchar(year_s) == 2,
+                                paste0(ifelse(as.integer(year_s) > 50, "19", "20"), year_s),
+                                year_s))
+  ) %>%
+  filter(!is.na(month), !is.na(year), year >= 2012, year <= 2024) %>%
+  mutate(across(starts_with("reg_"), parse_clp)) %>%
+  select(year, month, starts_with("reg_")) %>%
+  pivot_longer(cols = starts_with("reg_"),
+               names_to = "region_code",
+               values_to = "diesel_nominal",
+               names_prefix = "reg_") %>%
+  mutate(region_code = as.integer(region_code)) %>%
+  filter(!is.na(diesel_nominal))
+
+
+# Annual average by region (nominal)
+diesel_region_year <- diesel_long %>%
+  group_by(year, region_code) %>%
+  summarise(diesel_nominal = mean(diesel_nominal, na.rm = TRUE),
+            .groups = "drop") %>%
+  left_join(ipc_annual, by = "year") %>%
+  mutate(diesel_real = diesel_nominal * (base_ipc / ipc)) %>%
+  select(year, region_code, diesel_real)
+
+# Complete: ensure all region × year combinations exist
+diesel_region_year <- diesel_region_year %>%
+  complete(year = 2012:2024, region_code, fill = list(diesel_real = NA))
+
+# Then backfill XVI with VIII
+diesel_viii_fill <- diesel_region_year %>%
+  filter(region_code == 8) %>%
+  rename(diesel_fill = diesel_real) %>%
+  select(year, diesel_fill)
+
+diesel_region_year <- diesel_region_year %>%
+  left_join(diesel_viii_fill, by = "year") %>%
+  mutate(diesel_real = if_else(
+    region_code == 16 & is.na(diesel_real),
+    diesel_fill,
+    diesel_real
+  )) %>%
+  select(-diesel_fill)
+
+cat("XVI backfilled with VIII prices. Now:\n")
+diesel_region_year %>%
+  filter(region_code == 16) %>%
+  print(n = 15)
+
+# ---- Map vessel COG to nearest diesel region ----
+
+
+# 1. Load port master table (adjust path to your file)
+maestro_puertos <- read_excel(
+  paste0(dirdata, "IFOP/1. BITACORA CENTRO SUR.xlsx"),
+  sheet = "PESQUERIAS_MAESTRO_PUERTOS"
+) %>%
+  select(CODIGO_PUERTO, COD_REGION) %>%
+  mutate(across(everything(), as.integer))
+
+
+# 2. Modal departure port per vessel
+puerto_modal <- log_spf %>%
+  filter(!is.na(PUERTO_ZARPE)) %>%
+  count(COD_BARCO, PUERTO_ZARPE) %>%
+  group_by(COD_BARCO) %>%
+  slice_max(n, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  left_join(maestro_puertos, by = c("PUERTO_ZARPE" = "CODIGO_PUERTO")) %>%
+  select(COD_BARCO, PUERTO_ZARPE, diesel_region = COD_REGION)
+
+cat("Vessels with modal port:", nrow(puerto_modal), "\n")
+cat("By diesel region:\n")
+puerto_modal %>% count(diesel_region, sort = TRUE) %>% print()
+
+
+
+# 3. Build diesel vessel-year
+diesel_vy <- puerto_modal %>%
+  select(COD_BARCO, diesel_region) %>%
+  left_join(diesel_region_year,
+            by = c("diesel_region" = "region_code"),
+            relationship = "many-to-many") %>%
+  select(COD_BARCO, year, diesel_real)
+
+cat("\nDiesel vessel-year obs:", nrow(diesel_vy), "\n")
+cat("Mean real price:", round(mean(diesel_vy$diesel_real, na.rm = TRUE), 1), "$/litro\n")
+
+
+
+
 
 # =========================================================================
-# 11. MERGE ALL COMPONENTS
+# 12. MERGE ALL COMPONENTS
 # =========================================================================
 
 poisson_df <- trips_vy %>%
   left_join(vessel_chars,     by = "COD_BARCO") %>%
   left_join(harvest_vy_wide,  by = c("COD_BARCO", "year")) %>%
   left_join(halloc,           by = c("COD_BARCO", "year")) %>%
+  left_join(diesel_vy, by = c("COD_BARCO", "year")) %>%
   left_join(prices_wide,      by = "year") %>%
   left_join(cog_vessel %>% select(COD_BARCO, cog_lat, cog_lon, reg_zone, cog_stable),
             by = "COD_BARCO") %>%
@@ -418,6 +618,7 @@ poisson_df %>%
   summarise(across(
     c(T_vy, log_bodega, H_alloc_vy,
       price_jurel, price_sardina, price_anchov,
+      diesel_real,
       days_bad_weather, days_closed_vy),
     ~round(100 * mean(!is.na(.)), 1)
   )) %>%
@@ -451,7 +652,7 @@ library(lmtest)
 df_ind <- poisson_df %>% filter(TIPO_FLOTA == "IND")
 df_art <- poisson_df %>% filter(TIPO_FLOTA == "ART")
 
-nb_ind <- glm.nb(
+nb_ind_sin_diesel <- glm.nb(
   T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
@@ -459,13 +660,39 @@ nb_ind <- glm.nb(
   data = df_ind
 )
 
-nb_art <- glm.nb(
+nb_art_sin_diesel <- glm.nb(
   T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
     TIPO_EMB,
   data = df_art
 )
+
+nb_ind_con_diesel <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    diesel_real +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB,
+  data = df_ind
+)
+
+nb_art_con_diesel <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    diesel_real +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB,
+  data = df_art
+)
+
+cat("AIC comparison (lower = better):\n")
+cat("  IND sin diesel:", AIC(nb_ind_sin_diesel), "\n")
+cat("  IND con diesel:", AIC(nb_ind_con_diesel), "\n")
+cat("  ART sin diesel:", AIC(nb_art_sin_diesel), "\n")
+cat("  ART con diesel:", AIC(nb_art_con_diesel), "\n")
+
+
 
 # Robust SEs clustered by vessel
 se_ind <- coeftest(nb_ind, vcov = vcovCL(nb_ind, cluster = df_ind$COD_BARCO))
@@ -476,17 +703,24 @@ print(se_ind)
 cat("\n====== ARTISANAL ======\n")
 print(se_art)
 
+
+
+
+
+
+
+
 cat("\nTheta (small = high overdispersion → NB preferred):\n")
 cat("  IND:", round(nb_ind$theta, 2), "(SE:", round(nb_ind$SE.theta, 2), ")\n")
 cat("  ART:", round(nb_art$theta, 2), "(SE:", round(nb_art$SE.theta, 2), ")\n")
 
 # LR test: NB vs Poisson
 pois_ind <- glm(T_vy ~ log_bodega + H_alloc_vy +
-                  price_jurel + price_sardina + price_anchov +
+                  price_jurel + price_sardina + price_anchov + diesel_real +
                   days_bad_weather + days_closed_vy + TIPO_EMB,
                 family = poisson, data = df_ind)
 pois_art <- glm(T_vy ~ log_bodega + H_alloc_vy +
-                  price_jurel + price_sardina + price_anchov +
+                  price_jurel + price_sardina + price_anchov + diesel_real +
                   days_bad_weather + days_closed_vy + TIPO_EMB,
                 family = poisson, data = df_art)
 
