@@ -14,13 +14,13 @@
 #   [x] Trips T_vy             : logbooks
 #   [x] Vessel chars Z_v       : logbooks
 #   [x] Harvest shares omega_vs: logbooks
-#   [x] H_alloc_vy             : shares × lagged TAC proxy
+#   [x] H_alloc_vy             : shares × proxy
 #   [x] Ex-vessel prices       : IFOP survey (PRECIO), deflated approx IPC
 #   [x] COG per vessel         : catch-weighted centroid from hauls
 #   [x] days_bad_weather_vy    : wind > 10 m/s at nearest grid to COG
 #   [x] days_closed_vy         : SUBPESCA veda calendar × COG reg zone
-#   [ ] Diesel price           : Banco Central — PENDING
-#   [ ] Official TAC_sy        : SUBPESCA — PENDING (using lagged proxy)
+#   [X] Diesel price           : CNE
+#   [X] Official TAC_sy        : SUBPESCA 
 #   [ ] Year-varying vedas     : SUBPESCA resolutions — PENDING
 
 rm(list = ls())
@@ -141,61 +141,22 @@ harvest_vy_wide <- harvest_vys %>%
               names_prefix = "H_", values_fill = 0)
 
 
+
 # =========================================================================
-# 5. VESSEL SHARES omega_vs (time-invariant, full sample)
+# 5. ALLOCATED HARVEST: H_alloc_vy = omega_reg × TAC_region (official)
 # =========================================================================
+# Source: SERNAPESCA/SUBPESCA cuotas efectivas 2012-2024
+# Artisanal: regional TAC × vessel share within region
+# Industrial: zonal TAC × vessel share within zone
+# Processed in tac_processing.R
 
-vessel_total_vs <- harvest_vys %>%
-  group_by(COD_BARCO, COD_ESPECIE) %>%
-  summarise(total_H_vs = sum(H_vys, na.rm = TRUE), .groups = "drop")
-
-fleet_total_s <- harvest_vys %>%
-  group_by(COD_ESPECIE) %>%
-  summarise(fleet_total_s = sum(H_vys, na.rm = TRUE), .groups = "drop")
-
-shares_vs <- vessel_total_vs %>%
-  left_join(fleet_total_s, by = "COD_ESPECIE") %>%
-  mutate(omega_vs = total_H_vs / fleet_total_s) %>%
-  select(COD_BARCO, COD_ESPECIE, omega_vs)
-
-cat("omega_vs sums by species (should ≈ 1.0):\n")
-shares_vs %>%
-  group_by(COD_ESPECIE) %>%
-  summarise(sum_omega = round(sum(omega_vs), 4)) %>%
-  print()
-
-rm(vessel_total_vs, fleet_total_s)
+halloc <- readRDS("data/trips/halloc_official.rds")
+cat("H_alloc_vy: official TAC (regional/zonal).\n")
+cat("  Vessel-years:", nrow(halloc), "\n")
 
 
 # =========================================================================
-# 6. ALLOCATED HARVEST: H_alloc_vy = omega_vs × TAC_{s,y-1}
-# =========================================================================
-# Using lagged aggregate harvest as TAC proxy (predetermined).
-# Replace with official SUBPESCA TAC when available.
-
-tac_lagged <- harvest_vys %>%
-  group_by(year, COD_ESPECIE) %>%
-  summarise(TAC_sy = sum(H_vys, na.rm = TRUE), .groups = "drop") %>%
-  arrange(COD_ESPECIE, year) %>%
-  group_by(COD_ESPECIE) %>%
-  mutate(TAC_sy_lag = lag(TAC_sy)) %>%
-  ungroup() %>%
-  filter(!is.na(TAC_sy_lag)) %>%
-  select(year, COD_ESPECIE, TAC_sy_lag)
-
-halloc <- shares_vs %>%
-  left_join(tac_lagged, by = "COD_ESPECIE", relationship = "many-to-many") %>%
-  mutate(H_alloc_vys = omega_vs * TAC_sy_lag) %>%
-  group_by(COD_BARCO, year) %>%
-  summarise(H_alloc_vy = sum(H_alloc_vys, na.rm = TRUE), .groups = "drop")
-
-cat("H_alloc_vy: using lagged TAC proxy. First year:", min(tac_lagged$year), "\n")
-
-rm(tac_lagged)
-
-
-# =========================================================================
-# 7. EX-VESSEL PRICES — deflated to real pesos (base 2018)
+# 6. EX-VESSEL PRICES — deflated to real pesos (base 2018)
 # =========================================================================
 # Source: IFOP manufacturing survey, PRECIO sheet
 # TIPO_MP = 1: fresh resource (ex-vessel price)
@@ -293,7 +254,7 @@ rm(prices_cs, prices_sy_nominal)
 
 
 # =========================================================================
-# 8. COG: CENTER OF GRAVITY PER VESSEL
+# 7. COG: CENTER OF GRAVITY PER VESSEL
 # =========================================================================
 # Catch-weighted centroid over full sample — time-invariant.
 # sd_lat diagnostic flags vessels with unstable fishing locations.
@@ -336,7 +297,7 @@ cog_vessel %>% count(reg_zone)
 
 
 # =========================================================================
-# 9. COG → REGULATORY ZONE → days_closed_vy
+# 8. COG → REGULATORY ZONE → days_closed_vy
 # =========================================================================
 # Source: SUBPESCA "Vedas en Chile" (articles-100030_documento_.pdf)
 # Anchoveta + sardina común: biological closures by zone
@@ -367,14 +328,14 @@ veda_by_zone <- expand_grid(
 
 
 # =========================================================================
-# 10. COG → days_bad_weather_vy
+# 9. COG → days_bad_weather_vy
 # =========================================================================
 # Wind speed > 10 m/s at nearest grid point to vessel COG.
 # Threshold ≈ Beaufort 5-6, difficult conditions for purse seine.
 
 env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
 
-wind_threshold <- 10  # m/s
+wind_threshold <- 8  # m/s
 
 # Unique env grid points
 env_grid <- env_dt %>%
@@ -431,7 +392,7 @@ veda_by_zone <- expand_grid(
 
 
 # =========================================================================
-# 11. DIESEL — CNE (precio nominal $/litro, por región → vessel-year, real)
+# 10. DIESEL — CNE (precio nominal $/litro, por región → vessel-year, real)
 # =========================================================================
 # Serie: Precios observados a público, promedio nominal por región ($/litro)
 # Fuente: CNE (ex-SERNAC hasta 2012)
@@ -589,7 +550,7 @@ cat("Mean real price:", round(mean(diesel_vy$diesel_real, na.rm = TRUE), 1), "$/
 
 
 # =========================================================================
-# 12. MERGE ALL COMPONENTS
+# 11. MERGE ALL COMPONENTS
 # =========================================================================
 
 poisson_df <- trips_vy %>%
@@ -698,42 +659,114 @@ cat("  ART sin diesel:", AIC(nb_art_sin_diesel), "\n")
 cat("  ART con diesel:", AIC(nb_art_con_diesel), "\n")
 
 
+se_ind_cd <- coeftest(nb_ind_con_diesel, vcov = vcovCL(nb_ind_con_diesel, cluster = df_ind$COD_BARCO))
+se_art_cd <- coeftest(nb_art_con_diesel, vcov = vcovCL(nb_art_con_diesel, cluster = df_art$COD_BARCO))
 
-# Robust SEs clustered by vessel
-se_ind <- coeftest(nb_ind, vcov = vcovCL(nb_ind, cluster = df_ind$COD_BARCO))
-se_art <- coeftest(nb_art, vcov = vcovCL(nb_art, cluster = df_art$COD_BARCO))
+cat("\n====== INDUSTRIAL (con diesel) ======\n")
+print(se_ind_cd)
+cat("\n====== ARTISANAL (con diesel) ======\n")
+print(se_art_cd)
 
-cat("\n====== INDUSTRIAL ======\n")
+cat("\nAIC comparison:\n")
+cat("  IND sin diesel:", AIC(nb_ind_sin_diesel), "\n")
+cat("  IND con diesel:", AIC(nb_ind_con_diesel), "\n")
+cat("  ART sin diesel:", AIC(nb_art_sin_diesel), "\n")
+cat("  ART con diesel:", AIC(nb_art_con_diesel), "\n")
+
+
+# SEs for main spec (sin diesel)
+se_ind <- coeftest(nb_ind_sin_diesel, vcov = vcovCL(nb_ind_sin_diesel, cluster = df_ind$COD_BARCO))
+se_art <- coeftest(nb_art_sin_diesel, vcov = vcovCL(nb_art_sin_diesel, cluster = df_art$COD_BARCO))
+
+cat("\n====== INDUSTRIAL (sin diesel) ======\n")
 print(se_ind)
-cat("\n====== ARTISANAL ======\n")
+cat("\n====== ARTISANAL (sin diesel) ======\n")
 print(se_art)
 
+cat("\nTheta:\n")
+cat("  IND:", round(nb_ind_sin_diesel$theta, 2), "(SE:", round(nb_ind_sin_diesel$SE.theta, 2), ")\n")
+cat("  ART:", round(nb_art_sin_diesel$theta, 2), "(SE:", round(nb_art_sin_diesel$SE.theta, 2), ")\n")
 
-
-
-
-
-
-
-cat("\nTheta (small = high overdispersion → NB preferred):\n")
-cat("  IND:", round(nb_ind$theta, 2), "(SE:", round(nb_ind$SE.theta, 2), ")\n")
-cat("  ART:", round(nb_art$theta, 2), "(SE:", round(nb_art$SE.theta, 2), ")\n")
 
 # LR test: NB vs Poisson
 pois_ind <- glm(T_vy ~ log_bodega + H_alloc_vy +
-                  price_jurel + price_sardina + price_anchov + diesel_real +
+                  price_jurel + price_sardina + price_anchov +
                   days_bad_weather + days_closed_vy + TIPO_EMB,
                 family = poisson, data = df_ind)
 pois_art <- glm(T_vy ~ log_bodega + H_alloc_vy +
-                  price_jurel + price_sardina + price_anchov + diesel_real +
+                  price_jurel + price_sardina + price_anchov +
                   days_bad_weather + days_closed_vy + TIPO_EMB,
                 family = poisson, data = df_art)
 
-lr_ind <- 2 * (logLik(nb_ind) - logLik(pois_ind))
-lr_art <- 2 * (logLik(nb_art) - logLik(pois_art))
+lr_ind <- 2 * (logLik(nb_ind_sin_diesel) - logLik(pois_ind))
+lr_art <- 2 * (logLik(nb_art_sin_diesel) - logLik(pois_art))
 
-cat("\nLR test NB vs Poisson (chi2, 1 df):\n")
+cat("LR test NB vs Poisson:\n")
 cat("  IND:", round(as.numeric(lr_ind), 1),
     "p =", format.pval(pchisq(as.numeric(lr_ind), 1, lower.tail = FALSE)), "\n")
 cat("  ART:", round(as.numeric(lr_art), 1),
     "p =", format.pval(pchisq(as.numeric(lr_art), 1, lower.tail = FALSE)), "\n")
+
+
+### WIND ROBUTNESS 
+
+library(dplyr)
+select <- dplyr::select
+env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
+
+# Recrear cog_with_grid desde cog_vessel + env_grid
+env_grid <- env_dt %>%
+  distinct(lat, lon) %>%
+  filter(!is.na(lat), !is.na(lon))
+
+cog_with_grid <- cog_vessel %>%
+  rowwise() %>%
+  mutate(nearest = list(find_nearest_grid(cog_lat, cog_lon, env_grid))) %>%
+  unnest(nearest) %>%
+  ungroup()
+
+for (wt in c(8, 10, 12)) {
+  
+  bw <- env_dt %>%
+    mutate(year = year(date)) %>%
+    filter(year >= 2013, year <= 2024) %>%
+    group_by(lat, lon, year) %>%
+    summarise(days_bw = sum(speed_max > wt, na.rm = TRUE), .groups = "drop")
+  
+  dbw <- cog_with_grid %>%
+    select(COD_BARCO, grid_lat, grid_lon) %>%
+    left_join(bw, by = c("grid_lat" = "lat", "grid_lon" = "lon"),
+              relationship = "many-to-many") %>%
+    select(COD_BARCO, year, days_bw)
+  
+  assign(paste0("dbw_", wt), dbw)
+  cat("Threshold", wt, "m/s: mean =", round(mean(dbw$days_bw, na.rm = TRUE), 1), "\n")
+}
+
+for (wt in c(8, 10, 12)) {
+  
+  df_tmp <- poisson_df %>%
+    select(-days_bad_weather) %>%
+    left_join(get(paste0("dbw_", wt)), by = c("COD_BARCO", "year"))
+  
+  nb_art_tmp <- glm.nb(
+    T_vy ~ log_bodega + H_alloc_vy +
+      price_jurel + price_sardina + price_anchov +
+      days_bw + days_closed_vy + TIPO_EMB,
+    data = df_tmp %>% filter(TIPO_FLOTA == "ART"))
+  
+  nb_ind_tmp <- glm.nb(
+    T_vy ~ log_bodega + H_alloc_vy +
+      price_jurel + price_sardina + price_anchov +
+      days_bw + days_closed_vy + TIPO_EMB,
+    data = df_tmp %>% filter(TIPO_FLOTA == "IND"))
+  
+  cat("\n=== Threshold:", wt, "m/s ===\n")
+  cat("  ART days_bw coef:", round(coef(nb_art_tmp)["days_bw"], 6),
+      " p =", round(summary(nb_art_tmp)$coefficients["days_bw", 4], 4), "\n")
+  cat("  IND days_bw coef:", round(coef(nb_ind_tmp)["days_bw"], 6),
+      " p =", round(summary(nb_ind_tmp)$coefficients["days_bw", 4], 4), "\n")
+  cat("  ART AIC:", round(AIC(nb_art_tmp), 1), " IND AIC:", round(AIC(nb_ind_tmp), 1), "\n")
+}
+
+
