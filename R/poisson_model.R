@@ -641,6 +641,11 @@ saveRDS(poisson_df, file = "data/trips/poisson_dt.rds")
 cat("\n✓ Saved: data/trips/poisson_dt.rds\n")
 
 
+saveRDS(maestro_puertos, file = "data/trips/maestro_puertos.rds")
+saveRDS(log_spf, file = "data/trips/log_spf.rds")
+saveRDS(vessel_chars, file = "data/trips/vessel_chars.rds")
+saveRDS(harvest_vys, file = "data/trips/harvest_vys.rds")
+
 # =========================================================================
 # 12. ESTIMATION: Negative Binomial, separate by fleet
 # =========================================================================
