@@ -193,10 +193,15 @@ ggplot() +
 setDT(port_means)
 vars_num <- setdiff(names(port_means), c("Puerto", "zone", "date"))
 
+puertos_db2 <- puertos_db %>% dplyr::select(cod_puerto, Puerto)
+
 wide <- dcast(port_means, Puerto + date ~ zone, value.var = vars_num)
 wide[]
 
-saveRDS(wide, paste0(dirdata, "Environmental/env/data_ambiental_por_puerto_para_costos.RDS"))
+wide2 <- dplyr::left_join(wide, puertos_db2, by = "Puerto")
+
+
+saveRDS(wide2, paste0(dirdata, "Environmental/env/data_ambiental_por_puerto_para_costos.RDS"))
 
 library(openxlsx)
-write.xlsx(wide, paste0(dirdata, "Environmental/env/data_ambiental_por_puerto_para_costos.xlsx"))
+write.xlsx(wide2, paste0(dirdata, "Environmental/env/data_ambiental_por_puerto_para_costos.xlsx"))
