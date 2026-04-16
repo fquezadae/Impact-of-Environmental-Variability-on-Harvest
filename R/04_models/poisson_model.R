@@ -10,6 +10,13 @@
 #          price_jurel + price_sardina + price_anchov +
 #          days_bad_weather + days_closed_vy + TIPO_EMB
 #
+# Units:
+#   prices: 1000s of real pesos/ton (base 2018)
+#   diesel: 100s of real pesos/litro (base 2018)
+#   H_alloc_vy: tons
+#   days_bad_weather: count (wind > threshold at COG grid)
+#   days_closed_vy: count (veda days by zone)
+#
 # Data status:
 #   [x] Trips T_vy             : logbooks
 #   [x] Vessel chars Z_v       : logbooks
@@ -244,9 +251,11 @@ prices_wide <- prices_sy_nominal %>%
   pivot_wider(names_from = NM_RECURSO, values_from = price_real) %>%
   rename(price_jurel = JUREL, price_sardina = `SARDINA COMUN`,
          price_anchov = ANCHOVETA) %>%
-  mutate(year = as.integer(year))
+  mutate(year = as.integer(year)) %>%
+  # Rescale from pesos/ton to thousands of pesos/ton for numerical stability
+  mutate(across(starts_with("price_"), ~ . / 1000))
 
-cat("Prices: deflated to", base_year, "pesos (official IPC).\n")
+cat("Prices: deflated to", base_year, "pesos, rescaled to 1000s pesos/ton (official IPC).\n")
 cat("  Jurel coverage:", sum(!is.na(prices_wide$price_jurel)), "of",
     nrow(prices_wide), "years\n")
 
@@ -543,7 +552,11 @@ diesel_vy <- puerto_modal %>%
   select(COD_BARCO, year, diesel_real)
 
 cat("\nDiesel vessel-year obs:", nrow(diesel_vy), "\n")
-cat("Mean real price:", round(mean(diesel_vy$diesel_real, na.rm = TRUE), 1), "$/litro\n")
+# Rescale diesel from $/litro to 100s $/litro for readability
+diesel_vy <- diesel_vy %>%
+  mutate(diesel_real = diesel_real / 100)
+
+cat("Mean real price:", round(mean(diesel_vy$diesel_real, na.rm = TRUE), 3), "(100s $/litro)\n")
 
 
 
