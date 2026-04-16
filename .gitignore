@@ -1,12 +1,45 @@
-.Rproj.user
-*.nc
-*.exe
+# ==============================================================================
+# .gitignore — Fondecyt Bioeconomic Model Project
+# ==============================================================================
+
+# --- R / RStudio ---
+.Rproj.user/
+.Rhistory
+.RData
 .RDataTmp
-/data/harvest
-/data/logbooks
-/data/biomass
-/data/env
-.Rhistory
-.Rhistory
-.Rhistory
-.Rhistory
+.Renviron
+*.Rcheck/
+
+# --- Data (large/sensitive, tracked locally only) ---
+/data/harvest/
+/data/logbooks/
+/data/biomass/
+/data/env/
+/data/ports/
+/data/trips/
+/data/outputs/
+*.nc
+
+# --- Compilation outputs (reproducible from source) ---
+output/
+_main.Rmd
+_bookdown_files/
+libs/
+*.aux
+*.log
+*.synctex.gz
+*.toc
+*.out
+*.bbl
+*.blg
+
+# --- OS / system ---
+Thumbs.db
+.DS_Store
+*.exe
+*.lnk
+tree.txt
+
+# --- Temporary / scratch ---
+*.tmp
+~$*
