@@ -2010,10 +2010,10 @@ stargazer(
   dep.var.labels.include = FALSE,
   covariate.labels = c(
     "Hold capacity (log m$^3$)",
-    "Allocated harvest ($H^{alloc}_{vy}$)",
-    "Price jack mackerel",
-    "Price sardine",
-    "Price anchoveta",
+    "Allocated harvest ($H^{alloc}_{vy}$, tons)",
+    "Price jack mackerel (1000s \\$/ton)",
+    "Price sardine (1000s \\$/ton)",
+    "Price anchoveta (1000s \\$/ton)",
     "Bad weather days",
     "Veda days",
     "Vessel type (UNK)",
@@ -2031,7 +2031,7 @@ stargazer(
   font.size = "footnotesize",
   notes = c(
     "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
-    "Vessel-clustered robust SEs. Prices in constant 2018 pesos/ton.",
+    "Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.",
     "Allocated harvest = historical vessel share $\\times$ lagged aggregate harvest.",
     paste0("LR test NB vs Poisson: Industrial $\\chi^2$ = ",
            round(lr_ind, 1), "; Artisanal $\\chi^2$ = ",
