@@ -1164,98 +1164,7 @@ The SUR framework is particularly suited to this multi-species setting, as it al
 
 ### Trip level cost functions
 
-Two different estimations (one for industrial, 1 for small scale- both use purse seine...): **"Trip-level costs are modeled as a function of expected effort and segment-specific parameters, reflecting differences in technology and operational costs across fleet segments."**
-
-Just usea real SPF trips (consider 95% of total revenue...)
-DO I HAVE DATA IN CREW SIZE???? Opportunity cost... (paid by time at sea x hourly wage) -- MAYBE USE TIPO EMBARCACION TO LINK CREW SIZE!??? USE BODEGA SIZE TO LINK CREW SIZE???
-Fixed cost excluded. Should not affect as econ decision made at the margins (optimization behavior)
-hard to use share of revenue, as how they implement this depend on each operator
-
-<!-- - 80 and 300 m$^3$ holds sardine and anchovy; More than 800 m$^3$, likely jack mackerel. @Pena-Torres2017-gn dummy for $H \leq 370 \ \text{m}^3$, $370 \ \text{m}^3 < H \leq 790 \ \text{m}^3$, $H > 790 \ \text{m}^3$ ... Also use age of vessel to check technical obsolescence (year trip, year ship was built) -->
-
--   @sumaila2011: "Capital costs, that is, the cost of vessels, fishing
-    gear, processing plants and so on, would be affected by climate
-    change if additional capital for fishing and processing operations
-    is required to adapt to climate change impacts on the quantity,
-    composition and distribution of fisheries resources65. Changes in
-    migratory routes and fish distribution would affect travel time,
-    which can lead to increases or decreases in fuel and ice cost
-    depending on catch levels and patterns, and the management regime in
-    place."
-
-We estimate restricted cost function for both small-scale and industrical vessel. The inputs that we assume fixed are vessel characteristics and the population of each species. 
-
-Ignoring trip subscript, the quadratic approximation of the cost functions vary by vessel
-$v=1,\ldots,V_g$ and gear used $g=1,\ldots,G$, where $V_g$ is the number
-of observations by fleet $g$, and $G$ is the total number of
-fleets: \begin{equation}
-C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
-\label{eq3}
-\end{equation} where $C_{vg}= w z_{vg}^*$,
-$\mathbf{X}_{vg}=[w;h_{vg};x;Z_v]$, $w$ is a $V_g \times M$ matrix of
-variable input prices, $h_{vg}$ is an $V_g \times n$ matrix of harvest
-quantities, $x$ is an $V_g \times n$ matrix of given stock levels of the
-species of interest, and $Z_v$ is an $V_g \times k$ matrix of given
-vessel characteristics. Therefore, $\mathbf{X}_{vg}$ is a
-$V_g \times (2n+M+k)$ matrix, and $\mathbf{X}_{ivg}$ represents the
-*i*th column of the $\mathbf{X}_{vg}$ matrix.
-
-Together with estimating the restricted cost function, we estimate the
-conditional input demand equations. This addition allows an increase in
-the degrees of freedom by imposing cross-equation parameter constraints
-and allows for the testing of, for instance, jointness in inputs
-[@Kasperski2015-jm]. The conditional input demand equations are derived
-by Shepard's Lemma: \begin{equation}
-\frac{\partial C_{vg}}{\partial w_m} = z^*_{vg,w_m} = \alpha_{g,w_m} + \sum_{j=1}^{2n+M+k} \alpha_{g,w_m,\mathbf{X}_j} \mathbf{X}_{jvg} \quad m=1,\ldots,M.
-\label{eq4}
-\end{equation}
-
-Similar to stock dynamics, the system of equations formed by \eqref{eq3}
-and \eqref{eq4} can be estimated using SUR. To comply with economic
-theory, and 
-
-To ensure that the estimated cost function is consistent with microeconomic theory, we impose the standard regularity conditions of symmetry and linear homogeneity in input prices.
-
-
-1.  Symmetry of the cost function, where \begin{equation*}
-      \alpha_{g,\mathbf{X}_i\mathbf{X}_j} = \alpha_{g,\mathbf{X}_j\mathbf{X}_i} \quad \forall \quad i=1,\ldots,(2n + M + k); \ i \neq j; \ g = 1,\ldots, G.
-      \end{equation*}
-
-2.  Linear homogeneity in input prices, where \begin{equation*}
-      \sum_m^M \alpha_{g,w_m} = 1 \ \text{and} \ \sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0 \quad i=1,\ldots,(2n + M + k); \ g = 1,\ldots, G.
-      \end{equation*}
-      
-These restrictions reduce even more the number of parameters to estimate in \eqref{eq4}. Symmetry guarantees that the function is twice differentiable with consistent mixed partial derivatives, allowing it to be interpreted as a valid dual cost function. Linear homogeneity (adding-up) ensures that the cost function is homogeneous of degree one in input prices, so that proportional changes in all prices translate into proportional changes in total cost. These restrictions ensure theoretical coherence and prevent the model from being a purely statistical approximation.
-
-A potential concern is the endogeneity between harvest and costs. However, following Kasperski (2015), we assume that vessel optimization occurs in two stages. In the first stage, vessels choose the cost-minimizing combination of inputs for any given vector of outputs. In the second stage, they choose their optimal output mix to maximize profits. Under this sequential decision process, outputs are treated as exogenous when estimating the restricted cost function, because they are taken as given in the underlying cost-minimization problem.
-
-Data at the trip level is available upon request from the Chilean Fisheries Research Institute (IFOP), which registers geo-referenced catch information on the Chilean fleet's fishing operation per trip [see e.g. @Pena-Torres2017-gn and [IFOP data observatory](ifop.dataobservatory.net)]. As inputs we can use the time spent at sea during a trip, where the price is the average wage pay to crew member per hour, and the distance traveled during a trip, where the price of distance traveled is the diesel cost. Therefore, the total cost function $C_{vg}= w z_{vg}^*$ for vessel $v$, using gear $g$ in a trip would be sum of the total cost of distance travelled plus the total cost of the time spent at sea.
-
-**Note:** *Depending on the type of vessel, this cost should change.
-Some vessels are more efficient, other one are more heavy. How to
-capture this? The righ hand side has vessel characteristics, so the
-effect of harvest would be conditional on vessel characteristics, the
-stock levels and input prices. As we only care in the margin how harvest
-increase cost, this should be fine. @Kasperski2015-jm mention this
-"...no reliable fixed cost information on these vessels exists, but
-these should not affect the optimization as economic decisions are made
-at the margin. Therefore, this study does not measure true profit, but
-rather a proxy based on the net operating rent accruing to vessels in
-the fishery."*
-
-To link this function to climate change, we can also include additional
-environmental variables $Env$ to $\mathbf{X}_{vg}$ such as wind
-intensity and wave conditions in each trip at the harvest location, upon
-data availability. Therefore, the augmented $X_{vg}$ matrix becomes
-$\mathbf{X}^{'}_{vg} = [w;h_{vg};x;Z_v;Env]$.
-
-MAYBE INCLUDE QUOTA PRICE? **Higher quota prices for depleted stocks
-(e.g., GOM cod) reduce incentives to target them.** and **Active leasing
-markets for quota (and previously for DAS) allow fishermen to treat
-quota as a "priced input" rather than a fixed, exhaustible resource.**
-
-Add - liters/hours x hours trip x fuel price - crew member x harvest x
-price x share - certification cost per landed ton x landing
+The full @Kasperski2015-jm framework includes trip-level restricted cost functions estimated separately for each fleet segment, capturing how vessel characteristics, stock levels, and input prices interact to determine operating costs. These cost functions, together with an inverse demand system for ex-vessel prices, feed into a numerical optimization that determines optimal quotas and harvest paths under climate change. The estimation of these components requires detailed trip-level cost data (fuel expenditure, crew wages, and trip duration) that is currently being compiled from IFOP logbooks. This module will be completed in a companion paper that extends the present analysis to a full bioeconomic optimization, following the approach in @Kasperski2015-jm and @KASPERSKI201655.
 
 
 ### Total annual trips
@@ -1307,38 +1216,7 @@ Trips, harvest, and prices may be jointly determined within the year, implying p
 
 ### Inverse demand model
 
-The price of each species is modeled using an Inverse Almost Ideal
-Demand System (IADS). The price of a species $i$ in year $y$ is the
-following:
-
-\begin{equation}
-\ln p_{iy} = \sum_j^n \gamma_j \ln h_{j,y} + \gamma_{H} \ln H + \gamma_{FM} \ln P^\text{FishMeal} + \epsilon_{iy}, \quad i = 1,\ldots,n, \ j = 1,\ldots,n.
-\label{eq6}
-\end{equation}
-
-Note that harvest may be endogenous in this system due to simultaneity.
-For this reason, the system formed by \eqref{eq6} will be estimated
-using a Three Stage Least Squares (3SLS) procedure, where h_j{j,y} would
-be instrumented by variables that affect the fishers' supply function
-such as SST, Chl, and fuel prices.
-
-```{=html}
-<!-- Comment: One concern I have regards the endogeneity of factors determining the outcomes of fishing effort on a fishing
-trip (where, when, how long, and for what, and how much), climate conditions (temperature, wave, and wind),
-and input and output prices. While Kasperski assumes that total allowable catches are binding to avoid one potential endogeneity, I wonder if this is a good assumption under climate change. What would you need to assume about the regulator’s response to the changing conditions and the setting of the total allowable catches? -->
-```
-
-```{=html}
-<!-- No era que el paper estimaba un IAIDS. Sino que al precio ex-vessel a ser un % del FOB justifica que sea una variable exógena para la IAIDS que nosotros estimaremos. Así capturar las desviaciones del mercado internacional se transmitan directamente al precio ex-vessel. El otro aspecto era el siguiente: En las estimaciones MCO para la VIII Región, el Precio de la Harina de Pescado * Dólar presenta un signo negativo y significativo sobre el número agregado de viajes anuales, aunque en la XIV Región el signo es positivo [11 (254, 398). Lo que podría implicar que la reaccion de la flota al FOB es heterogénea por región  
-R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque entonces la contribución de su trabajo sigue siendo alta. Solo usan FOB como exógena, por lo tanto, nuestra metodología sigue siendo la misma, de estimar sin incluir FOB, luego incluyéndolo, ver qué pasa con el coeficiente de Q, para ver si hay algo más en la determinación de precios a corto plazo. Luego, si hay tiempo, ver si de hecho el precio FOB depende de desembarques chilenos. En cuanto a la heterogeneidad, a mí me da la impresión de que ese texto de hecho está indicando esta endogeneidad que estamos tratando de capturar! Es posible que la XIV no tenga efecto en el FOB, por lo que lo que vemos es un efecto insesgado para esa región, pero que en la VIII, que es una productora grande de pequeños pelágicos, sí tenga un efecto en el precio FOB, por lo tanto, el coeficiente negativo que obtienen de hecho está sesgado por endogeneidad!! Yo usaría ese texto como justificación de su estudio... -->
-```
-
--   DIFERENCIAR ENTRE CONSUMO HUMANO DIRECTO e INDIRECTO? Ricardo y Arnol usan solo información de procesamiento. Darle una vuelta a esto
-- NECESITO MODELO ANUAL??? SIMPLE CON REZAGOS DE CANTIDAD??? O MAS SIMPLE SIGUIENDO A KASPERSKI PERO INSTRUMENTANDO LA CANTIDAD???
-
-
-- SEPARAR MODELO POR FLOTA IND Y ART???
-  - "On the demand side, we assume an inverse demand structure where the output price depends on the segment that has landed the catch because of differences in quality, but also on the total catch of all boats, due to an adverse effect of aggregate landings on the sales price."
+The full bioeconomic model additionally requires an inverse demand system to endogenize ex-vessel prices as a function of aggregate landings. Following @Kasperski2015-jm, the price of each species can be modeled using an Inverse Almost Ideal Demand System (IADS), estimated via three-stage least squares to account for the simultaneity between harvest and prices. The estimation of this component, together with the cost functions described above, is deferred to a companion paper that will incorporate the complete numerical optimization framework.
 
 
 
@@ -1346,37 +1224,7 @@ R:  Perfecto. Entonces no estimaron un modelo de precios. Mejor aún, porque ent
 
 ## Numerical optimization
 
-To obtain the effect of future climate variability on stock, harvest,
-quota and profits, we conduct numerical optimization for different
-climate scenarios using the parameters estimates for the stock dynamic,
-cost functions, total annual trips and inverse demand equations. In each
-year, a vessel maximizes profits by choosing their optimal number of
-trips $T$ and optimal portfolio of harvest on each trip $h_{\tau}$:
-\begin{align}
-\max_{h_{gt}, T_g} \quad \pi_{vgt} & = \sum_{\tau=t}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} | w, x, Z, Env) \right\} \quad \tau = t,\ldots, T_g \nonumber \\
-\textbf{s.t} \quad q_{g,t+1} & = \omega \ast \bar{q} - \sum_{t=1}^{t} h_{gt} \geq 0, \quad t = 1, \dots, T-1, \quad g = 1, \dots, G
-\label{eq7}
-\end{align} where $\rho$ is the intra-annual discount factor, $\omega$
-is a vector of shares of $\bar{q}$, and $h_{lt}=0$ for all $l\neq g$.
-The vector of shares is obtained from historical data on harvest. The
-optimal profit from the maximization problem in \eqref{eq7} is denoted
-as $\pi_{vgy}^* (p,w,x,Z,\bar{q},\omega, Env)$, and $h_{vgty}^*$ and
-$T_{vgy}^*$ are the optimal choices harvest per trip and total number of
-trips in year $y$ for vessel $v$. To obtain the optimal quota level, we
-must solve the social-planner optimization problem to maximize the net
-value of the fishery by choosing the quota levels per year and by
-species.
-
-Following @Kasperski2015-jm, the optimization problem will be conducted
-for the next 25 years. I will use different climate scenarios and
-compare different optimal outcomes between them by using future
-projections for the environmental variables included in the model.
-
--   Note that the optimal quota would that we would find using
-    historical data might differ from the actual quota set by the
-    regulator as they model is for single species.
-  
-- We assume that quota is not tradable, but allocated individually to each vessel. This avoid to consider other vessle participation decision on vessel yeraly maximization process [@Kasperski2015-jm].
+The present analysis focuses on the reduced-form projections of fishing effort under climate change, holding prices and management rules at their historical levels. A companion paper will extend this framework to a full numerical optimization following @Kasperski2015-jm, in which vessels maximize profits by jointly choosing the number of trips and the harvest portfolio per trip, subject to individual quota constraints. That extension will incorporate the trip-level cost functions and inverse demand system described above, enabling welfare analysis and the computation of optimal quota paths under alternative climate scenarios.
 
 
 
@@ -1384,30 +1232,7 @@ projections for the environmental variables included in the model.
 
 ## Projections
 
-
-According @Kasperski2015-jm, the model presented in this project is more suitable for long-term projections of fish population and profits than intra-anuial impacts of short-term management action. Therefore, is suitable to studyn long term effect of climate variability. However, based on Aufhammer, because we are using short-term variability instead of decadal vsariability, then our model is onlpy able to capture the impact of climate without adaptation.
-
-
-*From [@Yáñez2014]*:
-
--   "To project the model, the average structure of catches and
-    temperature (of Antofagasta and the region Niño 3 + 4) for the years
-    2005, 2006 and 2007 were used as starting point. We consider a
-    linear increase in temperature, taking into account four climate
-    change scenarios based on the scenarios presented by IPCC, designed
-    for the northern part of Chile until 2100.
-    1.  The first scenario considers an increase in temperature of
-        0.034ºC per year [@Fuenzalida2007], similar to that estimated by
-        @Trenberth2007.
-    2.  A second scenario, more moderate, of 0,025ºC/year is also
-        proposed by @Fuenzalida2007.
-    3.  The third scenario is not considered a significant effect on the
-        area, following the work of @Trenberth2007.
-    4.  The fourth scenario is contradictory, indicating a cooling de
-        0.02 ºC/year [@falvey2009]. It should be noted that according to
-        the work of @Fuenzalida2007 and @falvey2009 the same SST
-        increase (or decrease) were considered for both temperatures (in
-        Antofagasta and in the Niño 3 + 4 region)."
+As noted by @Kasperski2015-jm, the multi-species bioeconomic framework is particularly suited for long-term projections of fish populations and fishing activity rather than intra-annual management responses. However, because our empirical models are estimated on interannual variability rather than decadal trends, the projections presented here capture the impact of changed environmental conditions without accounting for endogenous adaptation by fishers or managers [@Aufhammer2018]. This provides a useful benchmark for understanding the direction and magnitude of climate impacts, while acknowledging that behavioral responses may attenuate or amplify these effects over time.
 
 # Results
 
@@ -1936,12 +1761,7 @@ stargazer(
 
 
 
-## Trip level cost function
-
-One undergrad students working on this module for his thesis...
-Results by July 2026
-
-\<\< NO RESULTS YET \>\>
+<!-- Trip level cost function results deferred to companion paper -->
 
 
 ## Total Annual trips
@@ -2058,508 +1878,172 @@ Vessel type dummies capture residual heterogeneity in fleet composition. Among a
 
 
 
-## Inverse demand model
+## Climate change projections {#projections}
 
-\<\< NO RESULTS YET \>\>
+We assess the impact of climate change on fishing effort through two channels: (i) a *direct weather channel*, where projected changes in wind speed alter the number of bad weather days that constrain fishing operations, and (ii) an *indirect biomass channel*, where projected changes in sea surface temperature and chlorophyll-a affect stock growth capacity through the SUR equations, which in turn modifies harvest allocations and fishing effort through the trip equation.
 
-Two undergrad students working on this module for their thesis...
-Results by July 2026
+### Projection methodology
 
-## Numerical optimization
+Climate projections are derived from the IPSL-CM6A-LR Earth system model under two Shared Socioeconomic Pathways: SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions). We apply the delta method [@Burke2015; @Free2019], which preserves the observed interannual variability and fine-scale spatial structure from satellite records while imposing the climate change signal from CMIP6. For each variable, the delta is computed as the difference (additive for SST and wind speed) or ratio (multiplicative for chlorophyll-a) between the CMIP6 future climatology and the CMIP6 historical climatology (1995--2014 baseline), applied cyclically to each calendar month. We consider two future time windows: mid-century (2041--2060) and end-of-century (2081--2100).
 
-```{r simulations, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-# Ejemplo de estructura de datos simulados
-sim_grid <- data.frame(
-  vessel_id  = ...,    # id barco
-  gear       = ...,    # arte
-  year       = ...,    # año
-  H_total    = ...,    # harvest anual óptimo del modelo dinámico (ton)
-  p_diesel   = ...,    # precios insumos
-  w_crew     = ...,
-  # Z: características fijas de la embarcación
-  length     = ...,
-  hp         = ...,
-  tonnage    = ...
-)
+For the direct weather channel, monthly wind speed deltas from CMIP6 are interpolated to the observed 0.125-degree wind grid and applied additively to daily wind speed observations. Bad weather days (wind speed exceeding 8 m/s) are then recomputed under each scenario and fed into the NB trip equation. For the indirect biomass channel, we compute changes in growth capacity for each species using comparative statics on the SUR environmental coefficients, evaluating the predicted change in $y_i$ (next-period biomass plus current harvest) under projected versus historical SST and chlorophyll-a, holding biomass at its historical mean. These growth capacity changes are translated into proportional changes in harvest allocations ($H^{alloc}_{vy}$), weighted by each vessel's historical species composition.
 
-#---------------------------------------------#
-# 1) Función: Poisson + costo viaje -> costo anual
-#---------------------------------------------#
+```{r load_projections, message=FALSE, warning=FALSE, include=FALSE}
 
-library(dplyr)
-
-compute_annual_cost <- function(sim_grid,
-                                pois_model,
-                                cost_model,
-                                harvest_var   = "H_total",
-                                trips_var     = "trips_hat",
-                                htrip_var     = "h_trip",
-                                cost_trip_var = "cost_trip_hat",
-                                cost_ann_var  = "cost_annual_hat") {
-  
-  df <- sim_grid
-  
-  # 1. Predicción de viajes anuales con el Poisson
-  #    Nota: para Poisson, E[T] = exp(η), donde η = Xβ
-  eta_trips <- predict(pois_model, newdata = df, type = "link")
-  df[[trips_var]] <- exp(eta_trips)     # T_hat
-  
-  # 2. Harvest por viaje (H_total / T_hat)
-  #    Evita divisiones por cero poniendo un mínimo a T_hat
-  df[[trips_var]][df[[trips_var]] < 1e-6] <- 1e-6
-  
-  df[[htrip_var]] <- df[[harvest_var]] / df[[trips_var]]
-  
-  # 3. Preparar 'newdata' para el modelo de costo por viaje
-  #    Asumimos que el cost_model usa log(harvest_trip) como regressor.
-  #    Creamos una columna 'harvest_trip' temporal para el predict().
-  
-  df_cost <- df
-  
-  df_cost$harvest_trip <- df_cost[[htrip_var]]
-  
-  # 4. Predecir costo por viaje
-  #    Si tu modelo está en log(cost_trip), hay que exponentiar:
-  cost_link <- predict(cost_model, newdata = df_cost, type = "response")
-  # OJO: 
-  # - Si el modelo es log(cost_trip) ~ ..., entonces type="response" ya devuelve exp(η).
-  # - Si el modelo es cost_trip ~ ..., usa type="response" directamente.
-  
-  df[[cost_trip_var]] <- cost_link
-  
-  # 5. Costo anual = T_hat * costo por viaje
-  df[[cost_ann_var]] <- df[[trips_var]] * df[[cost_trip_var]]
-  
-  return(df)
-}
-
+decomposition <- readRDS("data/projections/decomposition_table.rds")
+biomass_proj  <- readRDS("data/projections/biomass_projections.rds")
+wind_summary  <- readRDS("data/projections/summary_pct_change.rds")
 
 ```
 
-```{r modelo npv, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+### Projected environmental changes
 
-#-------------------------------
-# PARÁMETROS BÁSICOS
-#-------------------------------
+Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area. Sea surface temperature increases by 0.8--2.3$^\circ$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century. Chlorophyll-a declines moderately (2--6\%), consistent with increased stratification reducing nutrient supply to the surface. Wind speed changes are negligible across all scenarios ($<$0.1 m/s), reflecting the limited sensitivity of near-surface atmospheric circulation to greenhouse forcing in the IPSL model for this region.
 
-S <- 3          # número de especies (ej: sardina, anchoveta, jurel)
-T_hor <- 20     # horizonte en años
-rho <- 0.05     # tasa de descuento
+```{r env_projections_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-species_names <- c("sardine", "anchovy", "jack")
+library(knitr)
+library(kableExtra)
 
-# B0: biomasa inicial por especie (vector de longitud S)
-B0 <- c(
-  sardine = 500,   # reemplazar por dato real
-  anchovy = 400,
-  jack    = 600
-)
+deltas_all <- readRDS("data/projections/cmip6_deltas.rds")
 
-# Aquí podrías tener un data.frame con clima por año (si quieres ya integrarlo)
-# climate_df: year x variables SST, CHL, etc.
-# climate_df[year, ] se usa dentro de biomass_dynamics()
+env_summary <- deltas_all[, .(
+  mean_delta = round(mean(delta, na.rm = TRUE), 3)
+), by = .(variable, ssp, window, delta_type)]
 
+env_wide <- dcast(env_summary, ssp + window ~ variable, value.var = "mean_delta")
 
-#-------------------------------
-# 1) DINÁMICA DE BIOMASA
-#-------------------------------
-# Esta función DEBE usar tus coeficientes SUR estimados.
-# Aquí dejo una forma “genérica” para que la reemplaces.
+env_wide[, `:=`(
+  SSP = ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
+  Window = ifelse(window == "mid", "2041--2060", "2081--2100")
+)]
 
-biomass_dynamics <- function(B_t, H_t, climate_row, sur_params) {
-  # B_t: vector biomasa en t (longitud S)
-  # H_t: vector harvest en t (longitud S)
-  # climate_row: fila con SST_t, CHL_t, etc.
-  # sur_params: lista con coeficientes de tu SUR
-  
-  # EJEMPLO MUY SIMPLE (placeholder: REEMPLAZAR CON TU SUR)
-  # B_{t+1} = B_t + r_s * B_t * (1 - B_t/K_s) - H_t + efecto_clima
+env_table <- env_wide[, .(SSP, Window,
+                           `$\\Delta$ SST ($^\\circ$C)` = sst,
+                           `$\\Delta$ CHL (ratio)` = chl,
+                           `$\\Delta$ Wind (m/s)` = wind_speed)]
 
-  r  <- sur_params$r          # vector r_s
-  K  <- sur_params$K          # vector K_s
-  sst <- climate_row$sst
-  chl <- climate_row$chl
-
-  climate_effect <- sur_params$gamma_sst * sst + sur_params$gamma_chl * chl  # vector
-
-  growth <- r * B_t * (1 - B_t / K) + climate_effect
-  B_next <- pmax(B_t + growth - H_t, 1e-6)  # evitar biomasa negativa
-
-  return(B_next)
-}
-
-
-#-------------------------------
-# 2) DEMANDA INVERSA
-#-------------------------------
-# Debes enchufar aquí tu modelo estimado (anual o agregado).
-# Recibe harvest total por especie en el año y devuelve precios.
-
-inverse_demand <- function(H_t, demand_params) {
-  # H_t: vector harvest anual (S)
-  # demand_params: lista con coeficientes de tu modelo de demanda inversa
-  
-  # EJEMPLO: p_s = a_s + b_s * H_s + c_s * H_otros  (placeholder)
-  a <- demand_params$a   # vector a_s
-  b <- demand_params$b   # matriz (SxS) o algo similar
-  
-  p_t <- a + as.numeric(b %*% H_t)
-  p_t <- pmax(p_t, 1e-4) # evitar precios <= 0
-  
-  return(p_t)
-}
-
-
-#-------------------------------
-# 3) COSTO ANUAL C(H)
-#-------------------------------
-# Aquí usas el bloque del PASO 1:
-# harvest anual óptimo por barco/flota -> Poisson -> costo anual total.
-# Para el NPV, lo que importa es el costo agregado por especie o flota.
-
-annual_cost <- function(H_t, year, scenario, cost_env) {
-  # H_t: vector harvest anual (por especie o por flota, según tu diseño)
-  # year: año t
-  # scenario: etiqueta de clima si la usas
-  # cost_env: lista con:
-  #   - modelos poisson
-  #   - modelos costo por viaje
-  #   - shares por barco
-  #   - precios de insumos, etc.
-  
-  # 1. Construir un data.frame "sim_grid" con:
-  #    vessel_id, gear, year, H_total (por barco), precios insumos, Z...
-  sim_grid <- build_sim_grid_for_year(
-    H_t      = H_t,
-    year     = year,
-    scenario = scenario,
-    cost_env = cost_env
-  )
-  
-  # 2. Aplicar la función del PASO 1:
-  sim_grid_out <- compute_annual_cost(
-    sim_grid   = sim_grid,
-    pois_model = cost_env$pois_model,
-    cost_model = cost_env$cost_model
-  )
-  
-  # 3. Sumar costos de todos los barcos/flotas:
-  C_total <- sum(sim_grid_out$cost_annual_hat)
-  
-  return(C_total)
-}
-
-
-#-------------------------------
-# 4) FUNCIÓN OBJETIVO NPV
-#-------------------------------
-# Los controles son las fracciones de explotación q_{s,t} = H_{s,t} / B_{s,t}
-# OJO: usamos PARÁMETRO q_vec = vector (S*(T_hor)) con q_{s,t}.
-
-npv_objective <- function(q_vec,
-                          B0,
-                          sur_params,
-                          demand_params,
-                          cost_env,
-                          climate_df,
-                          scenario = "base",
-                          rho = 0.05) {
-  
-  # Reorganizamos q_vec (vector largo) en matriz S x T
-  q_mat <- matrix(q_vec, nrow = S, ncol = T_hor,
-                  dimnames = list(species_names, paste0("year", 1:T_hor)))
-  
-  # Inicialización
-  B_t <- B0
-  npv  <- 0
-  
-  for (t in 1:T_hor) {
-    # 1. Harvest anual: H_t = q_{t} * B_t
-    q_t <- q_mat[, t]
-    q_t <- pmin(pmax(q_t, 0), 0.75)  # restringir 0 <= q <= 0.75 (ejemplo)
-    
-    H_t <- q_t * B_t
-    
-    # 2. Precios vía demanda inversa
-    p_t <- inverse_demand(H_t, demand_params)
-    
-    # 3. Costo anual total (usando módulo de viaje)
-    C_t <- annual_cost(H_t, year = t, scenario = scenario, cost_env = cost_env)
-    
-    # 4. Ingresos anuales
-    revenue_t <- sum(p_t * H_t)
-    
-    # 5. Beneficio anual
-    profit_t <- revenue_t - C_t
-    
-    # 6. Descuento
-    npv <- npv + profit_t / ((1 + rho)^(t - 1))
-    
-    # 7. Actualizar biomasa usando SUR + clima
-    climate_row <- climate_df[climate_df$year == t & climate_df$scenario == scenario, ]
-    B_t <- biomass_dynamics(B_t, H_t, climate_row, sur_params)
-  }
-  
-  # Optim usamos minimización, así que devolvemos -NPV
-  return(-npv)
-}
-
-
-#-------------------------------
-# 5) LLAMAR A OPTIM
-#-------------------------------
-
-# Valores iniciales para q (por ejemplo, 0.1 para todas las especies/años)
-q0 <- rep(0.1, S * T_hor)
-
-# Cotas para q: [0, 0.75]
-lower_q <- rep(0,   S * T_hor)
-upper_q <- rep(0.75, S * T_hor)
-
-# Llamada a optim (L-BFGS-B permite bounds)
-opt_res <- optim(
-  par     = q0,
-  fn      = npv_objective,
-  method  = "L-BFGS-B",
-  lower   = lower_q,
-  upper   = upper_q,
-  B0      = B0,
-  sur_params    = sur_params,
-  demand_params = demand_params,
-  cost_env      = cost_env,
-  climate_df    = climate_df,
-  scenario      = "GFDL",      # o "base", "IPSL", lo que definas
-  rho           = rho
-)
-
-opt_res$value        # -NPV óptimo
-q_opt_vec <- opt_res$par
-q_opt_mat <- matrix(q_opt_vec, nrow = S, ncol = T_hor,
-                    dimnames = list(species_names, paste0("year", 1:T_hor)))
-
+kable(env_table, format = "latex", booktabs = TRUE, escape = FALSE,
+      caption = "Projected environmental changes for Centro-Sur Chile (IPSL-CM6A-LR, delta method)",
+      label = "env_projections") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 10)
 
 ```
 
-## Projections
+### Projected changes in biomass growth capacity
 
+The SUR environmental coefficients imply asymmetric impacts across species (Table \ref{tab:biomass_proj}). Sardine growth capacity increases substantially under all scenarios, driven by the large positive and significant SST$^2$ coefficient and the strong CHL response. In contrast, jack mackerel growth declines sharply due to its concave thermal response---warming pushes temperatures away from the species' thermal optimum. Anchoveta growth capacity also declines, though less severely, primarily through the negative SST effect.
 
+```{r biomass_proj_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-```{r proyecciones, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
-
-# climate_df
-#   year scenario  sst   chl
-# 1 2000  "hist"   ...   ...
-# 2 2001  "hist"   ...   ...
-# ...
-# N 2025  "GFDL"   ...   ...
-# N+1 2026 "GFDL"  ...   ...
-# ...
-# M 2050  "GFDL"   ...   ...
-
-climate_df <- climate_df |>
-  group_by(scenario) |>
+bp_table <- biomass_proj %>%
   mutate(
-    sst_anom = (sst - mean(sst[year %in% 1995:2020 & scenario == "hist"])) / sd(sst[year %in% 1995:2020 & scenario == "hist"]),
-    chl_anom = (chl - mean(chl[year %in% 1995:2020 & scenario == "hist"])) / sd(chl[year %in% 1995:2020 & scenario == "hist"])
-  )
+    SSP = ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
+    Window = ifelse(window == "mid", "2041--2060", "2081--2100"),
+    Sardine = paste0(round(pct_sardine, 1), "\\%"),
+    Anchoveta = paste0(round(pct_anchoveta, 1), "\\%"),
+    `Jack mackerel` = paste0(round(pct_jurel, 1), "\\%")
+  ) %>%
+  select(SSP, Window, Sardine, Anchoveta, `Jack mackerel`)
 
-
-npv_objective <- function(q_vec,
-                          B0,
-                          sur_params,
-                          demand_params,
-                          cost_env,
-                          climate_df,
-                          scenario = "GFDL",
-                          rho = 0.05) {
-  
-  q_mat <- matrix(q_vec, nrow = S, ncol = T_hor,
-                  dimnames = list(species_names, paste0("year", 1:T_hor)))
-  
-  B_t <- B0
-  npv <- 0
-  
-  # Suponemos que t = 1 corresponde a un año base, por ejemplo 2025
-  start_year <- 2025
-  
-  for (t in 1:T_hor) {
-    
-    year_t <- start_year + (t - 1)
-    
-    # 1. Harvest anual
-    q_t <- q_mat[, t]
-    q_t <- pmin(pmax(q_t, 0), 0.75)
-    H_t <- q_t * B_t
-    
-    # 2. Precios vía demanda inversa
-    p_t <- inverse_demand(H_t, demand_params)
-    
-    # 3. Costo anual (usa Poisson + costo por viaje por debajo)
-    C_t <- annual_cost(H_t, year = year_t, scenario = scenario, cost_env = cost_env)
-    
-    revenue_t <- sum(p_t * H_t)
-    profit_t  <- revenue_t - C_t
-    
-    npv <- npv + profit_t / ((1 + rho)^(t - 1))
-    
-    # 4. Obtener las variables ambientales de ese año y escenario
-    climate_row <- climate_df[climate_df$year == year_t & 
-                              climate_df$scenario == scenario, ]
-    
-    # 5. Actualizar biomasa usando SUR + clima proyectado
-    B_t <- biomass_dynamics(B_t, H_t, climate_row, sur_params)
-  }
-  
-  return(-npv)
-}
-
-
-
-biomass_dynamics <- function(B_t, H_t, climate_row, sur_params) {
-  # Ejemplo:
-  sst_anom <- climate_row$sst_anom
-  chl_anom <- climate_row$chl_anom
-  
-  # g_s(B_t, SST, CHL) estimado con SUR
-  # Aquí enchufas tus coeficientes reales:
-  growth <- with(sur_params, {
-    r * B_t * (1 - B_t / K) +
-      beta_sst * sst_anom +
-      beta_chl * chl_anom +
-      beta_inter * (sst_anom * chl_anom) # solo si lo tienes
-  })
-  
-  B_next <- pmax(B_t + growth - H_t, 1e-6)
-  return(B_next)
-}
-
-
-opt_GFDL <- optim(..., scenario = "GFDL", ...)
-opt_IPSL <- optim(..., scenario = "IPSL", ...)
-opt_HADL <- optim(..., scenario = "HADL", ...)
-
+kable(bp_table, format = "latex", booktabs = TRUE, escape = FALSE,
+      caption = "Projected change in species growth capacity (\\% change from historical mean, comparative statics on SUR coefficients)",
+      label = "biomass_proj") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
+  footnote(general = "Computed at mean biomass levels. Values reflect the partial effect of projected SST and CHL changes on the SUR growth equation, relative to the historical mean of $y_i$ (next-period biomass plus harvest).",
+           general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 
 ```
 
+### Decomposition of climate effects on fishing effort
 
-\<\< NO RESULTS YET \>\>
+Table \ref{tab:decomposition} presents the central result: the projected percentage change in annual fishing trips decomposed into the direct weather channel and the indirect biomass channel. The decomposition reveals that the indirect channel dominates---changes in stock productivity, transmitted through harvest allocations, drive the bulk of the effort response.
 
-Once I have results for the four models, then I can run optimizations
+```{r decomposition_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+dec_table <- decomposition %>%
+  mutate(
+    Fleet = ifelse(TIPO_FLOTA == "IND", "Industrial", "Artisanal"),
+    SSP = ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
+    Window = ifelse(window == "mid", "2041--2060", "2081--2100")
+  ) %>%
+  select(Fleet, SSP, Window,
+         `Direct (weather)` = pct_wind_only,
+         `Indirect (biomass)` = pct_indirect,
+         Combined = pct_combined)
+
+kable(dec_table, format = "latex", booktabs = TRUE, escape = FALSE,
+      digits = 1,
+      caption = "Projected \\% change in annual fishing trips by channel and fleet",
+      label = "decomposition") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
+  footnote(general = "Direct channel: change in bad weather days from projected wind speed. Indirect channel: change in harvest allocation from projected biomass growth capacity. Combined: both channels applied simultaneously. Harvest allocation scaling capped at [0.2, 3.0] of current levels.",
+           general_title = "Note:", escape = FALSE, threeparttable = TRUE)
+
+```
+
+```{r projection_figure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=5, fig.width=8}
+
+library(ggplot2)
+library(tidyr)
+
+plot_data <- decomposition %>%
+  mutate(
+    Fleet = ifelse(TIPO_FLOTA == "IND", "Industrial", "Artisanal"),
+    Scenario = paste0(ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
+                      "\n", ifelse(window == "mid", "Mid-century", "End-century"))
+  ) %>%
+  select(Fleet, Scenario, `Direct (weather)` = pct_wind_only,
+         `Indirect (biomass)` = pct_indirect) %>%
+  pivot_longer(cols = c(`Direct (weather)`, `Indirect (biomass)`),
+               names_to = "Channel", values_to = "pct_change")
+
+ggplot(plot_data, aes(x = Scenario, y = pct_change, fill = Channel)) +
+  geom_col(position = "stack", width = 0.7) +
+  facet_wrap(~Fleet, scales = "free_y") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  labs(x = NULL, y = "Change in annual trips (%)", fill = "Channel") +
+  scale_fill_manual(values = c("Direct (weather)" = "#4393c3",
+                                "Indirect (biomass)" = "#d6604d")) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(face = "bold", size = 12),
+    axis.text.x = element_text(size = 9)
+  )
+
+```
+
+The results reveal a stark asymmetry between fleet segments. Artisanal fishing effort increases by 20--250\% across scenarios, driven by the expansion of sardine growth capacity under warming. Since artisanal vessels predominantly target sardine, the increase in sardine biomass translates into larger harvest allocations and more annual trips. The effect is strongest under SSP5-8.5 end-of-century, where sardine growth capacity more than doubles.
+
+Industrial fishing effort, in contrast, declines by approximately 22\% across all scenarios. The industrial fleet is more dependent on jack mackerel, whose thermal optimum response means that warming of any magnitude reduces growth capacity. The consistency of the industrial decline across scenarios reflects the capped harvest allocation scaling and the dominance of jack mackerel in the industrial species mix.
+
+The direct weather channel is negligible in all scenarios (less than 5\% in magnitude), reflecting the limited projected changes in wind speed for the Chilean coast under IPSL-CM6A-LR. This finding implies that the primary mechanism through which climate change affects fishing effort in this fishery is biological rather than operational.
+
+
+These findings have important implications for fisheries management under climate change in Chile. The divergent responses across fleet segments suggest that uniform management policies may be inadequate, and that adaptation planning should account for the heterogeneous vulnerability of different fleets to environmental change.
 
 # Discussion
 
--   From @sumaila2011: "A shift in species’ geographic range will thus
-    affect the distribution and composition of fisheries resources. This
-    may affect fishing operations, the allocation of catch shares and
-    the effectiveness of fisheries management measures"
--   For the ITQ fisheries (i.e., industrial jack mackerel?:
-    -   The theoretical findings on multispecies harvest patterns in
-        @Birkenbach2020-nh give rise to nuanced hypotheses about how
-        behavior and outcomes will change after the adoption of catch
-        shares. For example, a secure property right to catch fish at
-        any time in the fishing season allows firms to spread the catch
-        of stocks with high prices and downward-sloping demand over a
-        longer fishing season. This minimizes market gluts that steer
-        product toward lower priced frozen markets [@homans2005] and can
-        result in higher prices for those species. Fishermen might also
-        shift their efforts toward lower-priced species with cheaper
-        quota or toward non-catch-share fisheries, intensifying the race
-        to fish for those species during portions of the season
-        [@asche2007; @cunningham2016spillovers].
-        -   However, we do not include other species than jack mackerel,
-            sardine and anchovy that might be caught by thise fleet.
-            This would require too expand the model by **N** species,
-            which would increase dimensionality of the model.
-        -   We need permits to check if actually this happen (... still
-            problem with Open-Access fisheries that do not require
-            permits)
--   Although the present model captures the historical relationships
-    between biomass, temperature, and productivity, future strengthening
-    of coastal winds and warming of the Chilean coast (Fuenzalida et al.
-    2007; Garreaud et al. 2009) could shift these dynamics, altering
-    species overlap and fishery composition.
--   About using CHL for future predictions.
-    -   From @sumaila2011: "However, our understanding of the magnitude
-        and direction of climate change effects on primary productivity
-        is uncertain. For example, projections of primary production
-        based on an empirical relationship estimate increases of
-        0.7–8.1% by 2050 relative to 2000 (ref. 39), whereas outputs
-        from four Earth-system models suggest a possible decrease of
-        2–20% by 2100 relative to pre-industrial conditions12. The
-        opposite trends and the large regional differences of the
-        estimates highlight the uncertainty in the projection of
-        large-scale changes in primary productivity".
--   About prices [@sumaila2011]:
-    -   "Everything being equal, when climate change reduces fish
-        supply, fish price should increase, which could be large enough
-        to balance out the loss in gross revenues due to reduced
-        catches. However, consumers may seek substitutes as prices
-        increase, thereby dampening the demand for fish and reducing the
-        potential for price increases."
-    -   "Ex-vessel revenues can be affected by climate change through
-        effects first on the quantity, quality and distribution of
-        catches, and then, on ex-vessel prices of fish."
--   Adaptation [@sumaila2011]:
-    -   "When climate change affects the composition and productivity of
-        exploited species in a region, some fishers can adapt by
-        switching target species or gear type81 or by moving to
-        marginally productive areas. Grafton, R. Q. Adaptation to
-        climate change in marine capture fisheries. Mar. Policy 34,
-        606–615 (2010)."
-        -   "For example, new fisheries have already developed for
-            several southern species in the UK (for example, red mullet)
-            as these species have started to migrate to the North Sea
-            because of an increase in sea temperature. Beare, D. J. et
-            al. Long-term increase in prevalence of North Sea fishes
-            having southern biogeographic affinities. Mar. Ecol. Prog.
-            Ser. 284, 269–278 (2004)."
-        -   "The ability of fishers and fishing enterprises to adapt
-            depends on a number of factors, including the mobility of
-            the fishing fleet. - "At present, the dominant hypothesis is
-            that more technologically advanced fleets, usually located
-            in rich northern countries, are more likely to be better
-            prepared to adapt to climate change by moving to other
-            fishing grounds and by shifting gears. MacNeil, M. A. et al.
-            Transitional states in marine fisheries: adapting to
-            predicted global change. Phil. Trans. R. Soc. B 365,
-            3753–3763 (2011)."
--   we did not added production risk.... risk preferences? maybe using
-    random coefficients? Discusse!!!
+Our results reveal a fundamental asymmetry in how climate change affects different segments of Chile’s small pelagic fishery. The artisanal fleet, which predominantly targets sardine, stands to benefit from warming through increased stock growth capacity, while the industrial fleet, which depends more heavily on jack mackerel, faces declining productivity as ocean temperatures move away from that species’ thermal optimum. This finding aligns with the broader literature on heterogeneous climate impacts across fleet segments [@sumaila2011; @Free2019] and underscores that aggregate projections can mask important distributional consequences within the same fishery.
 
-_ Julio Peña: Mejorar transferibilidad multispecie de las cuotas, y entre sectores artesanales e industrial
+The decomposition of climate effects into direct (weather) and indirect (biomass) channels provides a novel contribution to the fisheries-climate literature. The finding that the indirect biomass channel dominates---accounting for virtually all of the projected effort response---has important implications for both research and management. It suggests that the primary pathway through which climate change will reshape fishing activity in this region is through altered species productivity, transmitted via quota allocations, rather than through changes in operational conditions at sea. This result is consistent with the limited sensitivity of near-surface wind patterns to greenhouse forcing in the southeastern Pacific, as projected by the IPSL-CM6A-LR model, although multi-model ensembles would be needed to assess the robustness of this finding.
+
+The species-level biomass projections deserve careful interpretation. The large projected increase in sardine growth capacity under warming reflects the strong positive response of sardine to SST in the estimated SUR equations. While this is consistent with the historical observation that sardine populations in the Humboldt system tend to expand during warm phases [@Chavez2003-xt], the magnitude of the projected changes---particularly under end-of-century SSP5-8.5---should be viewed as indicative of the direction and relative scale of impacts rather than as precise point forecasts. Several sources of uncertainty affect these projections, including the small sample size of the SUR estimation (N=23), the use of a single climate model, and the assumption that historical relationships between environmental conditions and biomass will remain stable under novel climate states.
+
+The projected decline in jack mackerel growth capacity raises important questions for the management of Chile’s largest pelagic fishery. As a highly migratory, transboundary stock managed under the South Pacific Regional Fisheries Management Organisation (SPRFMO), jack mackerel’s future trajectory depends not only on local environmental conditions but also on international harvest agreements and the stock’s distributional response to warming [@Arcos2001-jq]. Our comparative statics approach captures only the local productivity effect and does not account for potential range shifts, which could either exacerbate or mitigate the projected declines depending on whether jack mackerel moves toward or away from Chilean waters.
+
+Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the effort responses capture the mechanical effect of changed environmental and biological conditions without accounting for endogenous price adjustments or adaptive management. @sumaila2011 note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches. Our companion paper will incorporate an inverse demand system and numerical optimization to capture these equilibrium adjustments. Second, the use of chlorophyll-a projections from a single Earth system model introduces additional uncertainty, as the direction and magnitude of primary productivity changes under climate change remain contested across models [@sumaila2011; @Free2019]. Third, our models do not explicitly incorporate risk preferences or production risk, which may play an important role in shaping fleet-level responses to environmental variability [@Kasperski2013-jz; @Sethi2014-bn].
+
+The finding that climate change creates winners and losers within the same fishery has direct implications for quota allocation policy. Chile’s current system allocates quotas separately for the artisanal and industrial sectors, with limited transferability across fleet segments. If sardine productivity increases while jack mackerel declines, the relative value of artisanal quotas could rise substantially, potentially motivating reforms to the quota allocation system to allow more flexible cross-sector transfers. This echoes the theoretical work of @Birkenbach2020-nh on multispecies harvest patterns under catch shares, and the practical observation that secure property rights can help fishers adapt to changing species composition by reallocating effort across their portfolio.
 
 # Conclusions
 
-NO YET!
+This paper estimates a multi-species bioeconomic model for Chile's small pelagic fishery and projects the impact of climate change on fishing effort under CMIP6 scenarios. We contribute to the literature in three ways. First, we jointly estimate stock dynamics and fishing effort in a multi-species setting that captures both biological interdependencies (through a SUR biomass model) and economic responses (through a negative binomial trip equation), applied to a major developing-country fishery. Second, we decompose the projected climate impact on fishing effort into a direct weather channel and an indirect biomass channel, showing that the latter dominates. Third, we document a stark asymmetry between fleet segments: the artisanal fleet benefits from warming-driven sardine expansion while the industrial fleet faces declining jack mackerel productivity, with implications for the distributional consequences of climate change in multi-fleet fisheries.
 
+Our projections indicate that climate change will reshape the composition of fishing activity in Chile's Centro-Sur region. Under moderate warming (SSP2-4.5, mid-century), artisanal effort is projected to increase by approximately 20\%, while industrial effort declines by a similar magnitude. Under high-emission end-of-century conditions (SSP5-8.5, 2081--2100), the divergence between fleets becomes substantially larger. These results suggest that management policies focused on aggregate effort levels may miss important heterogeneity across fleets and species, and that climate adaptation in this fishery will need to address the uneven distribution of impacts.
 
-## Future research question
-
--   Several other extensions to the model can be incorporated to be
-    improved. For instance, the geographical space where fishermen
-    operate is relevant, as depending on the location chosen and when to
-    participate, the set of potential choices would vary
-    [@Reimer2017-jw]. As I mentioned above, it is possible to extend the
-    stock dynamic model by considering different locations. The model
-    would also require that the participation decision, which is
-    captured by the Poisson model on the annual number of trips, should
-    then consider the decision to participate in a determined fishing
-    ground, connecting the multispecies model of @Kasperski2015-jm to
-    the literature of location choice modeling [e.g., @Dupont1993-jn;
-    @Smith2005-us; @Hicks2020-mz].
-
-  -   About the DCM?
-    -   Including other economic activity would be relevant, as
-        aquaculture is become more relevant in the country, where
-        some fishermen have swith to small-scale aquaculture
-        practice.
-    -   Outside option...
-
--   Does higher quota allocation of jack mackerel, a predator for
-    anchovy and sardine, helps small scale sector actually?
-    
-    
-- From @KASPERSKI201655: "In this paper, optimality refers to maximizing the net present value of the harvests of the combined three fisheries and does not consider other ecological or social objectives which would be important to consider in an ecosystem based fisheries management approach."
+Several extensions to the present framework are planned. A companion paper will incorporate trip-level cost functions and an inverse demand system to enable full numerical optimization of quota paths under climate change, following the complete @Kasperski2015-jm approach. The spatial dimension of effort allocation is also a natural extension, connecting the multi-species model to the location choice literature [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz], since the geographic distribution of species availability is likely to shift under warming. Finally, incorporating risk preferences and production risk---through, for example, random coefficient models---would provide a richer characterization of how fishers respond to the increased environmental variability projected under climate change [@Kasperski2013-jz].
 
 # Repository
 

@@ -81,7 +81,8 @@ source("R/00_config/config.R")
 # Requires: CMIP6 NetCDF files in D:/GitHub/climate_projections/CMIP6/
 #           EnvCoastDaily_2012_2025_0.125deg.rds from step 3
 #           poisson_dt.rds from step 4
-# source("R/06_projections/01_cmip6_deltas.R")      # -> data/projections/cmip6_deltas.rds
+# source("R/06_projections/01_cmip6_deltas.R")        # -> data/projections/cmip6_deltas.rds
 # source("R/06_projections/02_project_and_predict.R") # -> data/projections/nb_predictions_climate.rds
+# source("R/06_projections/03_project_biomass.R")     # -> data/projections/decomposition_table.rds
 
 cat("\n=== Pipeline complete ===\n")
