@@ -351,6 +351,9 @@ library(ggplot2)
 library(tidyr)
 library(purrr)
 
+# Ensure dplyr::select is not masked by MASS::select
+select <- dplyr::select
+
 # Build shares per vessel/fleet/year/species
 vessel_species_year <- logbooks %>%
   filter(year >= 2019) %>%

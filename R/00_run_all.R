@@ -36,6 +36,10 @@
 #  |   |-- base_datos_costos.R     <- Trip reconstruction from logbooks
 #  |   |-- base_datos_precios.R    <- Ex-vessel prices database
 #  |
+#  |-- 06_projections/             <- Climate change projections
+#  |   |-- 01_cmip6_deltas.R       <- CMIP6 delta-method (wind, SST, CHL)
+#  |   |-- 02_project_and_predict.R <- Apply deltas + NB prediction
+#  |
 #  |-- env_2000_2011/              <- Legacy pipeline (2000-2011 data)
 #  |-- archive/                    <- Deprecated / reference code
 #
@@ -72,5 +76,12 @@ source("R/00_config/config.R")
 # --- 5. Student modules ---
 # source("R/05_students/base_datos_costos.R")    # -> data/outputs/trip_base_wide.xlsx
 # source("R/05_students/base_datos_precios.R")   # -> base_precios.rds
+
+# --- 6. Climate projections ---
+# Requires: CMIP6 NetCDF files in D:/GitHub/climate_projections/CMIP6/
+#           EnvCoastDaily_2012_2025_0.125deg.rds from step 3
+#           poisson_dt.rds from step 4
+# source("R/06_projections/01_cmip6_deltas.R")      # -> data/projections/cmip6_deltas.rds
+# source("R/06_projections/02_project_and_predict.R") # -> data/projections/nb_predictions_climate.rds
 
 cat("\n=== Pipeline complete ===\n")
