@@ -32,6 +32,11 @@ libs/
 *.out
 *.bbl
 *.blg
+*.knit.md
+*_files/
+
+# --- Archive (old manuscript + legacy code) ---
+/archive/
 
 # --- OS / system ---
 Thumbs.db

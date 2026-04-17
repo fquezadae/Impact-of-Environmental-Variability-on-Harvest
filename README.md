@@ -9,107 +9,117 @@
 
 ## Overview
 
-This repository contains the bioeconomic modeling framework developed under FONDECYT Iniciación project on the Chilean Centro-Sur (CS) small pelagic fishery (SPF), composed of *Strangomera bentincki* (common sardine), *Engraulis ringens* (anchoveta), and *Trachurus murphyi* (jack mackerel).
+This repository contains the bioeconomic modeling framework developed under FONDECYT Iniciación for the Chilean Centro-Sur (CS) small pelagic fishery (SPF), composed of *Strangomera bentincki* (common sardine), *Engraulis ringens* (anchoveta), and *Trachurus murphyi* (jack mackerel).
 
-Building on the Kasperski (2015) multi-species harvesting framework and augmented with environmental covariates, the project estimates the economic and biological interrelations governing harvest decisions, species substitution, and ex-vessel price formation. The estimated structural equations are used to simulate fleet-level responses and welfare impacts under alternative climate scenarios (SSP2-4.5, SSP5-8.5), informing adaptation pathways for Chilean fishers and fishing communities.
+The project is organized into **two papers**:
 
-## Research question
-
-*How are fishing decisions, aggregate catch levels, and ex-vessel prices affected under alternative climate scenarios in the Chilean SPF?*
-
-## Model structure
-
-The model is modular. Each module is estimated independently and later integrated into a common simulation core.
-
-| Module | Specification | Status |
+| Paper | Title | Status |
 |---|---|---|
-| Stock biomass | Seemingly Unrelated Regressions (SUR) on own biomass, SST, SST², CHL | Complete |
-| Fishing trips | Negative Binomial count model, fleet-specific (IND, ART) | Complete |
-| Cost function | To be specified (student-led) | In progress |
-| Ex-vessel prices | Panel FE with Driscoll-Kraay SE; OLS and IV-FE side by side | In progress |
-| Climate projections | Delta-method bias correction (CMIP6 IPSL-CM6A-LR vs. Copernicus baselines) | Pipeline available |
+| **Paper 1** | Climate Change, Stock Productivity, and Fishing Effort | Draft ready |
+| **Paper 2** | Optimal Quota Allocation under Climate Change: A Bioeconomic Approach | In progress |
+
+## Paper 1: Climate projections
+
+Estimates a three-equation SUR model for stock dynamics and a negative binomial model for annual fishing trips. Combines these with CMIP6 projections (IPSL-CM6A-LR, SSP2-4.5 and SSP5-8.5) using the delta method to project climate impacts on fishing effort through direct (weather) and indirect (biomass) channels.
+
+**Key finding:** Artisanal fleet effort increases (20--250%) due to sardine expansion under warming; industrial fleet effort declines (~22%) due to jack mackerel productivity loss.
+
+## Paper 2: Bioeconomic optimization
+
+Extends Paper 1 with trip-level restricted cost functions, an inverse almost ideal demand system (IADS), and numerical optimization following Kasperski & Holland (2013, 2016). Determines optimal quota paths and welfare impacts under climate scenarios.
 
 ## Repository structure
 
 ```
-R/
-├── 00_config/config.R              # Paths, libraries, constants
-├── 00_run_all.R                    # Master pipeline
+.
+├── paper1/                             # Paper 1: Climate projections
+│   └── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
 │
-├── 01_data_cleaning/               # Raw data → clean .rds
-│   ├── harvest_data.R              # SERNAPESCA + IFOP harvest records
-│   ├── logbook_data.R              # IFOP logbooks (trip records)
-│   ├── biomass_data.R              # Stock biomass + interpolation
-│   └── tac_processing.R            # TAC allocation by species/region
+├── paper2/                             # Paper 2: Bioeconomic optimization
+│   └── paper2_bioeconomic_optimization.Rmd
 │
-├── 02_env_processing/              # NetCDF → daily env grids
-│   ├── load_glorys.R               # SST, salinity, currents (GLORYS12)
-│   ├── load_wind.R                 # Wind speed/direction (hourly → daily)
-│   ├── load_chl.R                  # Chlorophyll-a (ocean colour)
-│   └── merge_env_data.R            # Merge to common 0.125° grid
+├── R/                                  # Shared R code pipeline
+│   ├── 00_config/config.R              # Paths, libraries, constants
+│   ├── 00_run_all.R                    # Master pipeline
+│   ├── 01_data_cleaning/               # Raw data -> clean .rds
+│   │   ├── harvest_data.R
+│   │   ├── logbook_data.R
+│   │   ├── biomass_data.R
+│   │   └── tac_processing.R
+│   ├── 02_env_processing/              # NetCDF -> daily env grids
+│   │   ├── load_glorys.R
+│   │   ├── load_wind.R
+│   │   ├── load_chl.R
+│   │   └── merge_env_data.R
+│   ├── 03_env_spatial/                 # Spatial operations
+│   │   ├── dist_coast_env_data.R
+│   │   └── obtain_env_by_ports.R
+│   ├── 04_models/                      # Econometric estimation
+│   │   └── poisson_model.R
+│   ├── 05_students/                    # Student-led modules (Paper 2)
+│   │   ├── base_datos_costos.R         # Trip cost reconstruction
+│   │   └── base_datos_precios.R        # Ex-vessel prices database
+│   └── 06_projections/                 # Climate change projections (Paper 1)
+│       ├── 01_cmip6_deltas.R
+│       ├── 02_project_and_predict.R
+│       └── 03_project_biomass.R
 │
-├── 03_env_spatial/                 # Spatial operations on env data
-│   ├── dist_coast_env_data.R       # Distance-to-coast
-│   └── obtain_env_by_ports.R       # Port-buffer extraction
+├── data/                               # Processed data (.rds)
+│   ├── biomass/
+│   ├── harvest/
+│   ├── logbooks/
+│   ├── outputs/
+│   ├── ports/
+│   ├── projections/
+│   └── trips/
 │
-├── 04_models/                      # Econometric estimation
-│   └── poisson_model.R             # Trip count + harvest allocation
+├── figs/                               # Figures
+├── tables/                             # Exported tables
+├── slides/                             # Presentations
+├── logo/                               # Institutional logos
+├── archive/                            # Old manuscript + legacy code
 │
-├── 05_students/                    # Student-led modules
-│   ├── base_datos_costos.R         # Trip reconstruction from logbooks
-│   └── base_datos_precios.R        # Ex-vessel prices database
-│
-└── archive/                        # Legacy and reference code
+├── bibliography.bib                    # Shared bibliography
+├── apa.csl                             # Citation style
+├── knit.R                              # Render manuscripts
+└── libs/                               # Slide dependencies
 ```
 
 ## Data sources
 
 | Source | Variables |
 |---|---|
-| SERNAPESCA | Landings, quota monitoring records |
-| IFOP | Logbooks (haul coordinates, catch, effort); PRECIO and PROCESO sheets of the manufacturing survey |
+| SERNAPESCA | Landings, quota monitoring records, biological closures (vedas) |
+| IFOP | Logbooks (haul coordinates, catch, effort); manufacturing survey (prices) |
 | SUBPESCA | Veda calendar, annual TAC resolutions |
-| Banco Central de Chile | FOB fishmeal price series, IPC |
+| Banco Central de Chile | FOB fishmeal price, IPC |
 | CNE | Diesel prices by region |
-| Copernicus Marine Service | SST, salinity, currents (GLORYS12); chlorophyll-a (Ocean Colour L4); wind (ERA5) |
-| CMIP6 (IPSL-CM6A-LR) | Historical and projected SST, O₂, CHL, wind, salinity under SSP2-4.5 and SSP5-8.5 |
+| Copernicus Marine Service | SST (GLORYS12), chlorophyll-a, wind (ERA5) |
+| CMIP6 (IPSL-CM6A-LR) | Projected SST, CHL, wind under SSP2-4.5 and SSP5-8.5 |
 
-The study area covers CS regions (V, VI, VII, VIII, IX, X, XIV, XVI). Raw data are not redistributed; see `data/README.md` for access instructions.
+Raw data are not redistributed; see `data/README.md` for access instructions.
 
 ## Reproducibility
 
-Requirements:
-
-- R ≥ 4.2
-- Core packages: `MASS`, `lavaan`, `sf`, `openxlsx`, `writexl`, `stargazer`, `dplyr`, `data.table`, `ncdf4`
-- Optional: Python ≥ 3.10 with `openpyxl` (Excel inspection), `xarray` and `cdsapi` (Copernicus downloads)
-
-To reproduce the main results:
+Requirements: R >= 4.2, packages: `MASS`, `lavaan`, `sf`, `openxlsx`, `stargazer`, `dplyr`, `data.table`, `ncdf4`, `kableExtra`
 
 ```r
-# 1. Clone the repo and set the working directory to its root
-# 2. Populate data/raw/ (see data/README.md for access instructions)
-# 3. Run the master pipeline
+# Run the data pipeline
 source("R/00_run_all.R")
+
+# Render Paper 1
+source("knit.R")
 ```
-
-Individual modules can be executed after sourcing `R/00_config/config.R`.
-
-## Manuscript
-
-The main manuscript is developed in R Markdown (`manuscript.Rmd`). The target journals are *Environmental and Resource Economics* (ERE) and *Marine Resource Economics* (MRE). Robustness checks are reported in the appendices.
 
 ## Funding
 
-This work is funded by **ANID–FONDECYT Iniciación** (Chile).
+This work is funded by **ANID--FONDECYT Iniciación** (Chile).
 
 ## Citation
 
-If you use this code, please cite:
+> Quezada-Escalona, F. (2026a). Climate change, stock productivity, and fishing effort in Chile's multi-species small pelagic fishery. *Working paper, Universidad de Concepción.*
 
-> Quezada-Escalona, F. (forthcoming). Climate variability and harvest decisions in Chile's Centro-Sur small pelagic fishery. *Working paper, Universidad de Concepción.*
-
-A `CITATION.cff` file is included for automated citation export.
+> Quezada-Escalona, F. (forthcoming). Optimal quota allocation under climate change in Chile's multi-species small pelagic fishery. *Working paper, Universidad de Concepción.*
 
 ## Contact
 
@@ -119,4 +129,4 @@ Departamento de Economía, Universidad de Concepción
 
 ## License
 
-Code is released under the MIT License. See `LICENSE` for details. Data are subject to the licensing terms of the original providers.
+Code is released under the MIT License. Data are subject to the licensing terms of the original providers.

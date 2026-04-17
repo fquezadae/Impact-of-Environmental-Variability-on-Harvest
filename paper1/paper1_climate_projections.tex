@@ -111,25 +111,11 @@
 \usepackage{adjustbox}
 \author{Felipe J. Quezada-Escalona}
 \affil{Departmento de Economía \\ Universidad de Concepción \vspace{-48pt}}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile using a Multi-Species Approach},
+  pdftitle={Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species Small Pelagic Fishery},
   pdfauthor={Felipe J. Quezada-Escalona},
   colorlinks=true,
   linkcolor={blue},
@@ -138,21 +124,21 @@
   urlcolor={blue},
   pdfcreator={LaTeX via pandoc}}
 
-\title{The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile using a Multi-Species Approach}
+\title{Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species Small Pelagic Fishery}
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
-\subtitle{\begin{center}{\color{red}\Large\textbf{REALLY EARLY DRAFT – PLEASE DO NOT CITE}}\end{center}}
+\subtitle{\begin{center}{\color{red}\Large\textbf{DRAFT – PLEASE DO NOT CITE}}\end{center}}
 \author{Felipe J. Quezada-Escalona}
 \date{abril 17, 2026}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-In this paper, we aim to answer how fishing decisions, aggregate catch levels, and the price of marine resources will be affected under different climatic scenarios in the multi-species small pelagic fishery (SPF) in Chile, composed by anchoveta (\emph{Engraulis ringens}), jack mackerel (\emph{Trachurus murphyi}), and sardine (\emph{Strangomera bentincki}), among others. By doing this, we expect to gain a better understanding of how Chilean fishers and fishing communities will adapt to climate change. To address our research question, we will estimate a multi-species harvesting model. This model considers species' economic and biological interrelation to study the effect of climate variability on harvest decisions and substitution between species, and determine the impact of different climatic scenarios on the well-being (e.g., profits) of fishers and fishing communities in Chile. We hypothesize that when fishers have reduced access to a main target species, they will switch to the closest substitute if the expected revenue from targeting this new species exceeds the expected costs. Otherwise, the vessel would decrease fishing effort or even exit the fishery due to the lack of economically viable substitutes. Moreover, we expect that this behavior is heterogeneous depending on the geographical area of operation -- as it determines the availability of other species-- and the gear type used.
+We study how climate change will affect stock productivity and fishing effort in Chile's multi-species small pelagic fishery, composed of anchoveta (\emph{Engraulis ringens}), jack mackerel (\emph{Trachurus murphyi}), and sardine (\emph{Strangomera bentincki}). We estimate a three-equation Seemingly Unrelated Regression (SUR) model for stock growth as a function of biomass, sea surface temperature, and chlorophyll-a, and a negative binomial model for annual fishing trips as a function of prices, quotas, weather, and regulatory closures. Using CMIP6 projections from the IPSL-CM6A-LR model under SSP2-4.5 and SSP5-8.5 scenarios, we apply the delta method to project changes in environmental conditions at mid-century (2041--2060) and end-of-century (2081--2100). We decompose the projected climate impact on fishing effort into a direct weather channel (wind affecting operational days) and an indirect biomass channel (temperature and chlorophyll affecting stock productivity and harvest allocations). Results reveal a stark asymmetry: the artisanal fleet benefits from warming-driven sardine expansion (effort increases of 20--250\%), while the industrial fleet faces declining jack mackerel productivity (effort declines of approximately 22\%). The indirect biomass channel dominates, with the direct weather effect contributing less than 5\% of the total response. These findings highlight heterogeneous climate vulnerability across fleet segments and have implications for quota allocation policy in multi-species fisheries.
 \end{abstract}
 
 \section{Introduction}\label{introduction}
@@ -212,18 +198,7 @@ in maximum catch potential due to climate change.
 However, the Southeast Pacific remains one of the least studied regions
 regarding the impacts of climate change on fisheries (\citeproc{ref-sumaila2011}{Sumaila et al., 2011}).
 
-To address our research question, we will estimate a multi-species
-harvesting model based on Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}). This model considers
-species' economic and biological interrelations to study the effect of
-climate variability on harvest decisions and substitution between
-species, and to determine the impact of different climatic scenarios on
-the well-being (e.g., profits) of fishers and fishing communities in
-Chile. We expect to find significant effects of climate variables on
-species stock dynamics, the cost of fishing during a trip, and the
-number of trips a vessel takes. These environmental effects might
-influence optimal harvest levels and prices in local markets.
-
-Take into consideration the economic interaction between species is relevant to include how firms adjust to changes in policies, as relative prices between species might change. Also, cost complementarities between trageiting multispcies should be consideredn as it might be cheaper to harvest two species instead of one\ldots{} In this paper we allow for economic interaction between species by allowing vessel to have multiple-output production and the output price to be dependent on other species, similar to Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}).
+To address this question, we estimate a multi-species bioeconomic model inspired by Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}). This model captures the biological and economic interrelations among species to study how climate variability affects stock productivity and fishing effort. We estimate a three-equation SUR system for stock growth dynamics and a negative binomial model for annual fishing trips, and combine these with CMIP6 climate projections to project changes in fishing activity under different emission scenarios. We decompose the climate impact into a direct weather channel (wind affecting operational feasibility) and an indirect biomass channel (temperature and chlorophyll affecting stock growth and harvest allocations).
 
 Under a changing climate, studying the effect of climatic variability on
 fishers' harvest decisions and landings is relevant for understanding
@@ -494,13 +469,13 @@ Sardine, JackMackerel, Anchoveta, Other & 1 & 0.8 & 0 & 0.0\\
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-latex/switchStrategy-ART-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{paper1_climate_projections_files/figure-latex/switchStrategy-ART-1.pdf}}
 \caption{\label{fig:switchStrategy-ART}Strategy transitions for small-scale vessels}
 \end{figure}
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio]{manuscript_files/figure-latex/switchStrategy-IND-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{paper1_climate_projections_files/figure-latex/switchStrategy-IND-1.pdf}}
 \caption{\label{fig:switchStrategy-IND}Strategy transitions for industrial vessels}
 \end{figure}
 
@@ -508,7 +483,7 @@ Sardine, JackMackerel, Anchoveta, Other & 1 & 0.8 & 0 & 0.0\\
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{manuscript_files/figure-latex/monthlyharvest-1} 
+{\centering \includegraphics{paper1_climate_projections_files/figure-latex/monthlyharvest-1} 
 
 }
 
@@ -517,15 +492,7 @@ Sardine, JackMackerel, Anchoveta, Other & 1 & 0.8 & 0 & 0.0\\
 
 \section{Data and methodology}\label{data-and-methodology}
 
-To fulfill the research's objectives, and following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}),
-the research entails five different stages: (i) estimating the annual
-stock dynamics of each species included in the model, (ii) estimating
-trip level cost functions, (iii) estimating total annual trips, (iv)
-estimate the inverse demand model for outputs (i.e., price responses to
-supply), and (v) conduct numerical optimization to examine how harvest
-and profits levels evolve over time. The numeral optimization uses
-estimated parameters from the previous four stages to conduct the
-optimization procedure.
+Our empirical approach has three stages. First, we estimate a multi-species stock dynamics model using a SUR framework to capture how environmental conditions (SST, chlorophyll-a) affect the growth capacity of each species. Second, we estimate a negative binomial model for annual fishing trips as a function of prices, harvest allocations, weather conditions, and regulatory closures, separately for the artisanal and industrial fleets. Third, we combine the estimated models with CMIP6 climate projections to assess how climate change will affect stock productivity and fishing effort through both direct (weather) and indirect (biomass) channels. A companion paper extends this framework to include trip-level cost functions, an inverse demand system, and full numerical optimization of quota paths following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}).
 
 \subsection{Historical data}\label{historical-data}
 
@@ -595,25 +562,11 @@ The SPRFMO spawning biomass index, which covers the transzonal stock across the 
   industrial with ITQ (by vessel?)
 \end{itemize}
 
-\subsection{Future data for projections}\label{future-data-for-projections}
+\subsection{Future climate data}\label{future-climate-data}
 
-\begin{itemize}
-\tightlist
-\item
-  OracleBio
+Climate projections for SST, chlorophyll-a, and near-surface wind speed are obtained from the CMIP6 archive, using the IPSL-CM6A-LR Earth system model. We use monthly outputs for two future scenarios---SSP2-4.5 (moderate) and SSP5-8.5 (high emissions)---and two time windows---mid-century (2041--2060) and end-of-century (2081--2100)---against a 1995--2014 historical baseline. Details of the delta-method projection approach are presented in Section \ref{projection-approach}.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    Unfurtunally, only decadal (e.g., 2040--2050) projections for
-    different scenarios for SST, salinity, currents and chlorophyll
-    (4km resolution)
-  \item
-    No winds; CMIP6 for winds? (\textasciitilde100 km).
-  \end{itemize}
-\end{itemize}
-
-\subsection{Econometrics models}\label{econometrics-models}
+\subsection{Econometric models}\label{econometric-models}
 
 \subsubsection{Stock dynamics}\label{stock-dynamics}
 
@@ -648,7 +601,7 @@ Figure \ref{fig:biomass} shows that anchoveta, sardine, and jack mackerel exhibi
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{manuscript_files/figure-latex/biomass-1} 
+{\centering \includegraphics{paper1_climate_projections_files/figure-latex/biomass-1} 
 
 }
 
@@ -656,10 +609,6 @@ Figure \ref{fig:biomass} shows that anchoveta, sardine, and jack mackerel exhibi
 \end{figure}
 
 The SUR framework is particularly suited to this multi-species setting, as it allows for contemporaneous correlation among residuals that naturally arise from shared non-observed environmental shocks, trophic linkages, and imperfectly observed ecological processes. We estimate a three-equation SUR system using the SEM framework implemented in lavaan, freely allowing the error terms across biomass equations to be correlated. The model is estimated via robust maximum likelihood (MLR), yielding SUR coefficients with Huber--White robust standard errors. Cross-species interaction terms were tested as an extension but did not improve model fit (see Section 4.1 and Appendix \ref{appendix-robustness}).
-
-\subsubsection{Trip level cost functions}\label{trip-level-cost-functions}
-
-The full Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}) framework includes trip-level restricted cost functions estimated separately for each fleet segment, capturing how vessel characteristics, stock levels, and input prices interact to determine operating costs. These cost functions, together with an inverse demand system for ex-vessel prices, feed into a numerical optimization that determines optimal quotas and harvest paths under climate change. The estimation of these components requires detailed trip-level cost data (fuel expenditure, crew wages, and trip duration) that is currently being compiled from IFOP logbooks. This module will be completed in a companion paper that extends the present analysis to a full bioeconomic optimization, following the approach in Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}) and Kasperski (\citeproc{ref-KASPERSKI201655}{2016}).
 
 \subsubsection{Total annual trips}\label{total-annual-trips}
 
@@ -697,27 +646,17 @@ H^{alloc}_{vy}=\sum_{s} H^{alloc}_{vy,s}.
 
 Each vessel is assigned to its administrative region based on its modal departure port from the logbook records. Artisanal TACs are assigned at the regional level (regions V, VIII, IX, XIV, X), while industrial TACs follow the regulatory zone structure established by SUBPESCA (zones V--IX and XIV--X for jack mackerel; zone V--X for sardine and anchoveta). This regional construction introduces cross-sectional variation in \(H^{alloc}_{vy}\) that reflects the heterogeneous quota environments faced by vessels operating in different parts of the Centro-Sur fishery.
 
-This construction is essential for the forward-looking simulation framework. When the social planner chooses aggregate TAC paths \(\{\bar{Q}_{sy}\}\), Eq.\textasciitilde{}\eqref{eq:Halloc} generates internally consistent vessel-level harvest allocations that can be combined with predicted trips and trip-level cost functions to compute total harvesting costs.
-
 The vector \(Z_v\) contains time-invariant vessel characteristics, including hold capacity (log of cubic meters) and vessel type. Hold capacity determines the physical constraint on catch per trip and proxies for vessel scale.
 
 The vector \(Env_{vy}\) captures operating and regulatory constraints that vary across both vessels and years. Unlike the environmental variables in the stock dynamics model, which reflect biological productivity (SST, chlorophyll-a), the variables in the trip equation capture conditions that affect the \emph{feasibility} of fishing operations. Two vessel--year variables are constructed using each vessel's center of gravity (COG)---the catch-weighted centroid of its haul locations over the sample period. First, the number of days with adverse weather conditions is computed as the count of days per year in which wind speed exceeds 8\textasciitilde m/s at the environmental grid point nearest to the vessel's COG.\footnote{The wind threshold of 8~m/s corresponds approximately to Beaufort scale 5, at which purse-seine operations become difficult for artisanal vessels. This threshold was selected based on model fit (AIC comparison across 8, 10, and 12~m/s thresholds); robustness checks are reported in Appendix~\ref{appendix-robustness}.} Second, the number of days closed due to biological closures (\textit{vedas}) is assigned based on the regulatory zone corresponding to the vessel's COG latitude. In the Centro-Sur region, sardine and anchoveta face seasonal closures for reproduction (August--October in regions V--VIII; July--October in regions IX--XIV) and recruitment (January--February in all regions), yielding 151 and 182 closed days per year, respectively. Jack mackerel has no biological closures.
 
-Quota prices are not included explicitly in the trip equation. Instead, the economic scarcity of quota is captured implicitly through aggregate TAC levels and vessel-level allocated harvest. In the simulation stage, quota scarcity generates shadow values that affect optimal harvest and effort decisions through profits rather than through an explicit quota price term.
+Quota prices are not included explicitly in the trip equation. Instead, the economic scarcity of quota is captured implicitly through aggregate TAC levels and vessel-level allocated harvest.
 
-Trips, harvest, and prices may be jointly determined within the year, implying potential endogeneity in reduced-form trip regressions. However, the purpose of Eq.\textasciitilde{}\eqref{eq:poisson_trips} is not causal identification but rather to provide an empirically grounded behavioral relationship that maps changes in prices, quotas, and environmental conditions into expected fishing effort for use in the bioeconomic simulation.
+Trips, harvest, and prices may be jointly determined within the year, implying potential endogeneity in reduced-form trip regressions. However, the purpose of Eq.\textasciitilde{}\eqref{eq:poisson_trips} is not causal identification but rather to provide an empirically grounded behavioral relationship that maps changes in prices, quotas, and environmental conditions into expected fishing effort under projected climate scenarios.
 
-\subsubsection{Inverse demand model}\label{inverse-demand-model}
+\subsection{Projection approach}\label{projection-approach}
 
-The full bioeconomic model additionally requires an inverse demand system to endogenize ex-vessel prices as a function of aggregate landings. Following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the price of each species can be modeled using an Inverse Almost Ideal Demand System (IADS), estimated via three-stage least squares to account for the simultaneity between harvest and prices. The estimation of this component, together with the cost functions described above, is deferred to a companion paper that will incorporate the complete numerical optimization framework.
-
-\subsection{Numerical optimization}\label{numerical-optimization}
-
-The present analysis focuses on the reduced-form projections of fishing effort under climate change, holding prices and management rules at their historical levels. A companion paper will extend this framework to a full numerical optimization following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), in which vessels maximize profits by jointly choosing the number of trips and the harvest portfolio per trip, subject to individual quota constraints. That extension will incorporate the trip-level cost functions and inverse demand system described above, enabling welfare analysis and the computation of optimal quota paths under alternative climate scenarios.
-
-\subsection{Projections}\label{projections}
-
-As noted by Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the multi-species bioeconomic framework is particularly suited for long-term projections of fish populations and fishing activity rather than intra-annual management responses. However, because our empirical models are estimated on interannual variability rather than decadal trends, the projections presented here capture the impact of changed environmental conditions without accounting for endogenous adaptation by fishers or managers (\citeproc{ref-Aufhammer2018}{\textbf{Aufhammer2018?}}). This provides a useful benchmark for understanding the direction and magnitude of climate impacts, while acknowledging that behavioral responses may attenuate or amplify these effects over time.
+As noted by Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the multi-species bioeconomic framework is particularly suited for long-term projections of fish populations and fishing activity rather than intra-annual management responses. However, because our empirical models are estimated on interannual variability rather than decadal trends, the projections presented here capture the impact of changed environmental conditions without accounting for endogenous adaptation by fishers or managers (\citeproc{ref-Aufhammer2018}{Aufhammer, 2018}). This provides a useful benchmark for understanding the direction and magnitude of climate impacts, while acknowledging that behavioral responses may attenuate or amplify these effects over time.
 
 \section{Results}\label{results}
 
@@ -849,7 +788,7 @@ We assess the impact of climate change on fishing effort through two channels: (
 
 \subsubsection{Projection methodology}\label{projection-methodology}
 
-Climate projections are derived from the IPSL-CM6A-LR Earth system model under two Shared Socioeconomic Pathways: SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions). We apply the delta method (\citeproc{ref-Free2019}{Free et al., 2019}; \citeproc{ref-Burke2015}{\textbf{Burke2015?}}), which preserves the observed interannual variability and fine-scale spatial structure from satellite records while imposing the climate change signal from CMIP6. For each variable, the delta is computed as the difference (additive for SST and wind speed) or ratio (multiplicative for chlorophyll-a) between the CMIP6 future climatology and the CMIP6 historical climatology (1995--2014 baseline), applied cyclically to each calendar month. We consider two future time windows: mid-century (2041--2060) and end-of-century (2081--2100).
+Climate projections are derived from the IPSL-CM6A-LR Earth system model under two Shared Socioeconomic Pathways: SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions). We apply the delta method (\citeproc{ref-Burke2015}{Burke et al., 2015}; \citeproc{ref-Free2019}{Free et al., 2019}), which preserves the observed interannual variability and fine-scale spatial structure from satellite records while imposing the climate change signal from CMIP6. For each variable, the delta is computed as the difference (additive for SST and wind speed) or ratio (multiplicative for chlorophyll-a) between the CMIP6 future climatology and the CMIP6 historical climatology (1995--2014 baseline), applied cyclically to each calendar month. We consider two future time windows: mid-century (2041--2060) and end-of-century (2081--2100).
 
 For the direct weather channel, monthly wind speed deltas from CMIP6 are interpolated to the observed 0.125-degree wind grid and applied additively to daily wind speed observations. Bad weather days (wind speed exceeding 8 m/s) are then recomputed under each scenario and fed into the NB trip equation. For the indirect biomass channel, we compute changes in growth capacity for each species using comparative statics on the SUR environmental coefficients, evaluating the predicted change in \(y_i\) (next-period biomass plus current harvest) under projected versus historical SST and chlorophyll-a, holding biomass at its historical mean. These growth capacity changes are translated into proportional changes in harvest allocations (\(H^{alloc}_{vy}\)), weighted by each vessel's historical species composition.
 
@@ -864,7 +803,7 @@ Table \ref{tab:env_projections} summarizes the projected environmental changes f
 \fontsize{10}{12}\selectfont
 \begin{tabular}[t]{llrrr}
 \toprule
-SSP & Window & $\Delta$ SST ($^\circ$C) & $\Delta$ CHL (ratio) & $\Delta$ Wind (m/s)\\
+SSP & Window & SST (deg C) & CHL (ratio) & Wind (m/s)\\
 \midrule
 SSP2-4.5 & 2081--2100 & 1.480 & 0.942 & 0.037\\
 SSP2-4.5 & 2041--2060 & 0.811 & 0.971 & 0.060\\
@@ -935,7 +874,7 @@ Industrial & SSP5-8.5 & 2041--2060 & 0.1 & -21.7 & -21.7\\
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{manuscript_files/figure-latex/projection_figure-1} 
+{\centering \includegraphics{paper1_climate_projections_files/figure-latex/projection_figure-1} 
 
 }
 
@@ -956,9 +895,9 @@ Our results reveal a fundamental asymmetry in how climate change affects differe
 
 The decomposition of climate effects into direct (weather) and indirect (biomass) channels provides a novel contribution to the fisheries-climate literature. The finding that the indirect biomass channel dominates---accounting for virtually all of the projected effort response---has important implications for both research and management. It suggests that the primary pathway through which climate change will reshape fishing activity in this region is through altered species productivity, transmitted via quota allocations, rather than through changes in operational conditions at sea. This result is consistent with the limited sensitivity of near-surface wind patterns to greenhouse forcing in the southeastern Pacific, as projected by the IPSL-CM6A-LR model, although multi-model ensembles would be needed to assess the robustness of this finding.
 
-The species-level biomass projections deserve careful interpretation. The large projected increase in sardine growth capacity under warming reflects the strong positive response of sardine to SST in the estimated SUR equations. While this is consistent with the historical observation that sardine populations in the Humboldt system tend to expand during warm phases (\citeproc{ref-Chavez2003-xt}{\textbf{Chavez2003-xt?}}), the magnitude of the projected changes---particularly under end-of-century SSP5-8.5---should be viewed as indicative of the direction and relative scale of impacts rather than as precise point forecasts. Several sources of uncertainty affect these projections, including the small sample size of the SUR estimation (N=23), the use of a single climate model, and the assumption that historical relationships between environmental conditions and biomass will remain stable under novel climate states.
+The species-level biomass projections deserve careful interpretation. The large projected increase in sardine growth capacity under warming reflects the strong positive response of sardine to SST in the estimated SUR equations. While this is consistent with the historical observation that sardine populations in the Humboldt system tend to expand during warm phases (\citeproc{ref-Chavez2003-as}{Chavez et al., 2003}), the magnitude of the projected changes---particularly under end-of-century SSP5-8.5---should be viewed as indicative of the direction and relative scale of impacts rather than as precise point forecasts. Several sources of uncertainty affect these projections, including the small sample size of the SUR estimation (N=23), the use of a single climate model, and the assumption that historical relationships between environmental conditions and biomass will remain stable under novel climate states.
 
-The projected decline in jack mackerel growth capacity raises important questions for the management of Chile's largest pelagic fishery. As a highly migratory, transboundary stock managed under the South Pacific Regional Fisheries Management Organisation (SPRFMO), jack mackerel's future trajectory depends not only on local environmental conditions but also on international harvest agreements and the stock's distributional response to warming (\citeproc{ref-Arcos2001-jq}{\textbf{Arcos2001-jq?}}). Our comparative statics approach captures only the local productivity effect and does not account for potential range shifts, which could either exacerbate or mitigate the projected declines depending on whether jack mackerel moves toward or away from Chilean waters.
+The projected decline in jack mackerel growth capacity raises important questions for the management of Chile's largest pelagic fishery. As a highly migratory, transboundary stock managed under the South Pacific Regional Fisheries Management Organisation (SPRFMO), jack mackerel's future trajectory depends not only on local environmental conditions but also on international harvest agreements and the stock's distributional response to warming (\citeproc{ref-Arcos2001-jq}{Arcos et al., 2001}). Our comparative statics approach captures only the local productivity effect and does not account for potential range shifts, which could either exacerbate or mitigate the projected declines depending on whether jack mackerel moves toward or away from Chilean waters.
 
 Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the effort responses capture the mechanical effect of changed environmental and biological conditions without accounting for endogenous price adjustments or adaptive management. Sumaila et al. (\citeproc{ref-sumaila2011}{2011}) note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches. Our companion paper will incorporate an inverse demand system and numerical optimization to capture these equilibrium adjustments. Second, the use of chlorophyll-a projections from a single Earth system model introduces additional uncertainty, as the direction and magnitude of primary productivity changes under climate change remain contested across models (\citeproc{ref-Free2019}{Free et al., 2019}; \citeproc{ref-sumaila2011}{Sumaila et al., 2011}). Third, our models do not explicitly incorporate risk preferences or production risk, which may play an important role in shaping fleet-level responses to environmental variability (\citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Sethi2014-bn}{Sethi et al., 2014}).
 
@@ -993,6 +932,12 @@ Alheit, J., \& Niquen, M. (2004). Regime shifts in the humboldt current ecosyste
 \bibitem[\citeproctext]{ref-Arancibia2019-FIPA}
 Arancibia, H., Klarian, S., Alarcón, R., Barros, M., Harrod, C., Jackson, A., Schultz, E. T., Medina, M., Neira, S., \& Valdés, J. (2019). \emph{Informe final proyecto FIPA 2017-63: Conducta trófica del jurel}. Universidad de Concepción; Universidad Andrés Bello; Universidad Arturo Prat; Universidad de Antofagasta. \url{https://www.subpesca.cl/fipa/613/articles-98303_informe_final.pdf}
 
+\bibitem[\citeproctext]{ref-Arcos2001-jq}
+Arcos, D. F., Cubillos, L. A., \& Núñez, S. P. (2001). Fish populations and the chilean current fluctuations. \emph{Revista Chilena de Historia Natural}, \emph{74}(3), 543--561.
+
+\bibitem[\citeproctext]{ref-Aufhammer2018}
+Aufhammer, M. (2018). Quantifying climatic and weather impacts on health in the presence of adaptation. \emph{Annals of the New York Academy of Sciences}, \emph{1411}(1), 69--81. \url{https://doi.org/10.1111/nyas.13625}
+
 \bibitem[\citeproctext]{ref-Axbard2016}
 Axbard, S. (2016). Income opportunities and sea piracy in indonesia: Evidence from satellite data. \emph{American Economic Journal: Applied Economics}, \emph{8}(2), 154--194. \url{https://doi.org/10.1257/app.20140404}
 
@@ -1005,11 +950,17 @@ Birkenbach, A. M., Cojocaru, A. L., Asche, F., Guttormsen, A. G., \& Smith, M. D
 \bibitem[\citeproctext]{ref-Birkenbach2024}
 Birkenbach, A. M., Lee, M.-Y., \& Smith, M. D. (2024). Counterfactual modeling of multispecies fisheries outcomes under market-based regulation. \emph{Journal of the Association of Environmental and Resource Economists}, \emph{11}(3), 755--796. \url{https://doi.org/10.1086/727356}
 
+\bibitem[\citeproctext]{ref-Burke2015}
+Burke, M., Hsiang, S. M., \& Miguel, E. (2015). Global non-linear effect of temperature on economic production. \emph{Nature}, \emph{527}(7577), 235--239. \url{https://doi.org/10.1038/nature15725}
+
 \bibitem[\citeproctext]{ref-cahuin2009}
 Cahuin, S. M., Cubillos, L. A., Niquen, M., \& Escribano, R. (2009). Climatic regimes and the recruitment rate of anchoveta, engraulis ringens, off peru. \emph{Estuarine, Coastal and Shelf Science}, \emph{84}(4), 591--597.
 
 \bibitem[\citeproctext]{ref-Carter2018}
 Carter, C., Cui, X., Ghanem, D., \& Mérel, P. (2018). Identifying the economic impacts of climate change on agriculture {[}Journal Article{]}. \emph{Annual Review of Resource Economics}, \emph{10}(Volume 10, 2018), 361--380. https://doi.org/\url{https://doi.org/10.1146/annurev-resource-100517-022938}
+
+\bibitem[\citeproctext]{ref-Chavez2003-as}
+Chavez, F. P., Ryan, J., Lluch-Cota, S. E., \& C., M. Ñ. (2003). From anchovies to sardines and back: Multidecadal change in the pacific ocean. \emph{Science}, \emph{299}(5604), 217--221.
 
 \bibitem[\citeproctext]{ref-Cherdchuchai2006}
 Cherdchuchai, S., \& Otsuka, K. (2006). Rural income dynamics and poverty reduction in thai villages from 1987 to 2004. \emph{Agricultural Economics}, \emph{35}(s3), 409--423. https://doi.org/\url{https://doi.org/10.1111/j.1574-0862.2006.00187.x}
@@ -1070,9 +1021,6 @@ Jennings, S., Mélin, F., Blanchard, J. L., Forster, R. M., Dulvy, N. K., \& Wil
 
 \bibitem[\citeproctext]{ref-Kasperski2015-jm}
 Kasperski, S. (2015). Optimal multi-species harvesting in ecologically and economically interdependent fisheries. \emph{Environ. Resour. Econ.}, \emph{61}(4), 517--557.
-
-\bibitem[\citeproctext]{ref-KASPERSKI201655}
-Kasperski, S. (2016). Optimal multispecies harvesting in the presence of a nuisance species. \emph{Marine Policy}, \emph{64}, 55--63. https://doi.org/\url{https://doi.org/10.1016/j.marpol.2015.11.009}
 
 \bibitem[\citeproctext]{ref-Kasperski2013-jz}
 Kasperski, S., \& Holland, D. S. (2013). Income diversification and risk for fishermen. \emph{Proc. Natl. Acad. Sci. U. S. A.}, \emph{110}(6), 2076--2081.
