@@ -1846,7 +1846,7 @@ wind_summary  <- readRDS("data/projections/summary_pct_change.rds")
 
 ### Projected environmental changes
 
-Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area. Sea surface temperature increases by 0.8--2.3$^\circ$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century. Chlorophyll-a declines moderately (2--6\%), consistent with increased stratification reducing nutrient supply to the surface. Wind speed changes are negligible across all scenarios ($<$0.1 m/s), reflecting the limited sensitivity of near-surface atmospheric circulation to greenhouse forcing in the IPSL model for this region.
+Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area. Sea surface temperature increases by 0.8--2.3$^{\circ}$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century. Chlorophyll-a declines moderately (2--6\%), consistent with increased stratification reducing nutrient supply to the surface. Wind speed changes are negligible across all scenarios ($< 0.1$ m/s), reflecting the limited sensitivity of near-surface atmospheric circulation to greenhouse forcing in the IPSL model for this region.
 
 ```{r env_projections_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
