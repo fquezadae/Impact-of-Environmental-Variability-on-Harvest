@@ -1,0 +1,207 @@
+---
+title: "Optimal Quota Allocation under Climate Change in Chile's Multi-Species
+  Small Pelagic Fishery: A Bioeconomic Approach"
+subtitle: "\\begin{center}{\\color{red}\\Large\\textbf{DRAFT – PLEASE DO NOT CITE}}\\end{center}"
+author: "Felipe J. Quezada-Escalona"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    number_sections: true
+    toc: false
+    pandoc_args: ["--variable=fontsize:11pt"]
+  bookdown::latex_document2: default
+bibliography: bibliography.bib
+csl: apa.csl
+linkcolor: blue
+citecolor: blue
+urlcolor: blue
+link-citations: TRUE
+header-includes:
+  - \usepackage{setspace}
+  - \onehalfspacing
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{10pt}
+  - \usepackage{authblk}
+  - \usepackage{booktabs}
+  - \usepackage{caption}
+  - \usepackage{dcolumn}
+  - \usepackage{adjustbox}
+  - \author{Felipe J. Quezada-Escalona}
+  - \affil{Departmento de Economía \\ Universidad de Concepción \vspace{-48pt}}
+editor_options:
+  markdown:
+    wrap: 72
+abstract: "This paper develops a full bioeconomic optimization model for Chile's multi-species small pelagic fishery (SPF) to assess the welfare consequences of climate change and evaluate optimal quota allocation paths. Building on the stock dynamics and fishing effort models estimated in a companion paper (Quezada-Escalona, 2026a), we estimate trip-level restricted cost functions for the industrial and artisanal purse-seine fleets and an inverse almost ideal demand system (IADS) for ex-vessel prices. These components are integrated into a numerical optimization framework following Kasperski and Holland (2013, 2016), in which a social planner maximizes the net present value of the fishery by choosing optimal quota paths under CMIP6 climate scenarios. The model captures heterogeneous fleet responses to changing species productivity, prices, and costs, and allows us to quantify the distributional welfare consequences across fleet segments and to evaluate whether the current quota allocation system is robust to projected environmental changes."
+---
+
+```{r directorio, message=FALSE, warning=FALSE, include=FALSE}
+rm(list = ls())
+gc()
+
+usuario <- Sys.info()[["user"]]
+if (usuario == "felip") {
+  dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "FACEA") {
+  dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else {
+  stop("Usuario no reconocido. Defina el directorio correspondiente.")
+}
+rm(usuario)
+
+```
+
+# Introduction
+
+<!-- This paper is the second in a two-paper series studying the impact of climate change on Chile's small pelagic fishery. The first paper (Quezada-Escalona, 2026a) estimates the relationship between environmental conditions, stock productivity, and fishing effort, documenting asymmetric climate impacts across fleet segments. This paper extends that analysis to a full bioeconomic optimization framework. -->
+
+Climate change is expected to alter the productivity and distribution of marine fish stocks worldwide [@Poloczanska2013-qq; @Free2019], with significant implications for fisheries-dependent communities. Understanding how these biological changes translate into economic outcomes---through changes in fishing costs, output prices, and optimal management rules---requires a bioeconomic framework that integrates stock dynamics, fleet behavior, and market equilibrium.
+
+In a companion paper [Quezada-Escalona, 2026a], we document that climate change has asymmetric effects on stock productivity in Chile's multi-species small pelagic fishery: sardine growth capacity increases under warming while jack mackerel declines. These biological changes translate into divergent effort responses across the artisanal and industrial fleets. However, those projections hold prices and management rules constant, leaving open the question of how optimal quota allocation should respond to changing biological conditions and what the welfare consequences are for each fleet segment.
+
+This paper addresses these questions by developing a full bioeconomic optimization model following @Kasperski2015-jm and @KASPERSKI201655. We estimate trip-level restricted cost functions for the industrial and artisanal purse-seine fleets and an inverse almost ideal demand system (IADS) for ex-vessel prices of anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), and sardine (*Strangomera bentincki*). These components, together with the stock dynamics (SUR) and effort (negative binomial) models from the companion paper, feed into a numerical optimization in which a social planner maximizes the net present value (NPV) of the fishery by choosing species-specific quota paths under alternative CMIP6 climate scenarios.
+
+The Chilean SPF is particularly well-suited for this analysis because of its multi-species character, the coexistence of artisanal and industrial fleets operating under distinct regulatory regimes, and the availability of detailed administrative data on quotas, landings, and fleet operations. Our model allows us to evaluate whether the current quota allocation rules are robust to projected environmental changes, and to quantify the welfare gains from adapting quota policy to climate-driven shifts in species productivity.
+
+
+# Institutional background
+
+The institutional setting of Chile's SPF, including the regulatory framework, quota allocation system, fleet structure, and switching patterns, is described in detail in the companion paper [Quezada-Escalona, 2026a]. Here we provide a brief summary of the features most relevant to the optimization framework.
+
+<!-- Reference key institutional features from Paper 1: quota allocation, fleet segmentation, biological closures, etc. -->
+
+Chile's SPF is managed through annual total allowable catches (TACs) set by SUBPESCA based on scientific assessments by IFOP. The TAC is allocated between the industrial and artisanal sectors according to legally fixed fractional shares that differ by species and regulatory zone. Within the industrial sector, individual vessel quotas (IVQs) are allocated based on historical catch shares. Within the artisanal sector, quotas are allocated regionally. The TAC is assumed to be binding in each year, consistent with the assumption in @Kasperski2015-jm.
+
+
+# Data and methodology
+
+## Stock dynamics
+
+The multi-species stock dynamics model is estimated in the companion paper [Quezada-Escalona, 2026a] using a three-equation SUR system. The model relates next-period biomass plus current harvest ($y_i = B_{i,t+1} + H_{i,t}$) to current biomass, its square, SST, SST$^2$, and chlorophyll-a for each species $i \in \{\text{sardine, anchoveta, jack mackerel}\}$. The SUR framework captures contemporaneous correlation across species driven by shared environmental shocks. Estimation is by robust maximum likelihood (MLR) in lavaan with $N = 23$ annual observations (2000--2022). Full estimation results and robustness checks are reported in the companion paper.
+
+
+## Total annual trips
+
+The annual number of fishing trips is modeled using a negative binomial specification estimated separately for each fleet segment, as detailed in the companion paper [Quezada-Escalona, 2026a]. The trip equation maps prices, allocated harvest, weather conditions, and regulatory closures into expected fishing effort and serves as the behavioral bridge between quota allocation and fleet-level harvesting activity.
+
+
+## Trip-level cost functions
+
+We estimate restricted cost functions for both the artisanal and industrial purse-seine fleets. The inputs that we treat as variable are time at sea (priced at the average hourly crew wage) and distance traveled (priced at the diesel cost per nautical mile). Vessel characteristics and stock levels are treated as fixed inputs.
+
+The quadratic approximation of the cost function for vessel $v$ using gear $g$ is:
+
+\begin{equation}
+C_{vg} = \sum_{i=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i} \mathbf{X}_{ivg} + \frac{1}{2} \sum_{i=1}^{2n+M+k} \sum_{j=1}^{2n+M+k} \alpha_{g, \mathbf{X}_i\mathbf{X}_j} \mathbf{X}_{ivg} \mathbf{X}_{jvg}
+\label{eq:cost_function}
+\end{equation}
+
+where $C_{vg} = w z_{vg}^*$, $\mathbf{X}_{vg} = [w; h_{vg}; x; Z_v]$, $w$ is a $V_g \times M$ matrix of variable input prices, $h_{vg}$ is a $V_g \times n$ matrix of harvest quantities, $x$ is a $V_g \times n$ matrix of given stock levels, and $Z_v$ is a $V_g \times k$ matrix of vessel characteristics. To link the cost function to climate change, we augment $\mathbf{X}_{vg}$ with environmental variables $Env$ (wind intensity, wave conditions) at the harvest location: $\mathbf{X}'_{vg} = [w; h_{vg}; x; Z_v; Env]$.
+
+Together with the cost function, we estimate the conditional input demand equations derived by Shepard's Lemma:
+
+\begin{equation}
+\frac{\partial C_{vg}}{\partial w_m} = z^*_{vg,w_m} = \alpha_{g,w_m} + \sum_{j=1}^{2n+M+k} \alpha_{g,w_m,\mathbf{X}_j} \mathbf{X}_{jvg} \quad m = 1,\ldots,M.
+\label{eq:input_demand}
+\end{equation}
+
+The system formed by Eqs.~\eqref{eq:cost_function} and \eqref{eq:input_demand} is estimated using SUR with the following regularity conditions imposed:
+
+1. **Symmetry**: $\alpha_{g,\mathbf{X}_i\mathbf{X}_j} = \alpha_{g,\mathbf{X}_j\mathbf{X}_i}$ for all $i \neq j$, ensuring the cost function is a valid dual.
+
+2. **Linear homogeneity in input prices**: $\sum_m^M \alpha_{g,w_m} = 1$ and $\sum_m^M \alpha_{g,w_m,\mathbf{X}_i} = 0$, ensuring that proportional changes in all input prices translate into proportional changes in total cost.
+
+These restrictions guarantee theoretical coherence and increase estimation efficiency by imposing cross-equation constraints [@Kasperski2015-jm].
+
+Following @Kasperski2015-jm, we assume a two-stage vessel optimization: in the first stage, vessels choose the cost-minimizing input combination for any given output vector; in the second stage, they choose their optimal harvest portfolio. Under this sequential process, outputs are treated as exogenous in the cost function estimation.
+
+Trip-level data are obtained from IFOP logbooks, which provide geo-referenced catch information per trip. Fixed costs are excluded, as they should not affect marginal optimization decisions [@Kasperski2015-jm].
+
+
+## Inverse demand model
+
+The price of each species is modeled using an Inverse Almost Ideal Demand System (IADS). The log price of species $i$ in year $y$ is:
+
+\begin{equation}
+\ln p_{iy} = \sum_j^n \gamma_j \ln h_{j,y} + \gamma_{H} \ln H + \gamma_{FM} \ln P^{\text{FishMeal}} + \epsilon_{iy}, \quad i = 1,\ldots,n, \; j = 1,\ldots,n.
+\label{eq:iads}
+\end{equation}
+
+where $h_{j,y}$ is the harvest of species $j$, $H$ is total aggregate harvest, and $P^{\text{FishMeal}}$ is the international fishmeal price (FOB), which acts as a demand shifter capturing the transmission of international market conditions to domestic ex-vessel prices.
+
+Due to the simultaneity between harvest and prices, the system is estimated using Three-Stage Least Squares (3SLS), with harvest instrumented by variables that affect the supply side (SST, chlorophyll-a, fuel prices) but not demand directly.
+
+<!-- TODO: Separate by fleet (IND vs ART) due to quality differences? -->
+<!-- TODO: Distinguish between direct human consumption and indirect (fishmeal) processing? -->
+
+
+## Numerical optimization
+
+To project the effect of climate change on stock, harvest, quota, and profits, we solve a numerical optimization using the parameter estimates from the stock dynamics, cost functions, trip equation, and inverse demand system. In each year, vessel $v$ using gear $g$ maximizes profits by choosing the optimal number of trips $T_g$ and the harvest portfolio per trip $h_{g\tau}$:
+
+\begin{align}
+\max_{h_{g\tau}, T_g} \quad \pi_{vg} & = \sum_{\tau=1}^{T_g} \rho^\tau \left\{ P(h) h_{g\tau} - C_g(h_{g\tau} \mid w, x, Z, Env) \right\} \nonumber \\
+\textbf{s.t.} \quad q_{g,\tau+1} & = \omega \cdot \bar{q} - \sum_{s=1}^{\tau} h_{gs} \geq 0, \quad \tau = 1, \dots, T_g-1, \quad g = 1, \dots, G
+\label{eq:vessel_optimization}
+\end{align}
+
+where $\rho$ is the intra-annual discount factor, $\omega$ is the vector of quota shares (from historical data), and $\bar{q}$ is the TAC vector. The optimal profit is $\pi_{vg}^*(p, w, x, Z, \bar{q}, \omega, Env)$.
+
+To determine the socially optimal TAC paths, we solve the social planner's problem:
+
+\begin{equation}
+\max_{\{\bar{Q}_{sy}\}_{s,y}} \sum_{y=1}^{T_{hor}} \frac{1}{(1+r)^{y-1}} \sum_{v} \pi_{vg}^*(\bar{Q}_y, \cdot)
+\label{eq:social_planner}
+\end{equation}
+
+subject to the stock dynamics constraints from the SUR model and non-negativity of biomass. Following @Kasperski2015-jm, the optimization horizon is 25 years. We solve this problem under the SSP2-4.5 and SSP5-8.5 climate scenarios, using the environmental projections from the companion paper.
+
+We assume that quota is not tradable across fleet segments but allocated individually within each segment. This avoids the need to model participation decisions of other vessels in each vessel's annual maximization [@Kasperski2015-jm].
+
+
+## Climate scenarios
+
+Climate projections for SST, chlorophyll-a, and wind speed are identical to those used in the companion paper [Quezada-Escalona, 2026a], derived from the IPSL-CM6A-LR model under SSP2-4.5 and SSP5-8.5 using the delta method. We consider mid-century (2041--2060) and end-of-century (2081--2100) time windows against a 1995--2014 baseline.
+
+
+# Results
+
+## Trip-level cost functions
+
+<!-- TODO: Cost function estimation results (by July 2026) -->
+
+## Inverse demand
+
+<!-- TODO: IADS estimation results -->
+
+## Optimal quota paths
+
+<!-- TODO: Optimization results comparing current vs optimal TAC allocation under climate scenarios -->
+
+## Welfare analysis
+
+<!-- TODO: NPV decomposition by fleet segment, species, and scenario -->
+
+
+# Discussion
+
+<!-- TODO:
+- How do optimal quotas differ from current allocation rules?
+- Welfare gains from adaptive management
+- Implications for quota transferability across fleets (Julio Peña suggestion)
+- Comparison with Kasperski & Holland (2013, 2016) results for Alaska
+- Role of price adjustments (inverse demand) in dampening/amplifying climate impacts
+- Limitations: single climate model, no entry/exit decisions, no spatial dimension
+-->
+
+
+# Conclusions
+
+<!-- TODO: Write after results are available -->
+
+
+# References
+
+<div id="refs"></div>
