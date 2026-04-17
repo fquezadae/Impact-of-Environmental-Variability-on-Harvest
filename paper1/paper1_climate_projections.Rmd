@@ -3,7 +3,7 @@ title: "Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-
   Small Pelagic Fishery"
 subtitle: "\\begin{center}{\\color{red}\\Large\\textbf{DRAFT – PLEASE DO NOT CITE}}\\end{center}"
 author: "Felipe J. Quezada-Escalona"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+date: "`r withr::with_locale(c(LC_TIME = 'English'), format(Sys.Date(), '%B %Y'))`"
 output: 
   bookdown::pdf_document2:
     latex_engine: xelatex
