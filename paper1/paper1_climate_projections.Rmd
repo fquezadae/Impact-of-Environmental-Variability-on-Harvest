@@ -27,6 +27,7 @@ header-includes:
   - \usepackage{caption}
   - \usepackage{dcolumn}
   - \usepackage{adjustbox}
+  - \usepackage{threeparttable}
   - \author{Felipe J. Quezada-Escalona}
   - \affil{Departmento de Economía \\ Universidad de Concepción \vspace{-48pt}}
 editor_options: 
@@ -1848,7 +1849,7 @@ wind_summary  <- readRDS("data/projections/summary_pct_change.rds")
 
 Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area. Sea surface temperature increases by 0.8--2.3$^{\circ}$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century. Chlorophyll-a declines moderately (2--6\%), consistent with increased stratification reducing nutrient supply to the surface. Wind speed changes are negligible across all scenarios ($< 0.1$ m/s), reflecting the limited sensitivity of near-surface atmospheric circulation to greenhouse forcing in the IPSL model for this region.
 
-```{r env_projections_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+```{r envprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 library(knitr)
 library(kableExtra)
@@ -1871,9 +1872,8 @@ env_table <- env_wide[, .(SSP, Window,
                            `CHL (ratio)` = chl,
                            `Wind (m/s)` = wind_speed)]
 
-kable(env_table, format = "latex", booktabs = TRUE, escape = TRUE,
-      caption = "Projected environmental changes for Centro-Sur Chile (IPSL-CM6A-LR, delta method)",
-      label = "env_projections") %>%
+kable(env_table, format = "latex", booktabs = TRUE, escape = FALSE,
+      caption = "Projected environmental changes for Centro-Sur Chile (IPSL-CM6A-LR, delta method) \\label{tab:env_projections}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 10)
 
 ```
@@ -1882,7 +1882,7 @@ kable(env_table, format = "latex", booktabs = TRUE, escape = TRUE,
 
 The SUR environmental coefficients imply asymmetric impacts across species (Table \ref{tab:biomass_proj}). Sardine growth capacity increases substantially under all scenarios, driven by the large positive and significant SST$^2$ coefficient and the strong CHL response. In contrast, jack mackerel growth declines sharply due to its concave thermal response---warming pushes temperatures away from the species' thermal optimum. Anchoveta growth capacity also declines, though less severely, primarily through the negative SST effect.
 
-```{r biomass_proj_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+```{r biomassprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 bp_table <- biomass_proj %>%
   mutate(
@@ -1895,8 +1895,7 @@ bp_table <- biomass_proj %>%
   select(SSP, Window, Sardine, Anchoveta, `Jack mackerel`)
 
 kable(bp_table, format = "latex", booktabs = TRUE, escape = FALSE,
-      caption = "Projected change in species growth capacity (\\% change from historical mean, comparative statics on SUR coefficients)",
-      label = "biomass_proj") %>%
+      caption = "Projected change in species growth capacity (\\% change from historical mean, comparative statics on SUR coefficients) \\label{tab:biomass_proj}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
   footnote(general = "Computed at mean biomass levels. Values reflect the partial effect of projected SST and CHL changes on the SUR growth equation, relative to the historical mean of $y_i$ (next-period biomass plus harvest).",
            general_title = "Note:", escape = FALSE, threeparttable = TRUE)
@@ -1907,7 +1906,7 @@ kable(bp_table, format = "latex", booktabs = TRUE, escape = FALSE,
 
 Table \ref{tab:decomposition} presents the central result: the projected percentage change in annual fishing trips decomposed into the direct weather channel and the indirect biomass channel. The decomposition reveals that the indirect channel dominates---changes in stock productivity, transmitted through harvest allocations, drive the bulk of the effort response.
 
-```{r decomposition_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+```{r decompositiontable, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 dec_table <- decomposition %>%
   mutate(
@@ -1922,15 +1921,14 @@ dec_table <- decomposition %>%
 
 kable(dec_table, format = "latex", booktabs = TRUE, escape = FALSE,
       digits = 1,
-      caption = "Projected \\% change in annual fishing trips by channel and fleet",
-      label = "decomposition") %>%
+      caption = "Projected \\% change in annual fishing trips by channel and fleet \\label{tab:decomposition}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
   footnote(general = "Direct channel: change in bad weather days from projected wind speed. Indirect channel: change in harvest allocation from projected biomass growth capacity. Combined: both channels applied simultaneously. Harvest allocation scaling capped at [0.2, 3.0] of current levels.",
            general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 
 ```
 
-```{r projection_figure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=5, fig.width=8}
+```{r projfigure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=5, fig.width=8}
 
 library(ggplot2)
 library(tidyr)
