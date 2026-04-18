@@ -2,6 +2,32 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-18 (follow-up: Rmd cleanup)
+
+### Changed
+
+- Consolidated all `library()` calls in `paper1_climate_projections.Rmd`
+  into the `directorio` setup chunk. Removed 18 scattered `library()`
+  calls from individual chunks. The setup chunk now loads: `dplyr`,
+  `tidyr`, `data.table`, `tibble`, `janitor`, `ggplot2`, `scales`,
+  `viridis`, `lavaan`, `sandwich`, `lmtest`, `stargazer`, `kableExtra`.
+  Replaced a generic `library(tidyverse)` with the specific packages
+  actually used (`dplyr`, `tidyr`, `tibble`, `ggplot2`). Removed
+  `library(knitr)` (implicitly available during knit).
+- Replaced `library(MASS)` with namespaced calls `MASS::glm.nb(...)` in
+  the `est_poisson` chunk. MASS is no longer attached to the search
+  path, so it cannot mask `dplyr::select`.
+- Reverted the three defensive `dplyr::select(...)` calls (in chunks
+  `biomassprojections`, `decompositiontable`, `projfigure`) back to
+  plain `select(...)` — no longer needed once MASS is unloaded.
+
+### Fixed
+
+- Resized Figure 3 (`projfigure` chunk) so it fits the page width.
+  Changed `fig.width=8, fig.height=5` → `fig.width=6.5, fig.height=4`
+  and added `out.width='100%'`. Previously the figure overflowed the
+  text width at 11pt with 1in margins.
+
 ## 2026-04-18
 
 ### Fixed
