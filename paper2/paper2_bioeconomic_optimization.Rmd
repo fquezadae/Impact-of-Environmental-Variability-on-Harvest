@@ -79,7 +79,7 @@ Chile's SPF is managed through annual total allowable catches (TACs) set by SUBP
 
 ## Stock dynamics
 
-The multi-species stock dynamics model is estimated in the companion paper [Quezada-Escalona, 2026a] using a three-equation SUR system. The model relates next-period biomass plus current harvest ($y_i = B_{i,t+1} + H_{i,t}$) to current biomass, its square, SST, SST$^2$, and chlorophyll-a for each species $i \in \{\text{sardine, anchoveta, jack mackerel}\}$. The SUR framework captures contemporaneous correlation across species driven by shared environmental shocks. Estimation is by robust maximum likelihood (MLR) in lavaan with $N = 23$ annual observations (2000--2022). Full estimation results and robustness checks are reported in the companion paper.
+The multi-species stock dynamics model is estimated in the companion paper [Quezada-Escalona, 2026a] using a three-equation SUR system. The model relates next-period biomass plus current harvest ($y_i = B_{i,t+1} + H_{i,t}$) to current biomass, its square, SST, SST$^2$, and chlorophyll-a for each species $i \in \{\text{sardine, anchoveta, jack mackerel}\}$. The SUR framework captures contemporaneous correlation across species driven by shared environmental shocks. Estimation is by robust maximum likelihood (MLR) in lavaan with $N = 23$ annual observations covering the 2000--2024 sample (one observation lost to the lead structure). Full estimation results and robustness checks are reported in the companion paper.
 
 
 ## Total annual trips
