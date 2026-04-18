@@ -157,7 +157,7 @@ The SPRFMO spawning biomass index, which covers the transzonal stock across the 
 
 ```{r figEnvData, echo=FALSE, fig.align='center', fig.cap="Geographical extent of the study area used for environmental covariates limited to the Chilean Exclusive Economic Zone", message=FALSE, warning=FALSE, fig.pos='ht!', out.width='80%'}
 
-knitr::include_graphics("figs/env_data_map.pdf")
+knitr::include_graphics("../figs/env_data_map.pdf", error = FALSE)
 
 ```
 
@@ -986,7 +986,7 @@ kable(dec_table, format = "latex", booktabs = TRUE, escape = FALSE,
 
 ```
 
-```{r projfigure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=5, fig.width=8}
+```{r projfigure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=4, fig.width=6.5, out.width='100%'}
 
 library(ggplot2)
 library(tidyr)
