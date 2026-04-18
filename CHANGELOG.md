@@ -2,6 +2,59 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-18 (follow-up 2: manuscript consistency pass)
+
+### Changed
+
+- `paper1/paper1_climate_projections.Rmd`: consolidated the
+  delta-method projection methodology into Section 3.3 (Data and
+  methodology). Previously, the section labelled
+  `{#projection-approach}` contained only a one-paragraph caveat
+  (interannual vs decadal), while Section 3.2 cross-referenced it for
+  methodological detail; the actual delta-method description sat in a
+  `### Projection methodology` subheading inside Section 4.3 (Results).
+  Moved the two methodology paragraphs and the "two channels" framing
+  paragraph from 4.3.1 to 3.3, deleted the 4.3.1 subheading, and
+  replaced the top of Section 4.3 with a single-sentence pointer back
+  to §3.3. The `\ref{projection-approach}` cross-reference from §3.2
+  now resolves to the actual methodology.
+- `paper1/paper1_climate_projections.Rmd`: trimmed duplication between
+  Introduction and Section 2. Removed the fleet-split detail ("In
+  Chile, jack mackerel is predominantly harvested by the industrial
+  purse-seine fleet…") from the Introduction's third paragraph since
+  it is covered in Section 2's Management regime subsection. Removed
+  the "94% of total national fish landings" figure and the 3-species
+  enumeration from the opener of Section 2; both are already in
+  Introduction paragraph 2. Section 2 now opens with the
+  latitudinal-zone structure, which is what it contributes beyond the
+  Introduction.
+- `paper1/paper1_climate_projections.Rmd`: added a Discussion
+  paragraph interpreting the <5% direct weather channel as a
+  substantive finding rather than a null result — implies that
+  climate adaptation policy should focus on quota allocation /
+  transferability (institutional) rather than port infrastructure,
+  vessel reinforcement, or weather-indexed insurance (operational).
+  Conditional on the IPSL wind projection; flagged for revision under
+  multi-model ensembles.
+- `paper1/paper1_climate_projections.Rmd`: promoted the `days_closed_vy`
+  caveat from a footnote in Results to a fourth explicit limitation in
+  Discussion. The closure variable currently varies only across
+  regulatory zones (151 vs 182 days), so the positive coefficient for
+  the artisanal fleet reflects locational heterogeneity rather than a
+  causal effect of exposure to closed days.
+- `paper2/paper2_bioeconomic_optimization.Rmd`: updated the sample
+  description for the SUR model from "N = 23 annual observations
+  (2000–2022)" to "N = 23 annual observations covering the 2000–2024
+  sample (one observation lost to the lead structure)", consistent
+  with the biomass series used in paper1.
+
+### Fixed
+
+- `paper1/paper1_climate_projections.Rmd`: removed an inline
+  `<!-- TODO: add to bibliography.bib ... @Lam2016 ... -->` block from
+  the Discussion. The `@Lam2016` entry was already present in
+  `bibliography.bib` (line 33); the TODO was stale.
+
 ## 2026-04-18 (follow-up: Rmd cleanup)
 
 ### Changed
