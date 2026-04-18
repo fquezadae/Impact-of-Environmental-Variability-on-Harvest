@@ -61,16 +61,33 @@ rm(usuario)
 # junction paper1/data -> ../data.
 knitr::opts_knit$set(root.dir = here::here())
 
-# Paquetes base usados en múltiples chunks. Cargarlos acá asegura que
-# funciones como arrange(), filter(), pivot_longer() y la sintaxis
-# data.table (.(), by=, :=, dcast) estén disponibles en cualquier
-# chunk, incluso si knitteamos en una sesión fresca de R.
-# Nota: data.table va DESPUÉS de dplyr para que dplyr::filter no sea
-# enmascarado; data.table solo enmascara first/last/between (no usadas).
+# Todos los paquetes usados en el documento se cargan acá, en el setup
+# chunk, para que el Rmd sea independiente del orden y del estado de la
+# sesión interactiva. Orden: data.table DESPUÉS de dplyr (para que
+# dplyr::filter no sea enmascarado). MASS NO se carga acá —
+# glm.nb se llama con namespace explícito (MASS::glm.nb) para evitar
+# que MASS::select enmascare dplyr::select más abajo.
 suppressPackageStartupMessages({
+  # Manipulación de datos
   library(dplyr)
   library(tidyr)
   library(data.table)
+  library(tibble)
+  library(janitor)
+
+  # Visualización
+  library(ggplot2)
+  library(scales)
+  library(viridis)
+
+  # Modelado
+  library(lavaan)
+  library(sandwich)
+  library(lmtest)
+
+  # Tablas / output
+  library(stargazer)
+  library(kableExtra)
 })
 
 ```
@@ -200,11 +217,6 @@ Figure \@ref(fig:biomass) shows that anchoveta, sardine, and jack mackerel exhib
 
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000--2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
-library(ggplot2)
-library(tidyr)
-library(scales)
-library(viridis)
-
 biomass_long <- biomass %>%
   pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_cs_interp_primary),
                names_to = "species", 
@@ -305,9 +317,6 @@ As noted by @Kasperski2015-jm, the multi-species bioeconomic framework is partic
 <!-- ============================================================ -->
 
 ```{r database_for_biomass_est, message=FALSE, warning=FALSE, include=FALSE}
-
-library(tidyverse)
-library(janitor)
 
 # ---- 1. Build wide biomass + harvest dataset ----
 
@@ -454,8 +463,6 @@ cat("Robustness 2 (2-species, jurel exogenous): N =", nrow(sur_2sp), "\n")
 <!-- ============================================================ -->
 
 ```{r sur_estimation, message=FALSE, warning=FALSE, include=FALSE}
-
-library(lavaan)
 
 # ==================================================================
 # MAIN SPECIFICATION: Parsimonious (no interactions, no CHL^2)
@@ -608,9 +615,6 @@ fit_rob3 <- fit_interactions  # already estimated above
 
 
 ```{r build_table_helper, message=FALSE, warning=FALSE, include=FALSE}
-library(lavaan)
-library(dplyr)
-library(stargazer)
 
 # Helper: extract lavaan estimates and build patched lm objects for stargazer
 
@@ -786,13 +790,9 @@ df_art <- poisson_df %>% filter(TIPO_FLOTA == "ART")
 
 ```{r est_poisson, message=FALSE, warning=FALSE, include=FALSE}
 
-library(MASS)
-library(sandwich)
-library(lmtest)
-
 # ---- Negative Binomial estimation ----
 
-nb_ind <- glm.nb(
+nb_ind <- MASS::glm.nb(
   T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
@@ -800,7 +800,7 @@ nb_ind <- glm.nb(
   data = df_ind
 )
 
-nb_art <- glm.nb(
+nb_art <- MASS::glm.nb(
   T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
@@ -824,8 +824,6 @@ lr_art <- as.numeric(2 * (logLik(nb_art) - logLik(pois_art)))
 Table \ref{tab:poisson_results} reports the negative binomial estimates separately for each fleet segment.
 
 ```{r tabla_poisson, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-
-library(stargazer)
 
 stargazer(
   nb_ind, nb_art,
@@ -909,9 +907,6 @@ Table \ref{tab:env_projections} summarizes the projected environmental changes f
 
 ```{r envprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-library(knitr)
-library(kableExtra)
-
 deltas_all <- readRDS("data/projections/cmip6_deltas.rds")
 
 env_summary <- deltas_all[, .(
@@ -950,7 +945,7 @@ bp_table <- biomass_proj %>%
     Anchoveta = paste0(round(pct_anchoveta, 1), "\\%"),
     `Jack mackerel` = paste0(round(pct_jurel, 1), "\\%")
   ) %>%
-  dplyr::select(SSP, Window, Sardine, Anchoveta, `Jack mackerel`)
+  select(SSP, Window, Sardine, Anchoveta, `Jack mackerel`)
 
 kable(bp_table, format = "latex", booktabs = TRUE, escape = FALSE,
       caption = "Projected change in species growth capacity (\\% change from historical mean, comparative statics on SUR coefficients) \\label{tab:biomass_proj}") %>%
@@ -972,7 +967,7 @@ dec_table <- decomposition %>%
     SSP = ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
     Window = ifelse(window == "mid", "2041--2060", "2081--2100")
   ) %>%
-  dplyr::select(Fleet, SSP, Window,
+  select(Fleet, SSP, Window,
          `Direct (weather)` = pct_wind_only,
          `Indirect (biomass)` = pct_indirect,
          Combined = pct_combined)
@@ -988,16 +983,13 @@ kable(dec_table, format = "latex", booktabs = TRUE, escape = FALSE,
 
 ```{r projfigure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=4, fig.width=6.5, out.width='100%'}
 
-library(ggplot2)
-library(tidyr)
-
 plot_data <- decomposition %>%
   mutate(
     Fleet = ifelse(TIPO_FLOTA == "IND", "Industrial", "Artisanal"),
     Scenario = paste0(ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
                       "\n", ifelse(window == "mid", "Mid-century", "End-century"))
   ) %>%
-  dplyr::select(Fleet, Scenario, `Direct (weather)` = pct_wind_only,
+  select(Fleet, Scenario, `Direct (weather)` = pct_wind_only,
          `Indirect (biomass)` = pct_indirect) %>%
   pivot_longer(cols = c(`Direct (weather)`, `Indirect (biomass)`),
                names_to = "Channel", values_to = "pct_change")
