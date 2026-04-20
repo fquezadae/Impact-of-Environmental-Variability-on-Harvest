@@ -14,9 +14,6 @@ library(rnaturalearth)
 #---------------------------------
 # Load dataset
 #---------------------------------
-usuario <- Sys.info()[["user"]]
-dirdata <- paste0("C:/Users/", usuario,
-                  "/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/")
 env_dt <- readRDS("data/env/EnvMergedDaily_2012_2025_0.125deg.rds")
 
 #---------------------------------
@@ -116,13 +113,19 @@ p <- ggplot() +
   geom_sf(data = sea_plot, fill = "lightblue", color = "blue", alpha = 0.2) +
   geom_sf(data = chile_plot, fill = "gray60", color = "black") +
   geom_sf(data = grid_plot, aes(color = dist2coast_km), size = 0.4) +
-  scale_color_viridis_c(option = "plasma", name = "Distancia costa (km)") +
+  scale_color_viridis_c(option = "plasma", name = "Distance to coast (km)") +
   coord_sf(xlim = c(-82, -70), ylim = c(-42, -30)) +
   theme_minimal() +
-  labs(x = "Longitud", y = "Latitud")
+  labs(x = "Longitude", y = "Latitude")
 
+#---------------------------------
+# Export figure for manuscript
+#---------------------------------
+ggsave(
+  filename = "figs/env_data_map.pdf",
+  plot     = p,
+  width    = 6,
+  height   = 7,
+  units    = "in"
+)
 
-
-# title = "Zona marítima chilena (≤ 200 nm, solo mar)",
-# subtitle = "Grid ambiental 0.125° filtrado frente a Chile continental",
-       
