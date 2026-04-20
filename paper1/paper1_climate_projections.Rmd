@@ -4,11 +4,12 @@ title: "Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-
 subtitle: "\\begin{center}{\\color{red}\\Large\\textbf{DRAFT – PLEASE DO NOT CITE}}\\end{center}"
 author: "Felipe J. Quezada-Escalona"
 date: "`r withr::with_locale(c(LC_TIME = 'English'), format(Sys.Date(), '%B %Y'))`"
-output: 
+output:
   bookdown::pdf_document2:
     latex_engine: xelatex
     number_sections: true
     toc: false
+    keep_tex: true
     pandoc_args: ["--variable=fontsize:11pt"]
   bookdown::latex_document2: default
 bibliography: ../bibliography.bib
@@ -831,8 +832,18 @@ Table \ref{tab:poisson_results} reports the negative binomial estimates separate
 
 ```{r tabla_poisson, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
+# Truco para usar stargazer con MASS::glm.nb (que tira "Unrecognized object
+# type"): construimos un GLM Poisson con la misma formula y reemplazamos sus
+# coeficientes por los del NB. stargazer lo reconoce como GLM; los SE
+# clusterizados se pasan externamente con `se = list(...)` y las stats
+# relevantes (N, LR test) se emiten por separado en las notas.
+nb_ind_s <- pois_ind
+nb_art_s <- pois_art
+nb_ind_s$coefficients <- coef(nb_ind)
+nb_art_s$coefficients <- coef(nb_art)
+
 stargazer(
-  nb_ind, nb_art,
+  nb_ind_s, nb_art_s,
   type = "latex",
   header = FALSE,
   float = TRUE,
@@ -860,7 +871,7 @@ stargazer(
   se = list(se_ind, se_art),
   digits = 3,
   single.row = TRUE,
-  omit.stat = c("f"),
+  omit.stat = c("ll", "aic", "bic", "res.dev", "null.dev"),
   no.space = TRUE,
   font.size = "footnotesize",
   notes = c(
