@@ -254,7 +254,7 @@ rm(biomass_long, biomass2)
 
 ```
 
-The SUR framework is particularly suited to this multi-species setting, as it allows for contemporaneous correlation among residuals that naturally arise from shared non-observed environmental shocks, trophic linkages, and imperfectly observed ecological processes. We estimate a three-equation SUR system using the SEM framework implemented in lavaan, freely allowing the error terms across biomass equations to be correlated. The model is estimated via robust maximum likelihood (MLR), yielding SUR coefficients with Huber--White robust standard errors. Cross-species interaction terms were tested as an extension but did not improve model fit (see Section 4.1 and Appendix \ref{appendix-robustness}).
+The SUR framework is particularly suited to this multi-species setting, as it allows for contemporaneous correlation among residuals that naturally arise from shared non-observed environmental shocks, trophic linkages, and imperfectly observed ecological processes. We estimate a three-equation SUR system using the SEM framework implemented in the `lavaan` package [@Rosseel2012-lavaan] in R [@R_Core_Team2020-dw], freely allowing the error terms across biomass equations to be correlated. The model is estimated via robust maximum likelihood (MLR), yielding SUR coefficients with Huber--White robust standard errors. Cross-species interaction terms were tested as an extension but did not improve model fit (see Section 4.1 and Appendix \ref{appendix-robustness}).
 
 
 ### Total annual trips
