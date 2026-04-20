@@ -14,7 +14,20 @@ library(rnaturalearth)
 #---------------------------------
 # Load dataset
 #---------------------------------
-env_dt <- readRDS("data/env/EnvMergedDaily_2012_2025_0.125deg.rds")
+# Resolve OneDrive path by user, same pattern as paper1_climate_projections.Rmd
+usuario <- Sys.info()[["user"]]
+if (usuario == "felip") {
+  dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "FACEA") {
+  dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else {
+  stop("Usuario no reconocido. Defina el directorio correspondiente.")
+}
+rm(usuario)
+
+env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvMergedDaily_2012_2025_0.125deg.rds"))
 
 #---------------------------------
 # Unique grid cells
