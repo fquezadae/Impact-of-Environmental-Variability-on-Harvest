@@ -2,6 +2,83 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-20 (paper1: NB table rendering + manuscript comments + bibliography review)
+
+### Fixed
+
+- `paper1/paper1_climate_projections.Rmd`: the `tabla_poisson` chunk
+  failed silently because `stargazer` does not recognize
+  `MASS::glm.nb` objects — the error was emitted as a LaTeX comment
+  (`% Error: Unrecognized object type`) and the table disappeared
+  from the PDF. Workaround: fit a Poisson GLM with the same formula
+  (already computed for the LR test), replace its `$coefficients`
+  with the NB coefficients, and pass the shell object to `stargazer`
+  with clustered SEs supplied externally via `se = list(...)`.
+  `stargazer` treats it as a GLM and prints the NB point estimates;
+  the LR test statistic is reported in the notes so the reader knows
+  the reported estimates come from NB, not Poisson.
+- `paper1/paper1_climate_projections.Rmd`: renamed the chunk label
+  from `poisson_results` to `poissonresults` (no underscore) — the
+  underscore in the chunk name was being injected by bookdown into
+  the caption as `(\#tab:poisson_results)` raw text, triggering
+  math-mode errors (`Missing $ inserted`). Cross-references now
+  resolve.
+- `paper1/paper1_climate_projections.Rmd`: fixed the `omit.stat`
+  argument in `stargazer` — replaced the invalid statistic names
+  `c("f", "deviance", "null.deviance")` with the NB-compatible
+  `c("ll", "aic", "bic", "res.dev", "null.dev")`. The invalid names
+  were raising `% Error: Unknown statistic in 'omit.stat' argument`
+  and dropping the whole table.
+- `paper1/paper1_climate_projections.Rmd` YAML: added
+  `keep_tex: true` to the `bookdown::pdf_document2` output block so
+  stargazer/LaTeX errors (which surface as `%`-commented lines in
+  the `.tex`) can be diagnosed directly.
+- `bibliography.bib`: replaced the phantom `Arcos2001-jq` entry with
+  the real paper — Arcos, Cubillos & Núñez (2001), "The jack
+  mackerel fishery and El Niño 1997–98 effects off Chile", Progress
+  in Oceanography 49(1–4):597–617, DOI
+  `10.1016/S0079-6611(01)00043-X`. Previous entry had an
+  unverifiable title/journal and no usable DOI.
+- `bibliography.bib`: replaced the phantom `Aufhammer2018` entry.
+  The previous entry had a fabricated title ("Quantifying climatic
+  and weather impacts on health in the presence of adaptation"),
+  wrong journal (Annals of the NYAS), and a DOI
+  (`10.1111/nyas.13625`) that resolves to an unrelated cancer
+  immunotherapy paper (verified via CrossRef). Replaced with
+  Auffhammer (2018), "Quantifying Economic Damages from Climate
+  Change", Journal of Economic Perspectives 32(4):33–52, DOI
+  `10.1257/jep.32.4.33` — contextually consistent with how the
+  citation is used in §3.3 (adaptation caveat on climate
+  projections). Citation key kept as `Aufhammer2018` (single f) to
+  avoid touching the `.Rmd`; the `author` field carries the correct
+  "Auffhammer" spelling that pandoc will render.
+
+### Changed
+
+- `paper1/paper1_climate_projections.Rmd` Discussion: removed the
+  self-congratulatory "novel contribution" framing around the
+  direct-vs-indirect channel decomposition. The decomposition is
+  mechanically straightforward given the structural model; presenting
+  it as a methodological innovation was oversold. Replaced with a
+  neutral lead-in that keeps the substantive finding (indirect
+  channel dominates).
+- `paper1/paper1_climate_projections.Rmd` Discussion: replaced the
+  forced Birkenbach et al. (2020) citation (about catch-share
+  reforms in the US groundfish fishery — not a close fit to the
+  multi-species portfolio argument being made) with Kasperski &
+  Holland (2013, PNAS), which is the canonical reference for
+  portfolio diversification reducing revenue variability in
+  fisheries. The argument in the paragraph now reads more cleanly
+  as an application of the portfolio-theory logic to the Chilean
+  SPF context.
+
+### Bibliography review
+
+- Full verification pass over the 31 unique citation keys used in
+  `paper1_climate_projections.Rmd`. Two phantom citations found and
+  fixed (`Arcos2001-jq`, `Aufhammer2018`, above). Remaining 29
+  entries checked against their DOIs/URLs; all verified.
+
 ## 2026-04-18 (follow-up 2: manuscript consistency pass)
 
 ### Changed
