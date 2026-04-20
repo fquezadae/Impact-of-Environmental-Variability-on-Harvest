@@ -1,800 +1,509 @@
-# Plan de revisión: Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species Small Pelagic Fishery
+# Plan de revisión V2 — Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species Small Pelagic Fishery
 
 **Felipe J. Quezada-Escalona** · Abril 2026
 
----
-
-
-# Resumen ejecutivo
-
-Este documento es el plan de trabajo para llevar el paper *Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species Small Pelagic Fishery* desde su versión draft (abril 2026) a un envío a **Environmental and Resource Economics (ERE)** antes de **octubre 2026**.
-
-**Decisión editorial.** Apuntamos a ERE como primera opción por el fit con la literatura citada (Kasperski 2015, Richter et al. 2018, Birkenbach et al. 2020) y por el formato modelo bioeconómico + econometría + proyecciones de política. *Marine Resource Economics* es el plan B si los referees rechazan o si se decide priorizar tiempo sobre prestigio.
-
-**Cuatro revisiones críticas:**
-
-1. Ensemble CMIP6 multi-modelo vía Pangeo Cloud / Zarr (no solo IPSL-CM6A-LR, no usar ESGF).
-2. Bootstrap del SUR para acotar incertidumbre en coeficientes ambientales con $N=23$.
-3. Reescritura de la endogeneidad en la ecuación NB para que quede explícita como reduced-form para simulación.
-4. **Reemplazar comparative statics por simulación dinámica forward.** El cap $[0.2, 3.0]$ está enmascarando una extrapolación severa del término cuadrático de SST que un referee detectará en primera ronda. Es la revisión más sustantiva y la que más mueve la aguja para defender el paper.
-
-**Una tarea bloqueada en entrega externa:**
-
-5. Actualización con datos definitivos de SERNAPESCA (cuotas vessel-level, fechas año-específicas de vedas, transferencias intra-anuales). Plan de contingencia según fecha de llegada.
-
-**Cronograma.** Cabe antes de octubre con \~6–7 semanas de trabajo concentrado, asumiendo que SERNAPESCA llega antes de julio. Si llega después, plan B detallado en Tarea 5.
+> **V2 · Post-decisión arquitectural 2026-04-20.** Esta versión reemplaza el plan original de abril 2026. Deadline se relaja de "submission octubre 2026" a **"accepted febrero 2028"**. La arquitectura cambia de *SUR reduced-form proyectado* a *modelo bio estructural (Schaefer) con shifters climáticos estimados en state-space*. La versión V1 queda preservada en el historial de git para referencia.
 
 ---
 
-# Estado actual del paper
+# 1. Resumen ejecutivo
 
-## Contribuciones declaradas
+## Decisiones centrales
 
-1. Estimación conjunta de dinámica multi-especie (SUR de tres ecuaciones para anchoveta, sardina, jurel) y esfuerzo pesquero (NB separado por flota industrial/artesanal).
-2. Vinculación a proyecciones CMIP6 (IPSL-CM6A-LR) bajo SSP2-4.5 y SSP5-8.5 vía delta method.
-3. Descomposición del impacto climático en canal directo (viento) e indirecto (biomasa).
+- **Target editorial:** *Environmental and Resource Economics (ERE)*. Alternativa: *Journal of the Association of Environmental and Resource Economists (JAERE)* si el paper sale más fuerte de lo esperado bajo la nueva arquitectura. MRE como plan B.
+- **Deadline real:** accepted febrero 2028. Deriva de hito interno FONDECYT, no de deadline editorial externo.
+- **Arquitectura:** modelo bio estructural de producción excedente por especie (Schaefer o Pella-Tomlinson), con `r`, `K`, `M` adoptados del stock assessment oficial (IFOP para sardina común y anchoveta centro-sur; SPRFMO SS3 para jurel). Shifters climáticos `ρ^SST` y `ρ^CHL` estimados vía state-space Bayesiano (Stan) como modulación de `r` o `K`.
+- **Contribución nítida:** "cómo incorporar shocks climáticos identificados a nivel de ecosistema en un modelo bioeconómico con assessment oficial, y sus consecuencias distributivas entre flota artesanal e industrial bajo regulación status-quo".
 
-## Resultado central
+## Cambio arquitectural respecto a V1
 
-Asimetría entre flotas: artesanal $+20\%$ a $+250\%$ por expansión de sardina; industrial $\approx -22\%$ por declive del jurel. El canal indirecto domina ($>95\%$ del efecto combinado).
+La simulación forward del SUR (Tarea 4 de V1) fue implementada y ejecutada el 2026-04-20. Confirmó que el SUR reduced-form **no es viable como motor proyectivo**, ni con término SST² ni sin él. Con N=23, `β ≥ 1` en anchoveta y jurel, y `b0` alejado de `B_MEAN`, el sistema converge explosivamente al fixed-point reduced-form (jurel +79% por año en t=1 con clima histórico). El cap `[0.2, 3.0]` del draft V1 enmascaraba mecánicamente esto. Corolario: el SUR es una regresión de crecimiento de corto plazo, no un modelo poblacional; proyectarlo 75 años es intrínsecamente no identificado independiente de cuántas réplicas bootstrap se hagan.
 
-## Debilidades anticipadas por referees
+## Solución adoptada (Plan 2)
 
-- Un solo Earth system model.
-- $N=23$ en SUR — coeficientes ambientales hacen todo el trabajo en proyecciones.
-- Endogeneidad en la ecuación de viajes (precios, capturas, esfuerzo determinados conjuntamente).
-- Escalado de asignación de cuota cap a $[0.2, 3.0]$ — referee puede pedir justificación.
-
----
-
-# Tarea 1: Ensemble CMIP6 multi-modelo
-
-## Objetivo
-
-Reemplazar la dependencia de IPSL-CM6A-LR único por un ensemble de 4 modelos del CMIP6, reportando rangos en lugar de puntos para todas las proyecciones de SST, CHL y viento.
-
-## Modelos sugeridos
-
-```r
-cmip6_models <- tibble::tribble(
-  ~model,            ~institution,        ~resolution_atm, ~notes,
-  "IPSL-CM6A-LR",    "IPSL (Francia)",    "2.5x1.3 deg",   "Ya incluido en draft",
-  "GFDL-ESM4",       "NOAA GFDL (USA)",   "1.0x1.0 deg",   "Buen comportamiento en Pacifico Sur",
-  "MPI-ESM1-2-HR",   "MPI (Alemania)",    "0.9x0.9 deg",   "Alta resolucion",
-  "CanESM5",         "CCCma (Canada)",    "2.8x2.8 deg",   "Sensibilidad climatica alta - cota superior"
-)
-```
-
-Con 4 modelos cubrimos un rango razonable de sensibilidad climática (CanESM5 es high-end, GFDL-ESM4 es middle-of-the-road). Si el tiempo lo permite, agregar **NorESM2-MM** y **UKESM1-0-LL** para llegar a 6.
-
-## Implementación
-
-### Estructura de carpetas
-
-```
-data/
-  cmip6/
-    ipsl/
-      tos_historical.nc
-      tos_ssp245.nc
-      tos_ssp585.nc
-      chl_*.nc
-      sfcWind_*.nc
-    gfdl/
-      ...
-    mpi/
-      ...
-    canesm5/
-      ...
-```
-
-### Pipeline de descarga: Pangeo Cloud + Zarr (NO ESGF)
-
-**Importante:** ESGF no es viable para esta variable / volumen de datos. Lecciones del pipeline ya validado en sesión previa:
-
-- **ESGF OPeNDAP:** nodos IPSL/DKRZ/CEDA caídos (`FileNotFoundError`).
-- **ESGF HTTP:** archivos de 12–16 GB; conexión se corta con `ChunkedEncodingError` después de 1–3 GB descargados.
-- **Pangeo Cloud (Zarr en GCS):** subset on-the-fly via Zarr chunks, sin autenticación, **5–15 min total** para todo el grid.
-
-El truco está en que Zarr permite hacer **subset espacial y temporal antes de transferir bytes** — terminamos con archivos de 2–10 MB en lugar de 60–80 GB.
-
-#### Setup (una vez)
-
-```bash
-pip install zarr gcsfs intake-esm fsspec aiohttp xarray dask netCDF4
-```
-
-Catálogo Pangeo CMIP6: <https://storage.googleapis.com/cmip6/pangeo-cmip6.json>
-
-#### Script de descarga generalizado
-
-`R/cmip6_pangeo_download.py` — un solo script que itera sobre modelos, variables, escenarios:
-
-```python
-import intake
-import xarray as xr
-import os
-
-# Catalogo Pangeo CMIP6
-CATALOG_URL = "https://storage.googleapis.com/cmip6/pangeo-cmip6.json"
-cat = intake.open_esm_datastore(CATALOG_URL)
-
-# Region de estudio (Centro-Sur Chile EEZ)
-LAT_MIN, LAT_MAX = -41, -32
-LON_MIN, LON_MAX = -82, -70   # ojo: muchos modelos usan 0-360, ver abajo
-
-# Configuracion
-MODELS = ["IPSL-CM6A-LR", "GFDL-ESM4", "MPI-ESM1-2-HR", "CanESM5"]
-VARIANT = "r1i1p1f1"   # cambiar a r1i1p1f2 para CanESM5/UKESM si falla
-EXPERIMENTS = ["historical", "ssp245", "ssp585"]
-
-# Variables (tabla, var_id) - SST/CHL/wind para este paper
-TARGETS = [
-    ("Omon", "tos"),       # sea surface temperature
-    ("Omon", "chlos"),     # surface chlorophyll (PISCES en IPSL)
-    ("Amon", "sfcWind"),   # near-surface wind speed
-]
-
-def fetch(source_id, table_id, variable_id, experiment_id, variant=VARIANT):
-    """Subset espacial antes de transferir. Retorna xr.Dataset listo para guardar."""
-    query = dict(
-        source_id=source_id,
-        experiment_id=experiment_id,
-        table_id=table_id,
-        variable_id=variable_id,
-        member_id=variant,
-    )
-    subset = cat.search(**query)
-    if len(subset.df) == 0:
-        print(f"  [skip] no esta en catalogo: {query}")
-        return None
-
-    # Abrir como Zarr (lazy)
-    dsets = subset.to_dataset_dict(
-        zarr_kwargs={"consolidated": True},
-        storage_options={"token": "anon"},
-    )
-    ds = list(dsets.values())[0]
-
-    # Normalizar longitud a -180/180 si viene en 0/360
-    if ds.lon.max() > 180:
-        ds = ds.assign_coords(lon=(((ds.lon + 180) % 360) - 180)).sortby("lon")
-
-    # Subset espacial ANTES de transferir bytes
-    ds = ds.sel(
-        lat=slice(LAT_MIN, LAT_MAX),
-        lon=slice(LON_MIN, LON_MAX),
-    )
-    return ds[[variable_id]]
-
-# Loop principal
-for model in MODELS:
-    out_dir = f"data/cmip6/{model.lower()}"
-    os.makedirs(out_dir, exist_ok=True)
-    for table_id, var in TARGETS:
-        for exp in EXPERIMENTS:
-            ds = fetch(model, table_id, var, exp)
-            if ds is None:
-                continue
-            out = f"{out_dir}/{var}_{exp}.nc"
-            ds.to_netcdf(out)
-            print(f"  [ok] {out} ({ds.nbytes/1e6:.1f} MB)")
-```
-
-#### Verificar disponibilidad de un modelo antes de pedirlo
-
-```python
-def has_model(source_id, var, exp, variant=VARIANT):
-    q = cat.search(
-        source_id=source_id, variable_id=var,
-        experiment_id=exp, member_id=variant
-    )
-    return len(q.df) > 0
-
-# Ej: chequear todos los modelos del ensemble para tos/ssp585
-for m in MODELS:
-    print(m, has_model(m, "tos", "ssp585"))
-```
-
-#### Conversiones de unidades — ojo con el bug de IPSL CHL
-
-```python
-# Conversiones aplicadas DESPUES de leer .nc
-UNIT_CONVERSIONS = {
-    "tos":     ("degC",  lambda x: x),                # ya viene en degC
-    "sfcWind": ("m/s",   lambda x: x),
-    # chlos: IPSL-CM6A-LR PISCES tiene metadato "kg/m3" pero realmente es "g/m3"
-    # Para llegar a mg/m3 (estandar oceanografico): factor x 1e3, NO x 1e6
-    "chlos":   ("mg/m3", lambda x: x * 1e3),
-    # Si en algun momento agregan O2 (no necesario para este paper):
-    # "o2":   ("mg/L",  lambda x: x * 32),  # mol/m3 -> mg/L
-}
-```
-
-Esta nota la guardamos del pipeline previo de O2 — si el día de mañana se agrega oxígeno disuelto al SUR de biomasa (potencial extension del paper), el factor para O2 es `× 32` (mol/m³ → mg/L) y el atributo de unidades sí es correcto, a diferencia de CHL.
-
-#### Para agregar más modelos al ensemble
-
-Solo cambiar `MODELS = [...]`. Verificar primero con `has_model()` que (modelo, variable, escenario, variant) existe en el catálogo. Algunos modelos requieren `r1i1p1f2` en lugar de `r1i1p1f1` (CanESM5, UKESM1-0-LL, CNRM-CM6-1).
-
-### Aplicación del delta method por modelo
-
-Refactorizar la función actual para que itere sobre modelos:
-
-```r
-library(terra)
-library(dplyr)
-
-# Funcion existente generalizada
-compute_delta <- function(model, var, scenario, window) {
-  # window: c(2041, 2060) o c(2081, 2100)
-  hist_clim   <- climatology(model, var, "historical", c(1995, 2014))
-  future_clim <- climatology(model, var, scenario, window)
-
-  if (var %in% c("tos", "sfcWind")) {
-    delta <- future_clim - hist_clim       # aditivo
-  } else if (var == "chl") {
-    delta <- future_clim / hist_clim       # multiplicativo
-  }
-  delta
-}
-
-# Grid completo de escenarios
-ensemble_grid <- expand.grid(
-  model    = models,
-  var      = vars,
-  scenario = c("ssp245", "ssp585"),
-  window   = list(c(2041, 2060), c(2081, 2100)),
-  stringsAsFactors = FALSE
-)
-
-# Computar todos los deltas
-deltas <- ensemble_grid |>
-  mutate(delta = pmap(list(model, var, scenario, window), compute_delta))
-```
-
-### Reporte de rangos
-
-En lugar de un valor puntual por escenario/ventana, reportar **mediana, p10, p90** del ensemble:
-
-```r
-env_change_ensemble <- deltas |>
-  group_by(var, scenario, window) |>
-  summarise(
-    median = median(delta_mean),
-    p10    = quantile(delta_mean, 0.10),
-    p90    = quantile(delta_mean, 0.90),
-    .groups = "drop"
-  )
-```
-
-Esto reemplaza la **Tabla 3** del draft. La Tabla 4 (cambios en growth capacity) y la Tabla 5 (cambios en viajes) se reportan análogamente con mediana e intervalo 80% del ensemble.
-
-## Tiempo estimado
-
-- Descarga de datos CMIP6 para 3 modelos adicionales (Pangeo/Zarr): 1 día (5–15 min por modelo en realidad, pero contar tiempo de validación).
-- Refactor del pipeline de delta method para iterar sobre modelos: 1 semana.
-- Re-ejecución de proyecciones y nuevas figuras/tablas: 1 semana.
-- **Total: 2–2.5 semanas** (ahorro de \~1 semana respecto al estimado original con ESGF).
-
----
-
-# Tarea 2: Bootstrap del SUR
-
-## Objetivo
-
-Caracterizar la incertidumbre en los coeficientes ambientales del SUR (especialmente $\rho_{i,1}, \rho_{i,2}, \rho_{i,3}$) dado el $N=23$, y propagar esa incertidumbre a las proyecciones de growth capacity y viajes.
-
-## Estrategia
-
-Block bootstrap no necesario aquí — los residuos del SUR ya muestran covarianza insignificante (ya documentado en el draft). Bootstrap iid sobre observaciones anuales es suficiente.
-
-```r
-library(lavaan)
-library(boot)
-library(dplyr)
-library(tidyr)
-
-# Especificacion SUR del paper
-sur_model <- '
-  # Sardina
-  x_sar_next ~ x_sar + x_sar_sq + sst + sst_sq + chl
-  # Anchoveta
-  x_anc_next ~ x_anc + x_anc_sq + sst + sst_sq + chl
-  # Jurel
-  x_jur_next ~ x_jur + x_jur_sq + sst + sst_sq + chl
-  # Covarianzas libres entre residuos
-  x_sar_next ~~ x_anc_next + x_jur_next
-  x_anc_next ~~ x_jur_next
-'
-
-# Funcion para una replica bootstrap
-boot_sur <- function(data, indices) {
-  d_boot <- data[indices, ]
-  fit <- tryCatch(
-    sem(sur_model, data = d_boot, estimator = "MLR"),
-    error = function(e) return(NULL)
-  )
-  if (is.null(fit)) return(rep(NA, n_params))
-  coef(fit)
-}
-
-set.seed(20260418)
-boot_results <- boot(
-  data      = sur_data,
-  statistic = boot_sur,
-  R         = 1000,
-  parallel  = "multicore",
-  ncpus     = 4
-)
-
-# Intervalos de confianza percentil 95%
-boot_ci <- apply(boot_results$t, 2, quantile,
-                 probs = c(0.025, 0.5, 0.975), na.rm = TRUE)
-```
-
-### Robustez adicional: jackknife
-
-Con $N=23$, leave-one-out es barato y muestra qué año(s) impulsan los coeficientes:
-
-```r
-jackknife_sur <- function(data, model_spec) {
-  n <- nrow(data)
-  jack_coefs <- matrix(NA, n, length(coef(sem(model_spec, data = data))))
-  for (i in seq_len(n)) {
-    fit <- sem(model_spec, data = data[-i, ], estimator = "MLR")
-    jack_coefs[i, ] <- coef(fit)
-  }
-  jack_coefs
-}
-```
-
-## Propagación a proyecciones
-
-Para cada réplica bootstrap, recomputar growth capacity y viajes proyectados. Reportar intervalos del 80% en la Tabla 5 final.
-
-```r
-project_with_boot <- function(boot_coefs, env_deltas) {
-  # Para cada replica de coeficientes SUR, calcular cambio en growth capacity
-  growth_changes <- apply(boot_coefs, 1, function(b) {
-    compute_growth_change(b, env_deltas)
-  })
-  # Combinar con NB de viajes (puntual por ahora)
-  trip_changes <- compute_trip_change(growth_changes, nb_industrial, nb_artisanal)
-  trip_changes
-}
-```
-
-## Tiempo estimado
-
-- Setup del bootstrap y validación: 2–3 días.
-- 1000 réplicas (paralelizado): horas.
-- Propagación e integración con proyecciones: 2–3 días.
-- **Total: 1 semana.**
-
----
-
-# Tarea 3: Aclaraciones de endogeneidad
-
-## Diagnóstico
-
-El draft ya reconoce el problema (Sección 3.3.2, párrafo final): la ecuación NB es reduced-form, no causal. Pero el reconocimiento está enterrado y un referee de ERE/JAERE puede no encontrarlo.
-
-## Acciones
-
-1. **Mover la aclaración al abstract.** Una frase: "We estimate a reduced-form negative binomial trip equation that maps prices, quotas, and environmental conditions to expected effort; the equation is designed for projection rather than causal identification."
-
-2. **Mover una versión expandida a la Introducción.** Después del párrafo de contribuciones, agregar nota de scope.
-
-3. **Reescribir la nota al pie 3** (sobre el coeficiente positivo de cierres en artesanal) para que vincule explícitamente con la limitación reduced-form.
-
-4. **En Discussion**, expandir el "Several caveats apply" para que el primer caveat sea endogeneidad, no precios constantes.
-
-## Texto sugerido para abstract
-
-> "We estimate a three-equation Seemingly Unrelated Regression (SUR) model for stock growth and a **reduced-form** negative binomial model for annual fishing trips, designed to map prices, quotas, and environmental conditions into expected effort under projected climate scenarios rather than to identify causal effects."
-
-## Tiempo estimado
-
-- Reescritura: 2 días.
-- **Total: 2 días.**
-
----
-
-# Tarea 4: Simulación dinámica forward (reemplaza la comparative statics actual)
-
-## Diagnóstico del problema
-
-Las cuatro barras del panel industrial en la Figura 3 son iguales ($\approx -22\%$) porque el **piso del cap $[0.2, 3.0]$ está activo en los cuatro escenarios**. La variación entre escenarios desaparece dentro del cap. El mismo mecanismo, espejado, opera en el artesanal con el techo de $3.0$ para sardina.
-
-### Causa raíz: extrapolación del término cuadrático de SST
-
-La comparative statics de Sección 3.4 evalúa los coeficientes ambientales **muy fuera del rango muestral**:
-
-- SD de SST centrada en muestra $\approx 0.3$–$0.5$°C $\Rightarrow$ $\text{SST}^2$ acotado en $\sim 0.25$.
-- $\Delta SST = +2.3$°C bajo SSP5-8.5 end-of-century $\Rightarrow$ $\text{SST}^2 \approx 5.3$ (extrapolación de $\sim 20\times$).
-- Con $\hat\rho_{SST^2} = -56.5$ (jurel), el cambio en growth capacity escala con el cuadrado del delta.
-- Resultado: $-1508\%$ en la Tabla 4, lo cual **no tiene significado biológico** — la biomasa no puede caer más de $100\%$.
-
-El cap esconde el problema y mecánicamente lo va a detectar cualquier referee de ERE/MRE en primera ronda. El texto actual "*The consistency of the industrial decline across scenarios reflects the capped harvest allocation scaling*" le está diciendo al referee que el resultado central viene del cap, no del modelo.
-
-## Solución: simulación dinámica hacia adelante
-
-Reemplazar comparative statics por simulación recursiva del sistema SUR año a año desde 2024:
+Adoptar un modelo bio estructural por especie:
 
 $$
-x_{i,y+1} = (1+\hat r_i)\, x_{iy} + \hat\eta_i\, x_{iy}^2 + \hat\rho_{i,1}\, SST_y + \hat\rho_{i,2}\, SST_y^2 + \hat\rho_{i,3}\, CHL_y - h_{iy}
+B_{i,t+1} = B_{i,t} + r_i(X_t) \cdot B_{i,t} \cdot \left(1 - \frac{B_{i,t}}{K_i}\right) - C_{i,t} + \epsilon_{i,t}
 $$
 
-donde $SST_y$ y $CHL_y$ se construyen aplicando el **delta mensual al observado histórico ciclado**, no al climatológico. Tres ventajas:
+con
 
-1. Preserva variabilidad interanual.
-2. Mantiene $SST^2$ en rango razonable (el delta se suma a cada observación histórica).
-3. Hereda la cota natural del término de densidad-dependencia $\hat\eta_i x_{iy}^2$, que impide trayectorias divergentes.
+$$
+r_i(X_t) = r_i^{\text{IFOP/SPRFMO}} + \rho_i^{\text{SST}} \cdot (SST_t - \overline{SST}) + \rho_i^{\text{CHL}} \cdot (CHL_t - \overline{CHL})
+$$
 
-### Sanity bounds — sobre biomasa, no sobre H^alloc
+donde los parámetros biológicos `r_i`, `K_i`, `M_i` vienen como priors informativos del assessment oficial, y lo que se identifica vía estimación Bayesiana state-space son únicamente `ρ_i^SST`, `ρ_i^CHL` y la varianza `σ_i^2`. Esto reduce la dimensión de estimación de ~18 parámetros (V1) a ~9 parámetros estructurales nuevos con N=23, que sí está identificado.
 
-Si hay que poner cotas, ponerlas a **nivel de biomasa** (no al final de la cadena):
+## Cronograma resumido
 
-- Floor: $0.1 \times \min$ histórico de la especie.
-- Techo: $2 \times \max$ histórico de la especie.
-
-Esto se justifica como sanity check biofísico, no como capping arbitrario de la respuesta.
-
-## Sketch del loop en R
-
-```r
-library(dplyr)
-library(tidyr)
-library(lavaan)
-library(purrr)
-
-# Coeficientes del SUR principal ----
-extract_sur_coefs <- function(fit) {
-  pe <- parameterEstimates(fit) |>
-    filter(op == "~") |>
-    select(species = lhs, rhs, est)
-  list(
-    r        = pe |> filter(rhs == "x_self")     |> pull(est, species),
-    eta      = pe |> filter(rhs == "x_self_sq")  |> pull(est, species),
-    rho_sst  = pe |> filter(rhs == "sst")        |> pull(est, species),
-    rho_sst2 = pe |> filter(rhs == "sst_sq")     |> pull(est, species),
-    rho_chl  = pe |> filter(rhs == "chl")        |> pull(est, species)
-  )
-}
-
-# Construir serie de ambiente futuro ----
-# Aplica delta mensual a cada observacion historica, ciclando los anios base.
-build_env_series <- function(hist_monthly, delta_monthly,
-                             start_year, end_year) {
-  base_years   <- unique(hist_monthly$year)
-  future_years <- start_year:end_year
-
-  # Asignacion ciclica de anio base
-  base_assign <- tibble(
-    future_year = future_years,
-    base_year   = base_years[((seq_along(future_years) - 1) %%
-                                length(base_years)) + 1]
-  )
-
-  hist_monthly |>
-    inner_join(base_assign, by = c("year" = "base_year")) |>
-    inner_join(delta_monthly, by = "month") |>
-    mutate(
-      sst_future = sst + sst_delta,         # aditivo
-      chl_future = chl * chl_delta_ratio    # multiplicativo
-    ) |>
-    group_by(future_year) |>
-    summarise(
-      sst    = mean(sst_future),
-      sst_sq = mean((sst_future - mean_hist_sst)^2),  # centrado en media historica
-      chl    = mean(chl_future),
-      .groups = "drop"
-    )
-}
-
-# Simulacion forward ----
-simulate_forward <- function(coefs, env_series, x0, h_path, hist_range) {
-  species   <- names(coefs$r)
-  T_horizon <- nrow(env_series)
-  x         <- matrix(NA, T_horizon, length(species),
-                      dimnames = list(NULL, species))
-  x[1, ]    <- x0
-
-  for (t in 2:T_horizon) {
-    sst   <- env_series$sst[t]
-    sst2  <- env_series$sst_sq[t]
-    chl   <- env_series$chl[t]
-
-    for (i in species) {
-      growth <- (1 + coefs$r[i]) * x[t-1, i] +
-                coefs$eta[i]      * x[t-1, i]^2 +
-                coefs$rho_sst[i]  * sst +
-                coefs$rho_sst2[i] * sst2 +
-                coefs$rho_chl[i]  * chl
-
-      x_next <- growth - h_path[t, i]
-
-      # Sanity bounds sobre biomasa, no sobre H_alloc
-      x[t, i] <- pmax(0.1 * hist_range$min[i],
-                pmin(2.0 * hist_range$max[i], x_next))
-    }
-  }
-
-  as_tibble(x) |>
-    mutate(year = env_series$future_year) |>
-    pivot_longer(-year, names_to = "species", values_to = "biomass")
-}
-
-# Wrapper: corre el ensemble completo (modelos x escenarios) ----
-run_ensemble <- function(fit_main, hist_monthly, hist_annual,
-                         deltas_by_model, h_path,
-                         start_year = 2025, end_year = 2100) {
-  coefs <- extract_sur_coefs(fit_main)
-  x0 <- hist_annual |>
-    filter(year == max(year)) |>
-    pull(biomass, species)
-  hist_range <- hist_annual |>
-    group_by(species) |>
-    summarise(min = min(biomass), max = max(biomass))
-
-  deltas_by_model |>
-    mutate(
-      env_series = map(delta_monthly,
-                       ~ build_env_series(hist_monthly, .x,
-                                          start_year, end_year)),
-      trajectory = map(env_series,
-                       ~ simulate_forward(coefs, .x, x0, h_path, hist_range))
-    ) |>
-    select(model, scenario, trajectory) |>
-    unnest(trajectory)
-}
-```
-
-## Del simulado dinámico al cambio en viajes
-
-Una vez que tenemos trayectorias de biomasa $\{x_{i,y}\}$ por modelo y escenario, el mapeo a `H_alloc` se hace **directamente** (sin cap):
-
-```r
-# Para cada (model, scenario, year), proyectar harvest allocation
-# usando regla de TAC (p.ej. F_msy * biomass) y sharing rules historicas
-biomass_to_alloc <- function(traj, vessel_shares, F_target = 0.3) {
-  traj |>
-    mutate(tac_total = F_target * biomass) |>
-    inner_join(vessel_shares, by = "species") |>
-    mutate(h_alloc = vessel_share * tac_total)
-}
-
-# Y de ahi al NB de viajes
-predict_trips <- function(alloc_panel, nb_industrial, nb_artesanal) {
-  alloc_panel |>
-    mutate(
-      trips_pred = ifelse(
-        fleet == "industrial",
-        predict(nb_industrial, newdata = pick(everything()), type = "response"),
-        predict(nb_artesanal,  newdata = pick(everything()), type = "response")
-      )
-    )
-}
-```
-
-## Resultados a reportar
-
-Reemplazar Tabla 4 y Tabla 5 por:
-
-1. **Figura nueva (antes de los efectos en trips):** trayectoria de biomasa $x_{i,y}$ por especie y escenario, 2025–2100, con bandas que cubren los modelos del ensemble. Esto le permite al lector evaluar si las dinámicas son razonables antes de creer en los efectos de viajes.
-
-2. **Tabla 5 nueva:** cambio porcentual en viajes anuales, promediado en ventanas mid- y end-century, **separado** entre los cuatro escenarios para flota industrial. Esperado a ojo: rango $-5\%$ a $-25\%$ en industrial, claramente diferenciado entre SSP2-4.5 y SSP5-8.5. Artesanal probablemente $+10\%$ a $+80\%$, no $+250\%$.
-
-## Sensibilidad sin SST²
-
-Robustez clave para apéndice: re-correr la simulación con SUR especificado solo con SST lineal (sin cuadrático). Si los resultados cualitativos sobreviven (asimetría artesanal/industrial), la credibilidad mejora sustancialmente. Si **no** sobreviven, hay que ser muy explícito en el texto sobre que el resultado depende de la curvatura en-muestra.
-
-```r
-sur_linear <- '
-  x_sar_next ~ x_sar + x_sar_sq + sst + chl
-  x_anc_next ~ x_anc + x_anc_sq + sst + chl
-  x_jur_next ~ x_jur + x_jur_sq + sst + chl
-  x_sar_next ~~ x_anc_next + x_jur_next
-  x_anc_next ~~ x_jur_next
-'
-fit_linear <- sem(sur_linear, data = sur_data, estimator = "MLR")
-```
-
-## Tiempo estimado
-
-- Implementación del loop de simulación + tests con datos sintéticos: 4–5 días.
-- Construcción de `delta_monthly` por modelo (sale de Tarea 1): trivial una vez Tarea 1 lista.
-- Generar trayectorias para 4 modelos × 2 escenarios × 75 años: minutos.
-- Nuevas figuras (trayectoria de biomasa) y tablas: 2–3 días.
-- Sensibilidad sin SST²: 1 día.
-- **Total: 1.5–2 semanas.**
-
----
-
-# Tarea 5: Actualización con datos SERNAPESCA (pendiente de entrega)
-
-## Estado
-
-Bloqueada en la entrega de SERNAPESCA. Fecha de llegada incierta — incluir en el plan como tarea contingente, no en la ruta crítica.
-
-## Qué llega y dónde impacta
-
-| Dato esperado | Sección del paper | Impacto |
+| Ventana | Foco | Hito |
 |---|---|---|
-| Cuotas vessel-level definitivas (LTP industrial + RAE artesanal) | 3.3.2, Eq. (6) | Reemplaza $\omega^r_{vs} \bar Q^r_{sy}$ construido con shares históricas por la asignación efectiva. Hace `H_alloc` un dato observado, no estimado. |
-| Fechas año-específicas de vedas reproductivas y de reclutamiento (resoluciones SUBPESCA) | 3.3.2, Eq. (5) y nota al pie 3 | Introduce variación temporal dentro de zona regulatoria. Esperado: el coeficiente positivo contraintuitivo de cierres en artesanal pasa a negativo (ver nota al pie 3 del draft). |
-| Transferencias intra-anuales de cuota entre flotas | 3.3.2 | Mejora la calidad del $\bar Q^r_{sy}$ "efectivo". |
-| Posibles correcciones a landings 2023–2024 | 3.3.1 (SUR), 3.3.2 (NB) | Re-estimación de SUR y NB con la serie corregida. |
+| Q2 2026 (abr–jun) | T2, T3 (calibración base sin clima) | Schaefer reproduce trayectoria histórica |
+| Q3 2026 (jul–sep) | T1, T4 (CMIP6 + shifters Bayesianos) | Posteriors de `ρ^SST`, `ρ^CHL` |
+| Q4 2026 (oct–dic) | T5, T6, T7 primera iteración | Draft paper 1 completo |
+| Q1 2027 (ene–mar) | T7 pulido + cover letter | **Submission ERE** |
+| Q2–Q3 2027 | R&R paper 1 en paralelo con inicio paper 2 | — |
+| Q4 2027 | Draft paper 2 | — |
+| Q1 2028 | Resubmission paper 1 → accepted | **Accepted** ← objetivo |
 
-## Acciones cuando lleguen los datos
+Margen de ~6 meses para absorber R&R. No es ruta crítica apretada.
 
-1. **Validar estructura** vs los proxies actuales. Documentar diferencias en un script de reconciliación (`R/data_reconciliation_sernapesca.R`).
-2. **Re-estimar NB con cierres año-específicos.** Esperado que el coeficiente artesanal de `closure_days` cambie de signo. Si así pasa, modificar el texto de Sección 4.2 y la nota al pie 3 del draft.
-3. **Reconstruir `H_alloc`** con la asignación efectiva en lugar del producto share histórica × TAC. Re-estimar NB con la nueva covariable.
-4. **Re-correr SUR** si llegan correcciones a landings (ya que $h_{iy}$ entra en la ecuación de movimiento $x_{i,y+1} + h_{iy}$).
-5. **Re-correr toda la cadena downstream:** bootstrap (Tarea 2), simulación dinámica forward (Tarea 4), proyecciones del ensemble.
-6. **Actualizar Sección 3.1** indicando fuente y fecha de la entrega de SERNAPESCA, reemplazando texto que actualmente dice "obtained from SERNAPESCA quota monitoring records" por la cita formal a la entrega.
+---
 
-## Plan de contingencia según fecha de llegada
+# 2. Arquitectura detallada
+
+## 2.1 El SUR reduced-form muere como motor proyectivo
+
+Diagnóstico confirmado empíricamente el 2026-04-20 corriendo `R/06_projections/04_forward_simulation.R` y `05_sensitivity_sur_spec.R`:
+
+**Coeficientes SUR estimados (spec `full`):**
+
+| especie | intercept | β | η | ρ_SST | ρ_SST² | ρ_CHL |
+|---|---|---|---|---|---|---|
+| sardine | 23.74 | 0.438 | -0.021 | -9.16 | +54.74 | +80.99 |
+| anchoveta | 12.10 | 1.112 | -0.202 | -4.97 | -4.61 | -5.37 |
+| jurel | 28.19 | 1.057 | -0.017 | +5.92 | -56.49 | +15.45 |
+
+**Patologías identificadas:**
+
+1. `β ≥ 1` en anchoveta (1.112) y jurel (1.057). Para que el sistema sea estable alrededor de `B_MEAN` con harvest proporcional `F·b`, necesitamos `1 − β + F > 0`; con `F_jurel = 0.43` y `β = 1.057` eso da 0.37, muy cerca de la frontera de explosividad.
+2. El fixed-point reduced-form de jurel es `b* ≈ (intercept − β·B_MEAN)/(1−β+F) ≈ 32`, mientras que `mean_last5 = 9.67`. El SUR interpreta cualquier estado lejos de `B_MEAN` como "crecimiento acelerado hacia el fixed point".
+3. `ρ_SST² = -56.5` para jurel implica, a `sst_c² = 5.3` (delta end-century), una contribución de -299 al growth equation, lo que hunde biomasa a cero.
+4. Spec `no_sst2`: sardina y jurel siguen catastróficos, con signos invertidos. El cuadrático no era el único problema.
+
+**Causa raíz:** el SUR tiene la forma reducida correcta para ajustar crecimiento observado histórico (R² elevado, residuos bien comportados), pero no tiene estructura que asegure convergencia a un fixed-point biológicamente sensato bajo condiciones distintas a la media muestral. No es un modelo poblacional.
+
+## 2.2 Estado-del-arte en bio: modelo estructural con assessment oficial
+
+Tres fuentes públicas con parámetros listos para adoptar:
+
+**Sardina común y anchoveta centro-sur:**
+- Comité Científico Técnico de Pesquerías de Pequeños Pelágicos (CCT-PP) de SUBPESCA emite Informe Técnico anual con CBA (Captura Biológicamente Aceptable).
+- Evaluación técnica la hace IFOP bajo Convenio Desempeño. Modelo: estadístico de captura a la edad (ASAP / Stock Synthesis variante). Publican `Informe Final` con trayectoria de SSB, reclutas, F, selectividad, M.
+- Para 2024-2025: biomasa total anchoveta centro-sur ≈ 858,000 t, status plena explotación.
+
+**Jurel (*Trachurus murphyi*):**
+- Evaluación hecha por Scientific Committee de SPRFMO (Chile, Perú, Ecuador, UE, China).
+- Modelo: Stock Synthesis v3 (SS3). Todos los inputs, outputs, y archivos `.ctl` / `.dat` son públicos en sprfmo.int.
+- Reporte anual `SC-Report-Annex-7` con parámetros finales.
+- Para 2025: TAC global 1,552,500 t; área SPRFMO 1,419,119 t; survey hidroacústico R/V Abate Molina 33 transectas Arica–Valparaíso.
+
+Esto colapsa el riesgo principal de la Ruta C (V1): no calibramos desde cero, **adoptamos**. Esto es ~2–3 meses de trabajo, no 6.
+
+## 2.3 Ley de movimiento estructural del paper 1
+
+Modelo por especie `i ∈ {sardina, anchoveta, jurel}`:
+
+$$
+B_{i,t+1} = B_{i,t} + g_i(B_{i,t}, X_t) - C_{i,t} + \epsilon_{i,t}, \quad \epsilon_{i,t} \sim \mathcal{N}(0, \sigma_i^2)
+$$
+
+con función de crecimiento Pella-Tomlinson (o Schaefer si `m=2`):
+
+$$
+g_i(B, X) = \frac{r_i(X)}{m-1} \cdot B \cdot \left(1 - \left(\frac{B}{K_i}\right)^{m-1}\right)
+$$
+
+y modulación climática de `r_i`:
+
+$$
+r_i(X_t) = r_i^0 \cdot \exp\left(\rho_i^{\text{SST}} \cdot (SST_t - \overline{SST}) + \rho_i^{\text{CHL}} \cdot \log(CHL_t / \overline{CHL})\right)
+$$
+
+La forma exponencial evita que `r_i` se vuelva negativo bajo shocks fuertes y da interpretación limpia: `ρ_i^SST` es semi-elasticidad de productividad intrínseca respecto a SST.
+
+**Correlaciones cruzadas entre especies:** se modelan vía estructura de covarianza `Σ = cov(ε_1, ε_2, ε_3)` del error de proceso, estimada conjuntamente. Esto preserva el valor original de la SUR (covarianza contemporánea entre shocks de biomasa) pero dentro de una estructura poblacional estable.
+
+**Parámetros fijos adoptados:** `r_i^0`, `K_i`, `m` (o `m=2` para Schaefer), `M_i`, `B_{i,0}`.
+
+**Parámetros estimados:** `ρ_i^SST`, `ρ_i^CHL`, `σ_i^2` para cada `i`, más 3 covarianzas cruzadas. Total 12 parámetros con N=23 por especie → ratio 3.8. Identificable.
+
+## 2.4 División de contribución con paper 2
+
+Para evitar que paper 1 "agote" paper 2 y el referee de ERE pida fusión:
+
+**Paper 1 — descriptivo, equilibrio actual bajo clima cambiante.**
+- Identificar `ρ_i^SST`, `ρ_i^CHL`.
+- Proyectar biomasa bajo regulación status-quo (TAC histórico, reglas de asignación artesanal/industrial vigentes, CPUE histórico).
+- Cuantificar cambio en viajes por flota.
+- Mensaje: "la regulación actual no reacciona al clima, y eso tiene consecuencias distributivas asimétricas entre flotas artesanal e industrial".
+
+**Paper 2 — prescriptivo, regulador y pescadores optimizan.**
+- Tomar la ley de movimiento calibrada de paper 1 como restricción biológica.
+- Stackelberg bi-nivel: regulador elige TAC óptimo (Bellman + HJB); pescadores eligen captura por viaje por especie (MPEC o nested fixed-point).
+- Solver: JuMP.jl (Julia) o CasADi (Python). R no sirve para esto.
+- Mensaje: "TAC óptimo bajo clima difiere del actual en X, la heterogeneidad en CPUE entre pescadores amplifica/atenúa el shock en Y, y el bienestar bajo regulación adaptativa supera el status-quo en Z".
+
+La división es limpia: paper 1 **identifica y describe**, paper 2 **optimiza y prescribe**. Referee de ERE valora esto explícitamente.
+
+---
+
+# 3. Tareas
+
+## T1 — Ensemble CMIP6 multi-modelo (Pangeo/Zarr)
+
+**Estado:** heredada de V1 sin cambios, sigue siendo válida bajo Plan 2.
+
+**Objetivo:** reemplazar IPSL-CM6A-LR único por ensemble de 4 modelos (IPSL-CM6A-LR, GFDL-ESM4, MPI-ESM1-2-HR, CanESM5). Reportar mediana e IQR por escenario × ventana en vez de punto.
+
+**Pipeline:** Pangeo Cloud + Zarr (NO ESGF, que ya probamos y falla). Subset espacial-temporal antes de transferir bytes → archivos de 2–10 MB en vez de 60–80 GB.
+
+Detalles técnicos, catálogo, conversiones de unidades y script completo están en la versión V1 del plan (sección homónima) — se preservan sin cambios en `R/06_projections/01_cmip6_deltas.R` y `cmip6_pangeo_download.py`.
+
+**Tiempo estimado:** 2–2.5 semanas cuando se ejecute (Q3 2026).
+
+## T2 — Adoptar parámetros bio de assessment oficial
+
+**Objetivo:** obtener y procesar `r`, `K`, `M`, `B_0`, serie anual de SSB y F para las tres especies desde fuentes oficiales.
+
+**Sub-tareas:**
+
+1. Descargar Informe Final IFOP más reciente con evaluación de sardina común y anchoveta centro-sur. Fuente: `ifop.cl/wp-content/contenidos/uploads/RepositorioIfop/InformeFinal/`.
+2. Descargar Informe Técnico CCT-PP de SUBPESCA con CBA más reciente. Fuente: `subpesca.cl/portal/sitio/Institucionalidad/Comites-Cientificos-Tecnicos-Pesqueros/Comite-Cientifico-de-Pesquerias-de-Pequenos-Pelagicos/`.
+3. Descargar SPRFMO SC Report Annex 7 para jurel. Fuente: `sprfmo.int/meetings/sc-meetings/`. Específicamente el más reciente (SC13-2025).
+4. Extraer tabla de parámetros a un archivo `data/bio_params/official_assessments.yaml` con estructura:
+   ```yaml
+   sardine_common_cs:
+     source: "IFOP Informe Final 2025, P-XXXXXX"
+     model: "Stock Synthesis v3.30"
+     year: 2025
+     r: [point, lower95, upper95]
+     K: [point, lower95, upper95]
+     M: 0.80   # mortalidad natural, constante
+     B_0: ...
+     SSB_series: {1990: ..., 1991: ..., ...}
+     F_series:   {1990: ..., ...}
+   anchoveta_cs:
+     ...
+   jurel_sprfmo:
+     source: "SPRFMO SC13 Report 2025, Annex 7"
+     model: "Stock Synthesis v3.30"
+     ...
+   ```
+5. Script `R/07_structural_bio/01_load_official_params.R` que parsea el YAML y retorna una lista `R` para uso downstream.
+
+**Riesgo:** Stock Synthesis usa estructura por edad, no por biomasa agregada. Hay que o bien colapsar SSB a `B_i` (pérdida de información) o calibrar un modelo bio agregado que preserve la trayectoria de SSB observada (más sólido). Ruta preferida: segunda.
+
+**Tiempo estimado:** 1.5 semanas.
+
+## T3 — Schaefer calibrado reproduce trayectoria histórica (sanity check)
+
+**Objetivo:** antes de meter clima, verificar que el modelo bio estructural con parámetros adoptados **reproduce** la serie histórica de biomasa observada dada la serie histórica de captura. Si no reproduce con error <20%, hay inconsistencia entre los parámetros adoptados y los datos de captura, y hay que resolverla antes de agregar shifters climáticos.
+
+**Implementación:**
+
+```r
+# R/07_structural_bio/02_hindcast_check.R
+
+simulate_hindcast <- function(params, catch_series, B0, years) {
+  B <- numeric(length(years)); B[1] <- B0
+  for (t in seq_along(years)[-1]) {
+    g <- (params$r / (params$m - 1)) * B[t-1] *
+         (1 - (B[t-1] / params$K)^(params$m - 1))
+    B[t] <- max(0.01 * params$K, B[t-1] + g - catch_series[t-1])
+  }
+  tibble(year = years, B_hat = B)
+}
+
+# Para cada especie, comparar B_hat vs SSB observada del assessment
+hindcast_errors <- map_dfr(species, function(sp) {
+  params <- official_params[[sp]]
+  sim <- simulate_hindcast(params, catch[[sp]], params$B_0, years)
+  sim %>%
+    left_join(SSB_obs[[sp]], by = "year") %>%
+    mutate(species = sp, abs_err_pct = abs(100 * (B_hat - SSB_obs) / SSB_obs))
+})
+
+# Criterio: mediana de abs_err_pct < 20%
+stopifnot(
+  hindcast_errors %>% group_by(species) %>%
+    summarise(m = median(abs_err_pct)) %>%
+    pull(m) %>% max(na.rm = TRUE) < 20
+)
+```
+
+**Si falla el test:**
+- Primer sospechoso: unidades inconsistentes entre captura (tu data SERNAPESCA) y assessment (SUBPESCA/IFOP/SPRFMO). Chequear.
+- Segundo: `B_0` del assessment corresponde a un año anterior a tu serie. Ajustar `B_0` y `year_start`.
+- Tercero: el assessment usa modelo por edad que no se colapsa bien a biomasa agregada. Plan B: calibrar `r`, `K` mediante profile likelihood sobre tu serie de SSB observada, manteniendo `M` fijo del assessment.
+
+**Tiempo estimado:** 1–1.5 semanas.
+
+## T4 — Estimación Bayesiana state-space (identificación de shifters climáticos)
+
+**Objetivo:** estimar `ρ_i^SST`, `ρ_i^CHL` y estructura de covarianza del error de proceso mediante filtro de Kalman Bayesiano con priors informativos en `r`, `K`.
+
+**Por qué state-space y no MLE frecuentista:**
+
+1. Con N=23 por especie y parámetros previos informativos (de assessments), priors Bayesianos son la herramienta natural. MLE colapsa a los priors si la likelihood es plana, y Bayes lo hace explícito.
+2. El error de proceso y el error de observación son distintos (`SSB_obs_t = B_t + ν_t`, `B_{t+1} = g(B_t) + ε_t`). State-space lo separa limpio.
+3. Posteriors propagan incertidumbre a proyecciones sin necesidad de bootstrap.
+
+**Stack técnico:** Stan via `cmdstanr` (más rápido y moderno que `rstan`). Alternativa: TMB para MLE penalizado si la posterior es unimodal y bien comportada (más rápido, menos flexible).
+
+**Especificación Stan (esqueleto):**
+
+```stan
+// paper1/stan/structural_bio_climate.stan
+data {
+  int<lower=1> T;       // años
+  int<lower=1> S;       // especies (3)
+  matrix[T, S] C;       // captura observada por especie
+  matrix[T, S] SSB_obs; // SSB observada (del assessment)
+  vector[T] SST;        // SST centrada
+  vector[T] log_CHL;    // log CHL centrado
+  // Priors informativos desde assessment oficial
+  vector[S] r_prior_mean;
+  vector[S] r_prior_sd;
+  vector[S] K_prior_mean;
+  vector[S] K_prior_sd;
+  vector[S] M_prior_mean;
+  vector[S] B0_prior_mean;
+}
+parameters {
+  vector<lower=0>[S] r0;
+  vector<lower=0>[S] K;
+  vector[S] rho_sst;        // shifters
+  vector[S] rho_chl;
+  cholesky_factor_corr[S] L_Omega;  // correlación cruzada de errores
+  vector<lower=0>[S] sigma_proc;     // sd del error de proceso
+  vector<lower=0>[S] sigma_obs;      // sd del error de observación
+  matrix<lower=0>[T, S] B_latent;    // biomasa latente
+}
+model {
+  // priors informativos
+  r0 ~ normal(r_prior_mean, r_prior_sd);
+  K  ~ normal(K_prior_mean, K_prior_sd);
+  rho_sst ~ normal(0, 0.3);   // débil
+  rho_chl ~ normal(0, 0.3);
+  L_Omega ~ lkj_corr_cholesky(2);
+  sigma_proc ~ exponential(1);
+  sigma_obs  ~ exponential(1);
+
+  // estado inicial
+  B_latent[1] ~ normal(B0_prior_mean, K * 0.1);
+
+  // dinámica
+  for (t in 2:T) {
+    vector[S] r_t = r0 .* exp(rho_sst * SST[t-1] + rho_chl * log_CHL[t-1]);
+    vector[S] growth = r_t .* B_latent[t-1]' .* (1 - B_latent[t-1]' ./ K);
+    vector[S] B_expected = B_latent[t-1]' + growth - C[t-1]';
+    B_latent[t] ~ multi_normal_cholesky(
+      B_expected,
+      diag_pre_multiply(sigma_proc, L_Omega)
+    );
+  }
+
+  // observación
+  for (t in 1:T)
+    SSB_obs[t] ~ normal(B_latent[t], sigma_obs);
+}
+generated quantities {
+  corr_matrix[S] Omega = multiply_lower_tri_self_transpose(L_Omega);
+}
+```
+
+**Posteriors que reportar:**
+- `ρ_i^SST`, `ρ_i^CHL` con CI 95% por especie.
+- `Ω` matriz de correlación cruzada.
+- Smoothed `B_latent_t` con bandas.
+
+**Diagnósticos obligatorios:**
+- R-hat < 1.01 para todos los parámetros.
+- ESS > 400.
+- Posterior predictive check contra SSB observada.
+- Prior predictive check para asegurar que los priors de `ρ` son débiles pero regulares.
+
+**Tiempo estimado:** 3 semanas (1 de setup Stan + 1 de convergencia + 1 de diagnóstico y reporte).
+
+## T5 — Forward simulation del modelo estructural × CMIP6 ensemble
+
+**Objetivo:** proyectar biomasa y captura 2025–2100 bajo los 4 modelos CMIP6 × 2 escenarios SSP, usando la ley de movimiento estructural con posteriors de T4 y deltas climáticos de T1.
+
+**Implementación:**
+
+Para cada draw `d` del posterior (típico: 1000 draws):
+- Para cada modelo `m` × escenario `s`:
+  - Para cada año `t` de 2025 a 2100:
+    - Construir `SST_t`, `log_CHL_t` vía delta aditivo/multiplicativo.
+    - Calcular `r_i(X_t)` con draws `ρ_i^SST^{(d)}`, `ρ_i^CHL^{(d)}`.
+    - Aplicar ley Pella-Tomlinson con captura `C_{i,t}` = regla status-quo (TAC histórico o F histórico).
+- Agregar a mediana + bandas 90% por (m, s, t, especie).
+
+**Regla de captura status-quo:**
+- Opción A (TAC fijo histórico): `C_{i,t} = C̄_{i, 2015-2024}`.
+- Opción B (F proporcional): `C_{i,t} = F̄_i · B_{i,t}`.
+- Opción C (HCR SUBPESCA actual): regla de decisión que aplica SUBPESCA por especie según status de biomasa vs `B_MSY`.
+
+Preferido: **C** (es la regla real), con A y B como sensibilidades en apéndice. Requiere codificar la Harvest Control Rule específica de cada especie (disponible en los Informes Técnicos del CCT-PP).
+
+**Tiempo estimado:** 2 semanas.
+
+## T6 — Mapping biomasa → viajes por flota (NB de esfuerzo)
+
+**Objetivo:** una vez que tenemos trayectoria de captura por especie bajo cada escenario, mapear a número de viajes por flota (industrial / artesanal) usando CPUE histórico y la regla de asignación sectorial.
+
+**Estructura:**
+
+1. Asignación sectorial: `H^{art}_{i,t} = α_i · H_{i,t}`, `H^{ind}_{i,t} = (1 - α_i) · H_{i,t}`, con `α_i` calibrado a la fracción histórica por especie. Fuente: SERNAPESCA cuando llegue (T8), proxy actual mientras.
+2. CPUE por flota-especie: `CPUE^f_{i}` (toneladas por viaje), estimado del panel IFOP 2013–2024.
+3. Viajes esperados: `N^f_{i,t} = H^f_{i,t} / CPUE^f_{i}`.
+4. Agregar a `N^f_t = Σ_i N^f_{i,t}` (viajes totales por flota).
+5. NB ajustado con covariables adicionales (clima directo: viento), manteniendo la defensa reduced-form de V1.
+
+**Endogeneidad:** se mantiene el caveat reduced-form de V1 (ver T7).
+
+**Tiempo estimado:** 1.5 semanas.
+
+## T7 — Reescritura del manuscrito
+
+**Cambios estructurales mayores vs V1:**
+
+- **Abstract:** reemplazar mención de "three-equation SUR" como modelo poblacional por "structural bio model calibrated from official stock assessments, augmented with Bayesian climate shifters". Mantener defensa reduced-form para la ecuación de esfuerzo (NB).
+- **Introduction:** reescribir párrafo de contribución para que enfatice la nueva arquitectura. Subrayar el gap: "la literatura de climate-econ en pesquerías usa o bien reduced-form econometrics sin estructura poblacional, o modelos bio calibrados sin fundamento climático; acá combinamos ambos".
+- **Sección 2 (Model):** reescribir. La ley de movimiento ya no es SUR; es Pella-Tomlinson con `r_i(X_t)`. El SUR sólo aparece como estimación estadística dentro del state-space, no como modelo sustantivo.
+- **Sección 3 (Data):** agregar subsección sobre adopción de parámetros oficiales. Justificar `B_0`, `r`, `K` como priors informativos con fuentes específicas (IFOP Informe Final 2025, SPRFMO SC13 2025).
+- **Sección 4 (Estimation):** describir state-space Bayesiano con Stan. Incluir sección de diagnósticos (R-hat, ESS, PPC).
+- **Sección 5 (Results):** posteriors de `ρ^SST`, `ρ^CHL`; trayectorias de biomasa con bandas 90% de incertidumbre **propagada** (no ensemble puntual); tabla de cambios en viajes por flota con intervalos.
+- **Eliminar completamente:** cap `[0.2, 3.0]`, Tabla 4 (growth capacity con -1508%), panel industrial plano por cap activo.
+- **Discussion:** reformular caveats. El primero ya no es endogeneidad, es "estos resultados dependen de que los assessments oficiales sean correctos"; el segundo endogeneidad reduced-form; el tercero `N=23`.
+
+**Texto sugerido para abstract:**
+
+> "We estimate a structural bio-climate model for Chile's multi-species small pelagic fishery that combines official stock assessments from IFOP and SPRFMO with a Bayesian state-space identification of climate shifters. Projecting biomass trajectories under CMIP6 multi-model ensemble, we quantify the heterogeneous effect of climate change on artisanal and industrial fleet trips through a reduced-form negative binomial effort equation. Results reveal a distributional asymmetry: under status-quo regulation, artisanal trips [rise/fall] by X% while industrial trips [rise/fall] by Y% in end-century under SSP5-8.5, driven primarily by differential species composition rather than by direct climate exposure."
+
+**Tiempo estimado:** 3 semanas continuas (Q4 2026).
+
+## T8 — Actualización con datos SERNAPESCA (bloqueada en entrega)
+
+**Sin cambios respecto a V1.** La tabla de contingencia por fecha de llegada sigue siendo válida, solo que ya no hay deadline de octubre 2026 que presione.
 
 | Llega antes de | Acción |
 |---|---|
-| **Junio 2026** | Incorporar antes de Tarea 4. Re-estimación completa, ruta limpia. |
-| **Julio 2026** | Incorporar en paralelo a Tarea 4. Re-correr simulación al final. |
-| **Agosto 2026** | Incorporar durante revisiones post-feedback. Posible delay de submission a oct 2026. |
-| **Después de agosto** | Submitir versión sin estos datos. Mencionar como extensión planeada en Discussion. Incorporar en R&R si llega entonces. |
+| Jun 2026 | Incorporar antes de T5 (forward sim). Re-estimación completa, ruta limpia. |
+| Sep 2026 | Incorporar durante T4–T5. Paper 1 va con SERNAPESCA v3. |
+| Dic 2026 | Incorporar durante T6–T7. Posible delay de submission a Q2 2027. |
+| Después de Dic 2026 | Submitir versión sin estos datos. Mencionar como extensión planeada en Discussion. Incorporar en R&R. |
 
-## Tiempo estimado (una vez lleguen los datos)
-
-- Validación y reconciliación: 2–3 días.
-- Re-estimación NB con cierres año-específicos + nuevo `H_alloc`: 2–3 días.
-- Re-estimación SUR si hay correcciones a landings: 1 día.
-- Re-correr cadena downstream (bootstrap + forward sim + ensemble): 2–3 días (la mayoría es tiempo de cómputo, no de código si el pipeline está bien parametrizado).
-- Actualización del texto: 1 día.
-- **Total: 1.5–2 semanas de trabajo activo, más tiempo de cómputo.**
-
-## Recomendación práctica para el pipeline
-
-Diseñar todo el código de Tareas 2 y 4 **parametrizado por dataset**, con un argumento `data_version` que apunte a `data/processed/sur_v1.rds`, `data/processed/sur_v2_sernapesca.rds`, etc. Así cuando lleguen los datos no hay que reescribir scripts, solo cambiar el path y re-ejecutar `make all`. Vale la pena la disciplina ahora porque ahorra una semana después.
+Mantener el principio de V1: todo el código parametrizado por `data_version`, así cuando llegue no hay que reescribir.
 
 ---
 
-# Orden de ejecución sugerido
+# 4. Cronograma trimestral hasta feb 2028
 
-La numeración de tareas (1–5) está organizada por **importancia conceptual**, no por orden cronológico. La tabla siguiente muestra el orden de **ejecución** óptimo, con sus dependencias técnicas.
-
-| Semana | Tareas activas | Razón |
-|---|---|---|
-| **1–2 mayo** | T1 (Pangeo) — solo | T1 es la más larga y bloquea T4. Empezar de una. |
-| **3 mayo** | T1 + T2 arranca | T2 (bootstrap) no depende de nada externo, solo del fit de SUR existente. Paralelizable. |
-| **4 mayo** | T1 cierra + T2 + T4 arranca | T1 ya entrega `delta_monthly`. T4 puede arrancar con datos sintéticos mientras se verifican los `.nc` reales. |
-| **Sem. final mayo** | T2 + T3 (reescritura) + T4 | T3 es reescritura, sirve como break entre sesiones de código. T2 corre en background. |
-| **1–3 junio** | T4 sigue + integración | T4 es la ruta crítica. Toda la energía ahí. |
-| **Junio en adelante** | Integración → feedback → polish | Cadena estándar: integrar todo, mandar a Dresdner/Chávez, iterar, pulir, submitir. |
-| **Variable** | T5 (contingente) | T5 entra cuando lleguen los datos de SERNAPESCA. Si T2 y T4 están parametrizadas con `data_version`, el re-run es barato. |
-
-**Dependencias técnicas:**
-
-- **T4 depende de T1** (necesita `delta_monthly` del ensemble CMIP6).
-- **T2 no depende de nadie** (solo del fit de SUR ya estimado).
-- **T3 no depende de nadie** (es reescritura del manuscrito).
-- **T5 está bloqueada** en entrega externa de SERNAPESCA.
-
-**Truco para arrancar T4 antes de tener datos reales:** generar un mock de `delta_monthly` con valores plausibles (ΔSST ~ +1°C, ΔCHL ratio ~ 0.97) para validar que el loop de `simulate_forward()` recupera trayectorias estables. Cuando lleguen los `.nc` de Pangeo, solo se cambia el input.
-
----
-
-# Cronograma propuesto
-
-| Tarea | Inicio | Fin | Tipo |
+| Trimestre | Paper 1 | Paper 2 | Hitos externos |
 |---|---|---|---|
-| 1. Ensemble CMIP6 (Pangeo) | 2026-05-01 | 2026-05-22 | Core |
-| 2. Bootstrap SUR | 2026-05-15 | 2026-05-29 | Core |
-| 3. Endogeneidad (reescritura) | 2026-05-25 | 2026-05-29 | Core |
-| 4. Simulación dinámica forward | 2026-05-22 | 2026-06-12 | Core |
-| 5. SERNAPESCA (TBD — contingente) | 2026-06-15 | 2026-07-15 | 🟡 Bloqueada (externa) |
-| Integración + nuevas figuras | 2026-06-12 | 2026-07-03 | Core |
-| Feedback interno (Dresdner / Chávez) | 2026-07-03 | 2026-07-31 | Core |
-| Revisiones post-feedback | 2026-07-31 | 2026-08-25 | Core |
-| Polish final + cover letter | 2026-08-25 | 2026-09-15 | Core |
-| **Submission a ERE** | **2026-09-15** | **2026-09-20** | Core |
-| 🔴 *Deadline objetivo* | | **2026-10-01** | |
+| **Q2 2026** (abr–jun) | T2 (adoptar assessments). T3 (hindcast check). | — | SERNAPESCA eventual. |
+| **Q3 2026** (jul–sep) | T1 (CMIP6 Pangeo). T4 (Stan state-space). | — | — |
+| **Q4 2026** (oct–dic) | T5 (forward × ensemble). T6 (NB viajes). T7 primera iteración draft. | Scoping: literatura, formalización Stackelberg. | Feedback interno (Dresdner, Chávez). |
+| **Q1 2027** (ene–mar) | T7 final + cover letter. **Submission ERE.** | Bellman del regulador + MPEC pescadores. | — |
+| **Q2 2027** (abr–jun) | — (bajo revisión) | Numerical solve Julia/JuMP. Calibración funciones de costo. | Decision ERE probable. |
+| **Q3 2027** (jul–sep) | R&R paper 1. | Draft paper 2 primera iteración. | — |
+| **Q4 2027** (oct–dic) | Resubmission paper 1 final. | Draft paper 2 completo. | — |
+| **Q1 2028** (ene–feb) | **Paper 1 accepted.** | Submission paper 2. | **← objetivo FONDECYT.** |
 
-**Buffer de \~10 días** entre submission y deadline para imprevistos. La Tarea 4 es ahora la ruta crítica del cronograma y consume la holgura previa — vale la pena el tradeoff porque sin ella el paper no pasa primera ronda.
+Ruta crítica: T2→T3→T4 en 2026. Si T4 (Stan) se atasca por problemas de convergencia (posibles con N=23), tomar 2 semanas extra en Q3 2026; no comprime el cronograma global.
+
+**Buffer:** Q2 2027 (bajo revisión ERE) es holgura natural. Si R&R entra antes, ahí se absorbe.
 
 ---
 
-# Estructura del repositorio
+# 5. Estructura del repo (V2)
 
 ```
-paper1-climate-spf/
-├── README.md
-├── paper1_revision_plan.md         # Este archivo
+paper1/
+├── paper1_climate_projections.Rmd            # manuscrito principal
+├── appendix.Rmd                              # diagnósticos Stan, sensibilidades
+├── refs.bib
+├── paper1_revision_plan.md                   # este archivo
+├── CHANGELOG.md
 ├── data/
-│   ├── raw/
-│   │   ├── ifop/                   # Microdata IFOP 2013-2024
-│   │   ├── biomass/                # Series anuales de biomasa
-│   │   ├── prices/                 # Precios ex-vessel deflactados
-│   │   ├── tac/                    # Cuotas SERNAPESCA (proxy actual)
-│   │   ├── sernapesca_v2/          # PENDIENTE - entrega definitiva
-│   │   └── copernicus/             # Reanalisis historico
-│   ├── cmip6/                      # NUEVO - 4 modelos
-│   │   ├── ipsl/
-│   │   ├── gfdl/
-│   │   ├── mpi/
-│   │   └── canesm5/
+│   ├── raw/                                  # sin cambios
+│   ├── bio_params/
+│   │   ├── official_assessments.yaml         # NUEVO — parámetros IFOP/SPRFMO
+│   │   ├── ifop_sardina_2025.pdf             # respaldo
+│   │   ├── ifop_anchoveta_2025.pdf
+│   │   └── sprfmo_sc13_jurel_2025.pdf
+│   ├── cmip6/                                # de T1 (sin cambios vs V1)
 │   └── processed/
 ├── R/
+│   ├── 00_config/
 │   ├── 01_clean_ifop.R
-│   ├── 02_biomass_imputation.R     # GLM Modelo B (jurel CS)
+│   ├── 02_biomass_imputation.R
 │   ├── 03_environmental_aggregation.R
-│   ├── 04_sur_estimation.R
-│   ├── 05_sur_bootstrap.R          # NUEVO
-│   ├── 06_nb_estimation.R
-│   ├── 07_cmip6_delta_method.R     # REFACTORIZAR para ensemble
-│   ├── 08_forward_simulation.R     # NUEVO - reemplaza comparative statics
-│   ├── 09_decomposition_plots.R
-│   ├── data_reconciliation_sernapesca.R   # NUEVO - cuando lleguen datos
-│   └── cmip6_pangeo_download.py    # NUEVO - Python, descarga via Zarr
-├── output/
-│   ├── tables/
-│   ├── figures/
-│   └── projections/
-├── paper/
-│   ├── paper1.Rmd                  # Manuscrito principal
-│   ├── appendix.Rmd
-│   └── refs.bib
-└── .gitignore
+│   ├── 04_sur_estimation.R                   # se mantiene pero solo para tabla descriptiva
+│   ├── 05_nb_effort.R
+│   ├── 06_projections/
+│   │   ├── 01_cmip6_deltas.R
+│   │   ├── 02_project_and_predict.R          # OBSOLETO V1 (comparative statics)
+│   │   ├── 03_project_biomass.R              # OBSOLETO V1
+│   │   ├── 04_forward_simulation.R           # DIAGNÓSTICO histórico
+│   │   ├── 04_forward_simulation_tests.R
+│   │   └── 05_sensitivity_sur_spec.R         # DIAGNÓSTICO histórico
+│   ├── 07_structural_bio/                    # NUEVO — corazón V2
+│   │   ├── 01_load_official_params.R
+│   │   ├── 02_hindcast_check.R
+│   │   ├── 03_fit_state_space.R              # driver Stan
+│   │   ├── 04_project_structural.R           # forward × CMIP6
+│   │   └── 05_map_trips.R
+│   └── cmip6_pangeo_download.py
+├── stan/
+│   └── structural_bio_climate.stan           # NUEVO
+└── output/
+    ├── tables/
+    ├── figures/
+    └── projections/
 ```
 
-## .gitignore sugerido
-
-```
-# Datos pesados
-data/raw/ifop/*
-data/cmip6/**/*.nc
-data/processed/*.rds
-
-# R
-.Rproj.user/
-.Rhistory
-.RData
-*.Rcheck/
-
-# Outputs grandes
-output/projections/*.rds
-
-# Sistema
-.DS_Store
-```
+**Scripts obsoletos (V1):** `02_project_and_predict.R` y `03_project_biomass.R` quedan en el repo como referencia histórica — no se ejecutan en el pipeline V2. Los scripts `04_forward_simulation.R`, `04_forward_simulation_tests.R`, `05_sensitivity_sur_spec.R` quedan como diagnóstico del problema que motivó el cambio arquitectural (útil para una nota al pie en el paper si un referee pregunta "¿por qué no usaron el SUR directamente?").
 
 ---
 
-# Notas para Claude Cowork
+# 6. Herramientas
 
-Cuando subas esto a GitHub, los puntos donde Cowork puede ayudar más:
-
-- **Tarea 1 (CMIP6 ensemble vía Pangeo):** generalizar `cmip6_pangeo_download.py` para iterar sobre los 4 modelos y verificar disponibilidad con `has_model()` antes de pedir cada combinación. Refactor del pipeline de delta method en R para leer los `.nc` resultantes e iterar sobre modelos.
-- **Tarea 2 (bootstrap):** validar la implementación del bootstrap, ver que la convergencia del SUR sea estable en réplicas, paralelización.
-- **Tarea 4 (simulación dinámica):** **la más importante.** Implementar `08_forward_simulation.R` siguiendo el sketch del plan, generar datos sintéticos de prueba con coeficientes conocidos para verificar que el loop recupera trayectorias estables, conectar con los `delta_monthly` que produce Tarea 1, y armar las figuras de trayectoria de biomasa.
-- **Tarea 5 (SERNAPESCA, cuando lleguen datos):** validación contra proxies actuales en `data_reconciliation_sernapesca.R`, re-ejecución de la cadena completa con el flag `data_version = "v2_sernapesca"`. Asegurar que todos los scripts de Tareas 2 y 4 acepten ese parámetro desde el inicio para que el re-run sea barato.
-
-Para cada tarea, abrir un branch (`feature/cmip6-ensemble`, `feature/sur-bootstrap`, `feature/forward-sim`, `feature/sernapesca-v2`, etc.) y trabajar sesiones cortas con Cowork apuntando a archivos específicos en `R/`.
+- **R (primary, paper 1):** `dplyr`, `tidyr`, `purrr`, `cmdstanr` para Stan, `lavaan` (residual SUR descriptivo), `terra` para NetCDF CMIP6.
+- **Python (pipeline CMIP6):** `intake-esm`, `zarr`, `xarray`, `dask`. Solo para `cmip6_pangeo_download.py`.
+- **Stan (estimación Bayesiana):** `cmdstan 2.35+`. 4 chains, 2000 iter warmup + 2000 iter sampling. Tiempo por corrida esperado: 30–90 minutos en laptop moderno.
+- **Julia (paper 2, Q1 2027+):** `JuMP.jl`, `Ipopt.jl` (NLP solver), `Optim.jl`. Alternativa: CasADi desde Python.
+- **Git:** branches `feature/structural-bio`, `feature/stan-state-space`, `feature/cmip6-ensemble`, `feature/nb-effort`. Un solo PR grande cuando T2–T6 cierren.
 
 ---
 
-# Decisión final pendiente
+# 7. Rutas descartadas (para referencia)
 
-**¿ERE o MRE?**
+Durante la discusión del 2026-04-20 se consideraron tres rutas de salida del diagnóstico SUR:
 
-| Criterio | ERE | MRE |
+- **Ruta A — `b0 = B_MEAN` + horizonte corto.** Neutraliza el transitorio pero pierde "end-century" que ERE espera. Descartada.
+- **Ruta B — Comparative statics analíticas vía delta method sobre SUR.** Identificación limpia pero no permite hablar de trayectorias ni acopla bien con paper 2 (que necesita ley de movimiento). Descartada.
+- **Ruta C — Modelo bio estructural con shifters climáticos.** Adoptada (es el Plan 2 de este documento).
+
+La Ruta C se adoptó tras confirmar que los stock assessments oficiales están disponibles y son metodológicamente sólidos (SS3 / ASAP) para las tres especies, lo que colapsa el costo de calibración de 6 meses a ~2–3 meses.
+
+---
+
+# 8. Notas para futuras sesiones Cowork
+
+- **T2 (adoptar assessments):** bajar los tres PDFs primero, extraer tablas de parámetros a YAML, y construir `R/07_structural_bio/01_load_official_params.R`. Este es el próximo paso concreto.
+- **T3 (hindcast):** es el primer test de realidad. Si falla con error >20%, parar y diagnosticar antes de seguir. No vale la pena montar Stan encima de un modelo bio que ya no replica el histórico.
+- **T4 (Stan):** los problemas típicos con N=23 son divergencias y low ESS en `rho_*`. Estrategia: priors `rho ~ normal(0, 0.3)` (débil pero regular), `non_centered parameterization` para `B_latent`, y `adapt_delta = 0.95`.
+- **T5–T6:** son mecánicos una vez T4 converge. Script, ejecución, tablas.
+- **T7:** el título puede cambiar. Sugerencia actual: "Climate Shifters in a Structural Bioeconomic Model: Distributional Effects on Chilean Small Pelagic Fisheries".
+
+---
+
+# 9. Decisión editorial pendiente
+
+**¿ERE o JAERE?**
+
+JAERE es más técnico y valora estimación Bayesiana state-space. Con la nueva arquitectura, paper 1 pasa a ser competitivo para JAERE, no solo ERE.
+
+| Criterio | ERE | JAERE |
 |---|---|---|
-| Prestigio | Alto | Medio-alto |
-| Fit con citas | Excelente | Excelente |
-| Tiempo a decisión | 4–6 meses | 3–4 meses |
-| Probabilidad sin las 3 mejoras | Baja | Media-alta |
-| Probabilidad con las 3 mejoras | Media-alta | Alta |
-| Audiencia | Econ ambiental general | Econ pesquera especializada |
+| Prestigio | Alto | Alto (ranking similar) |
+| Fit con estimación Bayesiana | Bueno | Excelente |
+| Audiencia | Econ ambiental general | Econ ambiental técnico |
+| Tiempo a decisión típico | 4–6 meses | 5–7 meses |
+| Aceptación esperada con V2 | Media-alta | Media |
 
-Recomendación: **ERE con las 3 mejoras hechas**. Si en julio el ensemble CMIP6 está dando dolores de cabeza, pivotear a MRE sin las mejoras y mandarlo en agosto.
+Recomendación tentativa: **submitir primero a JAERE** dado que el componente metodológico (state-space + assessment adoption) se valora más ahí. Si rechazo, ERE. Decisión final a revisitar en Q4 2026 cuando el draft esté completo.
