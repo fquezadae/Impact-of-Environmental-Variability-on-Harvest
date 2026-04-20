@@ -91,6 +91,65 @@ suppressPackageStartupMessages({
   library(kableExtra)
 })
 
+# Helper: post-procesa la salida de stargazer para sacar las notas
+# del \tabular y meterlas en un \begin{threeparttable}...
+# \begin{tablenotes}...\end{tablenotes}\end{threeparttable}. Con
+# esto las notas hacen wrap al ancho *natural* del tabular (el que
+# dictan las filas de datos), sin forzar al tabular a inflarse para
+# acomodar una nota larga como una sola línea.
+# Requiere \usepackage{threeparttable} en el header (ya está en el
+# YAML de este documento).
+fix_stargazer_notes <- function(tex) {
+  begin_tab <- grep("\\\\begin\\{tabular\\}", tex)
+  end_tab   <- grep("\\\\end\\{tabular\\}",   tex)
+  if (length(begin_tab) == 0 || length(end_tab) == 0) return(tex)
+  begin_tab <- begin_tab[1]
+  end_tab   <- end_tab[1]
+
+  hline_idxs <- grep("\\\\hline", tex[seq_len(end_tab)])
+  if (length(hline_idxs) == 0) return(tex)
+  last_hline <- max(hline_idxs)
+  if (last_hline + 1 > end_tab - 1) return(tex)  # no hay filas de notas
+
+  note_range <- seq(last_hline + 1, end_tab - 1)
+  note_raw   <- tex[note_range]
+
+  # Extraer el contenido de cada \multicolumn{N}{l}{<content>} \\.
+  # stargazer emite las notas con prefijo de columna-label, p.ej.
+  # "\textit{Note:}  & \multicolumn{3}{l}{...} \\" o " & \multicolumn{...}".
+  # Por eso aceptamos cualquier prefijo antes del \multicolumn.
+  note_content <- sub(
+    "^.*\\\\multicolumn\\{\\d+\\}\\{l\\}\\{(.*)\\}\\s*\\\\\\\\\\s*$",
+    "\\1",
+    note_raw
+  )
+  ok <- note_content != note_raw & nzchar(trimws(note_content))
+  note_content <- note_content[ok]
+  if (length(note_content) == 0) return(tex)
+
+  # Prefijar "Note:" inline al primer item — así queda como una sola
+  # línea ("Note: $^*$ p<0.1; ...") sin agregar un \item extra que
+  # introduce salto de línea adicional.
+  note_content[1] <- paste0("\\textit{Note:} ", note_content[1])
+
+  notes_block <- c(
+    "\\end{tabular}",
+    "\\begin{tablenotes}[flushleft]",
+    "\\footnotesize",
+    paste0("\\item ", note_content),
+    "\\end{tablenotes}",
+    "\\end{threeparttable}"
+  )
+
+  c(
+    tex[seq_len(begin_tab - 1)],
+    "\\begin{threeparttable}",
+    tex[seq(begin_tab, last_hline)],
+    notes_block,
+    if (end_tab + 1 <= length(tex)) tex[seq(end_tab + 1, length(tex))] else character(0)
+  )
+}
+
 ```
 
 # Introduction
@@ -743,39 +802,42 @@ cat("\\end{table}\n")
 
 ```{r SUR_results, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-stargazer(
-  res_main_r[[1]]$lm, res_main_r[[2]]$lm, res_main_r[[3]]$lm,
-  type = "latex",
-  header = FALSE,
-  float = TRUE,
-  title = paste0("SUR estimates of biomass dynamics (main specification, N = ", nrow(sur_main), ")"),
-  label = "tab:SUR_results",
-  column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
-  column.separate = c(1, 1, 1),
-  dep.var.labels.include = FALSE,
-  covariate.labels = c(
-    "Own biomass ($x_{it}$)",
-    "Own biomass$^2$ ($x_{it}^2$)",
-    "SST",
-    "SST$^2$",
-    "Chlorophyll-a",
-    "Constant"
-  ),
-  se = list(res_main_r[[1]]$se, res_main_r[[2]]$se, res_main_r[[3]]$se),
-  digits = 3,
-  single.row = TRUE,
-  omit.stat = c("f"),
-  no.space = TRUE,
-  font.size = "footnotesize",
-  notes = c(
-    "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
-    "Robust (Huber--White) SEs via MLR. Biomass in $10^5$ tons.",
-    "Environmental variables centered at sample means.",
-    "Jack mackerel biomass interpolated via Gamma GLM on Northern biomass (see Section 3.1)."
-  ),
-  notes.append = FALSE,
-  notes.align = "l"
+tex_sur <- capture.output(
+  stargazer(
+    res_main_r[[1]]$lm, res_main_r[[2]]$lm, res_main_r[[3]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR estimates of biomass dynamics (main specification, N = ", nrow(sur_main), ")"),
+    label = "tab:SUR_results",
+    column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
+    column.separate = c(1, 1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "SST$^2$",
+      "Chlorophyll-a",
+      "Constant"
+    ),
+    se = list(res_main_r[[1]]$se, res_main_r[[2]]$se, res_main_r[[3]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c(
+      "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
+      "Robust (Huber--White) SEs via MLR. Biomass in $10^5$ tons.",
+      "Environmental variables centered at sample means.",
+      "Jack mackerel biomass interpolated via Gamma GLM on Northern biomass (see Section 3.1)."
+    ),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
 )
+cat(fix_stargazer_notes(tex_sur), sep = "\n")
 
 ```
 
@@ -842,49 +904,52 @@ nb_art_s <- pois_art
 nb_ind_s$coefficients <- coef(nb_ind)
 nb_art_s$coefficients <- coef(nb_art)
 
-stargazer(
-  nb_ind_s, nb_art_s,
-  type = "latex",
-  header = FALSE,
-  float = TRUE,
-  title = paste0("Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = ",
-                  nrow(df_ind), ", $N_{ART}$ = ", nrow(df_art), ")"),
-  label = "tab:poisson_results",
-  column.labels = c("Industrial", "Artisanal"),
-  column.separate = c(1, 1),
-  dep.var.labels.include = FALSE,
-  covariate.labels = c(
-    "Hold capacity (log m$^3$)",
-    "Allocated harvest ($H^{alloc}_{vy}$, tons)",
-    "Price jack mackerel (1000s \\$/ton)",
-    "Price sardine (1000s \\$/ton)",
-    "Price anchoveta (1000s \\$/ton)",
-    "Bad weather days",
-    "Veda days",
-    "Vessel type (UNK)",
-    "Vessel type (BR)",
-    "Vessel type (BRV)",
-    "Vessel type (L)",
-    "Vessel type (LM)",
-    "Constant"
-  ),
-  se = list(se_ind, se_art),
-  digits = 3,
-  single.row = TRUE,
-  omit.stat = c("ll", "aic", "bic", "res.dev", "null.dev"),
-  no.space = TRUE,
-  font.size = "footnotesize",
-  notes = c(
-    "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
-    "Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.",
-    "Allocated harvest = historical vessel share $\\times$ lagged aggregate harvest.",
-    paste0("LR test NB vs Poisson: Industrial $\\chi^2$ = ",
-           round(lr_ind, 1), "; Artisanal $\\chi^2$ = ",
-           round(lr_art, 1), " (both $p < 0.001$).")
-  ),
-  notes.append = FALSE,
-  notes.align = "l"
+tex_nb <- capture.output(
+  stargazer(
+    nb_ind_s, nb_art_s,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = ",
+                    nrow(df_ind), ", $N_{ART}$ = ", nrow(df_art), ")"),
+    label = "tab:poisson_results",
+    column.labels = c("Industrial", "Artisanal"),
+    column.separate = c(1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Hold capacity (log m$^3$)",
+      "Allocated harvest ($H^{alloc}_{vy}$, tons)",
+      "Price jack mackerel (1000s \\$/ton)",
+      "Price sardine (1000s \\$/ton)",
+      "Price anchoveta (1000s \\$/ton)",
+      "Bad weather days",
+      "Veda days",
+      "Vessel type (UNK)",
+      "Vessel type (BR)",
+      "Vessel type (BRV)",
+      "Vessel type (L)",
+      "Vessel type (LM)",
+      "Constant"
+    ),
+    se = list(se_ind, se_art),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("ll", "aic", "bic", "res.dev", "null.dev"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c(
+      "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
+      "Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.",
+      "Allocated harvest = historical vessel share $\\times$ lagged aggregate harvest.",
+      paste0("LR test NB vs Poisson: Industrial $\\chi^2$ = ",
+             round(lr_ind, 1), "; Artisanal $\\chi^2$ = ",
+             round(lr_art, 1), " (both $p < 0.001$).")
+    ),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
 )
+cat(fix_stargazer_notes(tex_nb), sep = "\n")
 
 ```
 
@@ -1071,35 +1136,38 @@ The source code for this project is available on
 
 ```{r SUR_rob_panel_A, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-stargazer(
-  res_rob1_r[[1]]$lm, res_rob1_r[[2]]$lm, res_rob1_r[[3]]$lm,
-  type = "latex",
-  header = FALSE,
-  float = TRUE,
-  title = paste0("SUR robustness: observed jurel CS only (N = ", nrow(sur_obs), ")"),
-  label = "tab:SUR_rob_obs",
-  column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
-  column.separate = c(1, 1, 1),
-  dep.var.labels.include = FALSE,
-  covariate.labels = c(
-    "Own biomass ($x_{it}$)",
-    "Own biomass$^2$ ($x_{it}^2$)",
-    "SST",
-    "Chlorophyll-a",
-    "Constant"
-  ),
-  se = list(res_rob1_r[[1]]$se, res_rob1_r[[2]]$se, res_rob1_r[[3]]$se),
-  digits = 3,
-  single.row = TRUE,
-  omit.stat = c("f"),
-  no.space = TRUE,
-  font.size = "footnotesize",
-  notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
-            "Only years with observed (non-interpolated) jurel CS biomass.",
-            "SST$^2$ dropped for parsimony given reduced sample."),
-  notes.append = FALSE,
-  notes.align = "l"
+tex_rob1 <- capture.output(
+  stargazer(
+    res_rob1_r[[1]]$lm, res_rob1_r[[2]]$lm, res_rob1_r[[3]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR robustness: observed jurel CS only (N = ", nrow(sur_obs), ")"),
+    label = "tab:SUR_rob_obs",
+    column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
+    column.separate = c(1, 1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "Chlorophyll-a",
+      "Constant"
+    ),
+    se = list(res_rob1_r[[1]]$se, res_rob1_r[[2]]$se, res_rob1_r[[3]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
+              "Only years with observed (non-interpolated) jurel CS biomass.",
+              "SST$^2$ dropped for parsimony given reduced sample."),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
 )
+cat(fix_stargazer_notes(tex_rob1), sep = "\n")
 
 ```
 
@@ -1107,75 +1175,81 @@ stargazer(
 
 ```{r SUR_rob_panel_B, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-stargazer(
-  res_rob2_r[[1]]$lm, res_rob2_r[[2]]$lm,
-  type = "latex",
-  header = FALSE,
-  float = TRUE,
-  title = paste0("SUR robustness: two-species, jurel as exogenous (N = ", nrow(sur_2sp), ")"),
-  label = "tab:SUR_rob_2sp",
-  column.labels = c("Sardine", "Anchoveta"),
-  column.separate = c(1, 1),
-  dep.var.labels.include = FALSE,
-  covariate.labels = c(
-    "Own biomass ($x_{it}$)",
-    "Own biomass$^2$ ($x_{it}^2$)",
-    "SST",
-    "SST$^2$",
-    "Chlorophyll-a",
-    "Jack mackerel biomass",
-    "Constant"
-  ),
-  se = list(res_rob2_r[[1]]$se, res_rob2_r[[2]]$se),
-  digits = 3,
-  single.row = TRUE,
-  omit.stat = c("f"),
-  no.space = TRUE,
-  font.size = "footnotesize",
-  notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
-            "Two-species SUR; jack mackerel biomass enters as exogenous covariate."),
-  notes.append = FALSE,
-  notes.align = "l"
+tex_rob2 <- capture.output(
+  stargazer(
+    res_rob2_r[[1]]$lm, res_rob2_r[[2]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR robustness: two-species, jurel as exogenous (N = ", nrow(sur_2sp), ")"),
+    label = "tab:SUR_rob_2sp",
+    column.labels = c("Sardine", "Anchoveta"),
+    column.separate = c(1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "SST$^2$",
+      "Chlorophyll-a",
+      "Jack mackerel biomass",
+      "Constant"
+    ),
+    se = list(res_rob2_r[[1]]$se, res_rob2_r[[2]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
+              "Two-species SUR; jack mackerel biomass enters as exogenous covariate."),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
 )
+cat(fix_stargazer_notes(tex_rob2), sep = "\n")
 
 ```
 
 
 ```{r SUR_rob_interactions, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-stargazer(
-  res_rob3_r[[1]]$lm, res_rob3_r[[2]]$lm, res_rob3_r[[3]]$lm,
-  type = "latex",
-  header = FALSE,
-  float = TRUE,
-  title = paste0("SUR robustness: with cross-species interactions (N = ", nrow(sur_main), ")"),
-  label = "tab:SUR_interactions",
-  column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
-  column.separate = c(1, 1, 1),
-  dep.var.labels.include = FALSE,
-  covariate.labels = c(
-    "Own biomass ($x_{it}$)",
-    "Own biomass$^2$ ($x_{it}^2$)",
-    "SST",
-    "SST$^2$",
-    "Chlorophyll-a",
-    "Sardine $\\times$ Anchoveta",
-    "Sardine $\\times$ Jack mackerel",
-    "Anchoveta $\\times$ Jack mackerel",
-    "Constant"
-  ),
-  se = list(res_rob3_r[[1]]$se, res_rob3_r[[2]]$se, res_rob3_r[[3]]$se),
-  digits = 3,
-  single.row = TRUE,
-  omit.stat = c("f"),
-  no.space = TRUE,
-  font.size = "footnotesize",
-  notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
-            "Main specification augmented with pairwise biomass interactions.",
-            "No interaction term is individually or jointly significant."),
-  notes.append = FALSE,
-  notes.align = "l"
+tex_rob3 <- capture.output(
+  stargazer(
+    res_rob3_r[[1]]$lm, res_rob3_r[[2]]$lm, res_rob3_r[[3]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR robustness: with cross-species interactions (N = ", nrow(sur_main), ")"),
+    label = "tab:SUR_interactions",
+    column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
+    column.separate = c(1, 1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "SST$^2$",
+      "Chlorophyll-a",
+      "Sardine $\\times$ Anchoveta",
+      "Sardine $\\times$ Jack mackerel",
+      "Anchoveta $\\times$ Jack mackerel",
+      "Constant"
+    ),
+    se = list(res_rob3_r[[1]]$se, res_rob3_r[[2]]$se, res_rob3_r[[3]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
+              "Main specification augmented with pairwise biomass interactions.",
+              "No interaction term is individually or jointly significant."),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
 )
+cat(fix_stargazer_notes(tex_rob3), sep = "\n")
 
 ```
 

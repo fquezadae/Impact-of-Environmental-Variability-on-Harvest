@@ -355,6 +355,7 @@ Full (interactions + CHL2) & 10 & 490.5 & 528.0 & 12.9 \\
   \caption{SUR estimates of biomass dynamics (main specification, N = 23)} 
   \label{tab:SUR_results} 
 \footnotesize 
+\begin{threeparttable}
 \begin{tabular}{@{\extracolsep{5pt}}lccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -376,11 +377,15 @@ Adjusted R$^{2}$ & 0.621 & 0.493 & 0.729 \\
 Residual Std. Error (df = 17) & 7.308 & 3.917 & 9.589 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{3}{l}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.} \\ 
- & \multicolumn{3}{l}{Robust (Huber--White) SEs via MLR. Biomass in $10^5$ tons.} \\ 
- & \multicolumn{3}{l}{Environmental variables centered at sample means.} \\ 
- & \multicolumn{3}{l}{Jack mackerel biomass interpolated via Gamma GLM on Northern biomass (see Section 3.1).} \\ 
-\end{tabular} 
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.
+\item Robust (Huber--White) SEs via MLR. Biomass in $10^5$ tons.
+\item Environmental variables centered at sample means.
+\item Jack mackerel biomass interpolated via Gamma GLM on Northern biomass (see Section 3.1).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \subsection{Total Annual trips}\label{total-annual-trips-1}
@@ -391,6 +396,7 @@ Table \ref{tab:poisson_results} reports the negative binomial estimates separate
   \caption{Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = 319, $N_{ART}$ = 4498)} 
   \label{tab:poisson_results} 
 \footnotesize 
+\begin{threeparttable}
 \begin{tabular}{@{\extracolsep{5pt}}lcc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -416,11 +422,15 @@ Table \ref{tab:poisson_results} reports the negative binomial estimates separate
 Observations & 319 & 4,201 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{2}{l}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.} \\ 
- & \multicolumn{2}{l}{Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.} \\ 
- & \multicolumn{2}{l}{Allocated harvest = historical vessel share $\times$ lagged aggregate harvest.} \\ 
- & \multicolumn{2}{l}{LR test NB vs Poisson: Industrial $\chi^2$ = 524.8; Artisanal $\chi^2$ = 49060.9 (both $p < 0.001$).} \\ 
-\end{tabular} 
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.
+\item Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.
+\item Allocated harvest = historical vessel share $\times$ lagged aggregate harvest.
+\item LR test NB vs Poisson: Industrial $\chi^2$ = 524.8; Artisanal $\chi^2$ = 49060.9 (both $p < 0.001$).
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 The coefficient on allocated harvest is positive and highly significant in both fleets, confirming that vessels with larger quota allocations undertake more trips per year. This variable provides the key linkage between the trip equation and the simulation framework: changes in regional TACs translate into vessel-level effort adjustments through the quota share mechanism.

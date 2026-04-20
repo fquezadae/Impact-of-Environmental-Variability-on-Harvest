@@ -79,6 +79,50 @@ Notable changes to the project, in reverse chronological order.
   fixed (`Arcos2001-jq`, `Aufhammer2018`, above). Remaining 29
   entries checked against their DOIs/URLs; all verified.
 
+### Fixed (tables 2 & 3 width overflow)
+
+- `paper1/paper1_climate_projections.Rmd`: tables 2 (SUR) and 3
+  (NB trips) rendered wider than the text block because stargazer
+  emits each note as `\multicolumn{N}{l}{...}`, which is a single
+  unwrappable line. The longest note dictated the tabular width and
+  pushed the final column off the page (especially visible on the
+  Artisanal column of Table 3 and the Jack mackerel column of
+  Table 2). Added a helper `fix_stargazer_notes()` in the setup
+  chunk that post-processes `capture.output(stargazer(...))` and
+  converts stargazer's in-tabular notes into a `threeparttable` /
+  `tablenotes` environment. Concretely, it (a) wraps the tabular
+  with `\begin{threeparttable}...\end{threeparttable}`, (b) strips
+  the `\multicolumn{N}{l}{...} \\` rows that came after the last
+  `\hline`, and (c) re-emits their content as `\item` lines inside
+  `\begin{tablenotes}[flushleft]`. With this structure the notes
+  wrap to the *natural* width of the tabular (the width dictated
+  by the data rows) rather than forcing the tabular to expand.
+  An earlier fix using `\multicolumn{N}{p{0.95\linewidth}}{...}`
+  was discarded because it pinned the notes column to a fixed
+  fraction of the line width, which in turn forced the tabular to
+  that same width — making narrow tables *wider* than necessary.
+  Applied to both `SUR_results` and `tabla_poisson` chunks.
+  Requires `\usepackage{threeparttable}` in the YAML header
+  (already present, line 31).
+  - Follow-up fix: the extraction regex initially anchored on
+    `^\\multicolumn{...}` and therefore missed stargazer's actual
+    output format, where each note row begins with a label column
+    (e.g. `\textit{Note:}  & \multicolumn{3}{l}{...} \\`). The
+    anchor was loosened to `^.*\\multicolumn{...}` so any prefix
+    before `\multicolumn` is tolerated. The old "Note:" column
+    label is now prepended inline to the first `\item` inside
+    `tablenotes` (as `\textit{Note:} $^{*}$p<0.1; ...`), which
+    removes the empty left column that previously created a large
+    blank gap between "Note:" and the note text.
+  - Extended the helper to the three appendix robustness tables:
+    `SUR_rob_panel_A`, `SUR_rob_panel_B`, and `SUR_rob_interactions`.
+    All three used the same `notes.append = FALSE, notes.align = "l"`
+    stargazer configuration and therefore suffered from the same
+    "Note:" column artifact. Each chunk is now wrapped in
+    `capture.output(...)` → `fix_stargazer_notes()` → `cat(...)`
+    so the appendix tables render with the same clean
+    `threeparttable` layout as tables 2 and 3.
+
 ## 2026-04-18 (follow-up 2: manuscript consistency pass)
 
 ### Changed
