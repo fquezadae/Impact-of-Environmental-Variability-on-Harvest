@@ -127,8 +127,15 @@ p <- ggplot() +
   geom_sf(data = chile_plot, fill = "gray60", color = "black") +
   geom_sf(data = grid_plot, aes(color = dist2coast_km), size = 0.4) +
   scale_color_viridis_c(option = "plasma", name = "Distance to coast (km)") +
-  coord_sf(xlim = c(-82, -70), ylim = c(-42, -30)) +
+  coord_sf(xlim = c(-82, -70), ylim = c(-42, -30), expand = FALSE) +
   theme_minimal() +
+  theme(
+    plot.margin     = margin(t = 10, r = 5, b = 2, l = 5),
+    legend.position = "bottom",
+    legend.title    = element_text(size = 10),
+    legend.key.width = unit(1.2, "cm")
+  ) +
+  guides(color = guide_colorbar(title.position = "top", title.hjust = 0.5)) +
   labs(x = "Longitude", y = "Latitude")
 
 #---------------------------------
@@ -137,8 +144,8 @@ p <- ggplot() +
 ggsave(
   filename = "figs/env_data_map.pdf",
   plot     = p,
-  width    = 6,
-  height   = 7,
+  width    = 5,
+  height   = 5.5,
   units    = "in"
 )
 
