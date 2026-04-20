@@ -690,6 +690,7 @@ Zhang, J., \& Smith, M. D. (2011). Heterogeneous response to marine reserve form
   \caption{SUR robustness: observed jurel CS only (N = 12)} 
   \label{tab:SUR_rob_obs} 
 \footnotesize 
+\begin{threeparttable}
 \begin{tabular}{@{\extracolsep{5pt}}lccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -710,16 +711,21 @@ Adjusted R$^{2}$ & 0.830 & 0.277 & 0.632 \\
 Residual Std. Error (df = 7) & 6.225 & 4.697 & 12.653 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{3}{l}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.} \\ 
- & \multicolumn{3}{l}{Only years with observed (non-interpolated) jurel CS biomass.} \\ 
- & \multicolumn{3}{l}{SST$^2$ dropped for parsimony given reduced sample.} \\ 
-\end{tabular} 
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.
+\item Only years with observed (non-interpolated) jurel CS biomass.
+\item SST$^2$ dropped for parsimony given reduced sample.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \begin{table}[!htbp] \centering 
   \caption{SUR robustness: two-species, jurel as exogenous (N = 23)} 
   \label{tab:SUR_rob_2sp} 
 \footnotesize 
+\begin{threeparttable}
 \begin{tabular}{@{\extracolsep{5pt}}lcc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -742,15 +748,20 @@ Adjusted R$^{2}$ & 0.603 & 0.650 \\
 Residual Std. Error (df = 16) & 7.485 & 3.255 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{2}{l}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.} \\ 
- & \multicolumn{2}{l}{Two-species SUR; jack mackerel biomass enters as exogenous covariate.} \\ 
-\end{tabular} 
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.
+\item Two-species SUR; jack mackerel biomass enters as exogenous covariate.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \begin{table}[!htbp] \centering 
   \caption{SUR robustness: with cross-species interactions (N = 23)} 
   \label{tab:SUR_interactions} 
 \footnotesize 
+\begin{threeparttable}
 \begin{tabular}{@{\extracolsep{5pt}}lccc} 
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex] 
@@ -775,10 +786,14 @@ Adjusted R$^{2}$ & 0.575 & 0.440 & 0.728 \\
 Residual Std. Error (df = 15) & 7.738 & 4.116 & 9.601 \\ 
 \hline 
 \hline \\[-1.8ex] 
-\textit{Note:}  & \multicolumn{3}{l}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.} \\ 
- & \multicolumn{3}{l}{Main specification augmented with pairwise biomass interactions.} \\ 
- & \multicolumn{3}{l}{No interaction term is individually or jointly significant.} \\ 
-\end{tabular} 
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.
+\item Main specification augmented with pairwise biomass interactions.
+\item No interaction term is individually or jointly significant.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \end{document}
