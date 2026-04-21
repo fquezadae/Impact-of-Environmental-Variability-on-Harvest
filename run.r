@@ -1,6 +1,3 @@
-# Desde la raíz del Rproj:
-setwd("paper1")
-
 # 1) Primero los tests puros (no tocan datos reales)
 source("R/06_projections/04_forward_simulation.R")   # carga funciones
 source("R/06_projections/04_forward_simulation_tests.R")

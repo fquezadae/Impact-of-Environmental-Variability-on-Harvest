@@ -1,0 +1,549 @@
+# =============================================================================
+# FONDECYT -- official_assessments.yaml
+#
+# Parámetros de stock assessment oficiales adoptados para el modelo
+# estructural bio-ambiental del paper 1 (V2).
+#
+# Fuentes:
+#   [CCT]   Informe Técnico (R. Pesq.) N°XX/2025 -- 2da Sesión 2025 del CCT-PP,
+#           SUBPESCA. Documento "subpesca_cctpp_2025.pdf".
+#   [IFOP-SEG]   Informe Final Convenio Desempeño 2023, Programa de Seguimiento
+#                Pesquerías Pelágicas centro-sur de Chile, IFOP, Oct 2024.
+#                (Documento de MONITOREO, no de evaluación de stock. Aporta
+#                TMM, estructura de edad, L-W, timing reproductivo.)
+#   [IFOP-MPDH]  Informe Final MPDH 2024 (Donoso et al., IFOP, Jul 2025).
+#                Método producción diaria huevos → SSB observacional directa.
+#   [IFOP-ACU]   Informe Final Evaluación Hidroacústica 2024 (Saavedra Godoy
+#                et al., IFOP, Feb 2026). Biomasa total + abundancia acústica,
+#                serie 2006-2025 (en figuras, requiere digitalización).
+#                L-W frescos verano+otoño 2025.
+#   [SPRFMO] SPRFMO SC13-Report, Sep 2025 (Manta, Ecuador). Annex 10
+#           (Stock status summary for Jack Mackerel) + cuerpo del informe.
+#           Modelo JJM, github.com/SPRFMO/jjm.
+#   [LIT]   Valor adoptado de literatura / meta-análisis. Se documenta
+#           referencia bibliográfica junto al prior.
+#
+# PENDIENTE: r, K, M específicos del modelo estadístico para sardina común
+# y anchoveta centro-sur requieren bajar el "Informe de Evaluación de Stock"
+# IFOP (documento distinto del Programa de Seguimiento). Mientras no esté,
+# usamos priors de literatura razonables y centro-ajustamos con la serie SSB
+# reportada por CCT-PP.
+#
+# Última actualización: 2026-04-21
+# =============================================================================
+
+metadata:
+  version: "0.2"
+  fecha: "2026-04-21"
+  paper: "paper1_climate_projections"
+  estado: "arquitectura CS-consistente adoptada 2026-04-21 tarde; priors r/K/M todavía de literatura"
+  coordenadas: "zona centro-sur Chile (32°10'S-47°00'S) para las TRES especies (jurel_cs vía biomasa acústica IFOP + captura SERNAPESCA regiones V-X+Los Ríos)"
+  pivot_2026_04_21: |
+    Pivot arquitectural jurel: de ruta A (range-wide SPRFMO) a ruta CS-consistente.
+    Motivación: el paper1 es centro-sur consistente. SÍ existe biomasa acústica
+    de jurel a escala CS (acoustic_biomass_series.csv::jurel_cs, 25 obs 2000-2024)
+    y SERNAPESCA permite agregar captura a nivel V-X+Los Ríos coherentemente.
+    Se usa entrada nueva `jurel_cs` (este archivo) en vez de la entrada `jurel`
+    que queda como referencia range-wide para supplementary/prior-source.
+
+# -----------------------------------------------------------------------------
+#                               ANCHOVETA CS
+#                       (Engraulis ringens, 4° Región a LL)
+# -----------------------------------------------------------------------------
+anchoveta_cs:
+  especie: "Engraulis ringens"
+  unidad_stock: "centro-sur (V a X región)"
+  modelo_oficial: "estadístico estructurado a la edad, base anual biológica (jul-jun)"
+
+  status_actual:
+    ano_biologico: "2024/25"
+    fuente: "[CCT] Informe CCT-PP 2da Sesión 2025, §5.3.2"
+    BD_actual_mil_t: 664                      # biomasa desovante (mil toneladas)
+    BD_sobre_BDRMS: 1.428                     # depletion ratio (>1 → saludable)
+    F_sobre_FRMS: 0.512                       # mortalidad relativa FMSY
+    reclutamiento_2025_mil_millones: 40393    # individuos, edad 1
+    probabilidad_sobreexplotacion: 0.01
+    estado: "Plena Explotación"
+    CBA_2026_rango_sin_remanentes_t: [180695, 225869]
+    kobe: "verde (bajo FRMS y sobre BDRMS)"
+
+  priors_biologicos:
+    # M: mortalidad natural instantánea (yr⁻¹)
+    M_mean: 1.30
+    M_sd: 0.20
+    M_fuente: "[IFOP-SCAA] M=1.3 yr⁻¹ usado en evaluación edad-estructura anchoveta III-IV regiones (Convenio IFOP-SUBPESCA 2021-2022). CAVEAT: cita obtenida vía deep-research ChatGPT con referencia [56†L879-L888] no verificada en fuente primaria. Rango plausible [1.0, 1.5]. Para centro-sur asumir mismo M (ambos son Engraulis ringens, solo difiere el stock management)."
+    # Pella-Tomlinson shape (n=2 → Schaefer)
+    shape_n: 2.0
+    # r: intrinsic growth rate. Para clupeiformes costeros, r∈[0.8, 1.5]
+    r_prior_mean: 1.0
+    r_prior_sd: 0.3
+    r_fuente: "[LIT] Thorson FishLife / MacCall 2009 para pequeños pelágicos"
+    # K: carrying capacity. Centro-ajustar con BD histórica
+    # Sin serie pública, asumir K ≈ 2 * BD_max_histórica como prior laxo
+    K_prior_mean_mil_t: 1800
+    K_prior_sd_mil_t: 900
+    K_fuente: "prior laxo; se actualizará con serie IFOP"
+    # Steepness (h) del stock-recruitment — solo si usamos Beverton-Holt
+    h_prior_mean: 0.75
+    h_prior_sd: 0.10
+    h_fuente: "[LIT] Myers et al. 1999 para pequeños pelágicos"
+
+  biologia_observacional:
+    TMM_cm: null                              # IFOP Seguimiento no lo reporta aquí
+    edad_max: 4                               # grupos de edad 0-IV típicos
+    L_W_verano_2025: {a: 0.00278, b: 3.3722, fuente: "IFOP Evaluación Hidroacústica 2024 (crucero ene-feb 2025)"}
+    L_W_otono_2025:  {a: 0.00296, b: 3.3407, fuente: "IFOP Evaluación Hidroacústica 2024 (crucero abr-may 2025)"}
+    desove_principal: "ago-dic"               # [IFOP §1 resumen ejecutivo]
+    desove_inicio_ciclo: "jul"
+    desove_fin_ciclo: "primeros meses año siguiente"
+    # Observaciones directas (input para state-space Bayesiano)
+    SSB_MPDH_2024_t: 59144                    # CV 22.5% [IFOP MPDH 2024]
+    SSB_MPDH_2023_t: 389174                   # referencia comparativa [IFOP MPDH]
+    biomasa_acustica_2025_verano_t: 764580    # biomasa total (incluye juveniles)
+    biomasa_acustica_2025_otono_t:  1081914
+    juveniles_frac_verano: 0.013              # solo 1.3% juveniles en verano (anchoveta madura dominante)
+    juveniles_frac_otono:  0.297              # reclutamiento evidente en otoño
+
+  regulacion:
+    instrumento_TAC: "CBA por año biológico (jul-jun)"
+    HCR_tipo: "target FRMS con ajustes precautorios CCT-PP"
+    fraccion_artesanal: 0.78                  # ~78% de cuota global en artesanal
+    fraccion_industrial: 0.22
+
+# -----------------------------------------------------------------------------
+#                              SARDINA COMÚN CS
+#                      (Strangomera bentincki, V a LL)
+# -----------------------------------------------------------------------------
+sardina_comun_cs:
+  especie: "Strangomera bentincki"
+  unidad_stock: "centro-sur (V a X región)"
+  modelo_oficial: "estadístico estructurado a la edad, base anual biológica"
+
+  status_actual:
+    ano_biologico: "2024/25"
+    fuente: "[CCT] Informe CCT-PP 2da Sesión 2025, §5.3.3"
+    BD_actual_mil_t: 600
+    BD_sobre_BDRMS: 0.70                      # 30% por debajo BDRMS
+    F_sobre_FRMS: 1.3                         # sobrepesca
+    reclutamiento_2025_mil_millones: 147      # +196% vs 2024
+    probabilidad_sobreexplotacion: 0.92
+    probabilidad_sobrepesca: 0.74
+    estado: "Sobreexplotación"
+    CBA_2026_rango_sin_remanentes_t: [171040, 213800]
+    kobe: "rojo (sobre FRMS y bajo BDRMS)"
+
+  priors_biologicos:
+    M_mean: 1.00
+    M_sd: 0.20
+    M_fuente: "[IFOP-SCAA] M=1.0 yr⁻¹ usado en evaluación edad-estructura sardina común V-X regiones (Convenio IFOP-SUBPESCA 2021-2022). Deep-research ref [34†L1723-L1725] NO verificada en fuente primaria."
+    shape_n: 2.0
+    r_prior_mean: 0.9
+    r_prior_sd: 0.3
+    r_fuente: "[LIT] Thorson FishLife"
+    K_prior_mean_mil_t: 2000
+    K_prior_sd_mil_t: 1000
+    K_fuente: "prior laxo"
+    h_prior_mean: 0.75
+    h_prior_sd: 0.10
+
+  biologia_observacional:
+    TMM_cm: 11.5                              # [IFOP §1 resumen ejecutivo, 2023]
+    edad_max: 5                               # grupos 0-V
+    fraccion_GE0_en_captura_2023: 0.80        # reclutas dominan captura
+    desove_principal: "segundo semestre, intenso desde 2019"
+    IGS_pico_jul: 8.9
+    L_W_verano_2025: {a: 0.00426, b: 3.3259, fuente: "IFOP Evaluación Hidroacústica 2024 (crucero ene-feb 2025)"}
+    L_W_otono_2025:  {a: 0.00385, b: 3.3667, fuente: "IFOP Evaluación Hidroacústica 2024 (crucero abr-may 2025)"}
+    # Observaciones directas (input para state-space Bayesiano)
+    SSB_MPDH_2024_t: 35786                    # CV 23.3% [IFOP MPDH 2024]
+    SSB_MPDH_2023_t: 385070                   # referencia comparativa [IFOP MPDH]
+    biomasa_acustica_2025_verano_t: 1018032   # biomasa total (incluye juveniles)
+    biomasa_acustica_2025_otono_t:  1112407
+    juveniles_frac_verano: 0.488              # 48.8% juveniles en verano (<11.5 cm)
+    juveniles_frac_otono:  0.289
+    moda_talla_verano_cm: [8.0, 15.0]         # bimodal: juveniles + adultos
+
+  regulacion:
+    instrumento_TAC: "CBA por año biológico"
+    HCR_tipo: "target FRMS, actualmente en rebuilding"
+    fraccion_artesanal: 0.78
+    fraccion_industrial: 0.22
+
+# -----------------------------------------------------------------------------
+#                                   JUREL
+#                        (Trachurus murphyi, range-wide SE Pacific)
+# -----------------------------------------------------------------------------
+# NOTA: El stock de jurel es range-wide (Perú, Chile, altamar). Para paper 1
+# vamos a usar la flota **chilena** centro-sur (S-C) como objeto de análisis,
+# pero la dinámica biomass proviene del stock global SPRFMO.
+jurel:
+  especie: "Trachurus murphyi"
+  unidad_stock: "SPRFMO SE Pacific, range-wide (stock chileno S-C es subcomponente)"
+  modelo_oficial: "JJM (Joint Jack-mackerel Model), statistical catch-at-age multi-fleet"
+  modelo_codigo: "github.com/SPRFMO/jjm"
+  hipotesis_stock: ["H1 (1-stock)", "H2 (2-stock: N y S)"]
+
+  status_actual:
+    ano: 2025
+    fuente: "[SPRFMO] SC13 Annex 10, Sep 2025"
+    F_sobre_FMSY: "below"                     # cualitativo en el anexo, no hay cifra
+    SSB_sobre_BMSY: "above 100%"
+    kobe: "verde (both 2024 y 2025)"
+    catch_2024_t: 1330070                     # range-wide preliminar
+    catch_2025_t: 1384404                     # preliminar
+    TAC_2025_CMM_t: 1552500
+    TAC_2026_advice_t: [1642200, 1785400]     # rango por falta de consenso SC
+    periodo_baja_productividad: "2000-2022 explícito en S-R"
+    reclutamientos_recientes: "altos en 2024-2025"
+
+  priors_biologicos:
+    # M actualizado: jjmr docs SPRFMO reportan M ≈ 0.28-0.33 (no 0.23)
+    M_mean: 0.30
+    M_sd: 0.05
+    M_fuente: "[SPRFMO/jjmr] documentación paquete jjmr, operating model H1 v1.07 (SCW15 2025)"
+    shape_n: 2.0
+    r_prior_mean: 0.35
+    r_prior_sd: 0.10
+    r_fuente: "[LIT] FishLife para Trachurus spp."
+    # K range-wide bastante mayor que sardina/anchoveta; estimación con MSY/r
+    # MSY estimado ~ 1500 kt/año → K ≈ 4*MSY/r ~ 17 M t (muy laxo)
+    K_prior_mean_mil_t: 17000
+    K_prior_sd_mil_t: 8000
+    K_fuente: "prior laxo; centro-ajustar con series del h1_1.07.qs (SCW15_report)"
+    # steepness: jjmr usa h ≈ 0.65 en H1 v1.07, no 0.80
+    h_prior_mean: 0.65
+    h_prior_sd: 0.10
+    h_fuente: "[SPRFMO/jjmr] operating model H1 v1.07 default steepness"
+
+  biologia_observacional:
+    edad_max: 15                              # GE 0 a XV
+    edades_dominantes_2023: ["GE V (2018)", "GE VI (2017)"]   # [IFOP §1]
+    TML_mencionada: true
+    desove_patron: "hembras mayormente en reposo; patrón histórico estable"
+    habitat_S_C:
+      fuente: "[SPRFMO] SC13-ECO02"
+      fishing_grounds: "relativamente estables 2012-2025 bajo anomalías ENSO"
+      tendencia_largo_plazo: "SST más fría, mayor productividad cerca de upwelling"
+      patron_talla_espacio: "juveniles al norte (aguas más cálidas/productivas), adultos al sur (más frías)"
+
+  regulacion:
+    instrumento_TAC: "TAC CMM SPRFMO + asignación nacional por país"
+    HCR_tipo: "Adjusted Annex K"              # [SPRFMO] Annex 12
+    HCR_estabilizador: "±15% interanual"
+    HCR_Blim: "γ_lim * B0,t, con γ_lim = min(Bt/B0,t)"
+    cuota_chile_S_C_frac: null                # hay que bajarla del Decreto Subpesca
+    fraccion_artesanal: 0.10                  # ~10% en Chile S-C típico
+    fraccion_industrial: 0.90
+    flota_industrial_chile_S_C: "24 naves (2023), 100% dentro ZEE"
+
+# -----------------------------------------------------------------------------
+#                                JUREL CS
+#         (Trachurus murphyi, subcomponente centro-sur Chile, V a X+LosRíos)
+# -----------------------------------------------------------------------------
+# NUEVO 2026-04-21 tarde (pivot arquitectural). Esta es la entrada canónica
+# para jurel en paper 1. La entrada `jurel` de arriba queda como referencia
+# range-wide SPRFMO para usos supplementary.
+#
+# Escala: biomasa acústica IFOP crucero Mayo-Julio (centro-sur, Valparaíso-
+# Los Ríos en la cobertura del crucero, stock manejado hasta Los Lagos).
+# Captura: SERNAPESCA bd_desembarque agregado a V-X+Los Ríos (ver script
+# R/07_structural_bio/08_build_jurel_cs_catch.R).
+jurel_cs:
+  especie: "Trachurus murphyi (subcomponente centro-sur Chile)"
+  unidad_stock: "centro-sur Chile (V a X + Los Ríos), subcomponente del stock range-wide SPRFMO"
+  modelo_oficial: "no hay evaluación age-structured oficial a escala CS; target es biomasa acústica IFOP"
+  relacion_con_rangewide: |
+    Share captura CS / Chile-total varía entre 50-95% según fase del crash
+    (alto pre-2008, baja durante el crash 2008-2013 cuando la flota migra al
+    norte, alto post-2017). Share biomasa CS / SSB range-wide típicamente
+    ~3-10% según SSB range-wide vs biomasa acústica CS. No usar share
+    constante; la variabilidad temporal es informativa.
+
+  status_actual:
+    ano: 2024
+    fuente: "[IFOP-ACU] Biomasa acústica crucero Junio-Julio 2023"
+    biomasa_acustica_2023_t: 837349
+    biomasa_acustica_2020_t: 1548640           # pico post-recuperación
+    biomasa_acustica_2001_t: 6146418           # pico histórico pre-crash
+    crash_minimo_t: 89736                       # 2010
+    estado_cualitativo: "recuperación parcial post-crash 2008-2013"
+
+  priors_biologicos:
+    # M: misma biología que stock range-wide (invariante de escala)
+    M_mean: 0.30
+    M_sd: 0.05
+    M_fuente: "[SPRFMO/jjmr] operating model H1 v1.07"
+    shape_n: 2.0
+    # r: biológico invariante de escala; mismo valor que entrada `jurel` range-wide
+    r_prior_mean: 0.35
+    r_prior_sd: 0.15                           # ampliado vs range-wide (0.10) por menor información a escala CS
+    r_fuente: "[LIT] FishLife para Trachurus spp.; sd ampliada para reflejar incertidumbre de escala"
+    # K: re-escalado para escala CS. Pico biomasa acústica 2001 = 6.15 Mt.
+    # Grid search hindcast T3 (R/07_structural_bio/02_hindcast_check.R) encontró
+    # best-fit en K=29 Mt pero eso es sospechoso (rangewide scale-ish,
+    # biológicamente implausible — ver nota abajo). Valor adoptado combina:
+    #   - pico acústico observado (6.15 Mt) como lower bound plausible
+    #   - estimación de capacidad histórica pre-crash (~10-15 Mt razonable
+    #     para región CS dadas las capturas 1.4 Mt/año sostenidas 2000-2007)
+    K_prior_mean_mil_t: 8000
+    K_prior_sd_mil_t: 5000                     # prior amplio; state-space T4 lo afina
+    K_fuente: "re-escalado a CS desde K range-wide (17 Mt) × share histórico CS ~0.3-0.5; confirmación de magnitud vs pico acústico 2001=6.15 Mt"
+    h_prior_mean: 0.65
+    h_prior_sd: 0.10
+    h_fuente: "[SPRFMO/jjmr] H1 v1.07 default"
+    caveat_grid_hindcast: |
+      El grid search determinístico de T3 encontró r_best=0.20, K_best=29 Mt
+      con median|err%|=20.5%. NO adoptar ese K como prior: es un falso óptimo
+      que compensa la incapacidad de Schaefer determinístico de replicar el
+      crash rápido + recuperación parcial. En T4 con shifter climático ese
+      grado de libertad ya no será necesario.
+
+  biologia_observacional:
+    fuente_biomasa: "IFOP crucero acústico junio-julio (tabla ESTIMACIONES CRUCERO ACUSTICO)"
+    cobertura_crucero: "Valparaíso-Los Ríos (V-XIV), stock manejado hasta Los Lagos"
+    n_observaciones: 25
+    periodo: "2000-2024"
+    gaps: [2013, 2014, 2016, 2018, 2019, 2022, 2024]
+    no_detecciones:                            # tratar como missing/censored en Stan
+      - {year: 2012, biomass_t: 2547,  nota: "valor anómalo muy bajo, probablemente no-detección"}
+      - {year: 2015, biomass_t: 0,     nota: "explícitamente 0 en la tabla, claramente no-detección"}
+
+  regulacion:
+    instrumento_TAC: "cuota nacional Chile, dentro del TAC CMM SPRFMO"
+    cuota_artesanal_nacional_frac: 0.10
+    cuota_industrial_nacional_frac: 0.90
+    flota_industrial_V_X: "~24 naves cerqueras >60 m (SPRFMO SC13-ECO02 2025)"
+
+  # Serie de captura a adoptar (NOT jurel_chile)
+  catch_series_csv: "data/bio_params/catch_jurel_cs.csv"
+  catch_series_build_script: "R/07_structural_bio/08_build_jurel_cs_catch.R"
+  catch_regions_incluidas: ["Valparaíso", "O'Higgins", "Maule", "Bío-Bío",
+                            "La Araucanía", "Los Ríos", "Los Lagos"]
+  catch_tipos_agente: ["Industrial", "Artesanal"]
+
+# -----------------------------------------------------------------------------
+#                    PRECEDENTES DE MODELOS SURPLUS + CLIMA
+#              (citables en paper 1 para justificar el enfoque)
+# -----------------------------------------------------------------------------
+precedentes_metodologicos:
+  - codigo: "SC13-SQ07"
+    autor: "China, SPRFMO 2025"
+    especie: "Dosidicus gigas (pota)"
+    enfoque: "state-space biomass dynamics model con K e r parametrizados por
+              ENSO, SST, SSS, Chl-a, lat, lon"
+    resultado: "La Niña → mayor K; El Niño → menor K"
+    cita: "SPRFMO SC13-SQ07 (2025)"
+  - codigo: "SC13-Obs03"
+    autor: "CALAMASUR, SPRFMO 2025"
+    especie: "Dosidicus gigas"
+    enfoque: "multi-fleet generalized depletion model + environmental surplus
+              production, time-varying production params linked to ENSO"
+    cita: "SPRFMO SC13-Obs03 (2025)"
+  - codigo: "SC13-ECO02"
+    autor: "Chile (IFOP), SPRFMO 2025"
+    especie: "Trachurus murphyi"
+    enfoque: "habitat variability analysis 2012-2025 para flota S-C Chile"
+    cita: "SPRFMO SC13-ECO02 (2025)"
+
+# -----------------------------------------------------------------------------
+#                        NOTAS DE IMPLEMENTACIÓN
+# -----------------------------------------------------------------------------
+implementacion:
+  modelo_bio: "Pella-Tomlinson con shape n=2 (= Schaefer)"
+  ley_movimiento: |
+    X_{t+1} = X_t + r_i(SST_t, CHL_t) * X_t * (1 - (X_t/K_i)^(n-1)) - C_{i,t}
+    donde r_i(SST, CHL) = r_i^0 * exp(ρ_i^SST * (SST - SST_bar) +
+                                       ρ_i^CHL * log(CHL / CHL_bar))
+  parametros_a_estimar:
+    - "r_i^0 para cada especie (3 params)"
+    - "K_i para cada especie (3 params)"
+    - "ρ_i^SST para cada especie (3 params)"
+    - "ρ_i^CHL para cada especie (3 params)"
+    - "σ_proc (proceso) para cada especie"
+    - "σ_obs (observación) si SSB es observado con error"
+  dimension_total: "~15-18 parámetros, tractable con N>30 años de serie y priors informativos"
+  calibracion: "Stan via cmdstanr, state-space con ley Markov"
+  datos_objetivo:
+    - "Biomasa acústica serie anual (IFOP RECLAS+PELACES, 1999-2024) — obs. directa"
+    - "SSB serie anual MPDH (IFOP, 2002-2024) — opcional, observación complementaria"
+    - "C serie anual por especie (SERNAPESCA o Seguimiento IFOP)"
+    - "SST mensual → anualizada (CMIP6 histórico + ERA5/OISST)"
+    - "Chl-a mensual → anualizada (CMEMS/MODIS)"
+  observaciones_disponibles:
+    acoustic_csv: "data/bio_params/acoustic_biomass_series.csv"
+    acoustic_n_annual_points_sardina_cs:  45   # RECLAS + PELACES 1999-2024
+    acoustic_n_annual_points_anchoveta_cs: 45   # RECLAS + PELACES 1999-2024
+    acoustic_n_annual_points_jurel_cs:    25   # 2000-2024 con gaps
+    MPDH_one_point: "SSB 2024 ± 2023 comparación (ver biologia_observacional)"
+    # Precios y MP procesada (IFOP Encuesta Industrial 2012-2024) NO son input
+    # para paper 1. Ese pipeline vive en R/01_data_cleaning/ifop_industrial_data.R
+    # y alimenta paper 2 (bioeconomic Stackelberg). Los precios que aparecen en
+    # paper 1 como covariables de la trip equation ya vienen deflactados a
+    # constante 2018 pesos desde el Rmd principal, no de este YAML.
+    raw_xlsx_copia: "data/bio_params/ifop_acoustic_raw.xlsx"
+  # --- NUEVO 2026-04-21 (tarde): captura anual SERNAPESCA ---
+  catch_annual_csv: "data/bio_params/catch_annual_paper1.csv"
+  catch_annual_periodo: "2000-2023 (24 años)"
+  catch_annual_fuente: "SERNAPESCA bd_desembarque (raw copia: sernapesca_bd_desembarque_raw.csv)"
+  catch_split_sector_csv: "data/bio_params/catch_annual_paper1_by_sector.csv"
+  catch_caveat: |
+    (a) Industrial + Artesanal combinados (excluye Acuicultura/Fábrica).
+    (b) Post-2013 anchoveta_cs y sardina_cs pasan a ~100% Artesanal
+        (re-clasificación flota <18m art. 55 LGPA). El split I/A no es
+        informativo como fleet-size control para estos stocks post-colapso.
+    (c) Jurel Chile ≈ 15% del stock range-wide OROP-PS. Para paper 1 ver PEND-8.
+
+  # --- NUEVO 2026-04-21: series oficiales de evaluación de stock (SSB/BT/R) ---
+  # Fuente: Felipe Q. compilación IFOP evaluaciones directas/indirectas oficiales,
+  # Datos_estimación biomasa.xlsx. GAME CHANGER — ya no dependemos solo de acústica.
+  official_ssb_series_csv: "data/bio_params/official_biomass_series.csv"
+  official_ssb_stocks:
+    anchoveta_cs:
+      years: "1997-2024 (28 años, anual)"
+      cols_disponibles: ["ssb_t", "biomass_total_t", "recruits_mil_ind"]
+      zona: "Valparaíso-Los Lagos (V-X)"
+      unidades_verificadas: true  # SSB 2024 = 645,034 t consistente con IFOP Seguimiento
+    sardina_comun_cs:
+      years: "1991-2025 (35 años, anual)"
+      cols_disponibles: ["ssb_t", "biomass_total_t", "recruits_mil_ind"]
+      zona: "Valparaíso-Los Lagos (V-X)"
+      unidades_verificadas: true
+    jurel_orop_ps:
+      years: "1970-2024 (55 años, anual)"
+      cols_disponibles: ["ssb_t", "recruits_mil_ind"]  # NO biomass_total
+      zona: "ZEE Chile-Ecuador y AJN Perú (range-wide SPRFMO)"
+      unidad_ssb: "miles_de_t"  # RESUELTO 2026-04-21 por triangulación interna
+      unidad_conversion_factor: 1000
+      justificacion_unidades: |
+        Felipe no tiene el documento fuente (IFOP envió el xlsx directamente).
+        Resuelto por triangulación matemática: R_2024 = 18,326 × 10^6 ind con
+        peso medio al recluta ~50-100 g → biomasa de reclutas 900-1800 kt. Si
+        SSB fuera 17,738 t puros, ratio R_biomass / SSB ≈ 50-100, biológicamente
+        absurdo. Con SSB en miles_t → 17.7 Mt → R/SSB ≈ 0.05-0.1, plausible.
+        Para state-space Bayesiano la escala absoluta se absorbe en q, así
+        que el posterior de r, ρ^SST, ρ^CHL no cambia.
+    anchoveta_norte:
+      years: "1985-2024 (40 años, anual)"
+      cols_disponibles: ["ssb_t", "biomass_total_t", "recruits_mil_ind"]
+      zona: "Atacama-Coquimbo (III-IV)"
+      relevancia_paper1: "no target, pero útil para cross-validación ambiental"
+    anchoveta_sur_peru_norte_chile:
+      years: "1986-2024.5 (78 puntos semianuales)"
+      cols_disponibles: ["ssb_t", "biomass_total_t", "recruits_mil_ind"]
+      zona: "Arica_Parinacota-Antofagasta (XV-II), stock compartido Chile-Perú"
+      unidad_ssb: "miles_de_t"  # RESUELTO 2026-04-21 por comparación con deep-research K range
+      unidad_conversion_factor: 1000
+      justificacion_unidades: |
+        Valores máximos en tabla: ~2,672. Si la unidad es t puras, SSB máximo
+        2.7 kt es absurdo para este stock. Deep research confirma K ≈ 7.8-12.7 Mt
+        para el stock combinado Imarpe-IFOP 2018, y 2672 × 1000 = 2.67 Mt
+        que encaja como SSB en fracción de K. Consistente.
+      relevancia_paper1: "no target (paper1 es centro-sur)"
+    sardina_austral_los_lagos:
+      years: "2002-2024 (23 años, anual)"
+      cols_disponibles: ["ssb_t", "biomass_total_t", "recruits_mil_ind"]
+      zona: "Región de Los Lagos (X)"
+      relevancia_paper1: "no target, pero útil comparativo"
+
+# -----------------------------------------------------------------------------
+#                              PENDIENTES
+# -----------------------------------------------------------------------------
+pendientes:
+  # ----------------------- CERRADOS (histórico, para auditoría) -------------
+  - id: "PEND-1"
+    descripcion: "Serie RECLAS+PELACES 1999-2024 tabulada (Felipe la mantenía aparte). Guardada en data/bio_params/acoustic_biomass_series.csv (90 filas, 2 especies × 45 cruceros; ahora también 25 obs jurel_cs)."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+  - id: "PEND-1b"
+    descripcion: "Decisión metodológica: no esperamos el age-structured IFOP con r/K/M publicados. Se procede con priors de literatura informados (Thorson FishLife, Pauly meta-analysis) + calibración state-space contra series observacionales IFOP (RECLAS+PELACES + MPDH) + SSB/BT/R oficial age-structured (Datos_estimación biomasa.xlsx, 259 filas, 6 stocks 1970-2025)."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+  - id: "PEND-2"
+    descripcion: "Parser h1_1.07.qs operativo. R/07_structural_bio/07_parse_sprfmo_jjm.R extrae captura y SSB range-wide desde FLR MSE object. Outputs: catch_jurel_sprfmo.csv y ssb_jurel_sprfmo.csv (1970-2045). USO: referencia supplementary/prior-source (jurel rangewide), NO target del paper1."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+  - id: "PEND-3"
+    descripcion: "Serie anual SERNAPESCA bd_desembarque procesada a catch_annual_paper1.csv (4 stocks × 2000-2023). Incluye anchoveta_cs, sardina_comun_cs, jurel_chile (Chile-total, histórico) y jurel_cs (V-X+LosRíos, canónico para paper1 post-pivot)."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+  - id: "PEND-5"
+    descripcion: "Unidades de jurel_orop_ps en official_biomass_series.csv (miles_de_t confirmado). Ya no es bloqueante para paper1: jurel pasa a jurel_cs con biomasa acústica en toneladas puras, así que el caveat sólo aplica a usos supplementary de la serie range-wide."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+  - id: "PEND-6"
+    descripcion: "Reconciliación SSB oficial vs biomasa acústica. Correlaciones log-log fuertes anchoveta_cs (0.87-0.93), sardina_cs (0.63-0.85). State-space puede usar ambas como observaciones independientes."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+  - id: "PEND-8"
+    descripcion: "Approach jurel paper 1. Ruta A (range-wide SPRFMO) evaluada y descartada; ruta adoptada es CS-consistente con biomasa acústica IFOP + captura SERNAPESCA V-X+Los Ríos. Ver entrada `jurel_cs` en este YAML."
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+
+  # ----------------------- ABIERTOS -----------------------------------------
+  - id: "PEND-4"
+    descripcion: "Completar L-W y TMM de anchoveta desde IFOP Anexo 4C"
+    urgencia: "baja"
+    bloquea: "paper 2 (catch-per-trip por especie)"
+    estado: "abierto"
+  - id: "PEND-7"
+    descripcion: "Verificar citas del deep-research ChatGPT [34†...], [56†...], [65†...], [83†...] — son IDs internos de ChatGPT, NO DOIs. Bajar fuentes primarias: (a) Informe Sardina Común IFOP 2022, (b) Informe Anchoveta III-IV IFOP 2022, (c) Taller Imarpe-IFOP 2018 (Hilborn-Mangel/Zhou/SS), (d) Cerda et al. 2001 Gordon-Schaefer."
+    urgencia: "media"
+    bloquea: "citar priors en paper1 sin entradas fantasma"
+    nota: "Consistente con feedback_language.md (bibliography hygiene) — bib ha tenido entradas fantasma. NO incluir estas refs en paper1.bib hasta verificar fuente primaria."
+    estado: "abierto"
+  - id: "PEND-9"
+    descripcion: "Completar captura pre-2000 para sardina común (1991-1999, 9 años faltantes) y anchoveta (1997-1999, 3 años faltantes). Fuentes posibles: SERNAPESCA Anuarios Estadísticos históricos PDF o IFOP Seguimiento Fig. 64/95/96."
+    urgencia: "media"
+    bloquea: "máximo aprovechamiento de serie SSB oficial (que arranca 1991 sardina, 1997 anchoveta)"
+    estado: "abierto"
+  - id: "PEND-10"
+    descripcion: "T4 Stan state-space Bayesiano con arquitectura CS-consistente para las tres especies. Priors `jurel_cs` ya definidos en este YAML; falta implementar el modelo .stan (esqueleto ya en paper1_revision_plan.md líneas 247-305) y correrlo con cmdstanr."
+    urgencia: "alta"
+    bloquea: "T5 forward × CMIP6; cierre del paper 1"
+    estado: "abierto"
+  - id: "PEND-11"
+    descripcion: "Stress test intermedio T3-bis: hindcast Schaefer aumentado con shifter SST exógeno r(SST) = r_0 * exp(ρ^SST * (SST-SSTbar)). Si el error baja <20%, refuerza argumento metodológico para T4. Script R/07_structural_bio/09_stress_test_sst.R."
+    urgencia: "media"
+    bloquea: "fortalece argumento metodológico pre-T4; no bloqueante"
+    estado: "abierto"
+
+# -----------------------------------------------------------------------------
+#               PRIORS ALTERNATIVOS DE DEEP-RESEARCH (2026-04-21)
+# -----------------------------------------------------------------------------
+# CAVEAT EXPLÍCITO: las siguientes referencias vienen de "deep research" hecho
+# por ChatGPT sobre IFOP/literatura. ChatGPT arrojó citas internas tipo
+# [XX†LXXXX-LXXXX] que NO son DOIs verificables. Felipe debe confirmar cada
+# valor contra su fuente primaria ANTES de citarlas en paper1. Hasta entonces
+# son priors provisionales.
+
+priors_deep_research_2026_04_21:
+  fuente: "deep-research-report.md enviado por Felipe 2026-04-21"
+  status: "provisional -- citas sin verificar vs. fuentes primarias"
+
+  anchoveta_cs:
+    M_SCAA_IFOP_yr: 1.3                          # usado en IFOP 2021-22 III-IV
+    r_range_Imarpe_IFOP_2018: [0.44, 0.59]       # Martell-Froese / Zhou / SS
+    K_range_Imarpe_IFOP_2018_Mt: [7.8, 12.7]     # stock Perú sur + Chile norte
+    r_Cerda_2001_yr: 1.15                        # sardina+anchoveta agregado
+    K_Cerda_2001_Mt: 4.3
+    nota: |
+      Los r/K del taller Imarpe-IFOP 2018 son para el stock COMBINADO
+      Perú sur + Chile norte, no para centro-sur. Valor indicativo para
+      anchoveta como género. Cerda 2001 es agregado con sardina, histórico
+      y estático, usar con mucha precaución.
+
+  sardina_comun_cs:
+    M_SCAA_IFOP_yr: 1.0                          # usado en IFOP 2021-22 V-X
+    r_prior_inferido: "similar a anchoveta o levemente mayor"
+    K_prior_inferido_Mt: "sin estimación específica en literatura revisada"
+    nota: |
+      Deep research NO encontró r/K específicos para sardina común CS.
+      Mantener prior actual K_prior_mean_mil_t = 2000 (≈ 2 Mt) hasta
+      que salga estimación del modelo state-space.
+
+  recomendaciones_metodologicas_del_deep_research:
+    - "Incorporar incertidumbre de M: simular rangos [0.8, 1.5]"
+    - "Usar r/K con bandas amplias como priors (no point estimates)"
+    - "Validar con índices acústicos y MPDH (ya lo hacemos)"
+    - "Incluir escenarios ambientales en r o reclutamiento (objetivo del paper1)"
+    - "Percentiles conservadores ante incertidumbre climática"

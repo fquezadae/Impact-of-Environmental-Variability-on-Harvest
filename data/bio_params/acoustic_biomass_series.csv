@@ -1,0 +1,116 @@
+year,crucero,survey,season,species,biomass_t,abundance_mil_ind
+1999,Reclas 9912,RECLAS,verano,sardina_comun_cs,264231.0,177336
+1999,Reclas 9912,RECLAS,verano,anchoveta_cs,370054.0,59686
+2001,Reclas 0101,RECLAS,verano,sardina_comun_cs,567819.0,174879
+2001,Reclas 0101,RECLAS,verano,anchoveta_cs,412103.0,76668
+2002,Reclas 0201,RECLAS,verano,sardina_comun_cs,844713.0,153855
+2002,Reclas 0201,RECLAS,verano,anchoveta_cs,1494267.0,96193
+2003,Reclas 0301,RECLAS,verano,sardina_comun_cs,481605.0,42721
+2003,Reclas 0301,RECLAS,verano,anchoveta_cs,250295.0,46445
+2004,Reclas 0401,RECLAS,verano,sardina_comun_cs,360208.0,72125
+2004,Reclas 0401,RECLAS,verano,anchoveta_cs,1289818.0,91596
+2005,Reclas 0501,RECLAS,verano,sardina_comun_cs,633136.0,43082
+2005,Reclas 0501,RECLAS,verano,anchoveta_cs,931140.0,100806
+2006,Reclas 0601,RECLAS,verano,sardina_comun_cs,2178397.0,515982
+2006,Reclas 0601,RECLAS,verano,anchoveta_cs,785840.0,100405
+2007,Reclas 0701,RECLAS,verano,sardina_comun_cs,2134043.0,122878
+2007,Reclas 0701,RECLAS,verano,anchoveta_cs,897777.0,76628
+2008,Reclas 0801,RECLAS,verano,sardina_comun_cs,4813144.0,544253
+2008,Reclas 0801,RECLAS,verano,anchoveta_cs,1040062.0,61942
+2009,Reclas 0901,RECLAS,verano,sardina_comun_cs,1555625.0,319469
+2009,Reclas 0901,RECLAS,verano,anchoveta_cs,184774.0,43355
+2010,Reclas 1001,RECLAS,verano,sardina_comun_cs,2623566.0,972378
+2010,Reclas 1001,RECLAS,verano,anchoveta_cs,17550.0,6905
+2011,Reclas 1101,RECLAS,verano,sardina_comun_cs,3246647.0,1098388
+2011,Reclas 1101,RECLAS,verano,anchoveta_cs,25797.0,2745
+2012,Reclas 1201,RECLAS,verano,sardina_comun_cs,3843911.0,1777250
+2012,Reclas 1201,RECLAS,verano,anchoveta_cs,100020.0,13176
+2013,Reclas 1301,RECLAS,verano,sardina_comun_cs,1133477.0,87069
+2013,Reclas 1301,RECLAS,verano,anchoveta_cs,73551.0,5414
+2014,Reclas 1401,RECLAS,verano,sardina_comun_cs,3079434.0,768494
+2014,Reclas 1401,RECLAS,verano,anchoveta_cs,116472.0,9512
+2015,Reclas 1501,RECLAS,verano,sardina_comun_cs,1972148.0,516339
+2015,Reclas 1501,RECLAS,verano,anchoveta_cs,120727.0,5851
+2016,Reclas 1601,RECLAS,verano,sardina_comun_cs,2032684.0,211677
+2016,Reclas 1601,RECLAS,verano,anchoveta_cs,218422.0,45233
+2017,Reclas 1701,RECLAS,verano,sardina_comun_cs,2025002.0,260264
+2017,Reclas 1701,RECLAS,verano,anchoveta_cs,84188.0,5965
+2018,Reclas 1801,RECLAS,verano,sardina_comun_cs,2424330.0,524759
+2018,Reclas 1801,RECLAS,verano,anchoveta_cs,347160.0,27366
+2019,Reclas 1901,RECLAS,verano,sardina_comun_cs,2275425.0,147567
+2019,Reclas 1901,RECLAS,verano,anchoveta_cs,605670.0,40567
+2020,Reclas 20-01,RECLAS,verano,sardina_comun_cs,1050175.0,50295
+2020,Reclas 20-01,RECLAS,verano,anchoveta_cs,569463.0,44448
+2021,Reclas 21-01,RECLAS,verano,sardina_comun_cs,2363380.0,329634
+2021,Reclas 21-01,RECLAS,verano,anchoveta_cs,516374.0,24270
+2022,Reclas 22-01,RECLAS,verano,sardina_comun_cs,3189821.0,170648
+2022,Reclas 22-01,RECLAS,verano,anchoveta_cs,1084161.0,37047
+2023,Reclas 23-01,RECLAS,verano,sardina_comun_cs,1530352.0,184394
+2023,Reclas 23-01,RECLAS,verano,anchoveta_cs,1017674.0,58869
+2024,Reclas 24-01,RECLAS,verano,sardina_comun_cs,700798.0,68443
+2024,Reclas 24-01,RECLAS,verano,anchoveta_cs,1355376.0,105709
+2003,Pelaces 0305,PELACES,otono,sardina_comun_cs,173729.0,20724
+2003,Pelaces 0305,PELACES,otono,anchoveta_cs,601222.0,43667
+2005,Pelaces 0503,PELACES,otono,sardina_comun_cs,1385775.0,70489
+2005,Pelaces 0503,PELACES,otono,anchoveta_cs,1210346.0,65269
+2006,Pelaces 0604,PELACES,otono,sardina_comun_cs,512237.0,88540
+2006,Pelaces 0604,PELACES,otono,anchoveta_cs,2062538.0,108527
+2007,Pelaces 0705,PELACES,otono,sardina_comun_cs,225334.0,20287
+2007,Pelaces 0705,PELACES,otono,anchoveta_cs,1510612.0,106147
+2009,Pelaces 0905,PELACES,otono,sardina_comun_cs,991726.0,99564
+2009,Pelaces 0905,PELACES,otono,anchoveta_cs,1874556.0,107525
+2010,Pelaces 1005,PELACES,otono,sardina_comun_cs,2184203.0,299628
+2010,Pelaces 1005,PELACES,otono,anchoveta_cs,298747.0,22258
+2011,Pelaces 1105,PELACES,otono,sardina_comun_cs,1414675.0,227408
+2011,Pelaces 1105,PELACES,otono,anchoveta_cs,248664.0,18144
+2012,Pelaces 1205,PELACES,otono,sardina_comun_cs,1217169.0,407573
+2012,Pelaces 1205,PELACES,otono,anchoveta_cs,174083.0,16827
+2013,Pelaces 1305,PELACES,otono,sardina_comun_cs,2296489.0,180538
+2013,Pelaces 1305,PELACES,otono,anchoveta_cs,86301.0,8044
+2014,Pelaces 1405,PELACES,otono,sardina_comun_cs,1805815.0,340038
+2014,Pelaces 1405,PELACES,otono,anchoveta_cs,172949.0,8692
+2015,Pelaces 1505,PELACES,otono,sardina_comun_cs,2633311.0,394391
+2015,Pelaces 1505,PELACES,otono,anchoveta_cs,242188.0,26150
+2016,Pelaces 1605,PELACES,otono,sardina_comun_cs,1482799.0,149668
+2016,Pelaces 1605,PELACES,otono,anchoveta_cs,501740.0,70620
+2017,Pelaces 1705,PELACES,otono,sardina_comun_cs,1565315.0,161178
+2017,Pelaces 1705,PELACES,otono,anchoveta_cs,490994.0,51774
+2018,Pelaces 1805,PELACES,otono,sardina_comun_cs,1577507.0,215515
+2018,Pelaces 1805,PELACES,otono,anchoveta_cs,745055.0,65208
+2019,Pelaces 1905,PELACES,otono,sardina_comun_cs,1421176.0,109802
+2019,Pelaces 1905,PELACES,otono,anchoveta_cs,786931.0,126944
+2020,Pelaces 20-05,PELACES,otono,sardina_comun_cs,867257.0,69294
+2020,Pelaces 20-05,PELACES,otono,anchoveta_cs,1005239.0,84958
+2021,Pelaces 21-05,PELACES,otono,sardina_comun_cs,1100020.0,102941
+2021,Pelaces 21-05,PELACES,otono,anchoveta_cs,1338007.0,74999
+2022,Pelaces 22-05,PELACES,otono,sardina_comun_cs,1062045.0,101278
+2022,Pelaces 22-05,PELACES,otono,anchoveta_cs,1417886.0,128790
+2023,Pelaces 23-05,PELACES,otono,sardina_comun_cs,1247258.0,182224
+2023,Pelaces 23-05,PELACES,otono,anchoveta_cs,1427616.0,98686
+2024,Pelaces 24-05,PELACES,otono,sardina_comun_cs,732720.0,60784
+2024,Pelaces 24-05,PELACES,otono,anchoveta_cs,1351595.0,133425
+2000,Mayo-junio,IFOP_acoustic_jurel_CS,mayo-junio,jurel_cs,5889227.0,
+2001,Mayo-junio,IFOP_acoustic_jurel_CS,mayo-junio,jurel_cs,6146418.0,
+2002,Mayo-junio,IFOP_acoustic_jurel_CS,mayo-junio,jurel_cs,2078747.0,
+2003,Junio,IFOP_acoustic_jurel_CS,junio,jurel_cs,2746252.0,
+2004,Junio,IFOP_acoustic_jurel_CS,junio,jurel_cs,4552770.0,
+2005,Junio,IFOP_acoustic_jurel_CS,junio,jurel_cs,4086322.0,
+2006,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,3835333.0,
+2007,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,3243676.0,
+2008,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,520934.0,
+2009,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,534538.0,
+2010,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,89736.0,
+2011,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,127520.0,
+2012,Julio,IFOP_acoustic_jurel_CS,julio,jurel_cs,2547.0,
+2013,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
+2014,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
+2015,Mayo-junio,IFOP_acoustic_jurel_CS,mayo-junio,jurel_cs,0.0,
+2016,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
+2017,Mayo-junio,IFOP_acoustic_jurel_CS,mayo-junio,jurel_cs,431469.0,
+2018,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
+2019,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
+2020,Junio-julio,IFOP_acoustic_jurel_CS,junio-julio,jurel_cs,1548640.0,
+2021,Junio-julio,IFOP_acoustic_jurel_CS,junio-julio,jurel_cs,1213776.0,
+2022,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
+2023,Junio-julio,IFOP_acoustic_jurel_CS,junio-julio,jurel_cs,837349.0,
+2024,,IFOP_acoustic_jurel_CS,nan,jurel_cs,,
