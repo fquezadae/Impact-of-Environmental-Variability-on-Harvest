@@ -503,9 +503,20 @@ pendientes:
     estado: "abierto"
   - id: "PEND-11"
     descripcion: "Stress test intermedio T3-bis: hindcast Schaefer aumentado con shifter SST exógeno r(SST) = r_0 * exp(ρ^SST * (SST-SSTbar)). Si el error baja <20%, refuerza argumento metodológico para T4. Script R/07_structural_bio/09_stress_test_sst.R."
-    urgencia: "media"
-    bloquea: "fortalece argumento metodológico pre-T4; no bloqueante"
-    estado: "abierto"
+    estado: "cerrado"
+    fecha_cierre: "2026-04-21"
+    resultado: |
+      Ejecutado 2026-04-21 con 4 variantes (3D libre + restringido SST,
+      CHL, SST+CHL joint con r,K fijos en priors YAML). Resultado: 0/3
+      stocks cruzan 20% con shifters univariados restringidos; 1/3
+      (anchoveta, 19.0%) cruza con SST+CHL joint pero con ρ_SST pegado
+      al bound −3 y ρ_CHL con flip de signo. Covariables verificadas
+      ortogonales (corr(SST,CHL) anual CS-wide = 0.030, p=0.888, via
+      10_env_correlation.R), así que el flip NO es colinealidad sino
+      no-identificabilidad estructural del MLE puntual en modelo
+      no-lineal recursivo con bounds activos. Argumento metodológico
+      para T4 Bayesiano reforzado. Detalles en bloque
+      t3bis_stress_test_2026_04_21 abajo.
 
 # -----------------------------------------------------------------------------
 #               PRIORS ALTERNATIVOS DE DEEP-RESEARCH (2026-04-21)
@@ -547,3 +558,123 @@ priors_deep_research_2026_04_21:
     - "Validar con índices acústicos y MPDH (ya lo hacemos)"
     - "Incluir escenarios ambientales en r o reclutamiento (objetivo del paper1)"
     - "Percentiles conservadores ante incertidumbre climática"
+
+# -----------------------------------------------------------------------------
+#         RESULTADOS T3-BIS STRESS TEST (2026-04-21) -- cierre de PEND-11
+# -----------------------------------------------------------------------------
+# Resumen canónico de la corrida de R/07_structural_bio/09_stress_test_sst.R
+# y R/07_structural_bio/10_env_correlation.R. Estos son los números que
+# alimentan los priors informativos de T4 Stan (PEND-10) y el argumento
+# metodológico del paper 1.
+
+t3bis_stress_test_2026_04_21:
+  fecha: "2026-04-21"
+  scripts:
+    - "R/07_structural_bio/09_stress_test_sst.R"
+    - "R/07_structural_bio/10_env_correlation.R"
+  ventana: "2000-2023 (24 años)"
+  especificacion: "Schaefer determinístico con shifter(es): r_t = r_0 * exp(ρ_SST*(SST_t-SST̄) + ρ_CHL*(CHL_t-CHL̄)); B floor = 0.01*K"
+  estimacion: "MLE puntual (optim), log-error Gaussiano; r y K fijos en priors YAML en variantes restringidas; bounds ρ ∈ [-3, 3]"
+
+  colinealidad_covariables:
+    metodo: "R/07_structural_bio/10_env_correlation.R (Pearson raw + first-diff + Spearman, N=25, 2000-2024)"
+    pearson_raw: 0.030
+    pearson_first_diff: 0.022
+    spearman: 0.127
+    pvalue_pearson: 0.888
+    conclusion: |
+      SST y CHL anuales CS-wide son ortogonales en esta ventana. Cualquier
+      patología en los ρ conjuntos NO viene de colinealidad de covariables
+      sino de no-identificabilidad estructural del MLE puntual (modelo
+      no-lineal recursivo + bounds activos).
+
+  resultados_por_stock:
+    anchoveta_cs:
+      baseline_median_err_pct: 95.2
+      sst_restringido:
+        rho_sst: -0.613
+        median_err_pct: 43.8
+        cruza_20pct: false
+      chl_restringido:
+        rho_chl: -2.718        # contra bound
+        median_err_pct: 51.2
+        cruza_20pct: false
+      sst_chl_joint_restringido:
+        rho_sst: -3.000        # contra bound
+        rho_chl: +1.535        # flip de signo vs univariado
+        median_err_pct: 19.0
+        cruza_20pct: true
+      interpretacion: |
+        Único stock que cruza el 20%, pero con patología: rho_SST contra
+        bound y rho_CHL con flip de signo respecto al univariado. No es
+        colinealidad (covariables ortogonales). Refleja no-identificabilidad
+        estructural del MLE en modelo no-lineal. Biológicamente rho_SST=-0.6
+        (univariado) es plausible para especie de upwelling frío.
+
+    sardina_comun_cs:
+      baseline_median_err_pct: 99.0
+      sst_restringido:
+        rho_sst: -2.581        # cerca del bound
+        median_err_pct: 56.7
+        cruza_20pct: false
+      chl_restringido:
+        rho_chl: -3.000        # contra bound, no ayuda
+        median_err_pct: 99.0
+        cruza_20pct: false
+      sst_chl_joint_restringido:
+        rho_sst: -2.442
+        rho_chl: +2.926        # contra bound superior
+        median_err_pct: 47.2
+        cruza_20pct: false
+      interpretacion: |
+        ρ contra bounds en las tres variantes. Lineal-exponencial
+        insuficiente: el sistema pide no-linealidad (threshold, régimen,
+        quadrática).
+
+    jurel_cs:
+      baseline_median_err_pct: 44.2
+      sst_restringido:
+        rho_sst: -0.152        # nulo
+        median_err_pct: 44.3
+        cruza_20pct: false
+      chl_restringido:
+        rho_chl: -1.012
+        median_err_pct: 49.1
+        cruza_20pct: false
+      sst_chl_joint_restringido:
+        rho_sst: +0.562        # flip de signo vs univariado (-0.152)
+        rho_chl: -3.000        # contra bound
+        median_err_pct: 48.5
+        cruza_20pct: false
+      interpretacion: |
+        Mudo a shifters climáticos lineales. rho_SST univariado ≈ 0.
+        Failure es dinámica de edad / reclutamiento pulsado (no-detecciones
+        2012, 2015), NO climatológico en SST/CHL.
+
+  priors_informativos_derivados_para_T4_stan:
+    descripcion: "Priors normales para rho_SST y rho_CHL derivados del SST univariado restringido (NO del joint, que es no-identificable)"
+    anchoveta_cs:
+      rho_sst: "N(-0.6, 0.3)"
+      rho_chl: "N(0, 0.5)"   # prior débil; covariables ortogonales permiten inclusión
+    sardina_comun_cs:
+      rho_sst: "N(-1.0, 0.5)"  # laxo porque MLE contra bound
+      rho_chl: "N(0, 0.5)"
+    jurel_cs:
+      rho_sst: "N(0, 0.3)"   # débilmente informativo centrado en 0
+      rho_chl: "N(0, 0.5)"
+
+  mensaje_metodologico_para_paper: |
+    De 12 coeficientes ρ estimados (4 variantes × 3 stocks), 5 quedan
+    pegados al bound ±3. Incluso con covariables ambientales ortogonales
+    (Pearson r=0.03, N=25), los MLE puntuales del Schaefer aumentado
+    exhiben ρ inestables --sign flips, bounds activos-- reflejando la
+    no-linealidad recursiva de la dinámica más que colinealidad de
+    covariables. Esto motiva el enfoque Bayesiano state-space de T4 que
+    entrega distribuciones posteriores completas bajo priors informativos
+    y ruido de proceso explícito. Cierra la puerta a objeciones tipo
+    "arréglenlo con VIF".
+
+  outputs_persistidos:
+    - "data/bio_params/qa/hindcast_sst_trajectories.png"
+    - "data/bio_params/qa/hindcast_sst_comparison.csv"
+    - "data/bio_params/qa/env_sst_chl_correlation.png"

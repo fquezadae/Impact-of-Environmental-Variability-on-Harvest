@@ -33,7 +33,12 @@ OFFICIAL_ASSESSMENTS_PATH <- file.path(
 
 # Especies manejadas actualmente. Si agregamos sardina austral más adelante,
 # sumarla aquí y en el YAML.
-SPECIES_KEYS <- c("anchoveta_cs", "sardina_comun_cs", "jurel")
+#
+# `jurel`    = entrada range-wide SPRFMO (referencia / supplementary).
+# `jurel_cs` = entrada CS-consistente (canonical para paper1, pivot 2026-04-21).
+# Ambas se cargan porque el pipeline necesita la de CS para el hindcast y la
+# range-wide sigue siendo útil para comparación en la sección discusión.
+SPECIES_KEYS <- c("anchoveta_cs", "sardina_comun_cs", "jurel", "jurel_cs")
 
 # Campos mínimos que TIENEN que estar presentes en priors_biologicos.
 # Falta de cualquiera detiene el pipeline para evitar calibrar con basura.
