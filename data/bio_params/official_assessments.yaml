@@ -6,7 +6,7 @@
 #
 # Fuentes:
 #   [CCT]   Informe Técnico (R. Pesq.) N°XX/2025 -- 2da Sesión 2025 del CCT-PP,
-#           SUBPESCA. Documento "subpesca_cctpp_2025.pdf".
+#           SUBPESCA. Documento "refs/subpesca_cctpp_2025.pdf".
 #   [IFOP-SEG]   Informe Final Convenio Desempeño 2023, Programa de Seguimiento
 #                Pesquerías Pelágicas centro-sur de Chile, IFOP, Oct 2024.
 #                (Documento de MONITOREO, no de evaluación de stock. Aporta
@@ -528,7 +528,7 @@ pendientes:
 # son priors provisionales.
 
 priors_deep_research_2026_04_21:
-  fuente: "deep-research-report.md enviado por Felipe 2026-04-21"
+  fuente: "refs/deep-research-report.md enviado por Felipe 2026-04-21"
   status: "provisional -- citas sin verificar vs. fuentes primarias"
 
   anchoveta_cs:

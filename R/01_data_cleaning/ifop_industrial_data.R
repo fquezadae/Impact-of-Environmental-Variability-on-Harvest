@@ -16,15 +16,15 @@
 # Loader de datos de Precios + Proceso IFOP 2012-2024 (Monitoreo Económico
 # de la Industria Pesquera y Acuícola Nacional).
 #
-# Inputs (CSVs producidos desde ifop_precios_proceso_raw.xlsx):
-#   - data/bio_params/ifop_precios_mp_mensual.csv    (nivel mensual × planta)
-#   - data/bio_params/ifop_precios_mp_anual.csv      (agregado anual)
-#   - data/bio_params/ifop_proceso_mp_mensual.csv    (nivel mensual × planta)
-#   - data/bio_params/ifop_proceso_anual.csv         (agregado anual × línea)
-#   - data/bio_params/catch_proxy_paper1_stocks.csv  (MP total como proxy C_t
-#                                                     — nombre legacy, puede
-#                                                     renombrarse a
-#                                                     catch_proxy_mp_procesada.csv)
+# Inputs (CSVs producidos desde data/precios/ifop_precios_proceso_raw.xlsx):
+#   - data/precios/ifop_precios_mp_mensual.csv    (nivel mensual × planta)
+#   - data/precios/ifop_precios_mp_anual.csv      (agregado anual)
+#   - data/precios/ifop_proceso_mp_mensual.csv    (nivel mensual × planta)
+#   - data/precios/ifop_proceso_anual.csv         (agregado anual × línea)
+#   - data/precios/catch_proxy_paper1_stocks.csv  (MP total como proxy C_t
+#                                                  — nombre legacy, puede
+#                                                  renombrarse a
+#                                                  catch_proxy_mp_procesada.csv)
 #
 # Notas importantes:
 #   (a) PRECIO proviene de encuesta muestral IFOP (no censal). Unidad: CLP/t
@@ -43,7 +43,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-BP <- "data/bio_params"
+BP <- "data/precios"
 
 # ---------------------------------------------------- loaders por tabla ----
 
@@ -111,7 +111,7 @@ compute_annual_price_weighted <- function() {
 # ---------------------------------------------------- QA visual rapido ----
 
 plot_ifop_industrial_qa <- function(
-    out_dir = "data/bio_params/qa"
+    out_dir = "data/precios/qa"
 ) {
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -161,5 +161,5 @@ if (isTRUE(getOption("structural_bio.run_main", FALSE))) {
         as.data.frame(), row.names = FALSE)
 
   plot_ifop_industrial_qa()
-  cat("\nQA plots guardados en data/bio_params/qa/\n")
+  cat("\nQA plots guardados en data/precios/qa/\n")
 }
