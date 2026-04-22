@@ -69,20 +69,23 @@ anchoveta_cs:
 
   priors_biologicos:
     # M: mortalidad natural instantánea (yr⁻¹)
-    M_mean: 1.30
+    # ACTUALIZADO 2026-04-22: fuente primaria IFOP V-X 2024 (no III-IV).
+    # Atención: M en V-X (0.7) es sustantivamente menor que en III-IV (1.3).
+    M_mean: 0.70
     M_sd: 0.20
-    M_fuente: "[IFOP-SCAA] M=1.3 yr⁻¹ usado en evaluación edad-estructura anchoveta III-IV regiones (Convenio IFOP-SUBPESCA 2021-2022). CAVEAT: cita obtenida vía deep-research ChatGPT con referencia [56†L879-L888] no verificada en fuente primaria. Rango plausible [1.0, 1.5]. Para centro-sur asumir mismo M (ambos son Engraulis ringens, solo difiere el stock management)."
+    M_fuente: "[IFOP-SCAA-VX] M=0.7 yr⁻¹ usado en caso base de evaluación edad-estructura anchoveta V-X regiones (Tercer Informe Consolidado Convenio IFOP-SUBPESCA 2023, julio 2024). Verificado contra fuente primaria 2026-04-22 (ifop_anchoveta_vx_2024.pdf, líneas 168/310/499 del texto). CORRECCIÓN vs versión previa del YAML: M=1.3 del deep-research ChatGPT era para anchoveta III-IV (stock centro-norte distinto), no para centro-sur."
     # Pella-Tomlinson shape (n=2 → Schaefer)
     shape_n: 2.0
-    # r: intrinsic growth rate. Para clupeiformes costeros, r∈[0.8, 1.5]
-    r_prior_mean: 1.0
+    # r: intrinsic growth rate. Reescalado consistente con M=0.7 (era 1.0 con M=1.3).
+    r_prior_mean: 0.6
     r_prior_sd: 0.3
-    r_fuente: "[LIT] Thorson FishLife / MacCall 2009 para pequeños pelágicos"
-    # K: carrying capacity. Centro-ajustar con BD histórica
-    # Sin serie pública, asumir K ≈ 2 * BD_max_histórica como prior laxo
-    K_prior_mean_mil_t: 1800
-    K_prior_sd_mil_t: 900
-    K_fuente: "prior laxo; se actualizará con serie IFOP"
+    r_fuente: "[LIT] Thorson FishLife / MacCall 2009 para pequeños pelágicos, reescalado para consistencia con M reducido (IFOP V-X 2024). Rango plausible r∈[0.3, 1.0]."
+    # K: carrying capacity. Derivado de BD0 primaria (IFOP V-X 2024, Hito 3): BD0 = 872 mil t desovante virgen.
+    # BT_2024/BD_2024 = 1160/735 = 1.58; BT_hist/BD_hist promedio ≈ 2.0 → K_total ≈ 1.6-2 × BD0 ≈ 1400-1750 kt.
+    # Prior centrado conservador en 2200 con sd amplia (abarca rango 1200-3200).
+    K_prior_mean_mil_t: 2200
+    K_prior_sd_mil_t: 1000
+    K_fuente: "[IFOP-SCAA-VX 2024, Hito 3] BD0=872 mil t (desovante virgen proxy). K_total estimado 1.5-2× BD0. Verificado contra fuente primaria 2026-04-22."
     # Steepness (h) del stock-recruitment — solo si usamos Beverton-Holt
     h_prior_mean: 0.75
     h_prior_sd: 0.10
@@ -135,14 +138,17 @@ sardina_comun_cs:
   priors_biologicos:
     M_mean: 1.00
     M_sd: 0.20
-    M_fuente: "[IFOP-SCAA] M=1.0 yr⁻¹ usado en evaluación edad-estructura sardina común V-X regiones (Convenio IFOP-SUBPESCA 2021-2022). Deep-research ref [34†L1723-L1725] NO verificada en fuente primaria."
+    M_fuente: "[IFOP-SCAA-VX] M=1.0 yr⁻¹ usado en caso base de evaluación edad-estructura sardina común V-X regiones (Tercer Informe Final Convenio IFOP-SUBPESCA 2021, julio 2022). Verificado contra fuente primaria 2026-04-22 (ifop_sardinacomun_vx_2022.pdf, Tabla 10 línea 2233). Rango explorado IFOP: M=0.85 (Cubillos & Arancibia 1993) a M=1.2 (Barría 2001); IFOP adoptó 1.0 como intermedio."
     shape_n: 2.0
     r_prior_mean: 0.9
     r_prior_sd: 0.3
-    r_fuente: "[LIT] Thorson FishLife"
-    K_prior_mean_mil_t: 2000
-    K_prior_sd_mil_t: 1000
-    K_fuente: "prior laxo"
+    r_fuente: "[LIT] Thorson FishLife / MacCall 2009 para pequeños pelágicos. IFOP no estima r (modelo SCAA age-structured, no Schaefer)."
+    # K: carrying capacity. Derivado de BD0 primaria (IFOP V-X julio 2022, Hito 3): BD0 = 1.56 Mt desovante virgen.
+    # Fracción desovante típica sardina común ≈ 0.5-0.7 dado maturity-at-age temprano → K_total ≈ 2.2-3.1 Mt.
+    # Prior centrado en 3000 con sd amplia (abarca 2000-4000).
+    K_prior_mean_mil_t: 3000
+    K_prior_sd_mil_t: 1500
+    K_fuente: "[IFOP-SCAA-VX 2022, Hito 3] BD0=1.56 Mt (desovante virgen proxy, Tabla 33 línea 5446). K_total estimado como BD0 / fracción_desovante (0.5-0.7). Verificado contra fuente primaria 2026-04-22."
     h_prior_mean: 0.75
     h_prior_sd: 0.10
 
@@ -678,3 +684,90 @@ t3bis_stress_test_2026_04_21:
     - "data/bio_params/qa/hindcast_sst_trajectories.png"
     - "data/bio_params/qa/hindcast_sst_comparison.csv"
     - "data/bio_params/qa/env_sst_chl_correlation.png"
+
+# -----------------------------------------------------------------------------
+#         PRIORS PRIMARIOS VERIFICADOS (2026-04-22)
+# -----------------------------------------------------------------------------
+# Reemplaza/complementa el bloque priors_deep_research_2026_04_21 (que era
+# provisional ChatGPT). Los 4 PDFs IFOP/SPRFMO/UdeC en
+# data/bio_params/refs/deep_search/ fueron leídos y tabulados el 2026-04-22.
+# Los valores M, BD0, BDRMS de abajo son los que están propagados a las
+# secciones `anchoveta_cs:` y `sardina_comun_cs:` de arriba (bloques
+# priors_biologicos actualizados).
+
+priors_primarias_verificadas_2026_04_22:
+  fecha: "2026-04-22"
+  status: "verificado contra fuentes primarias; reemplaza priors_deep_research_2026_04_21"
+
+  fuentes_pdf:
+    sardina_comun_vx_2022:
+      archivo: "data/bio_params/refs/deep_search/ifop_sardinacomun_vx_2022.pdf"
+      titulo: "IFOP Tercer Informe Final Convenio 2021 - Sardina común V-X - julio 2022"
+      zona: "V a X (nuestra zona)"
+      autor_jefe_proyecto: "Juan Carlos Quiroz Espinosa"
+      autora: "María José Zúñiga Basualto"
+    anchoveta_vx_2024:
+      archivo: "data/bio_params/refs/deep_search/ifop_anchoveta_vx_2024.pdf"
+      titulo: "IFOP Tercer Informe Consolidado Convenio 2023 - Anchoveta V-X - julio 2024"
+      zona: "V a X (nuestra zona)"
+    anchoveta_sardespanola_iiiiv_2022:
+      archivo: "data/bio_params/refs/deep_search/ifop_anchoveta_sardespanola_iiiiv_2022.pdf"
+      titulo: "IFOP Segundo Informe Convenio 2021 - Anchoveta y sardina española III-IV - mayo 2022"
+      zona: "III a IV (zona norte chico, NO es nuestra)"
+      utilidad: "solo referencia metodológica; no aporta priors para CS"
+    taller_xv_2017:
+      archivo: "data/bio_params/refs/deep_search/imarpe_ifop_taller_xv_anchoveta_perusur_chilenorte_2017.pdf"
+      titulo: "Taller XV Imarpe-IFOP - Anchoveta sur Perú + norte Chile - 2017"
+      zona: "XV-II (NO es nuestra zona)"
+      utilidad: "referencia de órdenes de magnitud de r/K para Engraulis ringens (stock distinto)"
+      valores_ilustrativos: "r=0.44-0.59; K=7.8-12.7 Mt (Martell-Froese / Zhou / SS3)"
+    aliaga_2001:
+      archivo: "data/bio_params/refs/deep_search/aliaga_gomez_neira_2001_bioeconomico_sardina_anchoveta_norte.pdf"
+      titulo: "Aliaga, Gómez & Neira (2001), Inv. Mar. Valparaíso 29(2):15-23"
+      zona: "Chile norte (NO es nuestra zona)"
+      especie: "sardina+anchoveta agregado, Gordon-Schaefer 1980-91"
+      utilidad: "cita histórica bioeconómica chilena; NO aporta priors para CS. Corrige cita fantasma 'Cerda et al. 2001' del reporte ChatGPT."
+
+  parametros_adoptados_para_priors_T4_stan:
+    sardina_comun_cs:
+      M_yr: 1.0
+      M_rango_explorado: [0.85, 1.2]
+      BD0_mil_t: 1560       # desovante virgen proxy, Hito 3 julio 2022
+      BDRMS_mil_t: 859
+      BDLIM_mil_t: 430
+      BD_promedio_historica_mil_t: 806
+      K_prior_derivado_mil_t: 3000
+      K_prior_sd_mil_t: 1500
+      r_prior_mean: 0.9     # IFOP no reporta r; de literatura
+      r_prior_sd: 0.3
+    anchoveta_cs:
+      M_yr: 0.7             # CRÍTICO: distinto del 1.3 en III-IV
+      M_rango_explorado: [0.5, 1.0]
+      BD0_mil_t: 872        # desovante virgen proxy, Hito 3 julio 2024
+      BDRMS_mil_t: 480
+      BDLIM_mil_t: 240
+      BD_promedio_historica_mil_t: 407
+      K_prior_derivado_mil_t: 2200
+      K_prior_sd_mil_t: 1000
+      r_prior_mean: 0.6     # reescalado consistente con M=0.7
+      r_prior_sd: 0.3
+
+  hallazgos_criticos:
+    - id: "anchoveta_M_es_07_no_13"
+      descripcion: |
+        IFOP V-X 2024 usa M=0.7 año⁻¹ como caso base para anchoveta centro-sur.
+        El reporte ChatGPT (priors_deep_research_2026_04_21) citaba M=1.3 basado
+        en el informe III-IV (zona norte chico, stock distinto). Esto es una
+        corrección material: M=0.7 implica vida media ≈ 1/M = 1.43 años, mientras
+        que M=1.3 implica ≈ 0.77 años. Cambia la escala del prior de r
+        (escalado consistente: r=0.6 ahora, era 1.0).
+      impacto_stan: "r_prior y M_prior de anchoveta_cs ambos recalibrados"
+    - id: "cita_cerda2001_es_aliaga2001"
+      descripcion: |
+        La cita 'Cerda et al. 2001' del reporte ChatGPT es en realidad
+        Aliaga, Gómez & Neira (2001), Inv. Mar. Valparaíso 29(2):15-23,
+        autores UdeC (coautores del propio departamento de Felipe).
+      impacto_bib: "Tercera entrada fantasma detectada. Ver project_bibliography_hygiene.md"
+
+  gap_residual:
+    descripcion: "Ningún PDF aporta priors específicos para jurel_cs. Se mantiene la derivación heurística desde SPRFMO range-wide + biomasa acústica CS (ver sección jurel_cs: arriba)."
