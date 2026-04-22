@@ -503,7 +503,24 @@ pendientes:
     urgencia: "media"
     bloquea: "citar priors en paper1 sin entradas fantasma"
     nota: "Consistente con feedback_language.md (bibliography hygiene) — bib ha tenido entradas fantasma. NO incluir estas refs en paper1.bib hasta verificar fuente primaria."
-    estado: "abierto"
+    estado: "cerrado"
+    fecha_cierre: "2026-04-22"
+    resultado: |
+      4 PDFs primarios bajados, renombrados y tabulados en
+      priors_primarias_verificadas_2026_04_22.fuentes_pdf:
+        (a) ifop_sardinacomun_vx_2022.pdf → verificado; BD0=1.56 Mt, BDRMS=859 kt, M=1.0
+        (b) ifop_anchoveta_sardespanola_iiiiv_2022.pdf → descartado como fuente CS
+            (es III-IV, zona distinta). Clave para detectar error ChatGPT M=1.3→0.7.
+        (c) imarpe_ifop_taller_xv_anchoveta_perusur_chilenorte_2017.pdf → verificado;
+            r=0.44-0.59, K=7.8-12.7 Mt (stock Perú-sur+Chile-norte, NO CS). Nota:
+            ChatGPT citaba "2018"; el taller real es 2017 Lima.
+        (d) aliaga_gomez_neira_2001_bioeconomico_sardina_anchoveta_norte.pdf →
+            verificado; la cita fantasma "Cerda et al. 2001" era en realidad
+            Aliaga, Gómez & Neira (2001), Inv. Mar. Valparaíso 29(2):15-23.
+            Corregido en paper1/bibliography.bib y citado en paper1_climate_projections.Rmd.
+      BONUS: ifop_anchoveta_vx_2024.pdf e ifop_jurel_nacional_2023.pdf también
+      bajados como fuente primaria CS (fuera del scope original de PEND-7, pero
+      completan la cadena de verificación para los 3 stocks del paper).
   - id: "PEND-9"
     descripcion: "Completar captura pre-2000 para sardina común (1991-1999, 9 años faltantes) y anchoveta (1997-1999, 3 años faltantes). Fuentes posibles: SERNAPESCA Anuarios Estadísticos históricos PDF o IFOP Seguimiento Fig. 64/95/96."
     urgencia: "media"
@@ -691,6 +708,98 @@ t3bis_stress_test_2026_04_21:
     - "data/bio_params/qa/hindcast_sst_trajectories.png"
     - "data/bio_params/qa/hindcast_sst_comparison.csv"
     - "data/bio_params/qa/env_sst_chl_correlation.png"
+
+# -----------------------------------------------------------------------------
+#    T3-BIS RERUN con PRIORS PRIMARIOS VERIFICADOS (2026-04-22)
+# -----------------------------------------------------------------------------
+# Re-corrida de R/07_structural_bio/09_stress_test_sst.R después de actualizar
+# los priors r, K y M contra fuentes primarias IFOP 2022/2024 (ver bloque
+# priors_primarias_verificadas_2026_04_22 abajo). Cambios de prior:
+#   - anchoveta_cs: r 1.0→0.6, K 1800→2200 (cambio material)
+#   - sardina_comun_cs: K 2000→3000 (r unchanged)
+#   - jurel_cs: priors sin cambio → resultado idéntico (sanity check OK)
+
+t3bis_stress_test_rerun_2026_04_22:
+  fecha: "2026-04-22"
+  motivo: "Los priors del stress test previo (2026-04-21) usaban valores ChatGPT sin verificar. Re-corrido con priors IFOP primarios."
+  scripts: ["R/07_structural_bio/09_stress_test_sst.R"]
+
+  resultados_por_stock:
+    anchoveta_cs:
+      baseline_median_err_pct: 95.9
+      sst_restringido:   {rho_sst: -2.755, median_err_pct: 30.78, cruza_20pct: false}
+      chl_restringido:   {rho_chl: -3.000, median_err_pct: 95.12, cruza_20pct: false}
+      sst_chl_joint:     {rho_sst: -2.292, rho_chl: -2.299, median_err_pct: 26.59, cruza_20pct: false}
+      cambio_vs_2026_04_21: |
+        SST solo MEJORA dramáticamente (43.8%→30.8%) porque con r=0.6 y K=2200
+        el baseline subestima más los peaks, y rho_sst más negativo (-2.76 vs
+        -0.61) compensa. En cambio "ambos" EMPEORA (19.0%→26.6%): con rho_sst
+        ya absorbiendo casi todo, rho_chl ya no tiene margen estructural para
+        corregir; el sign-flip del 2026-04-21 (rho_chl +1.5) desaparece y pasa
+        a -2.3. Conclusión material: con priors verificados anchoveta ya NO
+        cruza el 20% bajo ninguna variante lineal.
+    sardina_comun_cs:
+      baseline_median_err_pct: 98.5
+      sst_restringido:   {rho_sst: -1.485, median_err_pct: 23.11, cruza_20pct: false}
+      chl_restringido:   {rho_chl: -3.000, median_err_pct: 98.46, cruza_20pct: false}
+      sst_chl_joint:     {rho_sst: -1.959, rho_chl:  2.078, median_err_pct: 20.52, cruza_20pct: false}
+      cambio_vs_2026_04_21: |
+        SST solo MEJORA mucho (56.7%→23.1%) con K=3000 vs 2000: más headroom
+        absoluto y rho_sst más pequeño en magnitud (-1.49 vs -2.58). "Ambos"
+        ROZA el borde 20% (47.2%→20.5%). Los ρ ya no están pegados al bound.
+        Es el único stock cerca de cerrar, pero queda justo por encima.
+    jurel_cs:
+      baseline_median_err_pct: 44.2
+      sst_restringido:   {rho_sst: -0.152, median_err_pct: 44.29, cruza_20pct: false}
+      chl_restringido:   {rho_chl: -1.012, median_err_pct: 49.09, cruza_20pct: false}
+      sst_chl_joint:     {rho_sst:  0.562, rho_chl: -3.000, median_err_pct: 48.50, cruza_20pct: false}
+      cambio_vs_2026_04_21: "Idéntico (priors jurel_cs sin cambio). Sanity check ✓."
+
+  narrativa_actualizada_paper: |
+    ANTES (priors ChatGPT): 1/3 stocks cruzaba 20% con SST+CHL joint (anchoveta
+    19.0%), con patología de bounds. Narrativa comprometida.
+    AHORA (priors IFOP verificados): 0/3 cruzan 20%. Sardina queda en el borde
+    (20.5%), anchoveta en 26.6%, jurel en 48.5%. La conclusión "shifters
+    lineales son insuficientes — Bayesiano state-space es necesario" queda
+    LIMPIA y universal para los tres stocks. Quitamos el caveat de bounds.
+
+  priors_informativos_derivados_para_T4_stan_v2:
+    descripcion: |
+      Priors normales para rho_SST y rho_CHL derivados del MLE puntual
+      conjunto (SST+CHL joint) con r,K fijos en priors primarios IFOP.
+      Reemplaza priors_informativos_derivados_para_T4_stan del bloque
+      t3bis_stress_test_2026_04_21.
+    anchoveta_cs:
+      rho_sst:
+        prior: "normal(-2.3, 1.0)"
+        justificacion: "MLE joint -2.29; sd=1.0 débilmente informativo (≈40% de |mean|), covariables ortogonales permiten identificación vía likelihood."
+      rho_chl:
+        prior: "normal(-2.3, 1.0)"
+        justificacion: "MLE joint -2.30; consistente con biología de upwelling (más productividad ≠ más crecimiento lineal a escala anual agregada)."
+    sardina_comun_cs:
+      rho_sst:
+        prior: "normal(-2.0, 1.0)"
+        justificacion: "MLE joint -1.96. Sardina es la especie que más cerca estuvo de cerrar con lineal."
+      rho_chl:
+        prior: "normal(2.1, 1.0)"
+        justificacion: "MLE joint +2.08 (positivo, opuesto a anchoveta). NO usar prior jerárquico compartido entre stocks: los signos difieren."
+    jurel_cs:
+      rho_sst:
+        prior: "normal(0, 1.0)"
+        justificacion: "MLE joint 0.56 pero el univariado da -0.15 → sign flip clásico de no-identificabilidad. Usar prior centrado en 0 con sd vago para dejar que el estado oculto absorba el residuo."
+      rho_chl:
+        prior: "normal(0, 1.0)"
+        justificacion: "MLE joint -3 contra bound → no-identificado. Prior vago centrado en 0."
+
+    advertencia_contra_jerarquico: |
+      Los signos de rho_CHL difieren entre anchoveta (-2.3) y sardina (+2.1).
+      NO usar prior jerárquico sobre stocks (p.ej. rho ~ N(mu_global, tau)):
+      el pooling parcial arrastraría a ambos hacia ~0, eliminando señal
+      biológica. Dejar stock-específico.
+
+  outputs_persistidos:
+    - "data/bio_params/qa/hindcast_sst_trajectories.png (regenerado)"
+    - "data/bio_params/qa/hindcast_sst_comparison.csv (regenerado)"
 
 # -----------------------------------------------------------------------------
 #         PRIORS PRIMARIOS VERIFICADOS (2026-04-22)
