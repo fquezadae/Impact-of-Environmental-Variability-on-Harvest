@@ -5,27 +5,26 @@
 # a las tres SPF centro-sur: anchoveta_cs, sardina_comun_cs, jurel_cs.
 #
 # Entradas:
-#   - data/bio_params/official_biomass_series.csv    (SSB SCAA IFOP, anchoveta + sardina)
-#   - data/bio_params/acoustic_biomass_series.csv    (biomasa acústica IFOP, jurel_cs)
+#   - data/bio_params/official_biomass_series.csv    (SSB SCAA IFOP)
+#   - data/bio_params/acoustic_biomass_series.csv    (biomasa acustica jurel_cs)
 #   - data/bio_params/catch_annual_paper1.csv        (captura SERNAPESCA V-X)
 #   - data/Environmental/env/EnvCoastDaily_*.rds     (SST, CHL anualizados)
-#   - data/bio_params/official_assessments.yaml      (priors estructurales y
-#                                                     priors informativos del
-#                                                     stress test T3-bis rerun)
+#   - data/bio_params/official_assessments.yaml      (priors estructurales)
 #
 # Salidas:
-#   - data/outputs/t4/t4_fit.rds           (objeto cmdstanr draws)
-#   - data/outputs/t4/t4_summary.csv       (tabla summary de parámetros)
-#   - data/outputs/t4/t4_stan_data.rds     (lista stan_data usada)
+#   - data/outputs/t4/t4_fit.rds       (objeto cmdstanr draws)
+#   - data/outputs/t4/t4_summary.csv   (tabla summary de parametros)
+#   - data/outputs/t4/t4_stan_data.rds (lista stan_data usada)
 #
 # Corre con:
 #   options(t4.run_main = TRUE)
-#   source("R/08_stan_t4/01_fit_t4.R", encoding = "UTF-8")
+#   source("R/08_stan_t4/01_fit_t4.R")
 #
-# REQUISITOS:
-#   install.packages(c("cmdstanr", "yaml", "lubridate"), repos = c(
-#     "https://stan-dev.r-universe.dev", "https://cloud.r-project.org"))
-#   cmdstanr::install_cmdstan()            # una sola vez
+# REQUISITOS (una sola vez):
+#   install.packages("cmdstanr",
+#     repos = c("https://stan-dev.r-universe.dev",
+#               "https://cloud.r-project.org"))
+#   cmdstanr::install_cmdstan()
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -52,8 +51,8 @@ source_utf8("R/00_config/config.R")
 # Constantes
 # -----------------------------------------------------------------------------
 T4_STOCKS <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
-T4_WINDOW <- 2000:2024                         # ventana común (25 años)
-T4_CENSOR_LIMIT_JUREL <- 3.0                   # mil t; obs ≤ 3 mil t → left-censored
+T4_WINDOW <- 2000:2024                       # ventana comun (25 anios)
+T4_CENSOR_LIMIT_JUREL <- 3.0                 # mil t; obs <= 3 mil t => censored
 T4_STAN_FILE <- "paper1/stan/t4_state_space.stan"
 T4_OUT_DIR   <- "data/outputs/t4"
 
@@ -69,9 +68,9 @@ load_t4_inputs <- function() {
     dplyr::filter(stock_id %in% c("anchoveta_cs", "sardina_comun_cs"),
                   year %in% T4_WINDOW) %>%
     dplyr::transmute(stock_id, year,
-                     biomass_mil_t = ssb_t / 1e3)    # convertir t → mil t
+                     biomass_mil_t = ssb_t / 1e3)
 
-  # --- Biomasa acústica para jurel ---
+  # --- Biomasa acustica para jurel ---
   ac_raw <- readr::read_csv("data/bio_params/acoustic_biomass_series.csv",
                             show_col_types = FALSE) %>%
     dplyr::filter(species == "jurel_cs", year %in% T4_WINDOW) %>%
@@ -101,7 +100,7 @@ load_t4_inputs <- function() {
                      .groups = "drop") %>%
     dplyr::arrange(year) %>%
     dplyr::mutate(
-      SST_c   = sst - mean(sst, na.rm = TRUE),
+      SST_c    = sst - mean(sst, na.rm = TRUE),
       logCHL_c = log(chl) - mean(log(chl), na.rm = TRUE)
     )
 
@@ -115,7 +114,7 @@ build_stan_data <- function(inputs, priors) {
   env <- inputs$env
   stopifnot(nrow(env) == length(T4_WINDOW))
 
-  # --- Captura como matriz T×S (orden columnas: 1=anch, 2=sard, 3=jur) ---
+  # --- Captura como matriz TxS (orden columnas: 1=anch, 2=sard, 3=jur) ---
   catch_wide <- inputs$catch %>%
     dplyr::right_join(
       tidyr::crossing(stock_id = T4_STOCKS, year = T4_WINDOW),
@@ -129,11 +128,9 @@ build_stan_data <- function(inputs, priors) {
   C_mat <- as.matrix(catch_wide[, T4_STOCKS])
 
   # --- Observaciones por stock ---
-  # anchoveta
   anch_df <- inputs$ssb_scaa %>%
     dplyr::filter(stock_id == "anchoveta_cs") %>%
     dplyr::mutate(t = match(year, T4_WINDOW))
-  # sardina
   sard_df <- inputs$ssb_scaa %>%
     dplyr::filter(stock_id == "sardina_comun_cs") %>%
     dplyr::mutate(t = match(year, T4_WINDOW))
@@ -147,11 +144,11 @@ build_stan_data <- function(inputs, priors) {
   cat(sprintf("[t4] N obs anchoveta = %d\n", nrow(anch_df)))
   cat(sprintf("[t4] N obs sardina   = %d\n", nrow(sard_df)))
   cat(sprintf("[t4] N obs jurel uncensored = %d\n", nrow(jur_unc)))
-  cat(sprintf("[t4] N obs jurel censored   = %d (años: %s)\n",
+  cat(sprintf("[t4] N obs jurel censored   = %d (anios: %s)\n",
               nrow(jur_cen), paste(jur_cen$year, collapse = ", ")))
 
-  # --- Vectores de priors stock-específicos (orden: anch, sard, jur) ---
-  P <- priors   # alias
+  # --- Vectores de priors stock-especificos (orden: anch, sard, jur) ---
+  P <- priors
   r_prior_mean <- c(
     P$anchoveta_cs$priors_biologicos$r_prior_mean,
     P$sardina_comun_cs$priors_biologicos$r_prior_mean,
@@ -179,18 +176,18 @@ build_stan_data <- function(inputs, priors) {
     sard_df$biomass_mil_t[1],
     jur_unc$biomass_mil_t[1]
   )
-  B0_prior_sd <- 0.3 * B0_prior_mean    # CV ≈ 30%
+  B0_prior_sd <- 0.3 * B0_prior_mean    # CV ~ 30%
 
-  # Shifters: del t3bis_stress_test_rerun_2026_04_22.priors_informativos_derivados_para_T4_stan_v2
-  # Hardcoded aquí para no pelearse con el parseo de strings "normal(mu, sd)".
+  # Shifters: del bloque priors_informativos_derivados_para_T4_stan_v2 del YAML.
+  # Hardcoded aqui para evitar parsear strings "normal(mu, sd)".
   rho_sst_prior_mean <- c(-2.3, -2.0,  0.0)
   rho_sst_prior_sd   <- c( 1.0,  1.0,  1.0)
   rho_chl_prior_mean <- c(-2.3,  2.1,  0.0)
   rho_chl_prior_sd   <- c( 1.0,  1.0,  1.0)
 
-  # sigma_obs: stock-específico
-  #   anch, sard: SSB SCAA es resumen suavizado → σ ≈ 0.12 (CV 12% en log)
-  #   jurel: acústico snapshot → σ ≈ 0.30
+  # sigma_obs stock-especifico:
+  #   anch, sard: SSB SCAA es resumen suavizado -> sigma ~ 0.12 (CV 12% en log)
+  #   jurel: acustico snapshot -> sigma ~ 0.30
   sigma_obs_prior_mean <- c(0.12, 0.12, 0.30)
   sigma_obs_prior_sd   <- c(0.05, 0.05, 0.10)
 
@@ -233,9 +230,13 @@ build_stan_data <- function(inputs, priors) {
 # 3. Compilar y ajustar
 # -----------------------------------------------------------------------------
 fit_t4 <- function(stan_data,
-                   chains = 4, iter_warmup = 1000, iter_sampling = 1500,
-                   parallel_chains = 4, adapt_delta = 0.95, max_treedepth = 12,
+                   chains = max(8, min(16, parallel::detectCores() - 4)),
+                   iter_warmup = 1000, iter_sampling = 1500,
+                   parallel_chains = chains,
+                   adapt_delta = 0.95, max_treedepth = 12,
                    seed = 2026L) {
+  cat(sprintf("[t4] Usando %d chains en paralelo (detectCores=%d)\n",
+              chains, parallel::detectCores()))
   mod <- cmdstanr::cmdstan_model(T4_STAN_FILE)
   fit <- mod$sample(
     data            = stan_data,
@@ -269,17 +270,16 @@ if (isTRUE(getOption("t4.run_main", FALSE))) {
 
   fit <- fit_t4(stan_data)
 
-  # Guardar draws + summary
   fit$save_object(file = file.path(T4_OUT_DIR, "t4_fit.rds"))
 
   smry <- fit$summary(variables = c("r_nat", "K_nat", "rho_sst", "rho_chl",
                                     "sigma_proc", "sigma_obs", "Omega"))
   readr::write_csv(smry, file.path(T4_OUT_DIR, "t4_summary.csv"))
 
-  cat("\n[t4] Summary (parámetros clave):\n")
+  cat("\n[t4] Summary (parametros clave):\n")
   print(smry)
 
-  cat("\n[t4] Diagnósticos:\n")
+  cat("\n[t4] Diagnosticos:\n")
   print(fit$cmdstan_diagnose())
 
   invisible(fit)
