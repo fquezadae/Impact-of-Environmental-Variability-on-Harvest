@@ -203,23 +203,29 @@ jurel:
     reclutamientos_recientes: "altos en 2024-2025"
 
   priors_biologicos:
-    # M actualizado: jjmr docs SPRFMO reportan M ≈ 0.28-0.33 (no 0.23)
-    M_mean: 0.30
+    # M actualizado 2026-04-22: fuente primaria IFOP nacional 2023 (SCW14 benchmark).
+    M_mean: 0.28
     M_sd: 0.05
-    M_fuente: "[SPRFMO/jjmr] documentación paquete jjmr, operating model H1 v1.07 (SCW15 2025)"
+    M_fuente: "[IFOP-jurel-nacional 2023 §c Mortalidad natural, p.12] M=0.28 yr⁻¹ para modelo de stock único H1 y stock sur del 2-stock H2; derivado de moda de estimaciones por múltiples métodos (toolbox). Verificado contra ifop_jurel_nacional_2023.pdf 2026-04-22. Era 0.30 previo, diferencia menor pero fuente primaria más sólida."
     shape_n: 2.0
     r_prior_mean: 0.35
     r_prior_sd: 0.10
-    r_fuente: "[LIT] FishLife para Trachurus spp."
-    # K range-wide bastante mayor que sardina/anchoveta; estimación con MSY/r
-    # MSY estimado ~ 1500 kt/año → K ≈ 4*MSY/r ~ 17 M t (muy laxo)
-    K_prior_mean_mil_t: 17000
-    K_prior_sd_mil_t: 8000
-    K_fuente: "prior laxo; centro-ajustar con series del h1_1.07.qs (SCW15_report)"
-    # steepness: jjmr usa h ≈ 0.65 en H1 v1.07, no 0.80
+    r_fuente: "[LIT] FishLife para Trachurus spp. IFOP/SPRFMO modelos son age-structured, no reportan r explícito."
+    # K range-wide: actualizado 2026-04-22 con BRMS primario IFOP nacional 2023.
+    # BRMS = 7,453 mil t (biomasa desovante al RMS, 32% BD0 proxy) → BD0 ≈ 23,290 mil t → K_total ≈ 30-40 Mt.
+    # Prior previo 17 Mt es probablemente bajo; lo subo a 25 Mt con sd amplio.
+    K_prior_mean_mil_t: 25000
+    K_prior_sd_mil_t: 10000
+    K_fuente: "[IFOP-jurel-nacional 2023 §4.2.3, p.26] BRMS=7,453 mil t range-wide (biomasa desovante, 32% BD0 proxy) → BD0≈23.3 Mt; K_total estimado 1.2-1.5× BD0 ≈ 28-35 Mt. Prior centrado en 25 Mt con sd amplia cubre rango de escenarios h=0.65-0.80."
     h_prior_mean: 0.65
     h_prior_sd: 0.10
-    h_fuente: "[SPRFMO/jjmr] operating model H1 v1.07 default steepness"
+    h_fuente: "[IFOP-jurel-nacional 2023 §g, p.13] SPRFMO usa h=0.65 (bajo) y h=0.80 (alto); solo h=0.65 para estimar FRMS."
+
+    # Valores de PBR primarios extraídos (range-wide) para referencia:
+    BRMS_mil_t: 7453
+    BLIM_mil_t: 1847
+    FRMS: 0.32
+    BD0_proxy_mil_t: 23290        # inferido como BRMS/0.32
 
   biologia_observacional:
     edad_max: 15                              # GE 0 a XV
@@ -276,14 +282,15 @@ jurel_cs:
 
   priors_biologicos:
     # M: misma biología que stock range-wide (invariante de escala)
-    M_mean: 0.30
+    # ACTUALIZADO 2026-04-22: verificado contra fuente primaria IFOP jurel nacional 2023.
+    M_mean: 0.28
     M_sd: 0.05
-    M_fuente: "[SPRFMO/jjmr] operating model H1 v1.07"
+    M_fuente: "[IFOP-jurel-nacional 2023 §c Mortalidad natural, p.12] M=0.28 yr⁻¹ establecido en benchmark SPRFMO SCW14 como moda de múltiples métodos indirectos (toolbox), aplicado al modelo de stock único (H1) y al stock sur del modelo 2-stock (H2). Verificado 2026-04-22 contra ifop_jurel_nacional_2023.pdf. Reemplaza prior previo 0.30."
     shape_n: 2.0
     # r: biológico invariante de escala; mismo valor que entrada `jurel` range-wide
     r_prior_mean: 0.35
     r_prior_sd: 0.15                           # ampliado vs range-wide (0.10) por menor información a escala CS
-    r_fuente: "[LIT] FishLife para Trachurus spp.; sd ampliada para reflejar incertidumbre de escala"
+    r_fuente: "[LIT] FishLife para Trachurus spp.; sd ampliada para reflejar incertidumbre de escala. NO actualizado por IFOP 2023 (modelo es age-structured, no de producción → no reporta r explícito)."
     # K: re-escalado para escala CS. Pico biomasa acústica 2001 = 6.15 Mt.
     # Grid search hindcast T3 (R/07_structural_bio/02_hindcast_check.R) encontró
     # best-fit en K=29 Mt pero eso es sospechoso (rangewide scale-ish,
@@ -296,7 +303,7 @@ jurel_cs:
     K_fuente: "re-escalado a CS desde K range-wide (17 Mt) × share histórico CS ~0.3-0.5; confirmación de magnitud vs pico acústico 2001=6.15 Mt"
     h_prior_mean: 0.65
     h_prior_sd: 0.10
-    h_fuente: "[SPRFMO/jjmr] H1 v1.07 default"
+    h_fuente: "[IFOP-jurel-nacional 2023 §g, p.13] benchmark SPRFMO utilizó h=0.65 (bajo) y h=0.80 (alto) en análisis de sensibilidad; solo h=0.65 se usó para estimar FRMS. Adoptamos h=0.65 como central con sd=0.10 que cubre el rango explorado por IFOP."
     caveat_grid_hindcast: |
       El grid search determinístico de T3 encontró r_best=0.20, K_best=29 Mt
       con median|err%|=20.5%. NO adoptar ese K como prior: es un falso óptimo
@@ -727,6 +734,11 @@ priors_primarias_verificadas_2026_04_22:
       zona: "Chile norte (NO es nuestra zona)"
       especie: "sardina+anchoveta agregado, Gordon-Schaefer 1980-91"
       utilidad: "cita histórica bioeconómica chilena; NO aporta priors para CS. Corrige cita fantasma 'Cerda et al. 2001' del reporte ChatGPT."
+    jurel_nacional_2023:
+      archivo: "data/bio_params/refs/deep_search/ifop_jurel_nacional_2023.pdf"
+      titulo: "IFOP Segundo Informe Técnico Convenio 2022 - Jurel nacional - junio 2023"
+      zona: "nacional Chile (XV-X, incluye CS)"
+      utilidad: "priors M y h verificados contra SCW14 benchmark SPRFMO; PBRs range-wide (BRMS=7.45 Mt, BLIM=1.85 Mt, FRMS=0.32)"
 
   parametros_adoptados_para_priors_T4_stan:
     sardina_comun_cs:
@@ -751,6 +763,15 @@ priors_primarias_verificadas_2026_04_22:
       K_prior_sd_mil_t: 1000
       r_prior_mean: 0.6     # reescalado consistente con M=0.7
       r_prior_sd: 0.3
+    jurel_range_wide:
+      M_yr: 0.28            # SCW14 benchmark; cambio menor 0.30 → 0.28
+      h_steepness: 0.65     # bajo; alto también evaluado 0.80
+      BRMS_mil_t: 7453      # biomasa desovante al RMS
+      BLIM_mil_t: 1847      # 8% BD0
+      FRMS: 0.32
+      BD0_proxy_mil_t: 23290
+      K_prior_derivado_mil_t: 25000   # subido desde 17000 previo
+      nota: "Para jurel_cs (CS-only) el PDF nacional no desagrega; mantenemos priors CS actuales con M y h verificados"
 
   hallazgos_criticos:
     - id: "anchoveta_M_es_07_no_13"
