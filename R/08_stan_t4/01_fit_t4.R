@@ -47,6 +47,26 @@ source_utf8 <- function(file, envir = globalenv()) {
 }
 source_utf8("R/00_config/config.R")
 
+# Lector YAML que evita el bug de readLines en locale CP1252 (Windows).
+# Lee el archivo como raw bytes, declara UTF-8 explicito y pasa a yaml.load.
+read_yaml_utf8 <- function(path) {
+  bytes <- readBin(path, "raw", n = file.info(path)$size)
+  txt   <- rawToChar(bytes)
+  Encoding(txt) <- "UTF-8"
+  yaml::yaml.load(txt)
+}
+
+# Valida que un prior sea numerico escalar; aborta ruidoso si NULL/NA/string.
+assert_scalar_numeric <- function(x, name) {
+  if (is.null(x) || length(x) != 1 || !is.numeric(x) || is.na(x)) {
+    stop(sprintf("[t4] Prior invalido: %s = %s (type=%s, length=%d)",
+                 name, deparse(x), class(x)[1], length(x %||% 0)),
+         call. = FALSE)
+  }
+  as.numeric(x)
+}
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
 # -----------------------------------------------------------------------------
 # Constantes
 # -----------------------------------------------------------------------------
@@ -149,26 +169,24 @@ build_stan_data <- function(inputs, priors) {
 
   # --- Vectores de priors stock-especificos (orden: anch, sard, jur) ---
   P <- priors
-  r_prior_mean <- c(
-    P$anchoveta_cs$priors_biologicos$r_prior_mean,
-    P$sardina_comun_cs$priors_biologicos$r_prior_mean,
-    P$jurel_cs$priors_biologicos$r_prior_mean
-  )
-  r_prior_sd <- c(
-    P$anchoveta_cs$priors_biologicos$r_prior_sd,
-    P$sardina_comun_cs$priors_biologicos$r_prior_sd,
-    P$jurel_cs$priors_biologicos$r_prior_sd
-  )
-  K_prior_mean <- c(
-    P$anchoveta_cs$priors_biologicos$K_prior_mean_mil_t,
-    P$sardina_comun_cs$priors_biologicos$K_prior_mean_mil_t,
-    P$jurel_cs$priors_biologicos$K_prior_mean_mil_t
-  )
-  K_prior_sd <- c(
-    P$anchoveta_cs$priors_biologicos$K_prior_sd_mil_t,
-    P$sardina_comun_cs$priors_biologicos$K_prior_sd_mil_t,
-    P$jurel_cs$priors_biologicos$K_prior_sd_mil_t
-  )
+  pick <- function(stock, key) {
+    val <- P[[stock]]$priors_biologicos[[key]]
+    assert_scalar_numeric(val, sprintf("%s.priors_biologicos.%s", stock, key))
+  }
+  r_prior_mean <- c(pick("anchoveta_cs",     "r_prior_mean"),
+                    pick("sardina_comun_cs", "r_prior_mean"),
+                    pick("jurel_cs",         "r_prior_mean"))
+  r_prior_sd   <- c(pick("anchoveta_cs",     "r_prior_sd"),
+                    pick("sardina_comun_cs", "r_prior_sd"),
+                    pick("jurel_cs",         "r_prior_sd"))
+  K_prior_mean <- c(pick("anchoveta_cs",     "K_prior_mean_mil_t"),
+                    pick("sardina_comun_cs", "K_prior_mean_mil_t"),
+                    pick("jurel_cs",         "K_prior_mean_mil_t"))
+  K_prior_sd   <- c(pick("anchoveta_cs",     "K_prior_sd_mil_t"),
+                    pick("sardina_comun_cs", "K_prior_sd_mil_t"),
+                    pick("jurel_cs",         "K_prior_sd_mil_t"))
+  cat(sprintf("[t4] r_prior_mean: %s\n", paste(r_prior_mean, collapse = ", ")))
+  cat(sprintf("[t4] K_prior_mean (mil t): %s\n", paste(K_prior_mean, collapse = ", ")))
 
   # B0: primer valor observado de la serie por stock
   B0_prior_mean <- c(
@@ -262,7 +280,7 @@ if (isTRUE(getOption("t4.run_main", FALSE))) {
   cat(strrep("=", 70), "\n\n", sep = "")
 
   inputs <- load_t4_inputs()
-  priors <- yaml::read_yaml("data/bio_params/official_assessments.yaml")
+  priors <- read_yaml_utf8("data/bio_params/official_assessments.yaml")
   stan_data <- build_stan_data(inputs, priors)
 
   saveRDS(stan_data, file.path(T4_OUT_DIR, "t4_stan_data.rds"))

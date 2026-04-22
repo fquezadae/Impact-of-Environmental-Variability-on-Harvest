@@ -2,60 +2,60 @@
 // paper1/stan/t4_state_space.stan
 //
 // T4 -- State-space Bayesiano CS-consistente para tres SPF centro-sur Chile.
-// Schaefer en log-escala con shifters ambientales (SST, CHL) y correlación
+// Schaefer en log-escala con shifters ambientales (SST, CHL) y correlacion
 // cruzada de error de proceso entre especies.
 //
-// Diseñado para:
-//   - anchoveta_cs   (SSB SCAA IFOP 1997-2024; observación densa, precisa)
-//   - sardina_comun_cs (SSB SCAA IFOP 1991-2024; observación densa, precisa)
-//   - jurel_cs       (biomasa acústica IFOP 2000-2024 con 7 gaps MAR + 2 left-
+// Disenado para:
+//   - anchoveta_cs   (SSB SCAA IFOP 1997-2024; observacion densa, precisa)
+//   - sardina_comun_cs (SSB SCAA IFOP 1991-2024; observacion densa, precisa)
+//   - jurel_cs       (biomasa acustica IFOP 2000-2024 con 7 gaps MAR + 2 left-
 //                     censored no-detecciones en 2012 y 2015)
 //
-// Decisiones arquitectónicas (documentadas en YAML):
+// Decisiones arquitectonicas (documentadas en YAML):
 //
-// (D1) NO-CENTERED en log-escala para r, K y B_latent. La parametrización
+// (D1) NO-CENTERED en log-escala para r, K y B_latent. La parametrizacion
 //      centered produce funnels en cadenas cortas para state-space con poca
-//      data (25-34 obs/stock). Log-escala además garantiza positividad sin
+//      data (25-34 obs/stock). Log-escala ademas garantiza positividad sin
 //      truncar.
 //
-// (D2) Shifters rho_SST y rho_CHL stock-específicos (vector[S], no jerárquico).
-//      Motivación YAML/advertencia_contra_jerarquico: los signos de rho_CHL
+// (D2) Shifters rho_SST y rho_CHL stock-especificos (vector[S], no jerarquico).
+//      Motivacion YAML/advertencia_contra_jerarquico: los signos de rho_CHL
 //      difieren entre anchoveta (-2.3) y sardina (+2.1); pool parcial los
-//      aplastaría a cero.
+//      aplastaria a cero.
 //
-// (D3) LKJ(2) sobre cholesky factor de la correlación de ruido de proceso:
-//      débilmente informativo hacia independencia pero no la impone. El mismo
-//      regime shift climático (p.ej. ENSO) puede mover a las 3 especies en
+// (D3) LKJ(2) sobre cholesky factor de la correlacion de ruido de proceso:
+//      debilmente informativo hacia independencia pero no la impone. El mismo
+//      regime shift climatico (p.ej. ENSO) puede mover a las 3 especies en
 //      direcciones correlacionadas.
 //
-// (D4) OBSERVACIÓN stock-específica:
-//        - anchoveta_cs, sardina_comun_cs: log-normal con sigma_obs pequeño
-//          (σ≈0.1-0.15), porque la SSB SCAA es ya un resumen suavizado.
-//        - jurel_cs: log-normal con sigma_obs mayor (σ≈0.3), porque el crucero
-//          acústico es un snapshot con varianza de muestreo alta. MAR para
+// (D4) OBSERVACION stock-especifica:
+//        - anchoveta_cs, sardina_comun_cs: log-normal con sigma_obs pequeno
+//          (sigma~0.1-0.15), porque la SSB SCAA es ya un resumen suavizado.
+//        - jurel_cs: log-normal con sigma_obs mayor (sigma~0.3), porque el crucero
+//          acustico es un snapshot con varianza de muestreo alta. MAR para
 //          gaps y left-censored para no-detecciones 2012 (2547 t) y 2015 (0 t).
 //
 // (D5) Captura como DATO (no latente). Las reportadas por SERNAPESCA tienen
-//      error relativo <<< al de la biomasa acústica; asumir C exacto es
-//      estándar en Schaefer/Bayes-SP (Punt 2019). Un futuro T5 puede
+//      error relativo <<< al de la biomasa acustica; asumir C exacto es
+//      estandar en Schaefer/Bayes-SP (Punt 2019). Un futuro T5 puede
 //      relajarlo.
 //
 // Unidades: toda biomasa en miles de toneladas (mil_t). Captura idem.
-//   - SST: anomalía centrada (°C - media 2000-2024)
+//   - SST: anomalia centrada ( degC - media 2000-2024)
 //   - log_CHL: log(chl) centrada (log(mg/m3) - media del log)
 // =============================================================================
 
 functions {
-  // Dinámica Schaefer determinística un paso adelante, en LOG-biomasa:
+  // Dinamica Schaefer deterministica un paso adelante, en LOG-biomasa:
   //    B_{t+1} = B_t + r_t * B_t * (1 - B_t/K) - C_t
-  // Devuelve log(B_{t+1}) dado log(B_t), con floor numérico para evitar
+  // Devuelve log(B_{t+1}) dado log(B_t), con floor numerico para evitar
   // log(negativo) si C_t > B_t + r_t * B_t * (1 - B_t/K).
   real schaefer_step_log(real logB, real logK, real r_t, real C) {
     real B   = exp(logB);
     real K   = exp(logK);
     real g   = r_t * B * (1.0 - B / K);
     real B1  = B + g - C;
-    // floor: 1% de K. Esto NO es identificación; solo evita NaN en leapfrog.
+    // floor: 1% de K. Esto NO es identificacion; solo evita NaN en leapfrog.
     real floor = 0.01 * K;
     return log(fmax(floor, B1));
   }
@@ -64,14 +64,14 @@ functions {
 data {
   // -------------------- Dimensiones --------------------
   int<lower=1> S;                        // #stocks (3: anchoveta, sardina, jurel)
-  int<lower=1> T;                        // #años en la ventana común (p.ej. 2000-2024 → T=25)
-  int<lower=1> N_obs_anchoveta;          // #obs válidas SSB anchoveta
-  int<lower=1> N_obs_sardina;            // #obs válidas SSB sardina
-  int<lower=1> N_obs_jurel_uncensored;   // #obs acústicas jurel sin censura
-  int<lower=0> N_obs_jurel_censored;     // #obs acústicas jurel left-censored (0 o muy bajas)
+  int<lower=1> T;                        // #anos en la ventana comun (p.ej. 2000-2024 -> T=25)
+  int<lower=1> N_obs_anchoveta;          // #obs validas SSB anchoveta
+  int<lower=1> N_obs_sardina;            // #obs validas SSB sardina
+  int<lower=1> N_obs_jurel_uncensored;   // #obs acusticas jurel sin censura
+  int<lower=0> N_obs_jurel_censored;     // #obs acusticas jurel left-censored (0 o muy bajas)
 
-  // -------------------- Índices de observación --------------------
-  // Para cada obs, qué año del vector [1..T] le corresponde (1-indexed).
+  // -------------------- Indices de observacion --------------------
+  // Para cada obs, que ano del vector [1..T] le corresponde (1-indexed).
   array[N_obs_anchoveta] int<lower=1, upper=T> t_anchoveta;
   array[N_obs_sardina]   int<lower=1, upper=T> t_sardina;
   array[N_obs_jurel_uncensored] int<lower=1, upper=T> t_jurel_unc;
@@ -80,16 +80,16 @@ data {
   // -------------------- Datos observados --------------------
   vector<lower=0>[N_obs_anchoveta]        B_obs_anchoveta; // mil t (SSB)
   vector<lower=0>[N_obs_sardina]          B_obs_sardina;   // mil t (SSB)
-  vector<lower=0>[N_obs_jurel_uncensored] B_obs_jurel;     // mil t (acústica)
-  real<lower=0> B_censor_limit_jurel;                      // mil t; límite superior censura
-                                                           // (≈ 3 mil t, ver yaml jurel_cs.no_detecciones)
+  vector<lower=0>[N_obs_jurel_uncensored] B_obs_jurel;     // mil t (acustica)
+  real<lower=0> B_censor_limit_jurel;                      // mil t; limite superior censura
+                                                           // (~ 3 mil t, ver yaml jurel_cs.no_detecciones)
 
-  // Captura anual por stock (fila = año 1..T, col = stock 1..S)
+  // Captura anual por stock (fila = ano 1..T, col = stock 1..S)
   // Orden columnas: 1=anchoveta_cs, 2=sardina_comun_cs, 3=jurel_cs
   matrix<lower=0>[T, S] C;
 
-  // Covariables ambientales (un vector común para los 3 stocks)
-  vector[T] SST_c;        // SST anomalía centrada (°C)
+  // Covariables ambientales (un vector comun para los 3 stocks)
+  vector[T] SST_c;        // SST anomalia centrada ( degC)
   vector[T] logCHL_c;     // log(CHL) centrado
 
   // -------------------- Priors informativos (por stock) --------------------
@@ -105,27 +105,35 @@ data {
   vector[S] rho_chl_prior_mean;
   vector<lower=0>[S] rho_chl_prior_sd;
 
-  // Biomasa inicial B_0 (año 1). Informativo desde assessment.
+  // Biomasa inicial B_0 (ano 1). Informativo desde assessment.
   vector<lower=0>[S] B0_prior_mean;       // mil t
   vector<lower=0>[S] B0_prior_sd;
 
-  // Ruido de observación: prior stock-específico porque sardina/anchoveta
-  // (SCAA suavizado) tienen σ mucho menor que jurel (acústico).
-  vector<lower=0>[S] sigma_obs_prior_mean;  // escala log-normal observación
+  // Ruido de observacion: prior stock-especifico porque sardina/anchoveta
+  // (SCAA suavizado) tienen sigma mucho menor que jurel (acustico).
+  vector<lower=0>[S] sigma_obs_prior_mean;  // escala log-normal observacion
   vector<lower=0>[S] sigma_obs_prior_sd;
 
-  // Ruido de proceso: prior común débil
+  // Ruido de proceso: prior comun debil
   real<lower=0> sigma_proc_prior_mean;
   real<lower=0> sigma_proc_prior_sd;
 }
 
 transformed data {
-  // Índice fijo de stocks (para legibilidad)
+  // Indice fijo de stocks (para legibilidad)
   int IDX_ANCH = 1;
   int IDX_SARD = 2;
   int IDX_JUR  = 3;
 
-  // Log-transformaciones de priors (trabajamos en log-escala para r, K, B)
+  // N total de observaciones (para sizar log_lik en generated quantities).
+  // DEBE ir aqui: Stan exige que los sizes top-level vengan de data o de
+  // transformed data, no de generated quantities.
+  int N_obs_total = N_obs_anchoveta + N_obs_sardina
+                    + N_obs_jurel_uncensored + N_obs_jurel_censored;
+
+  // Log-transformaciones de priors (trabajamos en log-escala para r, K, B).
+  // Conversion normal -> lognormal aproximada: si X ~ N(mu, sd^2), usar
+  // log(mu) como mean y sd/mu como CV ~ sd lognormal.
   vector[S] log_r_prior_mean;
   vector[S] log_r_prior_sd;
   vector[S] log_K_prior_mean;
@@ -134,8 +142,6 @@ transformed data {
   vector[S] log_B0_prior_sd;
 
   for (s in 1:S) {
-    // Conversión moment-matching normal→lognormal aproximada:
-    //   si X ~ N(μ, σ²), usar log(μ) como mean y σ/μ como CV ≈ sd lognormal
     log_r_prior_mean[s]  = log(r_prior_mean[s]);
     log_r_prior_sd[s]    = r_prior_sd[s] / r_prior_mean[s];
     log_K_prior_mean[s]  = log(K_prior_mean[s]);
@@ -152,55 +158,55 @@ transformed data {
 }
 
 parameters {
-  // ------ Parámetros estructurales por stock (log-escala, non-centered) ------
+  // ------ Parametros estructurales por stock (log-escala, non-centered) ------
   vector[S] z_log_r;         // N(0,1); log_r = log_r_prior_mean + z*log_r_prior_sd
   vector[S] z_log_K;
   vector[S] z_log_B0;
 
-  // ------ Shifters ambientales (por stock, no jerárquico) ------
+  // ------ Shifters ambientales (por stock, no jerarquico) ------
   vector[S] rho_sst;
   vector[S] rho_chl;
 
   // ------ Ruido de proceso ------
   vector<lower=0>[S] sigma_proc;
-  cholesky_factor_corr[S] L_Omega;        // LKJ cholesky de la correlación
+  cholesky_factor_corr[S] L_Omega;        // LKJ cholesky de la correlacion
 
-  // ------ Ruido de observación ------
+  // ------ Ruido de observacion ------
   vector<lower=0>[S] sigma_obs;
 
   // ------ Estado latente (log-biomasa) ------
-  // Parametrización non-centered: z_B matriz T×S, luego se transforma.
+  // Parametrizacion non-centered: z_B matriz TxS, luego se transforma.
   matrix[T, S] z_B;                        // N(0,1), innovaciones estandarizadas
 }
 
 transformed parameters {
-  // ------ Destransformar parámetros log-escala ------
+  // ------ Destransformar parametros log-escala ------
   vector[S] log_r  = log_r_prior_mean  + z_log_r  .* log_r_prior_sd;
   vector[S] log_K  = log_K_prior_mean  + z_log_K  .* log_K_prior_sd;
   vector[S] log_B0 = log_B0_prior_mean + z_log_B0 .* log_B0_prior_sd;
-  vector<lower=0>[S] r_ = exp(log_r);     // _ para no colisionar con nombre matemático
+  vector<lower=0>[S] r_ = exp(log_r);     // _ para no colisionar con nombre matematico
 
-  // ------ Propagación del estado latente (log-escala) ------
+  // ------ Propagacion del estado latente (log-escala) ------
   // logB[t, s] = mean_from_schaefer_{t-1,s} + innovacion_{t,s}
   // donde innovacion = sigma_proc .* (L_Omega * z_B[t,])
   matrix[T, S] logB;
   {
     matrix[S, S] L_proc = diag_pre_multiply(sigma_proc, L_Omega);
 
-    // Año 1: condición inicial con innovación
+    // Ano 1: condicion inicial con innovacion
     for (s in 1:S) {
-      logB[1, s] = log_B0[s] + sigma_proc[s] * z_B[1, s];  // sin correlación en el primer paso
+      logB[1, s] = log_B0[s] + sigma_proc[s] * z_B[1, s];  // sin correlacion en el primer paso
     }
 
-    // Años 2..T
+    // Anos 2..T
     for (t in 2:T) {
-      // Calcular mean determinística por stock
+      // Calcular mean deterministica por stock
       vector[S] logB_mean;
       for (s in 1:S) {
         real r_t = r_[s] * exp(rho_sst[s] * SST_c[t - 1] + rho_chl[s] * logCHL_c[t - 1]);
         logB_mean[s] = schaefer_step_log(logB[t - 1, s], log_K[s], r_t, C[t - 1, s]);
       }
-      // Añadir innovación correlacionada multivariada
+      // Anadir innovacion correlacionada multivariada
       vector[S] innov = L_proc * to_vector(z_B[t, ]);
       for (s in 1:S) {
         logB[t, s] = logB_mean[s] + innov[s];
@@ -216,7 +222,7 @@ model {
   z_log_K  ~ std_normal();
   z_log_B0 ~ std_normal();
 
-  // Shifters: priors informativos stock-específicos (del stress test)
+  // Shifters: priors informativos stock-especificos (del stress test)
   for (s in 1:S) {
     rho_sst[s] ~ normal(rho_sst_prior_mean[s], rho_sst_prior_sd[s]);
     rho_chl[s] ~ normal(rho_chl_prior_mean[s], rho_chl_prior_sd[s]);
@@ -226,7 +232,7 @@ model {
   sigma_proc ~ normal(sigma_proc_prior_mean, sigma_proc_prior_sd);
   L_Omega ~ lkj_corr_cholesky(2);
 
-  // Ruido de observación (por stock)
+  // Ruido de observacion (por stock)
   for (s in 1:S) {
     sigma_obs[s] ~ normal(sigma_obs_prior_mean[s], sigma_obs_prior_sd[s]);
   }
@@ -235,15 +241,15 @@ model {
   to_vector(z_B) ~ std_normal();
 
   // -------------------- Likelihood --------------------
-  // Anchoveta: log-normal estándar
+  // Anchoveta: log-normal estandar
   for (n in 1:N_obs_anchoveta) {
     log_B_obs_anchoveta[n] ~ normal(logB[t_anchoveta[n], IDX_ANCH], sigma_obs[IDX_ANCH]);
   }
-  // Sardina: log-normal estándar
+  // Sardina: log-normal estandar
   for (n in 1:N_obs_sardina) {
     log_B_obs_sardina[n] ~ normal(logB[t_sardina[n], IDX_SARD], sigma_obs[IDX_SARD]);
   }
-  // Jurel uncensored: log-normal estándar
+  // Jurel uncensored: log-normal estandar
   for (n in 1:N_obs_jurel_uncensored) {
     log_B_obs_jurel[n] ~ normal(logB[t_jurel_unc[n], IDX_JUR], sigma_obs[IDX_JUR]);
   }
@@ -257,12 +263,12 @@ model {
 }
 
 generated quantities {
-  // ------ Parámetros en escala natural (para reportar) ------
+  // ------ Parametros en escala natural (para reportar) ------
   vector<lower=0>[S] r_nat = r_;
   vector<lower=0>[S] K_nat = exp(log_K);
   vector<lower=0>[S] B0_nat = exp(log_B0);
 
-  // ------ Correlación cruzada de ruido de proceso ------
+  // ------ Correlacion cruzada de ruido de proceso ------
   corr_matrix[S] Omega = multiply_lower_tri_self_transpose(L_Omega);
 
   // ------ Estados suavizados (posterior predictive) ------
@@ -274,7 +280,7 @@ generated quantities {
   }
 
   // ------ Log-likelihood pointwise (para LOO-CV) ------
-  int N_obs_total = N_obs_anchoveta + N_obs_sardina + N_obs_jurel_uncensored + N_obs_jurel_censored;
+  // N_obs_total fue calculado en transformed data (ver bloque de arriba).
   vector[N_obs_total] log_lik;
   {
     int pos = 1;
@@ -297,7 +303,7 @@ generated quantities {
   }
 
   // ------ Posterior predictive replicates (para ppc) ------
-  // Replicas para cada observación, útil en posterior predictive checks del Rmd.
+  // Replicas para cada observacion, util en posterior predictive checks del Rmd.
   vector<lower=0>[N_obs_anchoveta]        B_rep_anchoveta;
   vector<lower=0>[N_obs_sardina]          B_rep_sardina;
   vector<lower=0>[N_obs_jurel_uncensored] B_rep_jurel;
