@@ -82,13 +82,19 @@ dir.create(T4_OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 # 1. Cargar series (biomasa, captura, ambiente)
 # -----------------------------------------------------------------------------
 load_t4_inputs <- function() {
-  # --- SSB SCAA para anchoveta y sardina ---
+  # --- Biomasa total SCAA para anchoveta y sardina ---
+  # FIX 2026-04-23: usar biomass_total_t, NO ssb_t. El prior K del YAML
+  # esta calibrado para biomasa total (K_fuente: "K_total estimado 1.5-2x BD0").
+  # Usar SSB aqui producia una inconsistencia estructural entre obs y dinamica
+  # que causo fallo de mixing en T4 v1. Validado en T4b single-species
+  # anchoveta (iter 3, 2026-04-23): R-hat 1.00, 0 divergencias, PPC limpio.
+  # Ver project_t4_v1_failure_and_t4b_plan.md.
   ssb_scaa <- readr::read_csv("data/bio_params/official_biomass_series.csv",
                               show_col_types = FALSE) %>%
     dplyr::filter(stock_id %in% c("anchoveta_cs", "sardina_comun_cs"),
                   year %in% T4_WINDOW) %>%
     dplyr::transmute(stock_id, year,
-                     biomass_mil_t = ssb_t / 1e3)
+                     biomass_mil_t = biomass_total_t / 1e3)
 
   # --- Biomasa acustica para jurel ---
   ac_raw <- readr::read_csv("data/bio_params/acoustic_biomass_series.csv",
