@@ -63,11 +63,14 @@ assert_scalar_numeric <- function(x, name) {
 # Constantes
 # -----------------------------------------------------------------------------
 T4B_IND_STOCKS       <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
-# VENTANA: 2000-2024. Usa catch_annual_cs_2000_2024.csv (generado por
-# R/01_data/99_aggregate_catch_cs_from_xlsx.R desde "4. DESEMBARQUES.xlsx"
-# subido 2026-04-23). Valida vs catch_annual_paper1.csv con <1.3% diff en
-# overlap 2019-2023; extiende a 2024 con la captura real (sardina 130 kt,
-# jurel 883 kt, anchoveta 121 kt).
+# VENTANA: 2000-2024. Usa catch_annual_cs_2000_2024.csv, CSV HIBRIDO generado
+# por R/01_data/99_aggregate_catch_cs_from_xlsx.R:
+#   - 2000-2023: SERNAPESCA (catch_annual_paper1.csv previo, todas las artes)
+#   - 2024:      IFOP cerco (del Excel "4. DESEMBARQUES", subido 2026-04-23)
+# El AUDIT historico IFOP vs SERNAPESCA mostro diffs hasta -80% (anchoveta),
+# -89% (sardina) en 2000-2010 porque IFOP cubre SOLO pesca con cerco (ver
+# hoja LEER del Excel). IFOP 2024 es aceptable como proxy de total porque
+# en 2019-2023 cerco representa >98% de desembarques totales.
 T4B_IND_WINDOW       <- 2000:2024
 T4B_IND_CATCH_CSV    <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T4B_IND_CENSOR_JUREL <- 3.0             # mil t; obs <= 3 mil t -> censored

@@ -1,31 +1,34 @@
 # =============================================================================
 # FONDECYT -- 99_aggregate_catch_cs_from_xlsx.R
 #
-# FUENTE: IFOP -- "4. DESEMBARQUES.xlsx" (archivo institucional, 2026-04-23).
-# Agrega desembarques (captura landed) Centro-Sur V-X para los 3 stocks SPF
-# (anchoveta_cs, sardina_comun_cs, jurel_cs). Genera CSV con estructura
-# identica a catch_annual_paper1.csv (previo, SERNAPESCA) pero extendido a 2024.
+# FUENTE PRIMARIA: IFOP -- "4. DESEMBARQUES.xlsx" (archivo institucional).
+# NOTA CRITICA 2026-04-23: la hoja LEER del Excel dice explicitamente:
+#   "(1) Los datos entregados consideran solo pesca con cerco."
+# Entonces IFOP NO contiene artes no-cerco (lampara, redes fijas, chinchorros,
+# espineles, etc). Ademas las hojas LANCHAS y BOTES CS arrancan en 2011 --
+# pre-2011 solo hay flota industrial con cerco.
 #
-# CAMBIO DE FUENTE (2026-04-23): se migra de SERNAPESCA a IFOP. Motivacion:
-#   (1) Consistencia metodologica: priors r/K/M del YAML vienen de modelos
-#       IFOP SCAA; usar captura IFOP con biomasa IFOP es mismo organismo,
-#       misma definicion de captura (incluye ajustes post-temporada y
-#       sub-reporte que SERNAPESCA no incluye).
-#   (2) Cobertura: IFOP llega a 2024; SERNAPESCA consolidada a 2023.
-#   (3) Cruce IFOP vs SERNAPESCA 2019-2023: diferencias <1.3% en los 3 stocks
-#       (max: jurel 2021 -1.3%). Las series son equivalentes a nivel de
-#       magnitud; las diferencias residuales son ajustes por descartes y
-#       sub-reporte que IFOP contabiliza.
+# Esto explica la discrepancia IFOP vs SERNAPESCA revelada por el AUDIT
+# 2000-2018:
+#   - 2019-2023: diff <1.3% (pesca con cerco domina >98% desembarques totales)
+#   - 2001-2010: diff hasta -80% anchoveta, -89% sardina (IFOP subestima
+#     porque falta artesanal y no-cerco historico).
+#   - jurel: diff <15% (jurel CS es casi 100% pesca con cerco industrial)
 #
-# METODOLOGIA:
+# ESTRATEGIA (CSV HIBRIDO):
+#   - 2000-2023: usar SERNAPESCA (`catch_annual_paper1.csv`), validada en el
+#     proyecto desde inicio. Captura TODAS las artes de pesca.
+#   - 2024:      usar IFOP (pesca con cerco). Aproximacion aceptable dado
+#     que 2019-2023 mostro cerco >=98% del total. Documentar limitacion.
+#   - Cuando IFOP publique serie historica completa (todas las artes) o
+#     SERNAPESCA publique 2024 consolidado, revisar esta decision.
+#
+# METODOLOGIA AGREGACION IFOP (para extraer el 2024 y para el AUDIT historico):
 #   - INDUSTRIAL (nacional): filtro a regiones CS {V=5, VIII=8, XIV=14, X=10}.
-#     No hay columnas industrial VI/VII/IX porque no hay operacion industrial
-#     en esas regiones (pesca industrial se concentra en V-VIII-X con XIV como
-#     region creada 2007 desde X).
 #   - LANCHAS (CentroSur): todas las cols de region son CS {V=5, VII=7, VIII=8,
 #     IX=9, XIV=14, X=10, XI=11} -- la hoja ya esta pre-filtrada por IFOP.
 #   - BOTES (CentroSur): idem lanchas.
-#   - Captura CS anual = suma de las 3 flotas por especie y ano.
+#   - Captura IFOP CS anual = suma de las 3 flotas por especie y ano.
 #
 # Output:
 #   - data/bio_params/catch_annual_cs_2000_2024.csv
@@ -159,20 +162,53 @@ comp <- catch_total %>%
                 pct  = round(100 * diff / old, 2)) %>%
   dplyr::arrange(stock_id, year)
 
-cat("\n[catch-xlsx] Diferencias max por stock (donde hay overlap):\n")
+cat("\n[catch-xlsx] Resumen de diferencias IFOP vs SERNAPESCA (overlap):\n")
 print(comp %>%
         dplyr::filter(!is.na(old)) %>%
         dplyr::group_by(stock_id) %>%
-        dplyr::summarise(max_abs_diff_t = max(abs(diff), na.rm = TRUE),
-                         max_abs_pct    = max(abs(pct),  na.rm = TRUE),
-                         n_overlap      = sum(!is.na(old)),
+        dplyr::summarise(n_overlap       = sum(!is.na(old)),
+                         mean_pct        = round(mean(pct, na.rm = TRUE), 2),
+                         median_pct      = round(median(pct, na.rm = TRUE), 2),
+                         max_abs_pct     = round(max(abs(pct), na.rm = TRUE), 2),
+                         max_abs_diff_t  = round(max(abs(diff), na.rm = TRUE)),
                          .groups = "drop"))
 
-cat("\n[catch-xlsx] Anios nuevos (no estaban en catch_annual_paper1.csv):\n")
+# Flag de auditoria: anios donde |diff| > 2% (revisar manualmente)
+audit <- comp %>%
+  dplyr::filter(!is.na(old), abs(pct) > 2) %>%
+  dplyr::arrange(stock_id, desc(abs(pct)))
+if (nrow(audit) > 0) {
+  cat("\n[catch-xlsx] AUDIT -- anios con |IFOP - SERNAPESCA| > 2% (revisar):\n")
+  print(audit %>% dplyr::select(stock_id, year, old, new, diff, pct))
+} else {
+  cat("\n[catch-xlsx] AUDIT: ningun anio con |diff IFOP-SERNAPESCA| > 2%. Safe.\n")
+}
+
+cat("\n[catch-xlsx] Anios nuevos (no estaban en catch_annual_paper1.csv SERNAPESCA):\n")
 print(comp %>% dplyr::filter(is.na(old)) %>% dplyr::select(stock_id, year, new))
 
-# Escribir CSV final
-readr::write_csv(catch_total, OUT_CSV)
-cat(sprintf("\n[catch-xlsx] Guardado: %s (%d filas)\n", OUT_CSV, nrow(catch_total)))
+# -----------------------------------------------------------------------------
+# Armar CSV HIBRIDO final: SERNAPESCA 2000-2023 + IFOP 2024
+# -----------------------------------------------------------------------------
+ifop_2024 <- catch_total %>% dplyr::filter(year == 2024)
+sernapesca_hist <- old %>% dplyr::select(stock_id, year, catch_t)
+
+hybrid <- dplyr::bind_rows(sernapesca_hist, ifop_2024) %>%
+  dplyr::arrange(stock_id, year)
+
+# Verificacion de dimensiones esperadas
+expected <- length(unique(hybrid$stock_id)) * length(unique(hybrid$year))
+cat(sprintf("\n[catch-xlsx] Armado CSV HIBRIDO: %d filas (esperado %d)\n",
+            nrow(hybrid), expected))
+stopifnot(!any(duplicated(hybrid[, c("stock_id", "year")])))
+
+# Guardar. Nombre del archivo refleja que es hibrido (no 100% IFOP).
+readr::write_csv(hybrid, OUT_CSV)
+cat(sprintf("[catch-xlsx] Guardado: %s\n", OUT_CSV))
+cat(sprintf("[catch-xlsx] Fuentes: SERNAPESCA 2000-2023 + IFOP 2024 (cerco)\n"))
 cat(sprintf("[catch-xlsx] Rango anios: %d-%d\n",
-            min(catch_total$year), max(catch_total$year)))
+            min(hybrid$year), max(hybrid$year)))
+
+# Tabla resumen de 2024 (lo que se agrego)
+cat("\n[catch-xlsx] Captura 2024 agregada (IFOP cerco):\n")
+print(ifop_2024)
