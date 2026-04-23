@@ -75,12 +75,12 @@ kable(rho_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
   kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
   footnote(general = paste(
       "Shifters are the semi-elasticities of the intrinsic growth rate $r_i$",
-      "with respect to SST anomalies (in $^{\\circ}$C) and log-CHL anomalies, respectively.",
+      "with respect to SST anomalies (in \u00b0C) and log-CHL anomalies, respectively.",
       "Priors are adopted from the stock-specific stress-test results reported in Appendix A.",
-      "The ratio $\\sigma_{\\text{post}}/\\sigma_{\\text{prior}}$ measures the amount of prior-to-posterior",
+      "The posterior-to-prior standard deviation ratio measures the amount of prior-to-posterior",
       "updating: values near one indicate the data carry little information about the parameter,",
       "whereas values well below one indicate identification from the likelihood.",
-      "All $\\hat{R} \\leq 1.01$."),
+      "All R-hat \u2264 1.01."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 ```
 

@@ -46,10 +46,10 @@ kable(loo_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       caption = "PSIS-LOO comparison across state-space specifications. \\label{tab:loo-appendix}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
   footnote(general = paste(
-      "$\\Delta\\widehat{\\text{ELPD}}$ is the pairwise difference relative to T4b-full (the leading model);",
-      "SE$_{\\Delta}$ is the standard error of that difference.",
-      "After moment matching, 65/68 observations satisfy $\\hat{k}\\leq 0.7$ for T4b-full,",
-      "64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-$\\hat{k}$ points are",
+      "\u0394 ELPD is the pairwise difference relative to T4b-full (the leading model);",
+      "the adjacent SE column reports the standard error of that difference.",
+      "After moment matching, 65/68 observations satisfy Pareto-k \u2264 0.7 for T4b-full,",
+      "64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-Pareto-k points are",
       "the two censored jack-mackerel years (2012, 2015), which appear in all three models",
       "and therefore do not affect the ranking."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
@@ -125,10 +125,10 @@ kable(lfo_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
   kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
   footnote(general = paste(
       "Sum of one-step predictive log densities over five origin years",
-      "$\\{2011, 2014, 2017, 2020, 2022\\}$ and three stocks (14 targets per model; two are censored).",
-      "Each refit uses 4 chains $\\times$ 1500 warmup + 1500 sampling iterations.",
-      "All 15 refits satisfied $\\hat{R} \\leq 1.01$ with at most one divergent transition",
-      "(T4b-omega at $t_{\\text{cut}}=2011$), which does not affect the reported ELPD."),
+      "(2011, 2014, 2017, 2020, 2022) and three stocks (14 targets per model; two are censored).",
+      "Each refit uses 4 chains \u00d7 1500 warmup + 1500 sampling iterations.",
+      "All 15 refits satisfied R-hat \u2264 1.01 with at most one divergent transition",
+      "(T4b-omega at the 2011 origin), which does not affect the reported ELPD."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 ```
 

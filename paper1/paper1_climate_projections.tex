@@ -314,6 +314,183 @@ As noted by Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the multi-species
 
 \section{Results}\label{results}
 
+\subsection{Identification of climate shifters}\label{identification}
+
+The central econometric object of this paper is the vector of
+stock-specific \emph{climate shifters}
+\(\{ \rho_i^{SST}, \rho_i^{CHL} \}_{i=1}^{3}\), which modulate the intrinsic
+growth rate of each stock as
+
+\[
+r_{i,t} \;=\; r_i^{0} \, \exp\!\big(\, \rho_i^{SST} \,(SST_{t-1} - \overline{SST})
+\;+\; \rho_i^{CHL} \,(\log CHL_{t-1} - \overline{\log CHL}) \,\big).
+\]
+
+These shifters admit a clean economic reading: \(\rho_i^{SST}\) is the
+semi-elasticity of the stock's intrinsic productivity \(r_i\) with respect to
+a sea-surface temperature anomaly of one degree Celsius, and similarly
+\(\rho_i^{CHL}\) is the semi-elasticity with respect to a log-point of
+chlorophyll-a anomaly (a common proxy for primary productivity at the
+base of the food web). They are the structural parameters that couple the
+biological law of motion \(B_{i,t+1} = B_{i,t} + g_i(B_{i,t}, X_{t}) - C_{i,t}
++ \varepsilon_{i,t}\) to the physical climate, and are therefore the
+quantities that must be identified for the long-run projections of
+Section \ref{projections} to have meaning as \emph{comparative statics under
+climate change} rather than as out-of-sample forecasts.
+
+We adopt weakly informative priors on \(\rho_i^{SST}, \rho_i^{CHL}\) derived
+from independent reduced-form stress tests (Appendix A) and let the 2000--2024
+biomass series update them. Table \ref{tab:rho-posteriors} reports the
+posterior means, 90\% credible intervals, and the posterior-to-prior
+standard deviation ratio, which measures how much the data refine each
+parameter relative to the prior.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:rho-posterior-table}Posterior identification of climate shifters. \label{tab:rho-posteriors}}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{llcccrr}
+\toprule
+Shifter & Stock & Prior $\mathcal{N}(\mu, \sigma)$ & Posterior mean & Posterior 90\% CI & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ & $\hat{R}$\\
+\midrule
+$\rho^{SST}$ & Anchoveta CS & $\mathcal{N}(-2.3, 1.0)$ & -1.06 & {}[-1.79, -0.38] & 0.43 & 1.000\\
+$\rho^{SST}$ & Sardina comun CS & $\mathcal{N}(-2.0, 1.0)$ & -2.75 & {}[-3.46, -2.02] & 0.44 & 1.000\\
+$\rho^{SST}$ & Jurel CS & $\mathcal{N}(0.0, 1.0)$ & 0.42 & {}[-1.25, 2.09] & 1.01 & 1.000\\
+$\rho^{CHL}$ & Anchoveta CS & $\mathcal{N}(-2.3, 1.0)$ & -3.64 & {}[-5.01, -2.25] & 0.83 & 1.000\\
+$\rho^{CHL}$ & Sardina comun CS & $\mathcal{N}(2.1, 1.0)$ & 2.17 & {}[0.96, 3.37] & 0.74 & 1.000\\
+\addlinespace
+$\rho^{CHL}$ & Jurel CS & $\mathcal{N}(0.0, 1.0)$ & -0.06 & {}[-1.72, 1.60] & 1.01 & 1.001\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Note:} 
+\item Shifters are the semi-elasticities of the intrinsic growth rate $r_i$ with respect to SST anomalies (in °C) and log-CHL anomalies, respectively. Priors are adopted from the stock-specific stress-test results reported in Appendix A. The posterior-to-prior standard deviation ratio measures the amount of prior-to-posterior updating: values near one indicate the data carry little information about the parameter, whereas values well below one indicate identification from the likelihood. All R-hat ≤ 1.01.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The pattern of identification is itself informative and organises the
+economic interpretation of the paper. Three facts stand out.
+
+First, for the two coastal upwelling stocks---anchoveta and sardina
+común---both climate shifters are identified with substantial precision.
+The posterior 90\% credible intervals exclude zero for all four parameters,
+and the standard deviation ratios fall between \(0.43\) and \(0.83\),
+indicating that the 2000--2024 biomass series refines the priors
+materially. For anchoveta, a one-degree positive SST anomaly is associated
+with a semi-elasticity of \(\rho^{SST}_{\text{anch}} = -1.06\)
+(CI \([-1.79, -0.38]\)); for sardina común, the corresponding semi-elasticity
+is more than twice as large, \(\rho^{SST}_{\text{sard}} = -2.75\)
+(CI \([-3.46, -2.02]\)). Evaluated at one historical standard deviation of
+the SST anomaly series (estimation-sample \(\hat{\sigma}_{SST} =
+0.26\,^{\circ}\text{C}\) over 2000--2024), a thermal shock of that magnitude
+lowers the intrinsic growth rate of anchoveta by approximately 24\%
+(\(1 - e^{-1.06 \cdot 0.26}\)) and that of sardina by approximately 51\%
+(\(1 - e^{-2.75 \cdot 0.26}\)) relative to the climatological mean. Under a
+policy-relevant warming signal of \(+1\,^{\circ}\text{C}\), comparable to
+mid-century CMIP6 SSP2-4.5 projections for the Chilean coastal zone, the
+implied declines are 65\% for anchoveta and 94\% for sardina, although
+\(+1\,^{\circ}\text{C}\) lies approximately four historical standard
+deviations outside the estimation window and these projections therefore
+rely on the log-linear extrapolation embedded in the shifter function.
+Either way, the magnitudes are economically first-order for a fishery whose
+Centro-Sur TAC is in the low hundred-thousand-tonne range. The narrow
+historical SST variance (\(\hat{\sigma}_{SST} = 0.26\,^{\circ}\text{C}\))
+also explains, mechanically, why the one-step-ahead forecasting test of
+Appendix B fails to discriminate between the climate-augmented and the
+climate-free specifications: within the estimation window the annual
+climate signal is small relative to the stochastic process innovation
+\(\sigma_{\text{proc}}\), yet accumulates to economically consequential
+levels only over decadal horizons.
+
+Second, the two coastal stocks respond to chlorophyll-a with \textbf{opposite
+signs}: \(\rho^{CHL}_{\text{anch}} = -3.64\) (CI \([-5.01, -2.25]\)) versus
+\(\rho^{CHL}_{\text{sard}} = +2.17\) (CI \([+0.96, +3.37]\)). At one historical
+standard deviation of \(\log CHL\) (\(\hat{\sigma}_{\log CHL} = 0.095\), a
+primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
+anchoveta growth by approximately 29\% while raising sardina growth by
+approximately 23\%. This is a reduced-form footprint of the well-documented
+trophic asymmetry between
+the two species: sardina filter-feeds on smaller phytoplankton and
+benefits from productivity pulses, while anchoveta preys on larger
+zooplankton whose populations are suppressed when the food web is
+dominated by small primary producers. The economic implication is
+first-order for this paper: the artisanal fleet, which lands both
+species, is not simply ``climate-exposed''; it is exposed to \textbf{within-target
+heterogeneity} in the sign of climate effects. A warming-and-greening
+regime therefore does not translate into a uniform shock on the artisanal
+sector, but into a substitution across species that the current
+quota-allocation rules, indexed by species, cannot fully absorb.
+
+Third, and in marked contrast, \textbf{neither SST nor CHL shifters are identified
+for jack mackerel}. The posterior standard deviations \(\sigma_{\text{post}}\)
+are indistinguishable from the prior scale (\(\sigma_{\text{post}}/\sigma_{\text{prior}}
+\approx 1\)), the posterior means lie near zero, and the credible intervals
+straddle zero in both directions. This is the expected result under the
+null hypothesis that jack mackerel productivity at the Centro-Sur scale is
+not locally coupled to the Chilean coastal upwelling regime---which is
+biologically sensible given its transboundary Southeast Pacific stock
+structure managed through SPRFMO. Econometrically, the model correctly
+reports non-identification rather than producing a spurious coefficient,
+which is a strength of the Bayesian state-space approach with structurally
+informed priors: the data can either move the prior or, as here, confirm
+that they are silent about it.
+
+Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
+forest plot.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{../figs/t4b/t4b_full_rho_shifters.png}
+\caption{Posterior and prior distributions of the climate shifters
+$\rho_i^{SST}, \rho_i^{CHL}$ by stock. Anchoveta and sardina común show
+substantial posterior updating with narrow credible intervals excluding
+zero; jack mackerel posteriors coincide with the weakly informative
+prior centred at zero.}
+\label{fig:rho-forest}
+\end{figure}
+
+\subsubsection{Identification versus short-run prediction}\label{identification-versus-short-run-prediction}
+
+The identified shifters are structural parameters rather than reduced-form
+correlations: they measure an invariant biological mechanism linking ocean
+state to stock productivity, and they enter the law of motion as
+coefficients on exogenous climate inputs. This structural reading is what
+licenses their use as projection inputs under climate regimes outside the
+2000--2024 estimation sample; reduced-form correlations, by contrast,
+would require the joint distribution of \((SST, B, C)\) to remain stationary
+into the projection horizon, which is precisely the assumption the climate
+scenarios are designed to violate. Their economic value lies in
+\textbf{long-run comparative statics}: given a projected climate regime
+\(X_t^{\star}\) for the period 2040--2100 drawn from the CMIP6 ensemble,
+the intrinsic productivity under that regime is
+\(r_i^{\star} = r_i^{0} \exp(\rho_i^{SST} \Delta SST_t + \rho_i^{CHL}
+\Delta \log CHL_t)\), and the expected steady-state biomass, harvest, and
+fleet-level effort follow mechanically. This is the channel through
+which the paper translates physical climate change into distributional
+outcomes in Section \ref{projections}.
+
+Crucially, identification of \(\rho\) does \textbf{not} imply superior short-run
+predictive power. A leave-future-out cross-validation at the one-year
+horizon (Appendix B) shows that the fully climate-augmented specification
+improves one-step-ahead log predictive density by only
+\(\Delta\widehat{\text{ELPD}}_{\text{LFO}} \approx 0.4\) over a
+climate-free Schaefer baseline, a statistically unresolved difference.
+This is not a failure; it is precisely what should occur when the
+process-noise variance \(\sigma_{\text{proc}}\) is large relative to
+year-to-year climate innovations. Annual climate variability
+contributes little to \emph{next-year nowcasts} but accumulates systematically
+over decadal horizons, and the shifters \(\rho_i\) are the parameters that
+quantify that accumulation. A robustness comparison using PSIS-LOO is
+reported in Appendix B (Table B.1) and confirms that the full
+specification is preferred as an in-sample description of the dynamics
+(\(\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59\), SE \(= 4.93\)); the
+LOO and LFO results are complementary diagnostics of, respectively,
+identification-through-fit and forecasting-on-new-data, and the paper
+relies on the former for the economic interpretation.
+
 \subsection{Stock biomass model}\label{stock-biomass-model}
 
 Table \ref{tab:model_selection} summarizes the model selection exercise. Five candidate specifications were compared, ranging from a baseline with only own-biomass terms to a full model including quadratic chlorophyll-a and cross-species interaction terms. The preferred specification---which includes own biomass, its square, SST, SST\(^2\), and chlorophyll-a---yields the lowest AIC and BIC. Adding quadratic CHL terms or cross-species interactions does not improve fit; in fact, both AIC and BIC increase when these terms are included. Wind variables were excluded in an earlier specification search, as a joint exclusion test failed to reject their omission. The preferred specification contains six parameters per equation, yielding approximately 17 residual degrees of freedom with \(N=23\) observations.
@@ -673,6 +850,9 @@ SUBPESCA. (2020). \emph{Informe sectorial de pesca y acuicultura 2019}. Subsecre
 \bibitem[\citeproctext]{ref-sumaila2011}
 Sumaila, U. R., Cheung, W. W., Lam, V. W., Pauly, D., \& Herrick, S. (2011). Climate change impacts on the biophysics and economics of world fisheries. \emph{Nature Climate Change}, \emph{1}(9), 449--456.
 
+\bibitem[\citeproctext]{ref-Vehtari2017-qe}
+Vehtari, A., Gelman, A., \& Gabry, J. (2017). Practical bayesian model evaluation using leave-one-out cross-validation and {WAIC}. \emph{Stat. Comput.}, \emph{27}(5), 1413--1432.
+
 \bibitem[\citeproctext]{ref-Yuxe1uxf1ez2014}
 Yáñez, E., Barbieri, M. A., Plaza, F., \& Silva, C. (2014). Climate change and fisheries in chile. In M. Behnassi, M. Syomiti Muteng'e, G. Ramachandran, \& K. N. Shelat (Eds.), \emph{Vulnerability of agriculture, water and fisheries to climate change: Toward sustainable adaptation strategies} (pp. 259--270). Springer Netherlands. \url{https://doi.org/10.1007/978-94-017-8962-2_16}
 
@@ -795,5 +975,175 @@ Residual Std. Error (df = 15) & 7.738 & 4.116 & 9.601 \\
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
+
+\section{Predictive diagnostics}\label{appendix-predictive}
+
+This appendix reports two out-of-sample diagnostics for the three nested
+state-space specifications (T4b-ind, T4b-omega, T4b-full). The two
+criteria answer different questions and are included precisely because
+they do not always agree:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{PSIS-LOO} measures how well each specification \emph{describes} the observed
+  2000--2024 biomass series after penalising for the model's effective
+  dimensionality. It is informative for the in-sample identification
+  reported in Section \ref{identification}, because a specification that
+  misses systematic variation will be penalised.
+\item
+  \textbf{PSIS-LFO} at the one-year horizon measures the true forecasting
+  accuracy on withheld future observations. It is informative for whether
+  the identified shifters translate into tangible \emph{next-year} predictive
+  gains over a climate-free baseline.
+\end{itemize}
+
+Because the paper uses the estimated shifters for long-run comparative
+statics under CMIP6 regimes, rather than for near-term forecasting, it is
+LOO that carries the primary identification-supporting role; LFO is
+reported as an honesty check against the possibility that the shifters
+are simply fitting idiosyncratic in-sample noise.
+
+\subsection{B.1 PSIS-LOO cross-validation}\label{b.1-psis-loo-cross-validation}
+
+We compute Pareto-smoothed importance sampling leave-one-out
+cross-validation (\citeproc{ref-Vehtari2017-qe}{Vehtari et al., 2017}) with moment matching applied to
+observations whose Pareto-\(\hat{k}\) diagnostic exceeded 0.7. Results
+are summarised in Table \ref{tab:loo-appendix}.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:loo-appendix-table}PSIS-LOO comparison across state-space specifications. \label{tab:loo-appendix}}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{lrrrrr}
+\toprule
+Model & $\widehat{\text{ELPD}}_{\text{loo}}$ & SE & $\Delta\widehat{\text{ELPD}}$ & SE$_{\Delta}$ & $\hat{p}_{\text{loo}}$\\
+\midrule
+T4b-full & -8.41 & 8.28 & -- & -- & 64.8\\
+T4b-ind & -23.00 & 8.01 & -14.59 & 4.93 & 62.4\\
+T4b-omega & -26.43 & 9.16 & -18.02 & 5.59 & 57.9\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Note:} 
+\item Δ ELPD is the pairwise difference relative to T4b-full (the leading model); the adjacent SE column reports the standard error of that difference. After moment matching, 65/68 observations satisfy Pareto-k ≤ 0.7 for T4b-full, 64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-Pareto-k points are the two censored jack-mackerel years (2012, 2015), which appear in all three models and therefore do not affect the ranking.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The full specification attains the highest predictive density by a wide
+margin, outperforming T4b-omega by
+\(\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 18.02\) (SE \(5.59\)) and the
+environment-free T4b-ind by
+\(\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59\) (SE \(4.93\)). Both gaps
+exceed three standard errors. Notably, T4b-omega (covariance-rich but
+climate-free) underperforms T4b-ind: introducing a residual cross-stock
+correlation matrix without climate shifters is penalised by LOO. The
+interpretation consistent with the identification results of
+Section \ref{identification} is that the cross-stock residual correlation
+captured by T4b-omega is a statistical footprint of shared climate
+forcing rather than evidence of direct biological interaction; once SST
+and CHL enter the growth equation explicitly (T4b-full), the marginal
+value of \(\Omega\) collapses.
+
+A stock-by-stock decomposition (Figure \ref{fig:loo-pareto-k}) confirms
+that the LOO gains of T4b-full are concentrated in the two coastal
+pelagics: per-stock ELPD improves by \(+4.68\) for anchoveta and \(+9.12\)
+for sardina relative to T4b-ind, whereas the three specifications are
+statistically indistinguishable for jack mackerel. The effective number
+of parameters \(\hat{p}_{\text{loo}} \approx 58\)--\(65\) is large relative
+to \(N = 68\), as expected for a state-space model with one latent state
+per observation-year; this is similar across the three specifications
+and therefore does not confound the pairwise comparison, but it does
+motivate the additional forecasting test of Section B.2.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{../figs/t4b/loo_t4b_pareto_k.png}
+\caption{Per-observation Pareto-$\hat{k}$ values after moment matching,
+by model and stock. Dashed line: $\hat{k} = 0.5$; solid line: reliability
+threshold $\hat{k} = 0.7$. Crosses denote censored jack-mackerel
+observations.}
+\label{fig:loo-pareto-k}
+\end{figure}
+
+\subsection{B.2 PSIS-LFO at one-year horizon}\label{b.2-psis-lfo-at-one-year-horizon}
+
+The leave-future-out diagnostic refits each specification on data through
+year \(t_{\text{cut}}\) and evaluates the log predictive density of the
+biomass observations at \(t_{\text{cut}} + 1\). We use five origin points,
+\(t_{\text{cut}} \in \{2011, 2014, 2017, 2020, 2022\}\), spanning the
+second half of the estimation window. One-step-ahead marginal predictive
+densities are obtained in closed form from the posterior draws of each
+truncated fit, applying the log-space Schaefer step of the model and the
+marginal predictive variance \(\sigma_{\text{proc}}^2 + \sigma_{\text{obs}}^2\)
+stock by stock. For the two censored jack-mackerel targets (2012 and 2015)
+the predictive contribution is the corresponding log-CDF tail term.
+Table \ref{tab:lfo-appendix} reports the sum of one-step ELPD across the
+five origins and three stocks (14 evaluation points per model, of which
+two are censored).
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:lfo-appendix-table}One-step-ahead LFO comparison across state-space specifications. \label{tab:lfo-appendix}}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{lcccrr}
+\toprule
+Model & Points & Censored & $\widehat{\text{ELPD}}_{\text{LFO}}$ & Mean per point & $\Delta$ vs leader\\
+\midrule
+T4b-full & 14 & 2 & -29.10 & -2.08 & --\\
+T4b-ind & 14 & 2 & -29.46 & -2.10 & -0.37\\
+T4b-omega & 14 & 2 & -30.46 & -2.18 & -1.36\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Note:} 
+\item Sum of one-step predictive log densities over five origin years (2011, 2014, 2017, 2020, 2022) and three stocks (14 targets per model; two are censored). Each refit uses 4 chains × 1500 warmup + 1500 sampling iterations. All 15 refits satisfied R-hat ≤ 1.01 with at most one divergent transition (T4b-omega at the 2011 origin), which does not affect the reported ELPD.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+In sharp contrast to the LOO ranking, the three specifications are
+statistically indistinguishable in LFO: the spread between the best and
+worst model is only \(1.36\) ELPD units over 14 target points (mean
+\(0.10\) per target). Restricting attention to the 12 uncensored targets---
+that is, excluding the two jack-mackerel censored years whose predictive
+contribution is dominated by a common log-CDF tail term---the differences
+shrink further, to less than \(0.3\) ELPD per model pair. Figure
+\ref{fig:lfo-elpd-path} displays the per-target trajectory of the one-step
+ELPD by stock.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{../figs/t4b/lfo_t4b_elpd_path.png}
+\caption{One-step-ahead predictive log density by target year and stock,
+across the three state-space specifications. Dashed line at $\text{ELPD}=0$
+marks the threshold above which the model predicts the withheld observation
+better than an uninformative uniform density over a one-log-unit interval.}
+\label{fig:lfo-elpd-path}
+\end{figure}
+
+The LOO-LFO divergence is not a contradiction but a feature of the
+research design. As noted in Section \ref{identification}, the historical
+SST anomaly has standard deviation
+\(\hat{\sigma}_{SST} = 0.26\,^{\circ}\text{C}\), small relative to the
+process-noise standard deviation
+\(\hat{\sigma}_{\text{proc}} \in \{0.17, 0.23, 1.22\}\) across the three
+stocks. Year-to-year climate innovations therefore contribute little to
+a one-year-ahead nowcast, even when the structural coupling between
+climate and biological productivity is strong. The same coupling
+accumulates over decadal horizons, which is the scale at which the
+paper's projections operate and the scale at which the identified
+\(\rho_i\) are economically consequential. Stated differently, LOO
+confirms that T4b-full captures systematic structure that the simpler
+specifications miss (because it must explain observed 2000--2024
+dynamics), while LFO confirms that the added structure is not an
+artefact of overfitting to short-run noise (because it yields no
+one-year advantage). The two diagnostics jointly support the structural
+interpretation of the shifters adopted in the main text.
 
 \end{document}

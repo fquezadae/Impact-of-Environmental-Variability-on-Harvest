@@ -2,6 +2,60 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-23 (paper1: T5-minimal comparative statics + identification section wired)
+
+### Added
+
+- `R/08_stan_t4/12_growth_comparative_statics.R`: new script (T5
+  minimal) that applies the T4b-full shifter `r_eff = r_base *
+  exp(rho_sst*DSST + rho_chl*DlogCHL)` over the CMIP6 IPSL-CM6A-LR
+  deltas (SSP2-4.5, SSP5-8.5 × mid/end century) and reports median
+  plus 90% band per stock × scenario. CHL delta is converted from
+  multiplicative ratio to log-anomaly to match the Stan
+  parameterization (`logCHL_c` in `paper1/stan/t4b_state_space_full.stan`).
+  Jurel reported as "n.i." (non-identified) in the formatted table
+  and excluded from the ridgeline; the companion
+  `*_raw.csv` preserves raw numbers for traceability. Sanity check at
+  `+1 C, DCHL=0` recovers `-65% anch, -94% sard` at the posterior
+  median, matching the magnitudes quoted in
+  `sections/results_identification.Rmd`. Outputs:
+  `tables/growth_comparative_statics{,_raw}.csv`,
+  `figs/t4b/growth_ridgeline_cmip6.png`.
+- `paper1/paper1_climate_projections.Rmd`: wired two child chunks to
+  the main Rmd — `results-identification` (child
+  `paper1/sections/results_identification.Rmd`) inserted at the
+  top of `# Results` as section 4.1, and `appendix-predictive`
+  (child `paper1/sections/appendix_predictive_diagnostics.Rmd`) at
+  the end of the Appendix as Appendix B. Child paths are written
+  relative to the project root because `opts_knit$set(root.dir =
+  here::here())` shifts the working directory from `paper1/` to
+  the project root.
+
+### Fixed
+
+- `paper1/sections/results_identification.Rmd`: replaced two
+  `\ref{sec:projections}` with `\ref{projections}` to match the
+  actual section anchor `{#projections}` in the main Rmd. Also
+  commented-out the "Posterior-predictive adequacy" subsection with
+  an HTML comment block + TODO — its two `\ref{fig:ppc-*}` target
+  labels live in a future Appendix C
+  (`appendix_posterior_diagnostics.Rmd`) that has not been wired
+  yet; leaving them live produced `??` in the PDF.
+- `paper1/sections/results_identification.Rmd` and
+  `paper1/sections/appendix_predictive_diagnostics.Rmd`: replaced
+  LaTeX math commands inside `kableExtra::footnote(general = ...,
+  threeparttable = TRUE)` with Unicode equivalents. Pandoc+citeproc
+  strips the backslash commands from `$...$` math inside table
+  footnotes (body-text math renders fine), so
+  `$\widehat{\text{ELPD}}$`, `$\hat{R}$`, `$\hat{k}$`, `$^{\circ}$C`,
+  `$\times$`, `$\sigma_{\text{post}}/\sigma_{\text{prior}}$`, and
+  `$t_{\text{cut}}$` were rendering as garbled unicode-italic letter
+  sequences (e.g. `𝐷𝑒𝑙𝑡𝑎𝑤𝑖𝑑𝑒ℎ𝑎𝑡𝑡𝑒𝑥𝑡𝐸𝐿𝑃𝐷`). Replaced with
+  `Δ ELPD`, `R-hat`, `Pareto-k`, `°C`, `×`, `σ_post/σ_prior`,
+  `t_cut` respectively. Fix affects footnotes of Table 1
+  (`tab:rho-posteriors`), Table B.1 (`tab:loo-appendix`), and
+  Table B.2 (`tab:lfo-appendix`).
+
 ## 2026-04-20 (paper1: NB table rendering + manuscript comments + bibliography review)
 
 ### Fixed
