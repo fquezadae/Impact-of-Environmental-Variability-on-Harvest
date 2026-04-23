@@ -46,7 +46,7 @@ source_utf8("R/00_config/config.R")
 # -----------------------------------------------------------------------------
 # Constantes
 # -----------------------------------------------------------------------------
-T4B_IND_WINDOW  <- 2000:2024
+T4B_IND_WINDOW  <- 2000:2024   # Sync con 04_fit_t4b_ind.R (captura 2024 incorporada)
 T4B_IND_OUT_DIR <- "data/outputs/t4b"
 T4B_IND_FIG_DIR <- "figs/t4b"
 T4B_IND_STOCKS  <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")

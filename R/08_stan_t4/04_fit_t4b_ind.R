@@ -63,7 +63,13 @@ assert_scalar_numeric <- function(x, name) {
 # Constantes
 # -----------------------------------------------------------------------------
 T4B_IND_STOCKS       <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
+# VENTANA: 2000-2024. Usa catch_annual_cs_2000_2024.csv (generado por
+# R/01_data/99_aggregate_catch_cs_from_xlsx.R desde "4. DESEMBARQUES.xlsx"
+# subido 2026-04-23). Valida vs catch_annual_paper1.csv con <1.3% diff en
+# overlap 2019-2023; extiende a 2024 con la captura real (sardina 130 kt,
+# jurel 883 kt, anchoveta 121 kt).
 T4B_IND_WINDOW       <- 2000:2024
+T4B_IND_CATCH_CSV    <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T4B_IND_CENSOR_JUREL <- 3.0             # mil t; obs <= 3 mil t -> censored
 
 T4B_IND_STAN_FILE <- "paper1/stan/t4b_state_space_ind.stan"
@@ -109,9 +115,8 @@ load_t4b_ind_inputs <- function() {
     dplyr::transmute(stock_id = "jurel_cs", year,
                      biomass_mil_t = biomass_t / 1e3)
 
-  # Captura: todos los stocks
-  catch <- readr::read_csv("data/bio_params/catch_annual_paper1.csv",
-                           show_col_types = FALSE) %>%
+  # Captura: todos los stocks -- desde CSV agregado 2024-inclusive
+  catch <- readr::read_csv(T4B_IND_CATCH_CSV, show_col_types = FALSE) %>%
     dplyr::filter(stock_id %in% T4B_IND_STOCKS, year %in% T4B_IND_WINDOW) %>%
     dplyr::transmute(stock_id, year,
                      catch_mil_t = catch_t / 1e3)
