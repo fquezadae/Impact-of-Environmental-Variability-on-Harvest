@@ -1258,6 +1258,6 @@ cat(fix_stargazer_notes(tex_rob3), sep = "\n")
 ```
 
 
-```{r appendix-predictive, child='sections/appendix_predictive_diagnostics.Rmd'}
+```{r appendix-predictive, child='paper1/sections/appendix_predictive_diagnostics.Rmd'}
 ```
 
