@@ -311,16 +311,32 @@ t5_plot_ridgeline <- function(draws_scen, path = T5_FIG_OUT) {
 
   dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
 
+  # Excluir stocks no identificados -- su posterior en %change cruza cero
+  # con banda obscena (ver t5_summarise); ridgeline sobre prior-dominado
+  # solo engana al lector.
   plot_df <- draws_scen %>%
+    filter(!stock_id %in% T5_NON_IDENTIFIED_STOCKS) %>%
     mutate(
       stock_label    = factor(T5_STOCK_LABEL[stock_id],
-                              levels = unname(T5_STOCK_LABEL)),
+                              levels = unname(T5_STOCK_LABEL[
+                                setdiff(names(T5_STOCK_LABEL),
+                                        T5_NON_IDENTIFIED_STOCKS)])),
       scenario_label = factor(T5_SCENARIO_LABEL[scenario_key],
                               levels = unname(T5_SCENARIO_LABEL))
     ) %>%
     # Colas extremas (>|300%|) no aportan lectura -- clipeamos para la figura,
     # sin afectar la tabla (que conserva todo).
     mutate(pct_clip = pmin(pmax(pct_change, -1), 3))
+
+  excluded <- setdiff(unique(draws_scen$stock_id),
+                      unique(plot_df$stock_id))
+  subtitle_note <- if (length(excluded) > 0) {
+    paste0("Stocks no identificados excluidos (",
+           paste(T5_STOCK_LABEL[excluded], collapse = ", "),
+           "); ver tabla para detalle.")
+  } else {
+    "T4b-full; caja Centro-Sur (IPSL-CM6A-LR)"
+  }
 
   if (.HAS_GGRIDGES) {
     p <- ggplot(plot_df,
