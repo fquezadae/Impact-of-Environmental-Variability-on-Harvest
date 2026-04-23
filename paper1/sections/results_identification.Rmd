@@ -19,7 +19,7 @@ base of the food web). They are the structural parameters that couple the
 biological law of motion $B_{i,t+1} = B_{i,t} + g_i(B_{i,t}, X_{t}) - C_{i,t}
 + \varepsilon_{i,t}$ to the physical climate, and are therefore the
 quantities that must be identified for the long-run projections of
-Section \ref{sec:projections} to have meaning as *comparative statics under
+Section \ref{projections} to have meaning as *comparative statics under
 climate change* rather than as out-of-sample forecasts.
 
 We adopt weakly informative priors on $\rho_i^{SST}, \rho_i^{CHL}$ derived
@@ -183,7 +183,7 @@ $r_i^{\star} = r_i^{0} \exp(\rho_i^{SST} \Delta SST_t + \rho_i^{CHL}
 \Delta \log CHL_t)$, and the expected steady-state biomass, harvest, and
 fleet-level effort follow mechanically. This is the channel through
 which the paper translates physical climate change into distributional
-outcomes in Section \ref{sec:projections}.
+outcomes in Section \ref{projections}.
 
 Crucially, identification of $\rho$ does **not** imply superior short-run
 predictive power. A leave-future-out cross-validation at the one-year
@@ -204,6 +204,13 @@ LOO and LFO results are complementary diagnostics of, respectively,
 identification-through-fit and forecasting-on-new-data, and the paper
 relies on the former for the economic interpretation.
 
+<!-- TODO (wiring): reactivar este bloque cuando exista el child
+     appendix_posterior_diagnostics.Rmd (= "Appendix C") que defina los
+     labels \label{fig:ppc-smooth-vs-obs} y \label{fig:ppc-residuals}.
+     Mientras tanto queda comentado para que el knit no produzca "??"
+     en el PDF. El argumento central de la seccion no depende de este
+     parrafo -- vive en las subsecciones previas.
+
 ### Posterior-predictive adequacy
 
 A stock-by-stock comparison of the smoothed latent biomass $B_{i,t}$
@@ -215,3 +222,5 @@ autocorrelation at one-year lag (Figure \ref{fig:ppc-residuals}). The
 full posterior diagnostics, including trace plots, $\hat{R}$ values for
 all top-level parameters, and posterior predictive checks, are reported
 in Appendix C.
+-->
+

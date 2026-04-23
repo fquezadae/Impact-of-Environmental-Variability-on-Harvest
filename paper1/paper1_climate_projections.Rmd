@@ -376,6 +376,9 @@ As noted by @Kasperski2015-jm, the multi-species bioeconomic framework is partic
 
 # Results
 
+```{r results-identification, child='sections/results_identification.Rmd'}
+```
+
 
 ## Stock biomass model
 
@@ -1254,4 +1257,7 @@ cat(fix_stargazer_notes(tex_rob3), sep = "\n")
 
 ```
 
+
+```{r appendix-predictive, child='sections/appendix_predictive_diagnostics.Rmd'}
+```
 
