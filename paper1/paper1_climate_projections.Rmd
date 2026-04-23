@@ -376,7 +376,7 @@ As noted by @Kasperski2015-jm, the multi-species bioeconomic framework is partic
 
 # Results
 
-```{r results-identification, child='sections/results_identification.Rmd'}
+```{r results-identification, child='paper1/sections/results_identification.Rmd'}
 ```
 
 
