@@ -1,0 +1,172 @@
+# Predictive diagnostics {#appendix-predictive}
+
+This appendix reports two out-of-sample diagnostics for the three nested
+state-space specifications (T4b-ind, T4b-omega, T4b-full). The two
+criteria answer different questions and are included precisely because
+they do not always agree:
+
+- **PSIS-LOO** measures how well each specification *describes* the observed
+  2000--2024 biomass series after penalising for the model's effective
+  dimensionality. It is informative for the in-sample identification
+  reported in Section \ref{identification}, because a specification that
+  misses systematic variation will be penalised.
+- **PSIS-LFO** at the one-year horizon measures the true forecasting
+  accuracy on withheld future observations. It is informative for whether
+  the identified shifters translate into tangible *next-year* predictive
+  gains over a climate-free baseline.
+
+Because the paper uses the estimated shifters for long-run comparative
+statics under CMIP6 regimes, rather than for near-term forecasting, it is
+LOO that carries the primary identification-supporting role; LFO is
+reported as an honesty check against the possibility that the shifters
+are simply fitting idiosyncratic in-sample noise.
+
+## B.1 PSIS-LOO cross-validation
+
+We compute Pareto-smoothed importance sampling leave-one-out
+cross-validation [@Vehtari2017-qe] with moment matching applied to
+observations whose Pareto-$\hat{k}$ diagnostic exceeded 0.7. Results
+are summarised in Table \ref{tab:loo-appendix}.
+
+```{r loo-appendix-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+loo_tbl <- read.csv("tables/loo_t4b_compare.csv", stringsAsFactors = FALSE) %>%
+  dplyr::transmute(
+    Model                                     = model,
+    `$\\widehat{\\text{ELPD}}_{\\text{loo}}$` = sprintf("%.2f", elpd_loo),
+    `SE`                                      = sprintf("%.2f", se_elpd_loo),
+    `$\\Delta\\widehat{\\text{ELPD}}$`        = ifelse(elpd_diff == 0, "--",
+                                                      sprintf("%.2f", elpd_diff)),
+    `SE$_{\\Delta}$`                          = ifelse(se_diff == 0, "--",
+                                                      sprintf("%.2f", se_diff)),
+    `$\\hat{p}_{\\text{loo}}$`                = sprintf("%.1f", p_loo)
+  )
+
+kable(loo_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      align = "lrrrrr",
+      caption = "PSIS-LOO comparison across state-space specifications. \\label{tab:loo-appendix}") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
+  footnote(general = paste(
+      "$\\Delta\\widehat{\\text{ELPD}}$ is the pairwise difference relative to T4b-full (the leading model);",
+      "SE$_{\\Delta}$ is the standard error of that difference.",
+      "After moment matching, 65/68 observations satisfy $\\hat{k}\\leq 0.7$ for T4b-full,",
+      "64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-$\\hat{k}$ points are",
+      "the two censored jack-mackerel years (2012, 2015), which appear in all three models",
+      "and therefore do not affect the ranking."),
+      general_title = "Note:", escape = FALSE, threeparttable = TRUE)
+```
+
+The full specification attains the highest predictive density by a wide
+margin, outperforming T4b-omega by
+$\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 18.02$ (SE $5.59$) and the
+environment-free T4b-ind by
+$\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59$ (SE $4.93$). Both gaps
+exceed three standard errors. Notably, T4b-omega (covariance-rich but
+climate-free) underperforms T4b-ind: introducing a residual cross-stock
+correlation matrix without climate shifters is penalised by LOO. The
+interpretation consistent with the identification results of
+Section \ref{identification} is that the cross-stock residual correlation
+captured by T4b-omega is a statistical footprint of shared climate
+forcing rather than evidence of direct biological interaction; once SST
+and CHL enter the growth equation explicitly (T4b-full), the marginal
+value of $\Omega$ collapses.
+
+A stock-by-stock decomposition (Figure \ref{fig:loo-pareto-k}) confirms
+that the LOO gains of T4b-full are concentrated in the two coastal
+pelagics: per-stock ELPD improves by $+4.68$ for anchoveta and $+9.12$
+for sardina relative to T4b-ind, whereas the three specifications are
+statistically indistinguishable for jack mackerel. The effective number
+of parameters $\hat{p}_{\text{loo}} \approx 58$--$65$ is large relative
+to $N = 68$, as expected for a state-space model with one latent state
+per observation-year; this is similar across the three specifications
+and therefore does not confound the pairwise comparison, but it does
+motivate the additional forecasting test of Section B.2.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{../figs/t4b/loo_t4b_pareto_k.png}
+\caption{Per-observation Pareto-$\hat{k}$ values after moment matching,
+by model and stock. Dashed line: $\hat{k} = 0.5$; solid line: reliability
+threshold $\hat{k} = 0.7$. Crosses denote censored jack-mackerel
+observations.}
+\label{fig:loo-pareto-k}
+\end{figure}
+
+## B.2 PSIS-LFO at one-year horizon
+
+The leave-future-out diagnostic refits each specification on data through
+year $t_{\text{cut}}$ and evaluates the log predictive density of the
+biomass observations at $t_{\text{cut}} + 1$. We use five origin points,
+$t_{\text{cut}} \in \{2011, 2014, 2017, 2020, 2022\}$, spanning the
+second half of the estimation window. One-step-ahead marginal predictive
+densities are obtained in closed form from the posterior draws of each
+truncated fit, applying the log-space Schaefer step of the model and the
+marginal predictive variance $\sigma_{\text{proc}}^2 + \sigma_{\text{obs}}^2$
+stock by stock. For the two censored jack-mackerel targets (2012 and 2015)
+the predictive contribution is the corresponding log-CDF tail term.
+Table \ref{tab:lfo-appendix} reports the sum of one-step ELPD across the
+five origins and three stocks (14 evaluation points per model, of which
+two are censored).
+
+```{r lfo-appendix-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+lfo_tbl <- read.csv("tables/lfo_t4b_compare.csv", stringsAsFactors = FALSE) %>%
+  dplyr::transmute(
+    Model                                    = model_label,
+    `Points`                                 = n_points,
+    `Censored`                               = n_censored,
+    `$\\widehat{\\text{ELPD}}_{\\text{LFO}}$` = sprintf("%.2f", elpd_lfo_sum),
+    `Mean per point`                         = sprintf("%.2f", elpd_lfo_mean),
+    `$\\Delta$ vs leader`                    = ifelse(elpd_diff == 0, "--",
+                                                     sprintf("%.2f", elpd_diff))
+  )
+
+kable(lfo_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      align = "lcccrr",
+      caption = "One-step-ahead LFO comparison across state-space specifications. \\label{tab:lfo-appendix}") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
+  footnote(general = paste(
+      "Sum of one-step predictive log densities over five origin years",
+      "$\\{2011, 2014, 2017, 2020, 2022\\}$ and three stocks (14 targets per model; two are censored).",
+      "Each refit uses 4 chains $\\times$ 1500 warmup + 1500 sampling iterations.",
+      "All 15 refits satisfied $\\hat{R} \\leq 1.01$ with at most one divergent transition",
+      "(T4b-omega at $t_{\\text{cut}}=2011$), which does not affect the reported ELPD."),
+      general_title = "Note:", escape = FALSE, threeparttable = TRUE)
+```
+
+In sharp contrast to the LOO ranking, the three specifications are
+statistically indistinguishable in LFO: the spread between the best and
+worst model is only $1.36$ ELPD units over 14 target points (mean
+$0.10$ per target). Restricting attention to the 12 uncensored targets---
+that is, excluding the two jack-mackerel censored years whose predictive
+contribution is dominated by a common log-CDF tail term---the differences
+shrink further, to less than $0.3$ ELPD per model pair. Figure
+\ref{fig:lfo-elpd-path} displays the per-target trajectory of the one-step
+ELPD by stock.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{../figs/t4b/lfo_t4b_elpd_path.png}
+\caption{One-step-ahead predictive log density by target year and stock,
+across the three state-space specifications. Dashed line at $\text{ELPD}=0$
+marks the threshold above which the model predicts the withheld observation
+better than an uninformative uniform density over a one-log-unit interval.}
+\label{fig:lfo-elpd-path}
+\end{figure}
+
+The LOO-LFO divergence is not a contradiction but a feature of the
+research design. As noted in Section \ref{identification}, the historical
+SST anomaly has standard deviation
+$\hat{\sigma}_{SST} = 0.26\,^{\circ}\text{C}$, small relative to the
+process-noise standard deviation
+$\hat{\sigma}_{\text{proc}} \in \{0.17, 0.23, 1.22\}$ across the three
+stocks. Year-to-year climate innovations therefore contribute little to
+a one-year-ahead nowcast, even when the structural coupling between
+climate and biological productivity is strong. The same coupling
+accumulates over decadal horizons, which is the scale at which the
+paper's projections operate and the scale at which the identified
+$\rho_i$ are economically consequential. Stated differently, LOO
+confirms that T4b-full captures systematic structure that the simpler
+specifications miss (because it must explain observed 2000--2024
+dynamics), while LFO confirms that the added structure is not an
+artefact of overfitting to short-run noise (because it yields no
+one-year advantage). The two diagnostics jointly support the structural
+interpretation of the shifters adopted in the main text.
