@@ -81,6 +81,13 @@ T5_SCENARIO_LABEL <- c(
   ssp585_end = "SSP5-8.5, 2081-2100"
 )
 
+# Stocks cuyo shifter NO esta identificado por la data 2000-2024.
+# Se reportan como "n.i." en la tabla formateada y se excluyen de la
+# figura ridgeline -- su posterior esta prior-dominada y la mediana
+# puntual es ruido (ver project_t4b_fits_completed + Pr_dec~0.34).
+# El CSV *_raw.csv conserva los numeros completos para trazabilidad.
+T5_NON_IDENTIFIED_STOCKS <- c("jurel_cs")
+
 # -----------------------------------------------------------------------------
 # Paso 1 -- Agregar deltas CMIP6 a escalares (DSST, DlogCHL) por escenario
 # -----------------------------------------------------------------------------
@@ -257,7 +264,12 @@ t5_write_table <- function(summ, path = T5_TABLE_OUT) {
 
   dir.create(dirname(path), recursive = TRUE, showWarnings = FALSE)
 
-  # Formato pret-a-porter para paper: pct con signo + banda 90%
+  # Formato pret-a-porter para paper: pct con signo + banda 90%.
+  # Para stocks no identificados (jurel), reemplazamos r_eff y %Delta por
+  # "n.i." -- la mediana puntual es ruido posterior, ver nota al pie del
+  # script. DSST y DlogCHL se conservan porque son inputs exogenos.
+  ni <- summ$stock_id %in% T5_NON_IDENTIFIED_STOCKS
+
   out <- summ %>%
     transmute(
       Stock    = stock_label,
@@ -265,14 +277,20 @@ t5_write_table <- function(summ, path = T5_TABLE_OUT) {
       `DSST (C)`        = sprintf("%+.2f", DSST),
       `DlogCHL`         = sprintf("%+.3f", DlogCHL),
       `r_base (median)` = sprintf("%.3f", r_base_median),
-      `r_eff (median)`  = sprintf("%.3f", r_eff_median),
-      `r_eff (q05)`     = sprintf("%.3f", r_eff_q05),
-      `r_eff (q95)`     = sprintf("%.3f", r_eff_q95),
-      `%Delta (median)` = sprintf("%+.1f%%", 100 * pct_median),
-      `%Delta (q05)`    = sprintf("%+.1f%%", 100 * pct_q05),
-      `%Delta (q95)`    = sprintf("%+.1f%%", 100 * pct_q95),
-      `Pr(Delta<0)`     = sprintf("%.2f", prob_decline)
+      `r_eff (median)`  = ifelse(ni, "n.i.", sprintf("%.3f", r_eff_median)),
+      `r_eff (q05)`     = ifelse(ni, "n.i.", sprintf("%.3f", r_eff_q05)),
+      `r_eff (q95)`     = ifelse(ni, "n.i.", sprintf("%.3f", r_eff_q95)),
+      `%Delta (median)` = ifelse(ni, "n.i.", sprintf("%+.1f%%", 100 * pct_median)),
+      `%Delta (q05)`    = ifelse(ni, "n.i.", sprintf("%+.1f%%", 100 * pct_q05)),
+      `%Delta (q95)`    = ifelse(ni, "n.i.", sprintf("%+.1f%%", 100 * pct_q95)),
+      `Pr(Delta<0)`     = ifelse(ni, "n.i.", sprintf("%.2f", prob_decline))
     )
+
+  if (any(ni)) {
+    cat("[T5] Stocks reportados como n.i. en tabla formateada:",
+        paste(unique(summ$stock_label[ni]), collapse = ", "),
+        "(ver _raw.csv para numeros crudos)\n")
+  }
 
   write.csv(out, path, row.names = FALSE)
   cat("[T5] Tabla escrita:", path, "\n")
