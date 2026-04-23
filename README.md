@@ -33,7 +33,12 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 ```
 .
 ├── paper1/                             # Paper 1: Climate projections
-│   └── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
+│   ├── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
+│   ├── sections/                       # Child Rmds wired into main
+│   │   ├── results_identification.Rmd        # §4.1 (T4b-full rho posteriors)
+│   │   ├── appendix_predictive_diagnostics.Rmd  # Appendix B (LOO / LFO)
+│   │   └── results_loo_comparison.Rmd        # alt cut, not wired in main
+│   └── stan/                           # Compiled Stan programs for T4b
 │
 ├── paper2/                             # Paper 2: Bioeconomic optimization
 │   └── paper2_bioeconomic_optimization.Rmd
@@ -42,35 +47,31 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │   ├── 00_config/config.R              # Paths, libraries, constants
 │   ├── 00_run_all.R                    # Master pipeline
 │   ├── 01_data_cleaning/               # Raw data -> clean .rds
-│   │   ├── harvest_data.R
-│   │   ├── logbook_data.R
-│   │   ├── biomass_data.R
-│   │   └── tac_processing.R
 │   ├── 02_env_processing/              # NetCDF -> daily env grids
-│   │   ├── load_glorys.R
-│   │   ├── load_wind.R
-│   │   ├── load_chl.R
-│   │   └── merge_env_data.R
 │   ├── 03_env_spatial/                 # Spatial operations
-│   │   ├── dist_coast_env_data.R
-│   │   └── obtain_env_by_ports.R
-│   ├── 04_models/                      # Econometric estimation
-│   │   └── poisson_model.R
+│   ├── 04_models/                      # Econometric estimation (SUR, NB)
 │   ├── 05_students/                    # Student-led modules (Paper 2)
-│   │   ├── base_datos_costos.R         # Trip cost reconstruction
-│   │   └── base_datos_precios.R        # Ex-vessel prices database
-│   └── 06_projections/                 # Climate change projections (Paper 1)
-│       ├── 01_cmip6_deltas.R
-│       ├── 02_project_and_predict.R
-│       └── 03_project_biomass.R
+│   ├── 06_projections/                 # Deterministic SUR projections (legacy V1)
+│   │   ├── 01_cmip6_deltas.R
+│   │   ├── 02_project_and_predict.R
+│   │   └── 03_project_biomass.R
+│   ├── 07_structural_bio/              # Schaefer hindcast + official priors
+│   └── 08_stan_t4/                     # Bayesian state-space (T4b, Paper 1 core)
+│       ├── 04_fit_t4b_ind.R            # No-shifter baseline
+│       ├── 06_fit_t4b_omega.R          # + residual covariance
+│       ├── 08_fit_t4b_full.R           # + SST/CHL shifters (leading model)
+│       ├── 10_loo_t4b_compare.R        # PSIS-LOO across specs
+│       ├── 11_lfo_t4b_compare.R        # PSIS-LFO across specs
+│       └── 12_growth_comparative_statics.R  # T5-minimal: r_eff under CMIP6
 │
 ├── data/                               # Processed data (.rds)
+│   ├── bio_params/                     # Official assessments (IFOP / SPRFMO)
 │   ├── biomass/
 │   ├── harvest/
 │   ├── logbooks/
-│   ├── outputs/
+│   ├── outputs/t4b/                    # Stan fits + summaries
 │   ├── ports/
-│   ├── projections/
+│   ├── projections/                    # CMIP6 deltas + legacy SUR projections
 │   └── trips/
 │
 ├── figs/                               # Figures
