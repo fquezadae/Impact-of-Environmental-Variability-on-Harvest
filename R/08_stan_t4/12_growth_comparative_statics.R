@@ -346,7 +346,7 @@ t5_plot_ridgeline <- function(draws_scen, path = T5_FIG_OUT) {
       ggridges::geom_density_ridges(alpha = 0.55,
                                     scale = 1.1,
                                     rel_min_height = 0.01,
-                                    color = "white", size = 0.2) +
+                                    color = "white", linewidth = 0.2) +
       facet_wrap(~ stock_label, ncol = 1, scales = "free_y") +
       scale_x_continuous(labels = scales::percent_format(accuracy = 1),
                          breaks = c(-1, -0.5, 0, 0.5, 1, 2, 3)) +
@@ -355,8 +355,7 @@ t5_plot_ridgeline <- function(draws_scen, path = T5_FIG_OUT) {
       labs(x = "Cambio % en r_eff vs baseline historico",
            y = NULL,
            title = "Comparative statics del crecimiento bajo CMIP6",
-           subtitle = paste0("T4b-full; caja Centro-Sur (IPSL-CM6A-LR); ",
-                             "densidad posterior de exp(rho_sst*DSST + rho_chl*DlogCHL) - 1")) +
+           subtitle = subtitle_note) +
       theme_minimal(base_size = 11) +
       theme(strip.text = element_text(face = "bold"),
             plot.title = element_text(face = "bold"))
@@ -374,7 +373,7 @@ t5_plot_ridgeline <- function(draws_scen, path = T5_FIG_OUT) {
       labs(y = "Cambio % en r_eff vs baseline historico",
            x = NULL,
            title = "Comparative statics del crecimiento bajo CMIP6",
-           subtitle = "T4b-full; caja Centro-Sur (IPSL-CM6A-LR)") +
+           subtitle = subtitle_note) +
       theme_minimal(base_size = 11)
   }
 
