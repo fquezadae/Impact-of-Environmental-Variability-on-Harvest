@@ -76,6 +76,26 @@ STOCK_LABELS <- c(anchoveta_cs    = "Anchoveta CS",
 load_fit_and_data <- function(tag) {
   fit  <- readRDS(file.path(T4B_OUT_DIR, sprintf("t4b_%s_fit.rds", tag)))
   sdat <- readRDS(file.path(T4B_OUT_DIR, sprintf("t4b_%s_stan_data.rds", tag)))
+
+  # Los Xptr de log_prob/unconstrain_pars no sobreviven serializacion.
+  # Si el exe ya fue compilado con compile_model_methods=TRUE, basta con
+  # re-bindear los punteros en la sesion actual. Si no lo tiene (caso
+  # omega/full antes del refit), fallara silenciosamente y $loo(moment_match)
+  # activara la auto-compilacion por su cuenta.
+  init_try <- tryCatch(
+    {
+      fit$init_model_methods(verbose = FALSE)
+      TRUE
+    },
+    error = function(e) {
+      message(sprintf("[load:%s] init_model_methods no disponible (%s); se intentara auto-compilar al llamar $loo().",
+                      tag, conditionMessage(e)))
+      FALSE
+    }
+  )
+  if (isTRUE(init_try)) {
+    cat(sprintf("[load:%s] init_model_methods OK tras readRDS\n", tag))
+  }
   list(fit = fit, stan_data = sdat)
 }
 
