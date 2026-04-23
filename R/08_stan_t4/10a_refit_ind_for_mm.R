@@ -41,14 +41,27 @@ if (isTRUE(getOption("t4b.refit_ind.run_main", FALSE))) {
 
   stan_data <- readRDS(file.path(T4B_IND_OUT_DIR, "t4b_ind_stan_data.rds"))
 
+  # IMPORTANTE 1: NO pasar compile_model_methods=TRUE. Eso crea un exe con
+  # methods embebidos cuyos Xptr no sobreviven save_object()+readRDS()
+  # (bug de serializacion en cmdstanr). La ruta que si funciona es dejar
+  # el exe "pelado" y que cmdstanr auto-compile methods al llamar
+  # $loo(moment_match=TRUE) ("Compiling additional model methods...").
+  #
+  # IMPORTANTE 2: pasar data como PATH a un JSON persistente, NO como lista.
+  # Si se pasa lista, cmdstanr escribe un tempfile que no sobrevive el
+  # cambio de sesion de R, y el MM auto-compile falla con
+  # "JSON parsing...document is empty".
   mod <- cmdstanr::cmdstan_model(
     T4B_IND_STAN_FILE,
-    compile_model_methods = TRUE,
-    force_recompile       = TRUE
+    force_recompile = TRUE
   )
 
+  json_path <- file.path(T4B_IND_OUT_DIR, "t4b_ind_stan_data.json")
+  cmdstanr::write_stan_json(stan_data, json_path)
+  cat(sprintf("[t4b-ind refit] stan_data escrito a %s\n", json_path))
+
   fit <- mod$sample(
-    data            = stan_data,
+    data            = json_path,
     chains          = 8,
     parallel_chains = 8,
     iter_warmup     = 2000,
@@ -59,14 +72,9 @@ if (isTRUE(getOption("t4b.refit_ind.run_main", FALSE))) {
     refresh         = 200
   )
 
-  # Verifica que los metodos esten operativos antes de guardar
-  init_check <- try(fit$init_model_methods(verbose = FALSE), silent = TRUE)
-  if (inherits(init_check, "try-error")) {
-    stop("init_model_methods fallo incluso con force_recompile. ",
-         "Revisar version de cmdstanr / cmdstan.")
-  }
-  cat("\n[t4b-ind refit] init_model_methods OK -- MM habilitado.\n")
-
+  # No llamamos init_model_methods aqui: queremos que el rds se guarde SIN
+  # Xptr embebidos, para que la ruta auto-compile de $loo(moment_match) los
+  # construya en la sesion de consumo.
   fit$save_object(file = file.path(T4B_IND_OUT_DIR, "t4b_ind_fit.rds"))
   cat("[t4b-ind refit] guardado en data/outputs/t4b/t4b_ind_fit.rds\n")
 
