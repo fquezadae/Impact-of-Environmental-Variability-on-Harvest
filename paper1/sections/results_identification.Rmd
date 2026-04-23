@@ -148,10 +148,15 @@ prior centred at zero.}
 
 ### Identification versus short-run prediction
 
-The identified shifters are structural in the sense standard to the
-Cowles tradition: they describe an invariant biological mechanism linking
-ocean state to stock productivity, and they enter the law of motion as
-coefficients on exogenous climate inputs. Their economic value lies in
+The identified shifters are structural parameters rather than reduced-form
+correlations: they measure an invariant biological mechanism linking ocean
+state to stock productivity, and they enter the law of motion as
+coefficients on exogenous climate inputs. This structural reading is what
+licenses their use as projection inputs under climate regimes outside the
+2000--2024 estimation sample; reduced-form correlations, by contrast,
+would require the joint distribution of $(SST, B, C)$ to remain stationary
+into the projection horizon, which is precisely the assumption the climate
+scenarios are designed to violate. Their economic value lies in
 **long-run comparative statics**: given a projected climate regime
 $X_t^{\star}$ for the period 2040--2100 drawn from the CMIP6 ensemble,
 the intrinsic productivity under that regime is
