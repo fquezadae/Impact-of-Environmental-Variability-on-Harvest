@@ -112,20 +112,6 @@
 \usepackage{threeparttable}
 \author{Felipe J. Quezada-Escalona}
 \affil{Departamento de Economía \\ Universidad de Concepción \vspace{-48pt}}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -206,14 +192,12 @@ necessarily cover all market transactions.
 
 For the environmental covariates, we use data from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Salinity, sea surface temperature, and current speed and direction were obtained from the Global Ocean Physics Reanalysis (GLORYS12V1), which provides data at a 1/12° horizontal resolution with 50 vertical levels (\citeproc{ref-GLORYS12V1}{E.U. Copernicus Marine Service Information, 2025c}). Wind speed and direction at the surface were obtained from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, available at 0.125° horizontal spatial resolution and hourly frequency (\citeproc{ref-WIND_GLO_PHY}{E.U. Copernicus Marine Service Information, 2025b}). Chlorophyll-a concentrations were obtained from the Global Ocean Colour dataset, which provides data at \textasciitilde4 km horizontal resolution (\citeproc{ref-GlobColour}{E.U. Copernicus Marine Service Information, 2025a}). All environmental data were retrieved daily (hourly in the case of winds) for the 2013--2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 41°S (Figure \ref{fig:figEnvData})
 
-\paragraph*{Imputation of missing jack mackerel biomass}\label{imputation-of-missing-jack-mackerel-biomass}
-\addcontentsline{toc}{paragraph}{Imputation of missing jack mackerel biomass}
+\paragraph*{Observation structure for jack mackerel Centro-Sur biomass}\label{observation-structure-for-jack-mackerel-centro-sur-biomass}
+\addcontentsline{toc}{paragraph}{Observation structure for jack mackerel Centro-Sur biomass}
 
-To address the years in which no acoustic survey was conducted in south-central Chile---or in which insufficient information was available to produce a stock assessment---we imputed missing jack mackerel biomass values. Of the 25 years in the sample period (2000--2024), jack mackerel CS biomass is directly observed in 17 years; the remaining 8 years require imputation. The primary predictor is jack mackerel biomass from the Northern zone, estimated from independent acoustic surveys conducted since 2010 (correlation with observed CS biomass: \(r = 0.82\), \(N = 7\) overlapping years).
+Over the 2000--2024 estimation window (25 years) the IFOP hydroacoustic assessment of jack mackerel in Centro-Sur Chile provides 16 years with a point estimate of spawning biomass and two further years (2012, 2015) in which biomass fell below the assessment's lower detection limit and enters the likelihood as a left-censored observation at that limit. The remaining seven years were either not surveyed or lacked sufficient information for a stock-assessment run; in the state-space specification of Section\textasciitilde{}\ref{sec:stock-dynamics} these years carry no observation and their latent biomass \(B_{\text{jurel},t}\) is identified dynamically, through the Pella--Tomlinson transition equation together with the stock-specific priors on \((r^{0}, K, \theta, \sigma_{\text{proc}}, \sigma_{\text{obs}})\) adopted from the IFOP and SPRFMO assessments and on \((\rho^{SST}, \rho^{CHL})\) adopted from the reduced-form stress tests of Appendix A.
 
-We estimated five alternative GLM specifications with a Gamma distribution and log link, ranging from a parsimonious model with Northern biomass as the sole predictor (2 parameters) to a saturated specification including Northern biomass, its square, the SPRFMO spawning biomass index, and their interaction (5 parameters). All models using Northern biomass are estimated with only 7 observations (years where both CS and Norte are simultaneously observed). The most complex specification exhibited severe overfitting (pseudo-\(R^2 = 0.97\), but biologically implausible predictions requiring ad hoc censoring in two years). We therefore selected a parsimonious specification with Northern biomass and its square as predictors (3 parameters), which achieves an in-sample pseudo-\(R^2 = 0.90\) and a leave-one-out cross-validation \(R^2 = 0.78\), indicating acceptable out-of-sample predictive performance. For the single year where Northern biomass is also unavailable (2022), we use linear interpolation between adjacent observed values as a fallback.
-
-The SPRFMO spawning biomass index, which covers the transzonal stock across the EEZ of Chile, Ecuador, and Peru, was also considered as a predictor. However, its correlation with observed CS biomass is low (\(r = 0.11\), \(N = 17\)), reflecting the weak correspondence between regional stock dynamics and local abundance in south-central Chile. The interpolated series is used in subsequent estimation. To assess sensitivity to the imputation procedure, we report robustness checks using only directly observed jack mackerel biomass (Appendix \ref{appendix-robustness}).
+Two external series---jack mackerel biomass from the Northern acoustic zone (Arica--Iquique--Antofagasta, available since 2010) and the SPRFMO transzonal spawning biomass index for the Southeast Pacific---were considered as auxiliary information. The Northern series correlates with the observed CS series at \(r = 0.82\) over \(N = 7\) overlapping years, and the SPRFMO index correlates with CS at \(r = 0.11\) over \(N = 17\) overlapping years. We read these numbers as suggestive, not conclusive: a seven-point Pearson correlation is at best descriptive, but the sign and magnitude contrast is consistent with a Centro-Sur stock unit that shares short-run dynamics with the Northern Chilean assessment and is only weakly coupled to the SPRFMO-scale aggregate. Neither external series enters the likelihood of the structural model, as a prior or as an observation, to avoid introducing information about the coastal climate forcing through the indirect route of Northern or transzonal biomass.
 
 \begin{figure}[ht!]
 
@@ -230,7 +214,7 @@ Climate projections for SST, chlorophyll-a, and near-surface wind speed are obta
 
 \subsection{Econometric models}\label{econometric-models}
 
-\subsubsection{Stock dynamics}\label{stock-dynamics}
+\subsubsection{Stock dynamics}\label{sec:stock-dynamics}
 
 We model the interannual dynamics of each stock \(i \in \{\text{anchoveta}, \text{sardina común}, \text{jack mackerel}\}\) as a Bayesian state-space process on the latent biomass \(B_{i,t}\), driven by a Pella--Tomlinson production function whose intrinsic growth rate is modulated by the physical climate. The law of motion is
 
@@ -259,9 +243,9 @@ Latent biomass is linked to the official survey-based estimates of spawning stoc
 
 Environmental conditions are summarized annually by sea surface temperature (SST) and chlorophyll-a concentration (CHL), averaged over the Centro-Sur region within the Chilean EEZ and lagged one year to respect the pre-determined ordering of environmental forcing relative to year-\(t\) biomass. The choice of these two covariates follows a large biological literature that identifies thermal regime and primary productivity as the dominant local drivers of small-pelagic dynamics in the Humboldt Current System (\citeproc{ref-Axbard2016}{Axbard, 2016}; \citeproc{ref-cahuin2009}{Cahuin et al., 2009}; \citeproc{ref-Yuxe1uxf1ez2014}{Yáñez et al., 2014}; see \citeproc{ref-cheung2008}{Cheung et al., 2008}; \citeproc{ref-jennings2008}{Jennings et al., 2008}).
 
-The system is estimated by full-information Bayesian inference in Stan via Hamiltonian Monte Carlo. Priors on the biological parameters \((r_i^{0}, K_i, \theta_i, \sigma_{\text{proc},i}, \sigma_{\text{obs},i})\) are adopted from the single-species official assessments of IFOP and SPRFMO; priors on the climate shifters \((\rho_i^{SST}, \rho_i^{CHL})\) are weakly informative normal densities centred at the point estimates of an independent stress-test regression of biomass growth increments on SST and log-CHL anomalies, with unit standard deviation (see Appendix A for full specification of the prior elicitation protocol). We estimate three nested specifications of increasing flexibility: (i) species-independent dynamics without climate shifters (\texttt{ind\textquotesingle{}\textquotesingle{}),\ (ii)\ with\ a\ cross-stock\ residual\ covariance\ \$\textbackslash{}Omega\$\ (}omega'\,`), and (iii) the full model augmented with the climate shifter of Eq.\textasciitilde{}\eqref{eq:shifter} (\texttt{full\textquotesingle{}\textquotesingle{}).\ The\ posterior\ of\ the}full'\,' specification is our primary object of interpretation; the nested predictive comparison is relegated to Appendix B. All reported posteriors are based on four chains of 2\{,\}000 post-warmup iterations with standard convergence diagnostics (\(\hat{R} \leq 1.01\), bulk- and tail-ESS above 400 for all top-level parameters). The eight years in which the jack mackerel Centro-Sur survey was not conducted enter the likelihood as latent biomass states, so that the resulting posteriors of \(\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL}\) propagate the associated uncertainty directly, superseding the Gamma-GLM imputation used by the reduced-form benchmark.
+The system is estimated by full-information Bayesian inference in Stan via Hamiltonian Monte Carlo. Priors on the biological parameters \((r_i^{0}, K_i, \theta_i, \sigma_{\text{proc},i}, \sigma_{\text{obs},i})\) are adopted from the single-species official assessments of IFOP and SPRFMO; priors on the climate shifters \((\rho_i^{SST}, \rho_i^{CHL})\) are weakly informative normal densities centred at the point estimates of an independent stress-test regression of biomass growth increments on SST and log-CHL anomalies, with unit standard deviation (see Appendix A for full specification of the prior elicitation protocol). We estimate three nested specifications of increasing flexibility: (i) species-independent dynamics without climate shifters (\texttt{ind\textquotesingle{}\textquotesingle{}),\ (ii)\ with\ a\ cross-stock\ residual\ covariance\ \$\textbackslash{}Omega\$\ (}omega'\,`), and (iii) the full model augmented with the climate shifter of Eq.\textasciitilde{}\eqref{eq:shifter} (\texttt{full\textquotesingle{}\textquotesingle{}).\ The\ posterior\ of\ the}full'\,' specification is our primary object of interpretation; the nested predictive comparison is relegated to Appendix B. All reported posteriors are based on four chains of 2\{,\}000 post-warmup iterations with standard convergence diagnostics (\(\hat{R} \leq 1.01\), bulk- and tail-ESS above 400 for all top-level parameters). The seven jack mackerel Centro-Sur years without a survey estimate enter the likelihood as unobserved latent biomass states, identified only through the Pella--Tomlinson transition equation; two further years (2012 and 2015) enter through a log-normal censored-observation term at the stock-assessment detection limit. All associated uncertainty propagates directly into the posterior of \((\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})\), so that no imputation step is embedded in the Stan likelihood.
 
-A Seemingly Unrelated Regression (SUR) benchmark on the same 2000--2024 sample, analogous in form to the specifications in Richter et al. (\citeproc{ref-Richter2018}{2018}) and Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), is reported in Section\textasciitilde{}\ref{sec:sur-benchmark} as a static correlational counterpart to Eq.\textasciitilde{}\eqref{eq:law-of-motion}--\eqref{eq:shifter}, with additional robustness panels in Appendix \ref{appendix-robustness}. That benchmark is useful to anchor readers accustomed to reduced-form growth regressions, but the structural identification of Section \ref{identification} is the object on which the long-run comparative statics of Section \ref{projections} rely.
+The state-space formulation in Eq.\textasciitilde{}\eqref{eq:law-of-motion}--\eqref{eq:shifter} differs from reduced-form Seemingly Unrelated Regression (SUR) specifications of the type considered in Richter et al. (\citeproc{ref-Richter2018}{2018}) and Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}) along three dimensions that are material for this paper: it separates process noise from observation noise; it enforces the pre-determined ordering between year-\((t-1)\) environmental forcing and year-\(t\) latent biomass; and it yields structural climate semi-elasticities rather than contemporaneous correlations among growth increments. Because the paper's comparative statics of Section \ref{projections} require evaluation of the climate shifter at scenario regimes outside the 2000--2024 estimation window, only the structural identification of Section \ref{identification}---not a reduced-form SUR on growth increments---licenses that extrapolation.
 
 Figure \ref{fig:biomass} shows that anchoveta, sardina común, and jack mackerel exhibit distinct biomass trajectories over the 2000--2024 window, with no evidence of strong interannual co-movement across species once differences in scale are accounted for. Harvest pressure is visibly associated with these fluctuations; jack mackerel, in particular, experienced an abrupt decline during the late 2000s consistent with the combined effects of intense fishing and unfavorable environmental conditions.
 
@@ -314,7 +298,7 @@ Each vessel is assigned to its administrative region based on its modal departur
 
 The vector \(Z_v\) contains time-invariant vessel characteristics, including hold capacity (log of cubic meters) and vessel type. Hold capacity determines the physical constraint on catch per trip and proxies for vessel scale.
 
-The vector \(O_{vy}\) captures operating and regulatory constraints that vary across both vessels and years. Unlike the environmental variables in the stock dynamics model, which reflect biological productivity (SST, chlorophyll-a), the variables in the trip equation capture conditions that affect the \emph{feasibility} of fishing operations. Two vessel--year variables are constructed using each vessel's center of gravity (COG)---the catch-weighted centroid of its haul locations over the sample period. First, the number of days with adverse weather conditions is computed as the count of days per year in which wind speed exceeds 8\textasciitilde m/s at the environmental grid point nearest to the vessel's COG.\footnote{The wind threshold of 8~m/s corresponds approximately to Beaufort scale 5, at which purse-seine operations become difficult for artisanal vessels. This threshold was selected based on model fit (AIC comparison across 8, 10, and 12~m/s thresholds); robustness checks are reported in Appendix~\ref{appendix-robustness}.} Second, the number of days closed due to biological closures (\textit{vedas}) is assigned based on the regulatory zone corresponding to the vessel's COG latitude. In the Centro-Sur region, sardine and anchoveta face seasonal closures for reproduction (August--October in regions V--VIII; July--October in regions IX--XIV) and recruitment (January--February in all regions), yielding 151 and 182 closed days per year, respectively. Jack mackerel has no biological closures.
+The vector \(O_{vy}\) captures operating and regulatory constraints that vary across both vessels and years. Unlike the environmental variables in the stock dynamics model, which reflect biological productivity (SST, chlorophyll-a), the variables in the trip equation capture conditions that affect the \emph{feasibility} of fishing operations. Two vessel--year variables are constructed using each vessel's center of gravity (COG)---the catch-weighted centroid of its haul locations over the sample period. First, the number of days with adverse weather conditions is computed as the count of days per year in which wind speed exceeds 8\textasciitilde m/s at the environmental grid point nearest to the vessel's COG.\footnote{The wind threshold of 8~m/s corresponds approximately to Beaufort scale 5, at which purse-seine operations become difficult for artisanal vessels. This threshold was selected based on AIC comparison across 8, 10, and 12~m/s cut-offs on the trip-equation fit.} Second, the number of days closed due to biological closures (\textit{vedas}) is assigned based on the regulatory zone corresponding to the vessel's COG latitude. In the Centro-Sur region, sardine and anchoveta face seasonal closures for reproduction (August--October in regions V--VIII; July--October in regions IX--XIV) and recruitment (January--February in all regions), yielding 151 and 182 closed days per year, respectively. Jack mackerel has no biological closures.
 
 Quota prices are not included explicitly in the trip equation. Instead, the economic scarcity of quota is captured implicitly through aggregate TAC levels and vessel-level allocated harvest.
 
@@ -384,7 +368,7 @@ $\rho^{CHL}$ & Jurel CS & $\mathcal{N}(0.0, 1.0)$ & -0.06 & {}[-1.72, 1.60] & 1.
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Shifters are the semi-elasticities of the intrinsic growth rate $r_i$ with respect to SST anomalies (in °C) and log-CHL anomalies, respectively. Priors are adopted from the stock-specific stress-test results reported in Appendix A. The posterior-to-prior standard deviation ratio measures the amount of prior-to-posterior updating: values near one indicate the data carry little information about the parameter, whereas values well below one indicate identification from the likelihood. All R-hat ≤ 1.01.
+\item Shifters are the semi-elasticities of the intrinsic growth rate $r_i$ with respect to SST anomalies (in °C) and log-CHL anomalies, respectively. Priors are adopted from the stock-specific stress-test results reported in Appendix A. The posterior-to-prior standard deviation ratio measures the amount of prior-to-posterior updating: values near one indicate the data carry little information about the parameter, whereas values well below one indicate identification from the likelihood. All R-hat <= 1.01.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -509,80 +493,6 @@ LOO and LFO results are complementary diagnostics of, respectively,
 identification-through-fit and forecasting-on-new-data, and the paper
 relies on the former for the economic interpretation.
 
-\subsection{Stock biomass model: SUR reduced-form benchmark}\label{sec:sur-benchmark}
-
-Table \ref{tab:model_selection} summarizes the model selection exercise. Five candidate specifications were compared, ranging from a baseline with only own-biomass terms to a full model including quadratic chlorophyll-a and cross-species interaction terms. The preferred specification---which includes own biomass, its square, SST, SST\(^2\), and chlorophyll-a---yields the lowest AIC and BIC. Adding quadratic CHL terms or cross-species interactions does not improve fit; in fact, both AIC and BIC increase when these terms are included. Wind variables were excluded in an earlier specification search, as a joint exclusion test failed to reject their omission. The preferred specification contains six parameters per equation, yielding approximately 17 residual degrees of freedom with \(N=23\) observations.
-
-Table \ref{tab:SUR_results} reports the SUR estimates of annual biomass dynamics for sardine, anchoveta, and jack mackerel. The system is estimated via robust maximum likelihood (MLR), yielding Huber--White standard errors and allowing unrestricted contemporaneous correlation across equations.
-
-All three species exhibit strong interannual persistence and significant density dependence, consistent with discrete logistic growth. However, the species differ markedly in their sensitivity to environmental conditions.
-
-Sardine biomass displays the strongest environmental response. The coefficient on chlorophyll-a is positive and highly significant (\(\hat{\rho}_{CHL} = 80.99\), \(p < 0.001\)), indicating that years with higher primary productivity favor sardine growth. The quadratic SST term is also significant and positive (\(\hat{\rho}_{SST^2} = 54.74\), \(p = 0.001\)), suggesting a convex response to temperature anomalies---sardine biomass increases more sharply under larger SST deviations from the mean. This pattern is consistent with evidence from the Humboldt Current System, where sardine tends to exhibit smoother population changes associated with warmer or transitional oceanographic regimes (\citeproc{ref-cahuin2009}{Cahuin et al., 2009}; \citeproc{ref-Yuxe1uxf1ez2014}{Yáñez et al., 2014}).
-
-Anchoveta biomass is dominated by density dependence, with the strongest own-biomass coefficient (\(\hat{r} = 1.11\), \(p < 0.001\)) and a highly significant quadratic term (\(\hat{\eta} = -0.202\), \(p < 0.001\)). SST has a marginally significant negative effect (\(p = 0.087\)), but neither SST\(^2\) nor CHL are significant. This asymmetric environmental response---where anchoveta reacts primarily to temperature rather than productivity---is consistent with the ecological literature. Anchoveta in the Humboldt Current is known to respond sharply to short-term cold, nutrient-rich conditions, dominating during cold phases of decadal-scale oceanographic variability (\citeproc{ref-Alheit2004}{Alheit \& Niquen, 2004}; \citeproc{ref-cahuin2009}{Cahuin et al., 2009}; \citeproc{ref-Yuxe1uxf1ez2014}{Yáñez et al., 2014}).
-
-Jack mackerel shows strong persistence (\(\hat{r} = 1.06\), \(p < 0.001\)) but a distinct environmental signature. The quadratic SST term is large and highly significant (\(\hat{\rho}_{SST^2} = -56.49\), \(p = 0.001\)), indicating a clear thermal optimum: biomass declines when temperatures deviate substantially from the long-run mean in either direction. Neither linear SST nor CHL are individually significant, suggesting that jack mackerel growth is less sensitive to annual fluctuations in upwelling productivity than sardine. This weaker coupling to coastal environmental variability is consistent with jack mackerel's broader spatial distribution, deeper foraging behavior, and transboundary stock structure within the Southeast Pacific (\citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al., 2017}).
-
-These contrasting environmental responses have direct implications for climate projections. Under warming scenarios, sardine may benefit from increased thermal variability if accompanied by sustained productivity, whereas anchoveta could face reduced biomass if warming erodes the cold, nutrient-rich conditions it depends on. Jack mackerel, with its thermal optimum response, would be adversely affected by both warming and cooling extremes.
-
-Cross-species interactions were tested but did not improve model fit (Table \ref{tab:model_selection}). The residual covariances across equations are also statistically insignificant, suggesting that shared unobserved shocks---beyond those captured by SST and CHL---do not generate strong contemporaneous co-movement across species. This does not rule out ecological interactions (e.g., predator--prey dynamics between jack mackerel and small pelagics), but it indicates that such effects are not detectable in the annual aggregate biomass data given the available sample size.
-
-Appendix \ref{appendix-robustness} presents three robustness checks. Table \ref{tab:SUR_rob_obs} restricts the jack mackerel series to observed (non-interpolated) years, reducing the sample to 12 observations and requiring a more parsimonious specification without SST\(^2\). Table \ref{tab:SUR_rob_2sp} estimates a two-species SUR for sardine and anchoveta only, treating jack mackerel biomass as an exogenous covariate. Table \ref{tab:SUR_interactions} augments the main specification with cross-species interaction terms, confirming that their coefficients are individually and jointly insignificant. The core findings---strong density dependence, positive CHL effects on sardine, and a thermal optimum for jack mackerel---are qualitatively robust across all specifications, lending confidence that the results are not driven by the interpolation procedure.
-
-\begin{table}[!htbp]
-\centering
-\caption{Model selection for SUR biomass dynamics}
-\label{tab:model_selection}
-\begin{tabular}{lcrrr}
-\toprule
-Specification & K/eq & AIC & BIC & $\Delta$AIC \\
-\midrule
-No environment & 3 & 490.7 & 507.7 & 13.1 \\
-Main (SST + SST2 + CHL) & 6 & 477.6 & 504.9 & 0.0 \\
-Main + CHL2 & 7 & 482.9 & 513.6 & 5.3 \\
-Main + interactions & 8 & 485.0 & 519.1 & 7.4 \\
-Full (interactions + CHL2) & 10 & 490.5 & 528.0 & 12.9 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[!htbp] \centering 
-  \caption{SUR estimates of biomass dynamics (main specification, N = 23)} 
-  \label{tab:SUR_results} 
-\footnotesize 
-\begin{threeparttable}
-\begin{tabular}{@{\extracolsep{5pt}}lccc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-4} 
- & Sardine & Anchoveta & Jack mackerel \\ 
-\\[-1.8ex] & (1) & (2) & (3)\\ 
-\hline \\[-1.8ex] 
- Own biomass ($x_{it}$) & 0.438$^{***}$ (0.113) & 1.112$^{***}$ (0.157) & 1.057$^{***}$ (0.137) \\ 
-  Own biomass$^2$ ($x_{it}^2$) & $-$0.021$^{***}$ (0.005) & $-$0.202$^{***}$ (0.047) & $-$0.017$^{***}$ (0.005) \\ 
-  SST & $-$9.158$^{*}$ (5.409) & $-$4.972$^{*}$ (2.906) & 5.923 (5.161) \\ 
-  SST$^2$ & 54.738$^{***}$ (16.038) & $-$4.608 (7.203) & $-$56.485$^{***}$ (17.413) \\ 
-  Chlorophyll-a & 80.992$^{***}$ (17.061) & $-$5.366 (11.155) & 15.454 (24.835) \\ 
-  Constant & 23.745$^{***}$ (2.132) & 12.096$^{***}$ (1.639) & 28.188$^{***}$ (3.376) \\ 
- \hline \\[-1.8ex] 
-Observations & 23 & 23 & 23 \\ 
-R$^{2}$ & 0.707 & 0.608 & 0.790 \\ 
-Adjusted R$^{2}$ & 0.621 & 0.493 & 0.729 \\ 
-Residual Std. Error (df = 17) & 7.308 & 3.917 & 9.589 \\ 
-\hline 
-\hline \\[-1.8ex] 
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.
-\item Robust (Huber--White) SEs via MLR. Biomass in $10^5$ tons.
-\item Environmental variables centered at sample means.
-\item Jack mackerel biomass interpolated via Gamma GLM on Northern biomass (see Section 3.1).
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
 \subsection{Total annual trips}\label{sec:tripresults}
 
 Table \ref{tab:poisson_results} reports the negative binomial estimates separately for each fleet segment.
@@ -695,7 +605,7 @@ Sardina comun CS & SSP5-8.5, 2081-2100 & +2.33 & -0.058 & -99.9\% & {}[-100.0\%,
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Entries are the posterior of the proportional change in intrinsic productivity Δr/r₀ = exp(ρ\_SST · ΔSST + ρ\_CHL · Δlog CHL) − 1, evaluated at the scenario-specific CMIP6 anomalies reported in the preceding table and integrated over the posterior of (ρ\_SST, ρ\_CHL) from the full state-space specification. Jurel (jack mackerel) CS is reported as non-identified ('n.i.') because the posterior of its shifters coincides with the weakly informative prior; see the identification discussion in Results. Raw numerical values for all three stocks are archived in tables/growth\_comparative\_statics\_raw.csv.
+\item Entries are the posterior of the proportional change in intrinsic productivity, Delta r / r0 = exp(rho\_SST * Delta SST + rho\_CHL * Delta log CHL) - 1, evaluated at the scenario-specific CMIP6 anomalies reported in the preceding table and integrated over the posterior of (rho\_SST, rho\_CHL) from the full state-space specification. Jurel (jack mackerel) CS is reported as non-identified ('n.i.') because the posterior of its shifters coincides with the weakly informative prior; see the identification discussion in Results. Raw numerical values for all three stocks are archived in tables/growth\_comparative\_statics\_raw.csv.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -851,118 +761,6 @@ Zhang, J., \& Smith, M. D. (2011). Heterogeneous response to marine reserve form
 \appendix
 
 
-\section{Additional robustness checks}\label{appendix-robustness}
-
-\begin{table}[!htbp] \centering 
-  \caption{SUR robustness: observed jurel CS only (N = 12)} 
-  \label{tab:SUR_rob_obs} 
-\footnotesize 
-\begin{threeparttable}
-\begin{tabular}{@{\extracolsep{5pt}}lccc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-4} 
- & Sardine & Anchoveta & Jack mackerel \\ 
-\\[-1.8ex] & (1) & (2) & (3)\\ 
-\hline \\[-1.8ex] 
- Own biomass ($x_{it}$) & 0.733$^{***}$ (0.085) & 0.288$^{**}$ (0.120) & 0.705$^{***}$ (0.066) \\ 
-  Own biomass$^2$ ($x_{it}^2$) & $-$0.025$^{***}$ (0.002) & $-$0.289$^{***}$ (0.030) & $-$0.019$^{***}$ (0.002) \\ 
-  SST & $-$23.156$^{***}$ (6.761) & $-$6.703$^{*}$ (3.680) & 19.431$^{*}$ (11.587) \\ 
-  Chlorophyll-a & 74.023$^{***}$ (15.267) & $-$30.841$^{***}$ (9.070) & $-$10.944 (38.159) \\ 
-  Constant & 30.089$^{***}$ (1.652) & 15.884$^{***}$ (1.359) & 35.144$^{***}$ (3.165) \\ 
- \hline \\[-1.8ex] 
-Observations & 12 & 12 & 12 \\ 
-R$^{2}$ & 0.892 & 0.540 & 0.766 \\ 
-Adjusted R$^{2}$ & 0.830 & 0.277 & 0.632 \\ 
-Residual Std. Error (df = 7) & 6.225 & 4.697 & 12.653 \\ 
-\hline 
-\hline \\[-1.8ex] 
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.
-\item Only years with observed (non-interpolated) jurel CS biomass.
-\item SST$^2$ dropped for parsimony given reduced sample.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-\begin{table}[!htbp] \centering 
-  \caption{SUR robustness: two-species, jurel as exogenous (N = 23)} 
-  \label{tab:SUR_rob_2sp} 
-\footnotesize 
-\begin{threeparttable}
-\begin{tabular}{@{\extracolsep{5pt}}lcc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-3} 
- & Sardine & Anchoveta \\ 
-\\[-1.8ex] & (1) & (2)\\ 
-\hline \\[-1.8ex] 
- Own biomass ($x_{it}$) & 0.410$^{**}$ (0.170) & 0.666$^{***}$ (0.219) \\ 
-  Own biomass$^2$ ($x_{it}^2$) & $-$0.021$^{***}$ (0.008) & $-$0.123$^{***}$ (0.037) \\ 
-  SST & $-$10.159$^{*}$ (5.729) & $-$1.995 (2.023) \\ 
-  SST$^2$ & 53.217$^{***}$ (17.052) & $-$2.043 (5.831) \\ 
-  Chlorophyll-a & 79.958$^{***}$ (16.038) & $-$2.463 (8.085) \\ 
-  Jack mackerel biomass & $-$0.064 (0.100) & 0.150$^{***}$ (0.040) \\ 
-  Constant & 23.911$^{***}$ (2.229) & 10.405$^{***}$ (1.259) \\ 
- \hline \\[-1.8ex] 
-Observations & 23 & 23 \\ 
-R$^{2}$ & 0.711 & 0.745 \\ 
-Adjusted R$^{2}$ & 0.603 & 0.650 \\ 
-Residual Std. Error (df = 16) & 7.485 & 3.255 \\ 
-\hline 
-\hline \\[-1.8ex] 
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.
-\item Two-species SUR; jack mackerel biomass enters as exogenous covariate.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-\begin{table}[!htbp] \centering 
-  \caption{SUR robustness: with cross-species interactions (N = 23)} 
-  \label{tab:SUR_interactions} 
-\footnotesize 
-\begin{threeparttable}
-\begin{tabular}{@{\extracolsep{5pt}}lccc} 
-\\[-1.8ex]\hline 
-\hline \\[-1.8ex] 
- & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
-\cline{2-4} 
- & Sardine & Anchoveta & Jack mackerel \\ 
-\\[-1.8ex] & (1) & (2) & (3)\\ 
-\hline \\[-1.8ex] 
- Own biomass ($x_{it}$) & 0.426$^{***}$ (0.137) & 1.142$^{***}$ (0.163) & 1.048$^{***}$ (0.132) \\ 
-  Own biomass$^2$ ($x_{it}^2$) & $-$0.017 (0.010) & $-$0.202$^{***}$ (0.054) & $-$0.021$^{***}$ (0.005) \\ 
-  SST & $-$9.969$^{*}$ (5.850) & $-$4.172 (2.935) & 6.055 (4.696) \\ 
-  SST$^2$ & 52.621$^{***}$ (16.586) & $-$1.582 (7.976) & $-$54.858$^{***}$ (16.153) \\ 
-  Chlorophyll-a & 80.145$^{***}$ (17.796) & $-$2.248 (14.017) & 5.593 (24.541) \\ 
-  Sardine $\times$ Anchoveta & $-$0.0001 (0.022) & $-$0.019 (0.017) &  \\ 
-  Sardine $\times$ Jack mackerel & 0.007 (0.011) &  & $-$0.014$^{*}$ (0.008) \\ 
-  Anchoveta $\times$ Jack mackerel &  & $-$0.010 (0.023) & 0.041$^{**}$ (0.020) \\ 
-  Constant & 24.183$^{***}$ (2.420) & 12.108$^{***}$ (1.551) & 26.270$^{***}$ (3.477) \\ 
- \hline \\[-1.8ex] 
-Observations & 23 & 23 & 23 \\ 
-R$^{2}$ & 0.711 & 0.618 & 0.814 \\ 
-Adjusted R$^{2}$ & 0.575 & 0.440 & 0.728 \\ 
-Residual Std. Error (df = 15) & 7.738 & 4.116 & 9.601 \\ 
-\hline 
-\hline \\[-1.8ex] 
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.
-\item Main specification augmented with pairwise biomass interactions.
-\item No interaction term is individually or jointly significant.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
 \section{Predictive diagnostics}\label{appendix-predictive}
 
 This appendix reports two out-of-sample diagnostics for the three nested
@@ -1015,7 +813,7 @@ T4b-omega & -26.43 & 9.16 & -18.02 & 5.59 & 57.9\\
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Δ ELPD is the pairwise difference relative to T4b-full (the leading model); the adjacent SE column reports the standard error of that difference. After moment matching, 65/68 observations satisfy Pareto-k ≤ 0.7 for T4b-full, 64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-Pareto-k points are the two censored jack-mackerel years (2012, 2015), which appear in all three models and therefore do not affect the ranking.
+\item Δ ELPD is the pairwise difference relative to T4b-full (the leading model); the adjacent SE column reports the standard error of that difference. After moment matching, 65/68 observations satisfy Pareto-k <= 0.7 for T4b-full, 64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-Pareto-k points are the two censored jack-mackerel years (2012, 2015), which appear in all three models and therefore do not affect the ranking.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -1089,7 +887,7 @@ T4b-omega & 14 & 2 & -30.46 & -2.18 & -1.36\\
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Sum of one-step predictive log densities over five origin years (2011, 2014, 2017, 2020, 2022) and three stocks (14 targets per model; two are censored). Each refit uses 4 chains × 1500 warmup + 1500 sampling iterations. All 15 refits satisfied R-hat ≤ 1.01 with at most one divergent transition (T4b-omega at the 2011 origin), which does not affect the reported ELPD.
+\item Sum of one-step predictive log densities over five origin years (2011, 2014, 2017, 2020, 2022) and three stocks (14 targets per model; two are censored). Each refit uses 4 chains × 1500 warmup + 1500 sampling iterations. All 15 refits satisfied R-hat <= 1.01 with at most one divergent transition (T4b-omega at the 2011 origin), which does not affect the reported ELPD.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}

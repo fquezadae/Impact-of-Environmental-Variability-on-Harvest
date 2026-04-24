@@ -1,0 +1,641 @@
+---
+title: "SUR reduced-form benchmark (DEPRECATED)"
+subtitle: "Extracted from paper1_climate_projections.Rmd on 2026-04-24"
+author: "Felipe J. Quezada-Escalona"
+---
+
+<!--
+================================================================
+DEPRECATION NOTICE
+================================================================
+
+This file archives the Seemingly Unrelated Regression (SUR) block
+that used to live inside `paper1_climate_projections.Rmd` as §4.1
+"Stock biomass model" plus three robustness panels in the appendix.
+It was removed from the main manuscript on 2026-04-24.
+
+Reasons for deprecation (from `paper1_revision_plan.md` V2, L20, and
+the narrative pivot of 2026-04-23):
+
+  1. The SUR is a short-run growth-increment regression; it is not
+     a population model. With N = 23 and the estimated beta >= 1 on
+     anchoveta and jack mackerel, forward-simulating the reduced-form
+     mapping explodes to its fixed point (jurel +79% in one year
+     under historical climate). The cap [0.2, 3.0] of the V1 draft
+     mechanically masked that behaviour.
+
+  2. The SUR is qualitatively inconsistent with the identified
+     state-space shifters of T4b-full. SUR's large positive SST^2
+     coefficient makes sardine a thermal-optimum winner under
+     warming; T4b-full identifies rho_sst_sard = -2.75, a thermal
+     loser. Presenting both in the paper would invite exactly the
+     referee question we do not want to answer -- "which one is
+     right?" -- for which the correct answer ("SUR isn't structural,
+     don't extrapolate") distracts from the main message.
+
+  3. The robustness check "observed jurel only (N ~ 12)" is redundant
+     in the state-space framework, because the Stan likelihood
+     integrates out the missing jack mackerel survey years directly.
+     Running SUR on the reduced sample was a V1 workaround for
+     a missingness problem that no longer exists.
+
+  4. The appendix-robustness label was the only target of five
+     cross-references in the V1 draft; those references were rewired
+     or removed when this block was deleted.
+
+Nothing here is expected to be knitted in its current form. The
+chunks still reference objects (`biomass`, `harvest`, `env_dt`,
+`env_dt_00_11`) and helper functions (`fix_stargazer_notes`) that
+are set up in the main Rmd; re-running this requires pasting those
+loaders back and the stargazer + lavaan + dplyr stack.
+
+Kept here as a record of what the V1 benchmark estimated, should a
+referee during review ask to see the explicit SUR numbers.
+-->
+
+## Stock biomass model: SUR reduced-form benchmark {#sec:sur-benchmark}
+
+<!-- ============================================================ -->
+<!-- BIOMASS ESTIMATION: DATA PREPARATION                          -->
+<!-- ============================================================ -->
+
+```{r database_for_biomass_est, message=FALSE, warning=FALSE, include=FALSE}
+
+# ---- 1. Build wide biomass + harvest dataset ----
+
+biomass_wide <- biomass %>%
+  select(year, sardine_biomass, anchoveta_biomass,
+         jurel_biomass_cs, jurel_cs_interp_primary, jurel_cs_source) %>%
+  mutate(
+    jurel_main = jurel_cs_interp_primary,
+    jurel_obs  = jurel_biomass_cs
+  )
+
+# Harvest data (wide)
+harvest_wide <- harvest %>%
+  select(specie, year, total_harvest_sernapesca_v2_centro_sur) %>%
+  pivot_wider(names_from = specie,
+              values_from = total_harvest_sernapesca_v2_centro_sur,
+              names_prefix = "h_") %>%
+  janitor::clean_names()
+
+biomass_harvest_wide <- left_join(biomass_wide, harvest_wide, by = "year")
+
+# ---- 2. Build dependent variable: biomass_{t+1} + harvest_t ----
+
+biomass_harvest_wide <- biomass_harvest_wide %>%
+  arrange(year) %>%
+  mutate(
+    sardine_t1      = lead(sardine_biomass),
+    anchoveta_t1    = lead(anchoveta_biomass),
+    jurel_main_t1   = lead(jurel_main),
+    jurel_obs_t1    = lead(jurel_obs),
+    y_sardine   = sardine_t1   + h_sardina_comun,
+    y_anchoveta = anchoveta_t1 + h_anchoveta,
+    y_jurel     = jurel_main_t1 + h_jurel,
+    y_jurel_obs = jurel_obs_t1  + h_jurel
+  )
+
+# ---- 3. Environmental data (annual averages) ----
+
+env_dt_year1 <- env_dt %>%
+  mutate(year = year(date)) %>%
+  group_by(year) %>%
+  summarize(sst  = mean(sst, na.rm = TRUE),
+            chl  = mean(chl, na.rm = TRUE),
+            wind = mean(speed_max, na.rm = TRUE),
+            .groups = "drop")
+
+env_dt_year2 <- env_dt_00_11 %>%
+  mutate(year = year(date)) %>%
+  group_by(year) %>%
+  summarize(sst  = mean(sst, na.rm = TRUE),
+            chl  = mean(chl, na.rm = TRUE),
+            wind = mean(speed_max, na.rm = TRUE),
+            .groups = "drop")
+
+env_dt_year <- bind_rows(env_dt_year2, env_dt_year1)
+
+biomass_harvest_wide <- left_join(biomass_harvest_wide, env_dt_year, by = "year")
+
+rm(env_dt_year, env_dt_year2, env_dt_year1, biomass_wide, harvest_wide)
+
+```
+
+```{r sur_data, message=FALSE, warning=FALSE, include=FALSE}
+
+# ---- 4. Build SUR estimation datasets ----
+
+scale_b <- 1e5
+
+# --- Main spec: 3-species with interpolated jurel (N ~ 23) ---
+sur_main <- biomass_harvest_wide %>%
+  filter(!is.na(y_sardine), !is.na(y_anchoveta), !is.na(y_jurel),
+         !is.na(sardine_biomass), !is.na(anchoveta_biomass), !is.na(jurel_main),
+         !is.na(sst), !is.na(chl)) %>%
+  mutate(
+    y_s = y_sardine   / scale_b,
+    y_a = y_anchoveta / scale_b,
+    y_j = y_jurel     / scale_b,
+    b_s = sardine_biomass   / scale_b,
+    b_a = anchoveta_biomass / scale_b,
+    b_j = jurel_main        / scale_b,
+    b_s_c = b_s - mean(b_s),
+    b_a_c = b_a - mean(b_a),
+    b_j_c = b_j - mean(b_j),
+    b_s_c2 = b_s_c^2,
+    b_a_c2 = b_a_c^2,
+    b_j_c2 = b_j_c^2,
+    sa = b_s_c * b_a_c,
+    sj = b_s_c * b_j_c,
+    aj = b_a_c * b_j_c,
+    sst_c  = sst - mean(sst),
+    chl_c  = chl - mean(chl),
+    sst_c2 = sst_c^2,
+    chl_c2 = chl_c^2
+  )
+
+cat("Main spec (interpolated jurel): N =", nrow(sur_main), "\n")
+
+# --- Robustness 1: 3-species with observed jurel only (N ~ 12) ---
+sur_obs <- biomass_harvest_wide %>%
+  filter(!is.na(y_sardine), !is.na(y_anchoveta), !is.na(y_jurel_obs),
+         !is.na(sardine_biomass), !is.na(anchoveta_biomass), !is.na(jurel_obs),
+         !is.na(sst), !is.na(chl)) %>%
+  mutate(
+    y_s = y_sardine    / scale_b,
+    y_a = y_anchoveta  / scale_b,
+    y_j = y_jurel_obs  / scale_b,
+    b_s = sardine_biomass   / scale_b,
+    b_a = anchoveta_biomass / scale_b,
+    b_j = jurel_obs         / scale_b,
+    b_s_c = b_s - mean(b_s), b_a_c = b_a - mean(b_a), b_j_c = b_j - mean(b_j),
+    b_s_c2 = b_s_c^2, b_a_c2 = b_a_c^2, b_j_c2 = b_j_c^2,
+    sa = b_s_c * b_a_c, sj = b_s_c * b_j_c, aj = b_a_c * b_j_c,
+    sst_c = sst - mean(sst), chl_c = chl - mean(chl),
+    sst_c2 = sst_c^2, chl_c2 = chl_c^2
+  )
+
+cat("Robustness 1 (observed jurel only): N =", nrow(sur_obs), "\n")
+
+# --- Robustness 2: 2-species SUR, jurel as exogenous (N ~ 23) ---
+sur_2sp <- biomass_harvest_wide %>%
+  filter(!is.na(y_sardine), !is.na(y_anchoveta),
+         !is.na(sardine_biomass), !is.na(anchoveta_biomass),
+         !is.na(sst), !is.na(chl)) %>%
+  mutate(
+    y_s = y_sardine   / scale_b,
+    y_a = y_anchoveta / scale_b,
+    b_s = sardine_biomass   / scale_b,
+    b_a = anchoveta_biomass / scale_b,
+    b_j_exog = coalesce(jurel_main / scale_b, 0),
+    b_s_c = b_s - mean(b_s), b_a_c = b_a - mean(b_a),
+    b_j_exog_c = b_j_exog - mean(b_j_exog),
+    b_s_c2 = b_s_c^2, b_a_c2 = b_a_c^2,
+    sa = b_s_c * b_a_c,
+    sst_c = sst - mean(sst), chl_c = chl - mean(chl),
+    sst_c2 = sst_c^2, chl_c2 = chl_c^2
+  )
+
+cat("Robustness 2 (2-species, jurel exogenous): N =", nrow(sur_2sp), "\n")
+
+```
+
+<!-- ============================================================ -->
+<!-- SUR ESTIMATION                                                -->
+<!-- ============================================================ -->
+
+```{r sur_estimation, message=FALSE, warning=FALSE, include=FALSE}
+
+# ==================================================================
+# MAIN SPECIFICATION: Parsimonious (no interactions, no CHL^2)
+# 6 params per equation, ~17 df with N=23
+# Chosen based on AIC comparison: this spec has lowest AIC
+# ==================================================================
+
+model_main <- '
+  y_s ~ 1 + b_s_c + b_s_c2 + sst_c + sst_c2 + chl_c
+  y_a ~ 1 + b_a_c + b_a_c2 + sst_c + sst_c2 + chl_c
+  y_j ~ 1 + b_j_c + b_j_c2 + sst_c + sst_c2 + chl_c
+'
+
+fit_main <- sem(model_main, data = sur_main, estimator = "MLR")
+
+# ==================================================================
+# ALTERNATIVE SPECS FOR MODEL SELECTION
+# ==================================================================
+
+# --- With cross-species interactions ---
+model_interactions <- '
+  y_s ~ 1 + b_s_c + b_s_c2 + sst_c + sst_c2 + chl_c + sa + sj
+  y_a ~ 1 + b_a_c + b_a_c2 + sst_c + sst_c2 + chl_c + sa + aj
+  y_j ~ 1 + b_j_c + b_j_c2 + sst_c + sst_c2 + chl_c + sj + aj
+'
+
+fit_interactions <- sem(model_interactions, data = sur_main, estimator = "MLR")
+
+# --- With CHL^2 ---
+model_chl2 <- '
+  y_s ~ 1 + b_s_c + b_s_c2 + sst_c + sst_c2 + chl_c + chl_c2
+  y_a ~ 1 + b_a_c + b_a_c2 + sst_c + sst_c2 + chl_c + chl_c2
+  y_j ~ 1 + b_j_c + b_j_c2 + sst_c + sst_c2 + chl_c + chl_c2
+'
+
+fit_chl2 <- sem(model_chl2, data = sur_main, estimator = "MLR")
+
+# --- No environmental variables ---
+model_no_env <- '
+  y_s ~ 1 + b_s_c + b_s_c2
+  y_a ~ 1 + b_a_c + b_a_c2
+  y_j ~ 1 + b_j_c + b_j_c2
+'
+
+fit_no_env <- sem(model_no_env, data = sur_main, estimator = "MLR")
+
+# --- Full kitchen sink (interactions + CHL^2) ---
+model_full <- '
+  y_s ~ 1 + b_s_c + b_s_c2 + sst_c + sst_c2 + chl_c + chl_c2 + sa + sj
+  y_a ~ 1 + b_a_c + b_a_c2 + sst_c + sst_c2 + chl_c + chl_c2 + sa + aj
+  y_j ~ 1 + b_j_c + b_j_c2 + sst_c + sst_c2 + chl_c + chl_c2 + sj + aj
+'
+
+fit_full <- sem(model_full, data = sur_main, estimator = "MLR")
+
+# ==================================================================
+# MODEL SELECTION TABLE (AIC / BIC)
+# ==================================================================
+
+model_sel <- tibble(
+  Specification = c(
+    "No environment",
+    "Main (SST + SST² + CHL)",
+    "Main + CHL²",
+    "Main + interactions",
+    "Full (interactions + CHL²)"
+  ),
+  K_per_eq = c(3, 6, 7, 8, 10),
+  AIC = c(AIC(fit_no_env), AIC(fit_main), AIC(fit_chl2),
+          AIC(fit_interactions), AIC(fit_full)),
+  BIC = c(BIC(fit_no_env), BIC(fit_main), BIC(fit_chl2),
+          BIC(fit_interactions), BIC(fit_full))
+) %>%
+  mutate(delta_AIC = AIC - min(AIC),
+         delta_BIC = BIC - min(BIC))
+
+cat("\n====== MODEL SELECTION ======\n")
+
+model_sel <- model_sel %>%
+  mutate(Specification = c(
+    "No environment",
+    "Main (SST + SST2 + CHL)",
+    "Main + CHL2",
+    "Main + interactions",
+    "Full (interactions + CHL2)"
+  ))
+
+print(model_sel, width = 120)
+
+```
+
+Table \ref{tab:model_selection} summarizes the model selection exercise. Five candidate specifications were compared, ranging from a baseline with only own-biomass terms to a full model including quadratic chlorophyll-a and cross-species interaction terms. The preferred specification---which includes own biomass, its square, SST, SST$^2$, and chlorophyll-a---yields the lowest AIC and BIC. Adding quadratic CHL terms or cross-species interactions does not improve fit; in fact, both AIC and BIC increase when these terms are included. Wind variables were excluded in an earlier specification search, as a joint exclusion test failed to reject their omission. The preferred specification contains six parameters per equation, yielding approximately 17 residual degrees of freedom with $N=23$ observations.
+
+Table \ref{tab:SUR_results} reports the SUR estimates of annual biomass dynamics for sardine, anchoveta, and jack mackerel. The system is estimated via robust maximum likelihood (MLR), yielding Huber--White standard errors and allowing unrestricted contemporaneous correlation across equations.
+
+All three species exhibit strong interannual persistence and significant density dependence, consistent with discrete logistic growth. However, the species differ markedly in their sensitivity to environmental conditions.
+
+Sardine biomass displays the strongest environmental response. The coefficient on chlorophyll-a is positive and highly significant ($\hat{\rho}_{CHL} = 80.99$, $p < 0.001$), indicating that years with higher primary productivity favor sardine growth. The quadratic SST term is also significant and positive ($\hat{\rho}_{SST^2} = 54.74$, $p = 0.001$), suggesting a convex response to temperature anomalies---sardine biomass increases more sharply under larger SST deviations from the mean. This pattern is consistent with evidence from the Humboldt Current System, where sardine tends to exhibit smoother population changes associated with warmer or transitional oceanographic regimes [@cahuin2009; @Yáñez2014].
+
+Anchoveta biomass is dominated by density dependence, with the strongest own-biomass coefficient ($\hat{r} = 1.11$, $p < 0.001$) and a highly significant quadratic term ($\hat{\eta} = -0.202$, $p < 0.001$). SST has a marginally significant negative effect ($p = 0.087$), but neither SST$^2$ nor CHL are significant. This asymmetric environmental response---where anchoveta reacts primarily to temperature rather than productivity---is consistent with the ecological literature. Anchoveta in the Humboldt Current is known to respond sharply to short-term cold, nutrient-rich conditions, dominating during cold phases of decadal-scale oceanographic variability [@cahuin2009; @Yáñez2014; @Alheit2004].
+
+Jack mackerel shows strong persistence ($\hat{r} = 1.06$, $p < 0.001$) but a distinct environmental signature. The quadratic SST term is large and highly significant ($\hat{\rho}_{SST^2} = -56.49$, $p = 0.001$), indicating a clear thermal optimum: biomass declines when temperatures deviate substantially from the long-run mean in either direction. Neither linear SST nor CHL are individually significant, suggesting that jack mackerel growth is less sensitive to annual fluctuations in upwelling productivity than sardine. This weaker coupling to coastal environmental variability is consistent with jack mackerel's broader spatial distribution, deeper foraging behavior, and transboundary stock structure within the Southeast Pacific [@Pena-Torres2017-gn].
+
+These contrasting environmental responses have direct implications for climate projections. Under warming scenarios, sardine may benefit from increased thermal variability if accompanied by sustained productivity, whereas anchoveta could face reduced biomass if warming erodes the cold, nutrient-rich conditions it depends on. Jack mackerel, with its thermal optimum response, would be adversely affected by both warming and cooling extremes.
+
+Cross-species interactions were tested but did not improve model fit (Table \ref{tab:model_selection}). The residual covariances across equations are also statistically insignificant, suggesting that shared unobserved shocks---beyond those captured by SST and CHL---do not generate strong contemporaneous co-movement across species. This does not rule out ecological interactions (e.g., predator--prey dynamics between jack mackerel and small pelagics), but it indicates that such effects are not detectable in the annual aggregate biomass data given the available sample size.
+
+Appendix \ref{appendix-robustness} presents three robustness checks. Table \ref{tab:SUR_rob_obs} restricts the jack mackerel series to observed (non-interpolated) years, reducing the sample to `r nrow(sur_obs)` observations and requiring a more parsimonious specification without SST$^2$. Table \ref{tab:SUR_rob_2sp} estimates a two-species SUR for sardine and anchoveta only, treating jack mackerel biomass as an exogenous covariate. Table \ref{tab:SUR_interactions} augments the main specification with cross-species interaction terms, confirming that their coefficients are individually and jointly insignificant. The core findings---strong density dependence, positive CHL effects on sardine, and a thermal optimum for jack mackerel---are qualitatively robust across all specifications, lending confidence that the results are not driven by the interpolation procedure.
+
+
+<!-- ============================================================ -->
+<!-- BUILD TABLES                                                  -->
+<!-- ============================================================ -->
+
+```{r sur_robustness_specs, message=FALSE, warning=FALSE, include=FALSE}
+
+# ==================================================================
+# ROBUSTNESS 1: Observed jurel only (N ~ 12)
+# Even more parsimonious: drop SST^2 to preserve df
+# 4 params per eq, ~8 df
+# ==================================================================
+
+model_rob1 <- '
+  y_s ~ 1 + b_s_c + b_s_c2 + sst_c + chl_c
+  y_a ~ 1 + b_a_c + b_a_c2 + sst_c + chl_c
+  y_j ~ 1 + b_j_c + b_j_c2 + sst_c + chl_c
+'
+
+fit_rob1 <- sem(model_rob1, data = sur_obs, estimator = "MLR")
+
+# ==================================================================
+# ROBUSTNESS 2: Two-species SUR, jurel as exogenous (N ~ 23)
+# Same env spec as main, jurel biomass as additional covariate
+# ==================================================================
+
+model_rob2 <- '
+  y_s ~ 1 + b_s_c + b_s_c2 + sst_c + sst_c2 + chl_c + b_j_exog_c
+  y_a ~ 1 + b_a_c + b_a_c2 + sst_c + sst_c2 + chl_c + b_j_exog_c
+'
+
+fit_rob2 <- sem(model_rob2, data = sur_2sp, estimator = "MLR")
+
+# ==================================================================
+# ROBUSTNESS 3: Main spec with interactions (to show they don't matter)
+# ==================================================================
+
+fit_rob3 <- fit_interactions  # already estimated above
+
+```
+
+
+```{r build_table_helper, message=FALSE, warning=FALSE, include=FALSE}
+
+# Helper: extract lavaan estimates and build patched lm objects for stargazer
+
+build_stargazer_inputs <- function(fit_sem, data, eq_names, dep_vars) {
+  pe <- parameterEstimates(fit_sem, standardized = FALSE)
+  pe_reg <- pe %>% filter(op == "~")
+  pe_int <- pe %>% filter(op == "~1")
+
+  results <- list()
+
+  for (i in seq_along(eq_names)) {
+    yname <- eq_names[i]
+    dep   <- dep_vars[i]
+
+    reg_i <- pe_reg %>% filter(lhs == yname)
+    int_i <- pe_int %>% filter(lhs == yname)
+
+    rhs <- paste(reg_i$rhs, collapse = " + ")
+    form <- as.formula(paste(dep, "~", rhs))
+    lm_i <- lm(form, data = data)
+
+    beta <- reg_i$est; names(beta) <- reg_i$rhs
+    beta0 <- int_i$est; names(beta0) <- "(Intercept)"
+    lm_i$coefficients["(Intercept)"] <- beta0
+    lm_i$coefficients[names(beta)] <- beta
+
+    se_vec <- rep(NA_real_, length(coef(lm_i)))
+    names(se_vec) <- names(coef(lm_i))
+    se_vec["(Intercept)"] <- int_i$se
+    se_beta <- reg_i$se; names(se_beta) <- reg_i$rhs
+    se_vec[names(se_beta)] <- se_beta
+
+    results[[i]] <- list(lm = lm_i, se = se_vec)
+  }
+
+  results
+}
+
+# Helper: rename species-specific coefs to generic names for stargazer alignment
+rename_coefs <- function(res_list, extra_map = NULL) {
+  name_map <- c(
+    "b_s_c" = "own_b", "b_a_c" = "own_b", "b_j_c" = "own_b",
+    "b_s_c2" = "own_b2", "b_a_c2" = "own_b2", "b_j_c2" = "own_b2"
+  )
+  if (!is.null(extra_map)) name_map <- c(name_map, extra_map)
+
+  for (i in seq_along(res_list)) {
+    old <- names(res_list[[i]]$lm$coefficients)
+    new_nm <- ifelse(old %in% names(name_map), name_map[old], old)
+    names(res_list[[i]]$lm$coefficients) <- new_nm
+    names(res_list[[i]]$se) <- new_nm
+  }
+  res_list
+}
+
+# Build inputs for all specifications
+res_main <- build_stargazer_inputs(
+  fit_main, sur_main,
+  eq_names = c("y_s", "y_a", "y_j"),
+  dep_vars = c("y_s", "y_a", "y_j")
+)
+
+res_rob1 <- build_stargazer_inputs(
+  fit_rob1, sur_obs,
+  eq_names = c("y_s", "y_a", "y_j"),
+  dep_vars = c("y_s", "y_a", "y_j")
+)
+
+res_rob2 <- build_stargazer_inputs(
+  fit_rob2, sur_2sp,
+  eq_names = c("y_s", "y_a"),
+  dep_vars = c("y_s", "y_a")
+)
+
+res_rob3 <- build_stargazer_inputs(
+  fit_rob3, sur_main,
+  eq_names = c("y_s", "y_a", "y_j"),
+  dep_vars = c("y_s", "y_a", "y_j")
+)
+
+# Rename for stargazer alignment
+res_main_r <- rename_coefs(res_main)
+res_rob1_r <- rename_coefs(res_rob1)
+res_rob2_r <- rename_coefs(res_rob2, extra_map = c("b_j_exog_c" = "jm_exog"))
+res_rob3_r <- rename_coefs(res_rob3)
+
+```
+
+
+
+```{r model_selection_table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+cat("\\begin{table}[!htbp]\n")
+cat("\\centering\n")
+cat("\\caption{Model selection for SUR biomass dynamics}\n")
+cat("\\label{tab:model_selection}\n")
+cat("\\begin{tabular}{lcrrr}\n")
+cat("\\toprule\n")
+cat("Specification & K/eq & AIC & BIC & $\\Delta$AIC \\\\\n")
+cat("\\midrule\n")
+
+for (i in seq_len(nrow(model_sel))) {
+  spec <- model_sel$Specification[i]
+  cat(sprintf("%s & %d & %.1f & %.1f & %.1f \\\\\n",
+      spec,
+      model_sel$K_per_eq[i],
+      model_sel$AIC[i],
+      model_sel$BIC[i],
+      model_sel$delta_AIC[i]))
+}
+
+cat("\\bottomrule\n")
+cat("\\end{tabular}\n")
+cat("\\end{table}\n")
+
+```
+
+
+
+```{r SUR_results, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tex_sur <- capture.output(
+  stargazer(
+    res_main_r[[1]]$lm, res_main_r[[2]]$lm, res_main_r[[3]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR estimates of biomass dynamics (main specification, N = ", nrow(sur_main), ")"),
+    label = "tab:SUR_results",
+    column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
+    column.separate = c(1, 1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "SST$^2$",
+      "Chlorophyll-a",
+      "Constant"
+    ),
+    se = list(res_main_r[[1]]$se, res_main_r[[2]]$se, res_main_r[[3]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c(
+      "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
+      "Robust (Huber--White) SEs via MLR. Biomass in $10^5$ tons.",
+      "Environmental variables centered at sample means.",
+      "Jack mackerel biomass interpolated via Gamma GLM on Northern biomass (see Section 3.1)."
+    ),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
+)
+cat(fix_stargazer_notes(tex_sur), sep = "\n")
+
+```
+
+
+# Appendix: additional robustness checks (DEPRECATED) {#appendix-robustness}
+
+```{r SUR_rob_panel_A, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tex_rob1 <- capture.output(
+  stargazer(
+    res_rob1_r[[1]]$lm, res_rob1_r[[2]]$lm, res_rob1_r[[3]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR robustness: observed jurel CS only (N = ", nrow(sur_obs), ")"),
+    label = "tab:SUR_rob_obs",
+    column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
+    column.separate = c(1, 1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "Chlorophyll-a",
+      "Constant"
+    ),
+    se = list(res_rob1_r[[1]]$se, res_rob1_r[[2]]$se, res_rob1_r[[3]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
+              "Only years with observed (non-interpolated) jurel CS biomass.",
+              "SST$^2$ dropped for parsimony given reduced sample."),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
+)
+cat(fix_stargazer_notes(tex_rob1), sep = "\n")
+
+```
+
+
+
+```{r SUR_rob_panel_B, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tex_rob2 <- capture.output(
+  stargazer(
+    res_rob2_r[[1]]$lm, res_rob2_r[[2]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR robustness: two-species, jurel as exogenous (N = ", nrow(sur_2sp), ")"),
+    label = "tab:SUR_rob_2sp",
+    column.labels = c("Sardine", "Anchoveta"),
+    column.separate = c(1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "SST$^2$",
+      "Chlorophyll-a",
+      "Jack mackerel biomass",
+      "Constant"
+    ),
+    se = list(res_rob2_r[[1]]$se, res_rob2_r[[2]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
+              "Two-species SUR; jack mackerel biomass enters as exogenous covariate."),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
+)
+cat(fix_stargazer_notes(tex_rob2), sep = "\n")
+
+```
+
+
+```{r SUR_rob_interactions, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tex_rob3 <- capture.output(
+  stargazer(
+    res_rob3_r[[1]]$lm, res_rob3_r[[2]]$lm, res_rob3_r[[3]]$lm,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("SUR robustness: with cross-species interactions (N = ", nrow(sur_main), ")"),
+    label = "tab:SUR_interactions",
+    column.labels = c("Sardine", "Anchoveta", "Jack mackerel"),
+    column.separate = c(1, 1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Own biomass ($x_{it}$)",
+      "Own biomass$^2$ ($x_{it}^2$)",
+      "SST",
+      "SST$^2$",
+      "Chlorophyll-a",
+      "Sardine $\\times$ Anchoveta",
+      "Sardine $\\times$ Jack mackerel",
+      "Anchoveta $\\times$ Jack mackerel",
+      "Constant"
+    ),
+    se = list(res_rob3_r[[1]]$se, res_rob3_r[[2]]$se, res_rob3_r[[3]]$se),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("f"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c("$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Robust SEs.",
+              "Main specification augmented with pairwise biomass interactions.",
+              "No interaction term is individually or jointly significant."),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
+)
+cat(fix_stargazer_notes(tex_rob3), sep = "\n")
+
+```
