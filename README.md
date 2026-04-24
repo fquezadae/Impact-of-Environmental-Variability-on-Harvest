@@ -20,9 +20,27 @@ The project is organized into **two papers**:
 
 ## Paper 1: Climate projections
 
-Estimates a three-equation SUR model for stock dynamics and a negative binomial model for annual fishing trips. Combines these with CMIP6 projections (IPSL-CM6A-LR, SSP2-4.5 and SSP5-8.5) using the delta method to project climate impacts on fishing effort through direct (weather) and indirect (biomass) channels.
+Identifies a set of structural climate shifters (ρ^SST, ρ^CHL) that
+modulate the intrinsic growth rate of each stock, within a Bayesian
+state-space specification (Pella–Tomlinson transition + log-linear
+shifter + log-normal observation equation) calibrated on the IFOP and
+SPRFMO stock assessments. Evaluates the identified shifters at CMIP6
+projections (IPSL-CM6A-LR, SSP2-4.5 and SSP5-8.5) to obtain posterior
+distributions of the long-run comparative-statics change in each
+stock's intrinsic productivity under mid-century (2041–2060) and
+end-of-century (2081–2100) climate regimes. Links to a negative
+binomial model of annual fishing trips, estimated separately for the
+artisanal and industrial fleets.
 
-**Key finding:** Artisanal fleet effort increases (20--250%) due to sardine expansion under warming; industrial fleet effort declines (~22%) due to jack mackerel productivity loss.
+**Key finding:** the coastal-upwelling pair (anchoveta and sardina
+común) faces sharp long-run productivity declines under all CMIP6
+scenarios (anchoveta −51% to −89%, sardina común −90% to −100%),
+while the local response of the transzonal jack mackerel stock is
+not identified at the Centro-Sur scale. Because the artisanal fleet's
+species portfolio is concentrated in the coastal pair, it bears a
+sharper long-run harvest-capacity decline than the industrial fleet,
+reversing the sign of the distributional asymmetry implied by
+reduced-form comparative statics.
 
 ## Paper 2: Bioeconomic optimization
 
@@ -36,8 +54,10 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │   ├── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
 │   ├── sections/                       # Child Rmds wired into main
 │   │   ├── results_identification.Rmd        # §4.1 (T4b-full rho posteriors)
-│   │   ├── appendix_predictive_diagnostics.Rmd  # Appendix B (LOO / LFO)
+│   │   ├── appendix_predictive_diagnostics.Rmd  # Appendix (LOO / LFO)
 │   │   └── results_loo_comparison.Rmd        # alt cut, not wired in main
+│   ├── deprecated/                     # Archived V1 material (not knitted)
+│   │   └── sur_benchmark_deprecated.Rmd  # SUR reduced-form benchmark (removed 2026-04-24)
 │   └── stan/                           # Compiled Stan programs for T4b
 │
 ├── paper2/                             # Paper 2: Bioeconomic optimization
