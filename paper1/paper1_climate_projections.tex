@@ -112,6 +112,20 @@
 \usepackage{threeparttable}
 \author{Felipe J. Quezada-Escalona}
 \affil{Departamento de Economía \\ Universidad de Concepción \vspace{-48pt}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -492,6 +506,16 @@ specification is preferred as an in-sample description of the dynamics
 LOO and LFO results are complementary diagnostics of, respectively,
 identification-through-fit and forecasting-on-new-data, and the paper
 relies on the former for the economic interpretation.
+
+\subsubsection{Posterior-predictive adequacy}\label{posterior-predictive-adequacy}
+
+A stock-by-stock comparison of the smoothed latent biomass \(B_{i,t}\)
+against the observed SSB series (Figure \ref{fig:ppc-smooth-vs-obs})
+shows that the identified model reproduces the historical trajectory
+within a median 90\% posterior band width of approximately 20\% of the
+mean. Residuals are roughly Gaussian and contain no detectable
+autocorrelation at one-year lag (Figure \ref{fig:ppc-residuals}). The
+full posterior diagnostics are reported in Appendix \ref{appendix-posterior}.
 
 \subsection{Total annual trips}\label{sec:tripresults}
 
@@ -967,5 +991,73 @@ dynamics), while LFO confirms that the added structure is not an
 artefact of overfitting to short-run noise (because it yields no
 one-year advantage). The two diagnostics jointly support the structural
 interpretation of the shifters adopted in the main text.
+
+\section{Posterior-predictive checks}\label{appendix-posterior}
+
+This appendix reports posterior-predictive diagnostics of the T4b-full
+state-space specification that is adopted as the primary object of
+interpretation in Section \ref{identification}. Two checks are shown:
+(i) a stock-by-stock comparison of the smoothed latent biomass against
+the observed survey-based estimates, and (ii) the associated year-level
+residuals. The goal is to verify that the climate-augmented
+specification reproduces the historical trajectory of each stock
+without systematic misfit in the sign, timing, or amplitude of
+fluctuations, and that the year-level residuals contain no detectable
+autocorrelation that would undermine the log-normal independence
+assumption embedded in the measurement equation (\ref{eq:obs}).
+
+\subsection{C.1 Smoothed biomass versus observed SSB}\label{c.1-smoothed-biomass-versus-observed-ssb}
+
+Figure \ref{fig:ppc-smooth-vs-obs} overlays the posterior median and the
+90\% credible band of the smoothed latent biomass \(B_{i,t}\) against the
+official survey-based observations of spawning stock biomass for each of
+the three stocks. The smoothed band has a median width of approximately
+20\% of the corresponding posterior mean, tightening over years with
+direct IFOP or SPRFMO observation and widening across the seven jack
+mackerel Centro-Sur years for which no survey point estimate is
+available (the latent biomass in those years is identified dynamically
+through the Schaefer transition equation together with the two censored
+observations in 2012 and 2015; see Section \ref{sec:stock-dynamics}).
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../figs/t4b/t4b_full_smooth_vs_obs.png}
+\caption{Smoothed latent biomass $B_{i,t}$ of the T4b-full specification
+against the official survey-based estimates. Solid line: posterior
+median; shaded band: 90\% credible interval. Points: observed SSB from
+IFOP (anchoveta, sardina común) and the IFOP hydroacoustic assessment
+(jack mackerel Centro-Sur). Crosses denote the two censored jack
+mackerel observations (2012, 2015) that enter the likelihood at the
+assessment's lower detection limit.}
+\label{fig:ppc-smooth-vs-obs}
+\end{figure}
+
+\subsection{C.2 Year-level residuals}\label{c.2-year-level-residuals}
+
+Figure \ref{fig:ppc-residuals} shows the standardised residuals
+\((\log B_{i,t}^{\text{obs}} - \log \hat{B}_{i,t})/\hat{\sigma}_{\text{obs},i}\)
+by stock and year. The three residual series are roughly centred at
+zero, with no visible trend and no systematic sign alignment across
+stocks. The sample first-order autocorrelation is below 0.2 in absolute
+value for all three stocks (anchoveta CS, sardina común CS, jack
+mackerel CS), consistent with the log-normal measurement-error
+structure of the model. The corresponding observation-error standard
+deviations \(\hat{\sigma}_{\text{obs},i}\) are of the same order as the
+survey coefficients of variation reported by IFOP and SPRFMO
+(\(\approx 15\)--25\% across species), supporting the calibration of the
+priors adopted in Section \ref{sec:stock-dynamics}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../figs/t4b/t4b_full_residuals.png}
+\caption{Standardised year-level residuals of the T4b-full specification
+by stock. Horizontal line at zero. The first-order autocorrelation is
+below 0.2 in absolute value for all three stocks.}
+\label{fig:ppc-residuals}
+\end{figure}
+
+Full posterior diagnostics---including trace plots, \(\hat{R}\) values for
+all top-level parameters, and effective sample sizes---are archived in
+the replication repository.
 
 \end{document}

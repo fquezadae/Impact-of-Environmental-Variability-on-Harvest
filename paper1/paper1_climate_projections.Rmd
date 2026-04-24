@@ -701,3 +701,6 @@ The source code for this project is available on
 
 ```{r appendix-predictive, child='paper1/sections/appendix_predictive_diagnostics.Rmd'}
 ```
+
+```{r appendix-posterior, child='paper1/sections/appendix_posterior_diagnostics.Rmd'}
+```

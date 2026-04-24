@@ -204,13 +204,6 @@ LOO and LFO results are complementary diagnostics of, respectively,
 identification-through-fit and forecasting-on-new-data, and the paper
 relies on the former for the economic interpretation.
 
-<!-- TODO (wiring): reactivar este bloque cuando exista el child
-     appendix_posterior_diagnostics.Rmd (= "Appendix C") que defina los
-     labels \label{fig:ppc-smooth-vs-obs} y \label{fig:ppc-residuals}.
-     Mientras tanto queda comentado para que el knit no produzca "??"
-     en el PDF. El argumento central de la seccion no depende de este
-     parrafo -- vive en las subsecciones previas.
-
 ### Posterior-predictive adequacy
 
 A stock-by-stock comparison of the smoothed latent biomass $B_{i,t}$
@@ -219,8 +212,5 @@ shows that the identified model reproduces the historical trajectory
 within a median 90\% posterior band width of approximately 20\% of the
 mean. Residuals are roughly Gaussian and contain no detectable
 autocorrelation at one-year lag (Figure \ref{fig:ppc-residuals}). The
-full posterior diagnostics, including trace plots, $\hat{R}$ values for
-all top-level parameters, and posterior predictive checks, are reported
-in Appendix C.
--->
+full posterior diagnostics are reported in Appendix \ref{appendix-posterior}.
 
