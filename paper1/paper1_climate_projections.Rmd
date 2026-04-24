@@ -1042,10 +1042,10 @@ kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       caption = "Comparative statics on intrinsic stock productivity under CMIP6 climate projections. \\label{tab:growth_compstat}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
   footnote(general = paste(
-      "Entries are the posterior of the proportional change in intrinsic productivity",
-      "\u0394r/r\u2080 = exp(\u03c1_SST \u00b7 \u0394SST + \u03c1_CHL \u00b7 \u0394log CHL) \u2212 1,",
+      "Entries are the posterior of the proportional change in intrinsic productivity,",
+      "Delta r / r0 = exp(rho_SST * Delta SST + rho_CHL * Delta log CHL) - 1,",
       "evaluated at the scenario-specific CMIP6 anomalies reported in the preceding table",
-      "and integrated over the posterior of (\u03c1_SST, \u03c1_CHL) from the full state-space specification.",
+      "and integrated over the posterior of (rho_SST, rho_CHL) from the full state-space specification.",
       "Jurel (jack mackerel) CS is reported as non-identified ('n.i.') because the posterior of its shifters coincides with the weakly informative prior;",
       "see the identification discussion in Results. Raw numerical values for all three stocks are archived in tables/growth_comparative_statics_raw.csv."),
       general_title = "Note:", escape = TRUE, threeparttable = TRUE)
@@ -1054,7 +1054,7 @@ kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
 
 ```{r growthridgeline, echo=FALSE, fig.align='center', fig.cap="Posterior distribution of the proportional change in intrinsic stock productivity under CMIP6 scenarios (IPSL-CM6A-LR). Ridges are kernel-smoothed marginal posteriors of the proportional change in intrinsic productivity derived from draws of the state-space full specification; vertical line at zero. Jack mackerel is omitted because its climate shifter is not identified in the 2000--2024 sample.", fig.pos='ht!', out.width='90%', message=FALSE, warning=FALSE}
 
-knitr::include_graphics("paper1/figs/t4b/growth_ridgeline_cmip6.png", error = FALSE)
+knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png", error = FALSE)
 
 ```
 

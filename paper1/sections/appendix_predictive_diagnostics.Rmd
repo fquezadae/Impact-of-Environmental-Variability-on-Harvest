@@ -48,7 +48,7 @@ kable(loo_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
   footnote(general = paste(
       "\u0394 ELPD is the pairwise difference relative to T4b-full (the leading model);",
       "the adjacent SE column reports the standard error of that difference.",
-      "After moment matching, 65/68 observations satisfy Pareto-k \u2264 0.7 for T4b-full,",
+      "After moment matching, 65/68 observations satisfy Pareto-k <= 0.7 for T4b-full,",
       "64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-Pareto-k points are",
       "the two censored jack-mackerel years (2012, 2015), which appear in all three models",
       "and therefore do not affect the ranking."),
@@ -127,7 +127,7 @@ kable(lfo_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       "Sum of one-step predictive log densities over five origin years",
       "(2011, 2014, 2017, 2020, 2022) and three stocks (14 targets per model; two are censored).",
       "Each refit uses 4 chains \u00d7 1500 warmup + 1500 sampling iterations.",
-      "All 15 refits satisfied R-hat \u2264 1.01 with at most one divergent transition",
+      "All 15 refits satisfied R-hat <= 1.01 with at most one divergent transition",
       "(T4b-omega at the 2011 origin), which does not affect the reported ELPD."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 ```
