@@ -358,7 +358,27 @@ Preferido: **C** (es la regla real), con A y B como sensibilidades en apéndice.
 
 ## T7 — Reescritura del manuscrito
 
-**Cambios estructurales mayores vs V1:**
+**ESTADO 2026-04-24: T7 ejecutado en su mayor parte.** Ver `CHANGELOG.md` entry 2026-04-24 para lista detallada. Lo que ya está hecho:
+
+- Abstract sincronizado con lenguaje Cowles y cifras T4b-full.
+- Contribution paragraph de §1 reescrito alrededor de identificación estructural.
+- §3.3 Stock dynamics con Pella–Tomlinson + shifter log-linear + observation equation (nuevo aparato principal).
+- §3.1 subsección jurel reescrita: "Observation structure" (16 unc + 2 cen + 7 latent), sin Gamma-GLM.
+- §3.4 Projection approach con canal indirecto via shifter identificado.
+- §4.4 Climate change projections con `tab:growth_compstat` (del CSV T5) y ridgeline figure; cap [0.2, 3.0], tab:biomass_proj y decomposition table/fig eliminados.
+- Discussion + Conclusions rearmadas alrededor de identificación + no-identificación de jurel como hallazgo sustantivo.
+- SUR reduced-form benchmark (§4.1 + 3 paneles appendix robustness) BORRADO del main, archivado en `paper1/deprecated/sur_benchmark_deprecated.Rmd`.
+
+**Pendiente de T7 (para una sesión futura):**
+
+- **Appendix A (stress tests T3-bis)**: `results_identification.Rmd` cita "stress tests (Appendix A)" y la subsección nueva de §3.1 también. Necesita escribirse un `paper1/sections/appendix_stress_tests.Rmd` child que formalice el protocolo de stress-test que produce los priors sobre (ρ^SST, ρ^CHL). Sin eso, la cita queda colgada (texto literal "Appendix A" sin \ref, no rompe knit pero es deuda).
+- **Posterior-predictive check formal (Appendix C o inline)**: el bloque comentado en `results_identification.Rmd` L207-225 espera un `appendix_posterior_diagnostics.Rmd` con PPC smooth-vs-obs y residuals. Decidir si se formaliza o se elimina el TODO.
+- **Sección 4 "Estimation"**: el revision plan V2 pidió "describir state-space Bayesiano con Stan. Incluir sección de diagnósticos (R-hat, ESS, PPC)". Parte de esto está en §3.3 y parte en appendix predictive; pero una subsección dedicada a diagnósticos de convergencia + tabla con R-hat max, min ESS, etc. no existe todavía.
+- **Trayectorias de biomasa con bandas 90%**: el revision plan pide "trayectorias de biomasa con bandas 90% de incertidumbre propagada (no ensemble puntual); tabla de cambios en viajes por flota con intervalos". Hoy §4.4 reporta comparative statics sobre r (no trayectorias de B) y la implicancia para trips es cualitativa (forward sim → paper 2). Decisión pendiente: ¿se agrega al paper 1 una figura de B_t^{sim} con bandas, o se deja todo para paper 2?
+
+---
+
+**Cambios estructurales mayores vs V1 (plan original, conservado como referencia):**
 
 - **Abstract:** reemplazar mención de "three-equation SUR" como modelo poblacional por "structural bio model calibrated from official stock assessments, augmented with Bayesian climate shifters". Mantener defensa reduced-form para la ecuación de esfuerzo (NB).
 - **Introduction:** reescribir párrafo de contribución para que enfatice la nueva arquitectura. Subrayar el gap: "la literatura de climate-econ en pesquerías usa o bien reduced-form econometrics sin estructura poblacional, o modelos bio calibrados sin fundamento climático; acá combinamos ambos".
