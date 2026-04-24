@@ -22,7 +22,7 @@ The project is organized into **two papers**:
 
 Identifies a set of structural climate shifters (ρ^SST, ρ^CHL) that
 modulate the intrinsic growth rate of each stock, within a Bayesian
-state-space specification (Pella–Tomlinson transition + log-linear
+state-space specification (Schaefer transition + log-linear
 shifter + log-normal observation equation) calibrated on the IFOP and
 SPRFMO stock assessments. Evaluates the identified shifters at CMIP6
 projections (IPSL-CM6A-LR, SSP2-4.5 and SSP5-8.5) to obtain posterior
@@ -36,10 +36,16 @@ artisanal and industrial fleets.
 común) faces sharp long-run productivity declines under all CMIP6
 scenarios (anchoveta −51% to −89%, sardina común −90% to −100%),
 while the local response of the transzonal jack mackerel stock is
-not identified at the Centro-Sur scale. Because the artisanal fleet's
-species portfolio is concentrated in the coastal pair, it bears a
-sharper long-run harvest-capacity decline than the industrial fleet,
-reversing the sign of the distributional asymmetry implied by
+not identified at the Centro-Sur scale. Propagating the posterior
+through a Schaefer steady-state biomass equation under historical
+average fishing pressure and through the estimated negative binomial
+trip equation, the artisanal fleet exhibits a posterior probability
+of portfolio loss above 0.95 under every CMIP6 scenario; the
+industrial fleet's loss probability is 0.12 across scenarios,
+protected by its concentration in jack mackerel. The distributional
+asymmetry therefore operates primarily through the probability of
+portfolio collapse, not through differential climate elasticities in
+the trip equation — reversing the sign of the asymmetry implied by
 reduced-form comparative statics.
 
 ## Paper 2: Bioeconomic optimization
@@ -53,8 +59,9 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 ├── paper1/                             # Paper 1: Climate projections
 │   ├── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
 │   ├── sections/                       # Child Rmds wired into main
-│   │   ├── results_identification.Rmd        # §4.1 (T4b-full rho posteriors)
-│   │   ├── appendix_predictive_diagnostics.Rmd  # Appendix (LOO / LFO)
+│   │   ├── results_identification.Rmd        # §4.1 (T4b-full rho posteriors + PPC adequacy)
+│   │   ├── appendix_predictive_diagnostics.Rmd  # Appendix B (PSIS-LOO / PSIS-LFO)
+│   │   ├── appendix_posterior_diagnostics.Rmd   # Appendix C (posterior-predictive checks)
 │   │   └── results_loo_comparison.Rmd        # alt cut, not wired in main
 │   ├── deprecated/                     # Archived V1 material (not knitted)
 │   │   └── sur_benchmark_deprecated.Rmd  # SUR reduced-form benchmark (removed 2026-04-24)
@@ -82,7 +89,8 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │       ├── 08_fit_t4b_full.R           # + SST/CHL shifters (leading model)
 │       ├── 10_loo_t4b_compare.R        # PSIS-LOO across specs
 │       ├── 11_lfo_t4b_compare.R        # PSIS-LFO across specs
-│       └── 12_growth_comparative_statics.R  # T5-minimal: r_eff under CMIP6
+│       ├── 12_growth_comparative_statics.R  # T5: r_eff under CMIP6
+│       └── 13_trip_comparative_statics.R    # B: Schaefer steady-state + NB -> trip response by fleet
 │
 ├── data/                               # Processed data (.rds)
 │   ├── bio_params/                     # Official assessments (IFOP / SPRFMO)

@@ -2,7 +2,122 @@
 
 Notable changes to the project, in reverse chronological order.
 
-## 2026-04-24 (paper1: Cowles pivot executed, SUR benchmark removed)
+## 2026-04-24 — later (paper1: long-run trip comparative statics + Appendix C + Schaefer clarification)
+
+### Added — Step B: long-run trip comparative statics (§4.4)
+
+- `R/08_stan_t4/13_trip_comparative_statics.R`: new script that
+  propagates the T4b-full posterior through a Schaefer steady-state
+  biomass equation under historical average fishing pressure and
+  through the negative binomial trip equation to obtain vessel-level
+  and fleet-level responses of annual trips to CMIP6 climate regimes.
+  Pipeline:
+  `r_eff → B_star = K*(1 - F_hist/r_eff) → factor_B → factor_H = Σ_s ω_vs · factor_B_s`
+  → `factor_trips = exp(β_H[fleet(v)] · H_alloc_hist[v] · (factor_H - 1))`.
+  The semi-elasticity form reflects that `H_alloc_vy` enters the NB in
+  levels, not logs. Jurel treated as non-identified by convention
+  (`factor_B_jur = 1.0`). Stock vessel-level realized catch shares
+  (`omega`) constructed on the fly from `H_33` / `H_114` / `H_26`
+  columns in `data/trips/poisson_dt.rds`. Three outputs aggregated
+  over posterior draws × vessels within fleet: (i) marginal median of
+  %Δ trips (all draws), (ii) `Pr(f_H < 0.5)` as portfolio-loss
+  probability, (iii) conditional median restricted to non-collapse
+  draws. Outputs: `paper1/tables/trip_comparative_statics.csv`,
+  `trip_comparative_statics_raw.csv`, and
+  `trip_comparative_statics_extinct.csv`.
+- `paper1/paper1_climate_projections.Rmd` §4.4 "Implications for
+  fleet-level effort": new chunk `tripcompstat` producing
+  `tab:trip_compstat` with the three-column layout
+  (Pr-loss / %Δ-marginal / %Δ-conditional) by Fleet × Scenario.
+- **§4.4 narrative rewrite**: three new paragraphs replacing the
+  previous qualitative "Implications for fleet-level effort"
+  subsection. Reports: (i) artisanal fleet portfolio loss probability
+  above 0.95 under every CMIP6 scenario, (ii) asymmetry ART/IND of
+  9:1 in marginal trips decomposed into ~1.0 probability of portfolio
+  collapse × ~1.0 conditional elasticity ratio, and (iii) three
+  caveats on Schaefer steady-state thought experiment, the baseline
+  non-equilibrium of the 2000–2024 window (`f_H ≈ 1.015` under zero
+  climate delta), and the observational equivalence between "jurel
+  climate-decoupled" and "forcing outside the Centro-Sur box".
+
+### Added — Appendix C (posterior-predictive checks)
+
+- `paper1/sections/appendix_posterior_diagnostics.Rmd`: new child
+  with heading `# Posterior-predictive checks {#appendix-posterior}`.
+  Two sections: **C.1** overlays posterior median + 90% band of
+  smoothed latent biomass against observed SSB for the three stocks
+  (`figs/t4b/t4b_full_smooth_vs_obs.png`), with median 90% band width
+  ≈ 20% of the mean; **C.2** shows standardised year-level residuals
+  by stock (`figs/t4b/t4b_full_residuals.png`) with first-order
+  autocorrelation below 0.2 in absolute value for all three stocks.
+  Trace plots and R-hat values referred to the replication repository.
+- `paper1/paper1_climate_projections.Rmd`: new child include
+  `appendix-posterior` added under the existing
+  `# (APPENDIX) Appendix {-}` marker, after `appendix-predictive`.
+- `paper1/sections/results_identification.Rmd` (§4.1): the previously
+  commented `Posterior-predictive adequacy` paragraph (L207–225) is
+  now activated and points to `\ref{fig:ppc-smooth-vs-obs}`,
+  `\ref{fig:ppc-residuals}`, and
+  `Appendix \ref{appendix-posterior}`.
+
+### Changed — §3.3 Schaefer clarification (structural alignment with Stan)
+
+- **§3.3 Stock dynamics**: replaced "Pella–Tomlinson surplus-production
+  function" with "Schaefer surplus-production function" throughout,
+  consistent with `paper1/stan/t4b_state_space_full.stan` which
+  implements `g = r_t * B * (1 - B/K)` (the `θ = 1` special case).
+  New justification sentence: *"Schaefer is adopted as the θ = 1
+  specialization of the Pella–Tomlinson family on identifiability
+  grounds: the shape parameter θ is notoriously weakly identified
+  with N = 25 annual observations per stock"*, citing
+  `@hilbornWalters1992` and `@maunderPunt2013` (new entries in
+  `paper1/bibliography.bib`).
+- **Equation 1 (eq:law-of-motion)**: simplified from the Pella–Tomlinson
+  form `r·B·[1 − (B/K)^θ]` to the Schaefer form `r·B·(1 − B/K)`. The
+  parameter tuple `(r_i^0, K_i, θ_i, σ_proc,i, σ_obs,i)` reduced to
+  `(r_i^0, K_i, σ_proc,i, σ_obs,i)` throughout §3.1, §3.3, and related
+  discussion.
+- **`results_loo_comparison.Rmd` L3**: `"three nested specifications
+  of the Pella–Tomlinson state-space model"` → `"... of the Schaefer
+  state-space model"`. Residual detected in post-B.3.5 audit (C.1).
+
+### Added — bibliography
+
+- `paper1/bibliography.bib`: two new entries.
+  - `hilbornWalters1992`: Hilborn & Walters, *Quantitative Fisheries
+    Stock Assessment*, Chapman and Hall 1992, ISBN 978-0-412-02271-5.
+    No DOI (multiple reprints with different DOIs; ISBN suffices).
+  - `maunderPunt2013`: Maunder & Punt, *A review of integrated analysis
+    in fisheries stock assessment*, Fisheries Research 142 (2013)
+    61–74, doi 10.1016/j.fishres.2012.07.025 (DOI verified).
+
+### Fixed — knit-breaking issues encountered and resolved
+
+- **`tab:trip_compstat` row gap between Artisanal and Industrial
+  fleets**: `booktabs` injects `\addlinespace` every five rows by
+  default, which produced a spurious gap between rows 5 and 6 of the
+  eight-row table. Fixed by passing `linesep = ""` to the `kable()`
+  call.
+- **`\ref{identification}` literal text inside `kableExtra::footnote`**:
+  the reference inside the `tab:trip_compstat` footnote rendered as
+  `\ref{identification}` in the PDF because `footnote(escape = TRUE)`
+  strips the backslash. Replaced with plain prose
+  (*"consistent with the identification discussion in the Results
+  section"*) — same gotcha already documented in the earlier
+  `tab:growth_compstat` footnote.
+- **`HOLD_position` vs `hold_position`**: briefly introduced
+  `latex_options = c("HOLD_position")` in the `tripcompstat` chunk,
+  which emits `\begin{table}[H]` and requires `\usepackage{float}` in
+  the preamble (not loaded in this repo). Reverted to
+  `hold_position`; the `linesep = ""` fix alone eliminated the gap.
+
+### Fixed — manuscript integrity (late audit, C.1)
+
+- No residual mentions of `Pella–Tomlinson`, `θ_i`, or `shape parameter`
+  outside the intentional justification sentence in §3.3. Confirmed by
+  `grep` across `paper1_climate_projections.Rmd` and all child sections.
+
+## 2026-04-24 — morning (paper1: Cowles pivot executed, SUR benchmark removed)
 
 ### Changed — manuscript rewrites (paper1/paper1_climate_projections.Rmd)
 
