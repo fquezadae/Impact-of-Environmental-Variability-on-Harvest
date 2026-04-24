@@ -1,6 +1,6 @@
 ## Model selection via leave-one-out cross-validation {#loo-comparison}
 
-We compare three nested specifications of the Pella--Tomlinson state-space
+We compare three nested specifications of the Schaefer state-space
 model to isolate the predictive contribution of residual cross-stock
 covariance and environmental forcing. The three specifications share
 identical biological priors (adopted from the IFOP and SPRFMO assessments)
