@@ -594,6 +594,69 @@ The comparative-statics exercise is a long-run object rather than a year-by-year
 
 ### Implications for fleet-level effort
 
+Table \ref{tab:trip_compstat} translates the comparative-statics object on intrinsic stock productivity reported in Table \ref{tab:growth_compstat} into a comparative-statics object on fleet-level annual trips, by propagating each posterior draw through the Schaefer steady-state biomass equation under historical average fishing pressure and through the negative binomial trip equation of Section~\ref{sec:tripresults}. Vessel-level responses are aggregated to the fleet level as medians over posterior draws and vessels within fleet; the aggregation weights are each vessel's realized catch composition over the 2012--2024 estimation window.
+
+```{r tripcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tcs <- read.csv("paper1/tables/trip_comparative_statics_raw.csv",
+                stringsAsFactors = FALSE, check.names = FALSE)
+
+# Helpers: formateo de porcentajes y bandas. Todos los "%" se escapan como
+# "\\%" porque el kable sale con escape = FALSE (para que los math symbols
+# del header pasen tal cual a LaTeX).
+fmt_pct <- function(x) sprintf("%+.1f\\%%", 100 * (x - 1))
+fmt_band <- function(q05, q95) {
+  sprintf("[%+.1f\\%%,\\,%+.1f\\%%]",
+          100 * (q05 - 1), 100 * (q95 - 1))
+}
+
+tcs_tbl <- tcs %>%
+  dplyr::mutate(
+    Fleet    = ifelse(TIPO_FLOTA == "ART", "Artisanal", "Industrial"),
+    Scenario = scenario_label,
+    pr_loss_col = sprintf("%.2f", pr_portfolio_loss),
+    trips_marg_col = paste0(fmt_pct(factor_trips_marg_med),
+                            "\\,", fmt_band(factor_trips_marg_q05,
+                                            factor_trips_marg_q95)),
+    trips_cond_col = ifelse(
+      is.na(factor_trips_cond_med),
+      "collapse-dom.",
+      paste0(fmt_pct(factor_trips_cond_med),
+             "\\,", fmt_band(factor_trips_cond_q05,
+                             factor_trips_cond_q95))
+    )
+  ) %>%
+  dplyr::arrange(Fleet, Scenario) %>%
+  dplyr::transmute(
+    Fleet,
+    Scenario,
+    `$\\Pr(f^H_v < 0.5)$`                  = pr_loss_col,
+    `$\\%\\Delta$ trips (marginal)`        = trips_marg_col,
+    `$\\%\\Delta$ trips (conditional)`     = trips_cond_col
+  )
+
+kable(tcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      align = "llcll",
+      caption = "Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. \\label{tab:trip_compstat}") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
+  footnote(general = paste(
+    "Entries are posterior medians with 90% credible intervals, aggregated over",
+    "posterior draws of the full state-space specification and vessels within fleet.",
+    "f_H is the composition-weighted biomass factor relative to the historical baseline:",
+    "f_H = sum over species of omega_vs * B_star_s / B_hist_s,",
+    "where B_star_s = K_s * (1 - F_hist_s / r_eff_s) is the Schaefer steady-state biomass",
+    "and omega_vs is the vessel's realized catch share in species s.",
+    "Pr(f_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half.",
+    "The marginal median integrates over all posterior draws;",
+    "the conditional median restricts to draws with f_H >= 0.5, isolating the pure climate-elasticity component",
+    "from the steady-state collapse component of the trip response.",
+    "Jack mackerel is treated as non-identified (factor_B = 1) consistent with the identification discussion of Section \\ref{identification}.",
+    "Raw numerical values and by-stock extinction probabilities are archived in tables/trip_comparative_statics_raw.csv and tables/trip_comparative_statics_extinct.csv."
+  ),
+  general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+
+```
+
 The negative binomial trip equations estimated in Section~\ref{sec:tripresults} map allocated harvest $H^{alloc}_{vy}$ into expected annual trips at the vessel level. For vessels whose allocated harvest is dominated by a single species, the long-run elasticity of annual trips with respect to that stock's intrinsic productivity is bounded below by the estimated elasticity of trips with respect to $H^{alloc}_{vy}$, both of which are positive for the artisanal fleet and for the industrial fleet alike. Multiplied by the posterior medians of $\Delta r_i^{\star} / r_i^{0}$ in Table \ref{tab:growth_compstat} and weighted by each fleet's historical species composition, the implied long-run trip response is therefore negative in expectation for both fleets under every CMIP6 scenario considered, with an amplification factor on the artisanal side reflecting its sharper concentration in the sardina--anchoveta pair.
 
 We deliberately refrain from reporting a single point estimate of the fleet-level trip response at the projection horizon. Two reasons. First, a deterministic composition-weighted multiplier ignores the regulatory apparatus that intervenes between latent biomass and vessel-level harvest allocations---most prominently, the LTP cap on industrial quota transferability and the annual SUBPESCA revision of TACs in response to in-year biomass signals. Second, a credible quantification requires a forward simulation of the biomass process under endogenous catch rules, rather than a steady-state comparative statics at the intrinsic productivity. Forward simulation is the object of a companion paper, using the same posterior reported here. For the distributional analysis that is the subject of this paper, the qualitative message is nonetheless clear: the artisanal fleet, whose species portfolio is heavily weighted toward sardina común, faces a sharper decline in long-run harvest capacity than the industrial fleet, whose portfolio is diversified across sardina, anchoveta and the transboundary jack mackerel stock.
