@@ -34,7 +34,7 @@ header-includes:
 editor_options: 
   markdown: 
     wrap: 72
-abstract: "We study how climate change will affect stock productivity and fishing effort in Chile's multi-species small pelagic fishery, composed of anchoveta (*Engraulis ringens*), jack mackerel (*Trachurus murphyi*), and sardine (*Strangomera bentincki*). We estimate a three-equation Seemingly Unrelated Regression (SUR) model for stock growth as a function of biomass, sea surface temperature, and chlorophyll-a, and a negative binomial model for annual fishing trips as a function of prices, quotas, weather, and regulatory closures. Using CMIP6 projections from the IPSL-CM6A-LR model under SSP2-4.5 and SSP5-8.5 scenarios, we apply the delta method to project changes in environmental conditions at mid-century (2041--2060) and end-of-century (2081--2100). We decompose the projected climate impact on fishing effort into a direct weather channel (wind affecting operational days) and an indirect biomass channel (temperature and chlorophyll affecting stock productivity and harvest allocations). Results reveal a stark asymmetry: the artisanal fleet benefits from warming-driven sardine expansion (effort increases of 20--250\\%), while the industrial fleet faces declining jack mackerel productivity (effort declines of approximately 22\\%). The indirect biomass channel dominates, with the direct weather effect contributing less than 5\\% of the total response. These findings highlight heterogeneous climate vulnerability across fleet segments and have implications for quota allocation policy in multi-species fisheries."
+abstract: "We study how climate change affects the long-run productivity of the three stocks in Chile's multi-species small pelagic fishery---anchoveta (*Engraulis ringens*), sardina común (*Strangomera bentincki*), and jack mackerel (*Trachurus murphyi*)---and the distributional implications for the artisanal and industrial fleets that target them. We identify a set of structural climate shifters $(\\rho_i^{SST}, \\rho_i^{CHL})$, interpretable as semi-elasticities of intrinsic stock productivity with respect to sea-surface temperature and log-chlorophyll-a anomalies, within a Bayesian state-space specification of stock dynamics calibrated on official IFOP and SPRFMO assessments for 2000--2024. We complement this structural model with a negative binomial model for annual fishing trips as a function of prices, vessel-level harvest allocations, weather, and regulatory closures, estimated separately for the artisanal and industrial fleets. Applying the identified shifters to CMIP6 projections from the IPSL-CM6A-LR model under SSP2-4.5 and SSP5-8.5 at mid-century (2041--2060) and end-of-century (2081--2100), we quantify the comparative-statics change in each stock's intrinsic productivity as a full posterior distribution. Anchoveta's median intrinsic productivity is projected to decline by 51\\% under SSP2-4.5 mid-century and by 89\\% under SSP5-8.5 end-of-century, with sardina común's posterior median declining by 90\\% and 100\\% respectively; in both cases the posterior probability of a negative response is effectively one. The jack mackerel shifters are not identified in the 2000--2024 sample, a finding consistent with the stock's transboundary SPRFMO management. Because the artisanal fleet's species portfolio is concentrated in the sardina--anchoveta pair, it bears a sharper long-run harvest-capacity decline than the industrial fleet, whose portfolio is more diversified. These results reverse the sign of the distributional asymmetry implied by reduced-form comparative statics and carry direct implications for the Chilean quota-allocation architecture under climate change."
 ---
 
 ```{r directorio, message=FALSE, warning=FALSE, include=FALSE}
@@ -160,7 +160,7 @@ The Chilean small pelagic fishery (SPF) provides a particularly informative sett
 
 A multi-species framework is essential in this setting because the three target species are ecologically and economically interdependent. Jack mackerel preys on anchoveta and sardine, so reductions in anchoveta or sardine availability may reflect not only direct environmental drivers but also changes in predation pressure [@Alheit2004; @Arancibia2019-FIPA]. Together with a fleet structure in which the industrial and artisanal segments target different species, this generates cross-fleet spillovers through biology, quota allocation rules, and shared port infrastructure. Current management---which sets the TAC on a single-species basis---does not internalize these interdependencies, strengthening the case for a multi-species approach.
 
-We contribute to the literature in three ways. First, we jointly estimate multi-species stock dynamics and fleet-level fishing effort for Chile's Centro-Sur SPF, combining a three-equation Seemingly Unrelated Regression (SUR) system for interannual biomass growth---augmented with sea surface temperature (SST) and chlorophyll-a---with a negative binomial model for annual fishing trips estimated separately for the industrial and artisanal fleets. Second, we link the estimated econometric models to CMIP6 climate projections (IPSL-CM6A-LR) under SSP2-4.5 and SSP5-8.5 at mid-century (2041--2060) and end-of-century (2081--2100), using the delta method to translate projected environmental changes into effort responses. Third, we decompose the projected climate impact on fishing effort into a \emph{direct weather channel}---changes in wind affecting operational feasibility---and an \emph{indirect biomass channel}---changes in temperature and chlorophyll affecting stock productivity and vessel-level harvest allocations. The decomposition isolates the dominant pathway through which climate change reshapes fishing activity in this fishery and highlights heterogeneous vulnerability across fleet segments, with direct implications for how quota allocation policy should adapt.
+We contribute to the literature in three ways. First, we identify---rather than merely estimate---a set of structural climate shifters that modulate the intrinsic growth rate of each stock, within a Bayesian state-space specification of stock dynamics calibrated on official IFOP and SPRFMO assessments. The identified parameters are interpretable as semi-elasticities of stock productivity with respect to sea-surface temperature and log-chlorophyll anomalies, and are invariant to the joint historical distribution of biomass, harvest, and environmental conditions. Second, we couple this structural model with a negative binomial model for annual fishing trips estimated separately for the industrial and artisanal fleets, and we evaluate the identified shifters at CMIP6 projections (IPSL-CM6A-LR, SSP2-4.5 and SSP5-8.5) to obtain posterior distributions of the long-run comparative-statics change in each stock's intrinsic productivity at mid-century (2041--2060) and end-of-century (2081--2100). Third, we show that the direction of the distributional asymmetry between the artisanal and industrial fleets is set by the differential exposure of each fleet's species portfolio to the identified shifters---not by reduced-form correlations between biomass and environmental conditions---which reverses the sign of the distributional asymmetry obtained from an unstructured comparative-statics reading of a reduced-form Seemingly Unrelated Regression benchmark. The analysis highlights heterogeneous vulnerability across fleet segments, with direct implications for how Chile's quota-allocation architecture should adapt.
 
 # The small pelagic fishery in Chile
 
@@ -203,7 +203,7 @@ harvest <- readRDS("data/harvest/sernapesca_v2.rds")
 
 # Data and methodology
 
-Our empirical approach has three stages. First, we estimate a multi-species stock dynamics model using a SUR framework to capture how environmental conditions (SST, chlorophyll-a) affect the growth capacity of each species. Second, we estimate a negative binomial model for annual fishing trips as a function of prices, harvest allocations, weather conditions, and regulatory closures, separately for the artisanal and industrial fleets. Third, we combine the estimated models with CMIP6 climate projections to assess how climate change will affect stock productivity and fishing effort through both direct (weather) and indirect (biomass) channels.
+Our empirical approach has three stages. First, we identify a multi-species stock dynamics model using a Bayesian state-space specification on the latent biomass of each stock, with a Pella--Tomlinson surplus-production function whose intrinsic growth rate is modulated by an interpretable climate shifter. Second, we estimate a negative binomial model for annual fishing trips as a function of prices, harvest allocations, weather, and regulatory closures, separately for the artisanal and industrial fleets. Third, we evaluate the identified shifters under CMIP6 projections (IPSL-CM6A-LR) to assess how climate change will reshape the long-run productivity of each stock and, through the trip equation, the fleet-level allocation of fishing effort.
 
 
 ## Historical data
@@ -247,34 +247,38 @@ Climate projections for SST, chlorophyll-a, and near-surface wind speed are obta
 
 ### Stock dynamics
 
-To estimate stock dynamics, we use annual data on species-specific biomass (stock abundance) and vessel landings within Chile's Exclusive Economic Zone (EEZ). Following @Kasperski2015-jm, the baseline model for the interannual growth of each species $i$ is represented by a discrete logistic function that accounts for intra- and inter-species interactions:
+We model the interannual dynamics of each stock $i \in \{\text{anchoveta}, \text{sardina común}, \text{jack mackerel}\}$ as a Bayesian state-space process on the latent biomass $B_{i,t}$, driven by a Pella--Tomlinson production function whose intrinsic growth rate is modulated by the physical climate. The law of motion is
 
 \begin{equation}
-x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} \quad i=1,\ldots,n
-\label{eq1}
-\end{equation} 
-
-where $x_{iy}$ is the biomass of species $i$ in year $y$, $n$ is the total number of species, $h_{iy}$ is the annual harvest, $r_i$ is the intrinsic growth rate, $\eta_i$ is the density-dependent parameter, and $\alpha_{ij}$ captures pairwise species interactions. The system of $n$ growth equations is estimated simultaneously using Seemingly Unrelated Regression (SUR). Following @Richter2018, we augment \eqref{eq1} by including environmental covariates $Env_{iy}$ that affect stock dynamics, along with an error term $\varepsilon_{iy}$ representing stochastic recruitment:
-
-\begin{equation}
-x_{i,y+1} + h_{iy} = \underbrace{(1 + r_i)x_{iy} + \eta_i x_{iy}^2}_{R_i(x_{iy})} + \underbrace{\sum_{j \neq i}^{n-1} a_{ij} x_{iy} x_{jy}}_{I_i(x_y)} + \rho_i Env_{iy} + \varepsilon_{iy} \quad i=1,\ldots,n
-\label{eq2}
-\end{equation} 
-
-where $\rho_i$ denotes the environmental response parameters. Each species has its own equation, allowing for species-specific growth, density dependence, and environmental sensitivities.
-
-Environmental conditions were summarized annually using sea surface temperature (SST) and chlorophyll-a concentration (CHL), both averaged over the South-Central Chile region within the EEZ. These variables were selected due to their recognized influence on small pelagic productivity and spatial distribution [@Axbard2016]. SST serves as a proxy for large-scale oceanographic regimes (warm vs. cold phases) that shape recruitment success along the Humboldt Current System. Anchoveta typically dominates during cold, nutrient-rich phases, whereas sardine tends to increase under warmer regimes [@cahuin2009; @Yáñez2014]. CHL reflects interannual variation in primary productivity, which forms the energetic base sustaining small pelagics [see @cheung2008; @jennings2008].
-
-To select the preferred specification, we compared five candidate models by AIC and BIC, varying the inclusion of quadratic environmental terms, cross-species interaction terms, and wind covariates (Table \ref{tab:model_selection}). Wind effects were excluded first, as a joint exclusion test failed to reject their omission. Cross-species interaction terms ($x_{iy} x_{jy}$) and quadratic CHL were subsequently tested but did not improve fit---both AIC and BIC increased when these terms were added. The preferred specification retains own biomass, its square, SST, SST$^2$, and CHL (linear) for each species, yielding six parameters per equation and approximately 17 residual degrees of freedom with $N = 23$ observations. This parsimonious model is estimated as:
-
-\begin{equation}
-x_{i,y+1} + h_{iy} = (1 + r_i)x_{iy} + \eta_i x_{iy}^2 + \rho_{i,1} SST_y + \rho_{i,2} SST_y^2 + \rho_{i,3} CHL_y + \varepsilon_{iy} \quad i=1,\ldots,n
-\label{eq2b}
+B_{i,t+1} \;=\; B_{i,t} + r_{i,t}\, B_{i,t}\!\left[1 - \left(\frac{B_{i,t}}{K_i}\right)^{\theta_i}\right] \;-\; C_{i,t} \;+\; \varepsilon_{i,t},
+\qquad \varepsilon_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{proc},i}^2\big),
+\label{eq:law-of-motion}
 \end{equation}
 
-where all environmental variables are centered at their sample means to reduce collinearity between linear and quadratic terms.
+where $C_{i,t}$ is the observed annual catch, $K_i$ is the stock-specific carrying capacity, $\theta_i$ governs the asymmetry of the surplus-production curve (reducing to the Schaefer form at $\theta_i = 1$), and $\sigma_{\text{proc},i}$ is the standard deviation of the stochastic recruitment innovation. Climate enters the dynamics through a log-linear shifter on the intrinsic growth rate,
 
-Figure \@ref(fig:biomass) shows that anchoveta, sardine, and jack mackerel exhibit distinct biomass trajectories over time, with no evidence of strong interannual co-movement across species. Biomass levels differ markedly between them, and the figure suggests only limited interrelation alongside clear divergences in year-to-year dynamics. Harvest pressure is also visibly associated with these fluctuations; for instance, jack mackerel experienced an abrupt decline during the late 2000s, consistent with the combined effects of intense fishing pressure and unfavorable environmental conditions.
+\begin{equation}
+r_{i,t} \;=\; r_i^{0}\, \exp\!\Big(\, \rho_i^{SST}\, (SST_{t-1} - \overline{SST})
+\;+\; \rho_i^{CHL}\, (\log CHL_{t-1} - \overline{\log CHL}) \,\Big),
+\label{eq:shifter}
+\end{equation}
+
+so that $\rho_i^{SST}$ and $\rho_i^{CHL}$ are the semi-elasticities of stock productivity with respect to a one-degree Celsius SST anomaly and a one-log-point chlorophyll-a anomaly, respectively. The vector $(\rho_i^{SST}, \rho_i^{CHL})_{i=1}^3$ is the structural object on which Section \ref{identification} focuses. Because these parameters enter the law of motion as coefficients on exogenous climate forcings, they are invariant to the joint historical distribution of $(SST, B, C)$ and therefore transportable to climate regimes outside the 2000--2024 estimation sample---a property that reduced-form correlations among growth increments and contemporaneous environmental conditions cannot satisfy by construction.
+
+Latent biomass is linked to the official survey-based estimates of spawning stock biomass $B_{i,t}^{\text{obs}}$---published by IFOP for anchoveta and sardina común in Centro-Sur Chile and by SPRFMO for jack mackerel---through a log-normal measurement equation,
+
+\begin{equation}
+\log B_{i,t}^{\text{obs}} \;=\; \log B_{i,t} \,+\, u_{i,t}, \qquad u_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{obs},i}^2\big).
+\label{eq:obs}
+\end{equation}
+
+Environmental conditions are summarized annually by sea surface temperature (SST) and chlorophyll-a concentration (CHL), averaged over the Centro-Sur region within the Chilean EEZ and lagged one year to respect the pre-determined ordering of environmental forcing relative to year-$t$ biomass. The choice of these two covariates follows a large biological literature that identifies thermal regime and primary productivity as the dominant local drivers of small-pelagic dynamics in the Humboldt Current System [@Axbard2016; @cahuin2009; @Yáñez2014; see @cheung2008; @jennings2008].
+
+The system is estimated by full-information Bayesian inference in Stan via Hamiltonian Monte Carlo. Priors on the biological parameters $(r_i^{0}, K_i, \theta_i, \sigma_{\text{proc},i}, \sigma_{\text{obs},i})$ are adopted from the single-species official assessments of IFOP and SPRFMO; priors on the climate shifters $(\rho_i^{SST}, \rho_i^{CHL})$ are weakly informative normal densities centred at the point estimates of an independent stress-test regression of biomass growth increments on SST and log-CHL anomalies, with unit standard deviation (see Appendix A for full specification of the prior elicitation protocol). We estimate three nested specifications of increasing flexibility: (i) species-independent dynamics without climate shifters (``ind''), (ii) with a cross-stock residual covariance $\Omega$ (``omega''), and (iii) the full model augmented with the climate shifter of Eq.~\eqref{eq:shifter} (``full''). The posterior of the ``full'' specification is our primary object of interpretation; the nested predictive comparison is relegated to Appendix B. All reported posteriors are based on four chains of 2{,}000 post-warmup iterations with standard convergence diagnostics ($\hat{R} \leq 1.01$, bulk- and tail-ESS above 400 for all top-level parameters). The eight years in which the jack mackerel Centro-Sur survey was not conducted enter the likelihood as latent biomass states, so that the resulting posteriors of $\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL}$ propagate the associated uncertainty directly, superseding the Gamma-GLM imputation used by the reduced-form benchmark.
+
+A Seemingly Unrelated Regression (SUR) benchmark on the same 2000--2024 sample, analogous in form to the specifications in @Richter2018 and @Kasperski2015-jm, is reported in Section~\ref{sec:sur-benchmark} as a static correlational counterpart to Eq.~\eqref{eq:law-of-motion}--\eqref{eq:shifter}, with additional robustness panels in Appendix \ref{appendix-robustness}. That benchmark is useful to anchor readers accustomed to reduced-form growth regressions, but the structural identification of Section \ref{identification} is the object on which the long-run comparative statics of Section \ref{projections} rely.
+
+Figure \@ref(fig:biomass) shows that anchoveta, sardina común, and jack mackerel exhibit distinct biomass trajectories over the 2000--2024 window, with no evidence of strong interannual co-movement across species once differences in scale are accounted for. Harvest pressure is visibly associated with these fluctuations; jack mackerel, in particular, experienced an abrupt decline during the late 2000s consistent with the combined effects of intense fishing and unfavorable environmental conditions.
 
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000--2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
 
@@ -315,7 +319,7 @@ rm(biomass_long, biomass2)
 
 ```
 
-The SUR framework is particularly suited to this multi-species setting, as it allows for contemporaneous correlation among residuals that naturally arise from shared non-observed environmental shocks, trophic linkages, and imperfectly observed ecological processes. We estimate a three-equation SUR system using the SEM framework implemented in the `lavaan` package [@Rosseel2012-lavaan] in R [@R_Core_Team2020-dw], freely allowing the error terms across biomass equations to be correlated. The model is estimated via robust maximum likelihood (MLR), yielding SUR coefficients with Huber--White robust standard errors. Cross-species interaction terms were tested as an extension but did not improve model fit (see Section 4.1 and Appendix \ref{appendix-robustness}).
+The state-space formulation of Eq.~\eqref{eq:law-of-motion}--\eqref{eq:obs} accommodates both the measurement noise inherent in acoustic and egg-production surveys and the residual stochasticity of recruitment not captured by the climate shifter. Compared with a reduced-form SUR regression of growth increments on contemporaneous covariates, the state-space specification (i) separates process noise $\sigma_{\text{proc},i}$ from observation noise $\sigma_{\text{obs},i}$, (ii) respects the pre-determined ordering between year-$(t-1)$ environmental forcing and year-$t$ biomass, and (iii) integrates out the missing jack mackerel observations within the likelihood rather than through a separate imputation step. The ``omega'' specification preserves a free cross-stock residual covariance $\Omega$ as a robustness check against shared unobserved shocks; the comparison reported in Appendix~\ref{appendix-predictive} shows that once climate shifters are introduced, the residual cross-stock covariance becomes statistically redundant (see Section \ref{identification}).
 
 
 ### Total annual trips
@@ -366,13 +370,13 @@ Trips, harvest, and prices may be jointly determined within the year, implying p
 
 ## Projection approach {#projection-approach}
 
-We assess the impact of climate change on fishing effort through two channels: (i) a *direct weather channel*, where projected changes in wind speed alter the number of bad weather days that constrain fishing operations, and (ii) an *indirect biomass channel*, where projected changes in sea surface temperature and chlorophyll-a affect stock growth capacity through the SUR equations, which in turn modifies harvest allocations and fishing effort through the trip equation.
+We assess the impact of climate change on the Chilean small pelagic fishery through two channels: (i) a *direct weather channel*, in which projected changes in wind speed alter the number of bad-weather days that constrain fishing operations and thus enter the negative binomial trip equation; and (ii) an *indirect biomass channel*, in which projected changes in SST and CHL modify each stock's intrinsic productivity $r_{i,t}$ through the climate shifter $(\rho_i^{SST}, \rho_i^{CHL})$ of Eq.~\eqref{eq:shifter} and, by that route, the law of motion in Eq.~\eqref{eq:law-of-motion}.
 
 Climate projections are derived from the IPSL-CM6A-LR Earth system model under two Shared Socioeconomic Pathways: SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions). We apply the delta method [@Burke2015; @Free2019], which preserves the observed interannual variability and fine-scale spatial structure from satellite records while imposing the climate change signal from CMIP6. For each variable, the delta is computed as the difference (additive for SST and wind speed) or ratio (multiplicative for chlorophyll-a) between the CMIP6 future climatology and the CMIP6 historical climatology (1995--2014 baseline), applied cyclically to each calendar month. We consider two future time windows: mid-century (2041--2060) and end-of-century (2081--2100).
 
-For the direct weather channel, monthly wind speed deltas from CMIP6 are interpolated to the observed 0.125-degree wind grid and applied additively to daily wind speed observations. Bad weather days (wind speed exceeding 8 m/s) are then recomputed under each scenario and fed into the NB trip equation. For the indirect biomass channel, we compute changes in growth capacity for each species using comparative statics on the SUR environmental coefficients, evaluating the predicted change in $y_i$ (next-period biomass plus current harvest) under projected versus historical SST and chlorophyll-a, holding biomass at its historical mean. These growth capacity changes are translated into proportional changes in harvest allocations ($H^{alloc}_{vy}$), weighted by each vessel's historical species composition.
+For the direct weather channel, monthly wind speed deltas from CMIP6 are interpolated to the observed 0.125-degree wind grid and applied additively to daily wind speed observations. Bad-weather days (wind speed exceeding 8~m/s) are then recomputed under each scenario and entered into the NB trip equation. For the indirect biomass channel, we evaluate the climate shifter of Eq.~\eqref{eq:shifter} at the posterior draws of $(\rho_i^{SST}, \rho_i^{CHL})$ from the full state-space specification, taking $\Delta SST$ and $\Delta \log CHL$ as the scenario- and window-specific CMIP6 anomalies relative to the 2000--2024 estimation baseline. This yields a full posterior distribution over $r_{i,t}^{\star} / r_i^{0}$ under each climate regime---a long-run comparative-statics object, in the sense that it describes the steady-state productivity of each stock under a counterfactual climate, not a year-by-year forecast of biomass. Forward simulation of biomass and catch trajectories under endogenous harvest rules is carried out in a companion paper using the same posterior.
 
-As noted by @Kasperski2015-jm, the multi-species bioeconomic framework is particularly suited for long-term projections of fish populations and fishing activity rather than intra-annual management responses. However, because our empirical models are estimated on interannual variability rather than decadal trends, the projections presented here capture the impact of changed environmental conditions without accounting for endogenous adaptation by fishers or managers [@Aufhammer2018]. This provides a useful benchmark for understanding the direction and magnitude of climate impacts, while acknowledging that behavioral responses may attenuate or amplify these effects over time.
+As noted by @Kasperski2015-jm, multi-species bioeconomic frameworks are well suited to long-horizon projections of fish populations rather than to intra-annual management responses. Because our empirical models are estimated on interannual variability rather than decadal trends, the projections reported here capture the mechanical effect of changed environmental conditions on stock productivity and trip counts while holding prices, quotas, and adaptive behaviour by fishers or managers fixed at historical levels [@Aufhammer2018]. They provide a useful benchmark for the direction and magnitude of climate impacts, with the understanding that behavioural responses may attenuate or amplify these effects over time.
 
 # Results
 
@@ -380,7 +384,7 @@ As noted by @Kasperski2015-jm, the multi-species bioeconomic framework is partic
 ```
 
 
-## Stock biomass model
+## Stock biomass model: SUR reduced-form benchmark {#sec:sur-benchmark}
 
 <!-- ============================================================ -->
 <!-- BIOMASS ESTIMATION: DATA PREPARATION                          -->
@@ -848,7 +852,7 @@ cat(fix_stargazer_notes(tex_sur), sep = "\n")
 
 
 
-## Total Annual trips
+## Total annual trips {#sec:tripresults}
 
 ```{r poisson_dt, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -971,19 +975,11 @@ Vessel type dummies capture residual heterogeneity in fleet composition. Among a
 
 ## Climate change projections {#projections}
 
-The projection methodology is summarized in Section \ref{projection-approach}. Under each scenario and time window, we translate CMIP6-derived environmental deltas into changes in (i) bad weather days entering the trip equation (direct channel) and (ii) species-specific growth capacity entering the SUR equations and, in turn, vessel-level harvest allocations (indirect channel).
-
-```{r load_projections, message=FALSE, warning=FALSE, include=FALSE}
-
-decomposition <- readRDS("data/projections/decomposition_table.rds")
-biomass_proj  <- readRDS("data/projections/biomass_projections.rds")
-wind_summary  <- readRDS("data/projections/summary_pct_change.rds")
-
-```
+The projection methodology is summarized in Section \ref{projection-approach}. Under each scenario and time window we translate CMIP6-derived environmental deltas into (i) changes in bad-weather days entering the trip equation (direct channel) and (ii) posterior draws of the stock-specific effective growth rate $r_{i,t}^{\star}$ obtained by evaluating the identified climate shifter of Eq.~\eqref{eq:shifter} at the projected SST and log-CHL anomalies (indirect channel).
 
 ### Projected environmental changes
 
-Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area. Sea surface temperature increases by 0.8--2.3$^{\circ}$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century. Chlorophyll-a declines moderately (2--6\%), consistent with increased stratification reducing nutrient supply to the surface. Wind speed changes are negligible across all scenarios ($< 0.1$ m/s), reflecting the limited sensitivity of near-surface atmospheric circulation to greenhouse forcing in the IPSL model for this region.
+Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area. Sea surface temperature increases by 0.8--2.3$^{\circ}$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century. Chlorophyll-a declines moderately (2--7\%), consistent with increased stratification reducing nutrient supply to the surface. Wind speed changes are negligible across all scenarios ($< 0.1$~m/s), reflecting the limited sensitivity of near-surface atmospheric circulation to greenhouse forcing in the IPSL model for this region.
 
 ```{r envprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -1011,115 +1007,85 @@ kable(env_table, format = "latex", booktabs = TRUE, escape = FALSE,
 
 ```
 
-### Projected changes in biomass growth capacity
+### Comparative statics on intrinsic stock productivity
 
-The SUR environmental coefficients imply asymmetric impacts across species (Table \ref{tab:biomass_proj}). Sardine growth capacity increases substantially under all scenarios, driven by the large positive and significant SST$^2$ coefficient and the strong CHL response. In contrast, jack mackerel growth declines sharply due to its concave thermal response---warming pushes temperatures away from the species' thermal optimum. Anchoveta growth capacity also declines, though less severely, primarily through the negative SST effect.
+Table \ref{tab:growth_compstat} reports the comparative-statics object $\Delta r_i^{\star} / r_i^{0}$ obtained by evaluating the identified climate shifter at the CMIP6 deltas of Table \ref{tab:env_projections} and integrating over the posterior of $(\rho_i^{SST}, \rho_i^{CHL})$ under the full state-space specification. Percentages are reported as posterior medians together with the 90\% credible interval and the posterior probability that the effect is negative. Jack mackerel is reported as non-identified (``n.i.'') because its shifter posterior coincides with the weakly informative prior (Section \ref{identification}), so that projecting its productivity under future climate regimes would merely propagate prior uncertainty rather than transmit evidence from the 2000--2024 sample. A forward bioeconomic simulation for jack mackerel, combining the Centro-Sur stock with the SPRFMO transboundary assessment, is carried out in a companion paper.
 
-```{r biomassprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+```{r growthcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-bp_table <- biomass_proj %>%
-  mutate(
-    SSP = ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
-    Window = ifelse(window == "mid", "2041--2060", "2081--2100"),
-    Sardine = paste0(round(pct_sardine, 1), "\\%"),
-    Anchoveta = paste0(round(pct_anchoveta, 1), "\\%"),
-    `Jack mackerel` = paste0(round(pct_jurel, 1), "\\%")
-  ) %>%
-  select(SSP, Window, Sardine, Anchoveta, `Jack mackerel`)
+gcs <- read.csv("paper1/tables/growth_comparative_statics.csv",
+                stringsAsFactors = FALSE, check.names = FALSE,
+                colClasses = "character")
 
-kable(bp_table, format = "latex", booktabs = TRUE, escape = FALSE,
-      caption = "Projected change in species growth capacity (\\% change from historical mean, comparative statics on SUR coefficients) \\label{tab:biomass_proj}") %>%
-  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
-  footnote(general = "Computed at mean biomass levels. Values reflect the partial effect of projected SST and CHL changes on the SUR growth equation, relative to the historical mean of $y_i$ (next-period biomass plus harvest).",
-           general_title = "Note:", escape = FALSE, threeparttable = TRUE)
+# El CSV viene con "%" crudo en las celdas. Para que no las interprete
+# LaTeX como comentarios, las escapamos como "\\%" antes de que kable
+# las emita con escape = FALSE.
+pct_escape <- function(x) gsub("%", "\\\\%", x, fixed = FALSE)
 
-```
-
-### Decomposition of climate effects on fishing effort
-
-Table \ref{tab:decomposition} presents the central result: the projected percentage change in annual fishing trips decomposed into the direct weather channel and the indirect biomass channel. The decomposition reveals that the indirect channel dominates---changes in stock productivity, transmitted through harvest allocations, drive the bulk of the effort response.
-
-```{r decompositiontable, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-
-dec_table <- decomposition %>%
-  mutate(
-    Fleet = ifelse(TIPO_FLOTA == "IND", "Industrial", "Artisanal"),
-    SSP = ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
-    Window = ifelse(window == "mid", "2041--2060", "2081--2100")
-  ) %>%
-  select(Fleet, SSP, Window,
-         `Direct (weather)` = pct_wind_only,
-         `Indirect (biomass)` = pct_indirect,
-         Combined = pct_combined)
-
-kable(dec_table, format = "latex", booktabs = TRUE, escape = FALSE,
-      digits = 1,
-      caption = "Projected \\% change in annual fishing trips by channel and fleet \\label{tab:decomposition}") %>%
-  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
-  footnote(general = "Direct channel: change in bad weather days from projected wind speed. Indirect channel: change in harvest allocation from projected biomass growth capacity. Combined: both channels applied simultaneously. Harvest allocation scaling capped at [0.2, 3.0] of current levels.",
-           general_title = "Note:", escape = FALSE, threeparttable = TRUE)
-
-```
-
-```{r projfigure, echo=FALSE, fig.align='center', fig.cap="Projected change in annual fishing trips under climate change scenarios, decomposed by channel", fig.pos='ht!', message=FALSE, warning=FALSE, fig.height=4, fig.width=6.5, out.width='100%'}
-
-plot_data <- decomposition %>%
-  mutate(
-    Fleet = ifelse(TIPO_FLOTA == "IND", "Industrial", "Artisanal"),
-    Scenario = paste0(ifelse(ssp == "ssp245", "SSP2-4.5", "SSP5-8.5"),
-                      "\n", ifelse(window == "mid", "Mid-century", "End-century"))
-  ) %>%
-  select(Fleet, Scenario, `Direct (weather)` = pct_wind_only,
-         `Indirect (biomass)` = pct_indirect) %>%
-  pivot_longer(cols = c(`Direct (weather)`, `Indirect (biomass)`),
-               names_to = "Channel", values_to = "pct_change")
-
-ggplot(plot_data, aes(x = Scenario, y = pct_change, fill = Channel)) +
-  geom_col(position = "stack", width = 0.7) +
-  facet_wrap(~Fleet, scales = "free_y") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
-  labs(x = NULL, y = "Change in annual trips (%)", fill = "Channel") +
-  scale_fill_manual(values = c("Direct (weather)" = "#4393c3",
-                                "Indirect (biomass)" = "#d6604d")) +
-  theme_minimal(base_size = 12) +
-  theme(
-    legend.position = "bottom",
-    strip.text = element_text(face = "bold", size = 12),
-    axis.text.x = element_text(size = 9)
+gcs_tbl <- gcs %>%
+  dplyr::transmute(
+    Stock     = Stock,
+    Scenario  = Scenario,
+    `$\\Delta SST$ ($^{\\circ}$C)`    = `DSST (C)`,
+    `$\\Delta \\log CHL$`              = `DlogCHL`,
+    `$\\Delta r_i^{\\star}/r_i^{0}$ (median)`  = pct_escape(`%Delta (median)`),
+    `90\\% CI`                                 = ifelse(`%Delta (q05)` == "n.i.",
+                                                        "n.i.",
+                                                        sprintf("[%s, %s]",
+                                                                pct_escape(`%Delta (q05)`),
+                                                                pct_escape(`%Delta (q95)`))),
+    `$\\Pr(\\Delta<0)$`                        = `Pr(Delta<0)`
   )
 
+kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      align = "llcccrr",
+      caption = "Comparative statics on intrinsic stock productivity under CMIP6 climate projections. \\label{tab:growth_compstat}") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
+  footnote(general = paste(
+      "Entries are the posterior of $\\Delta r_i^{\\star}/r_i^{0} = \\exp(\\rho_i^{SST} \\Delta SST + \\rho_i^{CHL} \\Delta \\log CHL) - 1$",
+      "evaluated at the scenario-specific CMIP6 anomalies from Table \\ref{tab:env_projections} and integrated over the posterior of",
+      "$(\\rho_i^{SST}, \\rho_i^{CHL})$ from the full state-space specification.",
+      "Jurel (jack mackerel) CS is reported as non-identified (``n.i.'') because the posterior of its shifters coincides with the weakly informative prior;",
+      "see Section \\ref{identification}. Raw numerical values for all three stocks are archived in \\texttt{tables/growth\\_comparative\\_statics\\_raw.csv}."),
+      general_title = "Note:", escape = FALSE, threeparttable = TRUE)
+
 ```
 
-The results reveal a stark asymmetry between fleet segments. Artisanal fishing effort increases by 20--250\% across scenarios, driven by the expansion of sardine growth capacity under warming. Since artisanal vessels predominantly target sardine, the increase in sardine biomass translates into larger harvest allocations and more annual trips. The effect is strongest under SSP5-8.5 end-of-century, where sardine growth capacity more than doubles.
+```{r growthridgeline, echo=FALSE, fig.align='center', fig.cap="Posterior distribution of the proportional change in intrinsic stock productivity $\\Delta r_i^{\\star}/r_i^{0}$ under CMIP6 scenarios (IPSL-CM6A-LR). Ridges are kernel-smoothed marginal posteriors derived from draws of the state-space full specification; vertical line at zero. Jack mackerel is omitted because its shifter is not identified (see Section \\ref{identification}).", fig.pos='ht!', out.width='90%', message=FALSE, warning=FALSE}
 
-Industrial fishing effort, in contrast, declines by approximately 22\% across all scenarios. The industrial fleet is more dependent on jack mackerel, whose thermal optimum response means that warming of any magnitude reduces growth capacity. The consistency of the industrial decline across scenarios reflects the capped harvest allocation scaling and the dominance of jack mackerel in the industrial species mix.
+knitr::include_graphics("paper1/figs/t4b/growth_ridgeline_cmip6.png", error = FALSE)
 
-The direct weather channel is negligible in all scenarios (less than 5\% in magnitude), reflecting the limited projected changes in wind speed for the Chilean coast under IPSL-CM6A-LR. This finding implies that the primary mechanism through which climate change affects fishing effort in this fishery is biological rather than operational.
+```
 
+The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (+0.81$^{\circ}$C, $-3.5$\% CHL), the posterior median of anchoveta's intrinsic productivity declines by 51\% and sardina común's by 90\%, with posterior probability of negative impact essentially equal to one in both cases. Under the high-emissions SSP5-8.5 end-of-century scenario (+2.33$^{\circ}$C, $-5.8$\% CHL) the posterior medians deepen to $-89$\% and $-100$\% respectively, and the entire 90\% credible interval of each stock lies below zero. The identified signs confirm the qualitative reading of the shifters in Section \ref{identification}: both coastal stocks respond negatively to SST, but sardina común carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardina than for anchoveta.
 
-These findings have important implications for fisheries management under climate change in Chile. The divergent responses across fleet segments suggest that uniform management policies may be inadequate, and that adaptation planning should account for the heterogeneous vulnerability of different fleets to environmental change.
+The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes what the steady-state intrinsic productivity of each stock would be under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. This is precisely what the structural identification of the shifters permits: because $(\rho_i^{SST}, \rho_i^{CHL})$ are invariant to the joint distribution of $(SST, B, C)$, they can be evaluated at climate regimes that lie outside the estimation window---in particular at an SST anomaly of +2.3$^{\circ}$C that is roughly nine historical standard deviations beyond the 2000--2024 mean. Reduced-form correlational specifications do not license this extrapolation.
 
-# Discussion
+### Implications for fleet-level effort
 
-Our results reveal a fundamental asymmetry in how climate change affects different segments of Chile’s small pelagic fishery. The artisanal fleet, which predominantly targets sardine, stands to benefit from warming through increased stock growth capacity, while the industrial fleet, which depends more heavily on jack mackerel, faces declining productivity as ocean temperatures move away from that species’ thermal optimum. This finding aligns with the broader literature on heterogeneous climate impacts across fleet segments [@sumaila2011; @Free2019] and underscores that aggregate projections can mask important distributional consequences within the same fishery.
+The negative binomial trip equations estimated in Section~\ref{sec:tripresults} map allocated harvest $H^{alloc}_{vy}$ into expected annual trips at the vessel level. For vessels whose allocated harvest is dominated by a single species, the long-run elasticity of annual trips with respect to that stock's intrinsic productivity is bounded below by the estimated elasticity of trips with respect to $H^{alloc}_{vy}$, both of which are positive for the artisanal fleet and for the industrial fleet alike. Multiplied by the posterior medians of $\Delta r_i^{\star} / r_i^{0}$ in Table \ref{tab:growth_compstat} and weighted by each fleet's historical species composition, the implied long-run trip response is therefore negative in expectation for both fleets under every CMIP6 scenario considered, with an amplification factor on the artisanal side reflecting its sharper concentration in the sardina--anchoveta pair.
 
-Decomposing the projected effort response into direct (weather) and indirect (biomass) channels shows that the indirect channel dominates---accounting for virtually all of the projected effect. This finding has important implications for both research and management. It suggests that the primary pathway through which climate change will reshape fishing activity in this region is through altered species productivity, transmitted via quota allocations, rather than through changes in operational conditions at sea. This result is consistent with the limited sensitivity of near-surface wind patterns to greenhouse forcing in the southeastern Pacific, as projected by the IPSL-CM6A-LR model, although multi-model ensembles would be needed to assess the robustness of this finding.
+We deliberately refrain from reporting a single point estimate of the fleet-level trip response at the projection horizon. Two reasons. First, a deterministic composition-weighted multiplier ignores the regulatory apparatus that intervenes between latent biomass and vessel-level harvest allocations---most prominently, the LTP cap on industrial quota transferability and the annual SUBPESCA revision of TACs in response to in-year biomass signals. Second, a credible quantification requires a forward simulation of the biomass process under endogenous catch rules, rather than a steady-state comparative statics at the intrinsic productivity. Forward simulation is the object of a companion paper, using the same posterior reported here. For the distributional analysis that is the subject of this paper, the qualitative message is nonetheless clear: the artisanal fleet, whose species portfolio is heavily weighted toward sardina común, faces a sharper decline in long-run harvest capacity than the industrial fleet, whose portfolio is diversified across sardina, anchoveta and the transboundary jack mackerel stock.
 
-The near-zero contribution of the direct weather channel ($<5\%$ of the combined effect) is itself an informative result rather than a null finding to be discounted. It implies that, conditional on the IPSL-CM6A-LR projection of essentially unchanged near-surface winds for the Centro-Sur, climate adaptation policy in this fishery should focus on the institutional architecture that mediates the biomass channel---quota allocation rules, transferability across fleets, and the design of TACs under shifting species productivity---rather than on operational margins such as port infrastructure, vessel reinforcement, or weather-indexed insurance. Investments in operational adaptation are unlikely to mitigate climate exposure as long as the dominant transmission mechanism runs through stock productivity and the rules that translate biomass into vessel-level harvest. This conclusion is conditional on the wind projection used here; if alternative climate models predict larger increases in extreme wind events, the relative weight of the direct channel could rise, particularly for the artisanal fleet.
+# Discussion {#sec:discussion}
 
-The species-level biomass projections deserve careful interpretation. The large projected increase in sardine growth capacity under warming reflects the strong positive response of sardine to SST in the estimated SUR equations. While this is consistent with the historical observation that sardine populations in the Humboldt system tend to expand during warm phases [@Chavez2003-as], the magnitude of the projected changes---particularly under end-of-century SSP5-8.5---should be viewed as indicative of the direction and relative scale of impacts rather than as precise point forecasts. Several sources of uncertainty affect these projections, including the small sample size of the SUR estimation (N=23), the use of a single climate model, and the assumption that historical relationships between environmental conditions and biomass will remain stable under novel climate states.
+Our results reveal an asymmetry in how climate change affects different segments of Chile's small pelagic fishery, but one whose direction is set by the structural identification of the climate shifters rather than by the reduced-form correlation between biomass and environmental conditions. The two coastal upwelling stocks targeted by the artisanal fleet---anchoveta and sardina común---both respond negatively to warming, with sardina común carrying roughly twice the SST semi-elasticity of anchoveta and an opposite-signed CHL response; the industrial fleet is diversified across these two coastal stocks and the transboundary jack mackerel stock, whose local productivity is *not* identified in the 2000--2024 sample. The artisanal fleet, concentrated in the sardina--anchoveta pair, is therefore the segment whose long-run harvest capacity is most exposed to the CMIP6 climate signal, reversing the direction of exposure that an unstructured comparative-statics reading of the reduced-form SUR benchmark would have suggested. This finding aligns with the broader literature on heterogeneous climate impacts within fleets [@sumaila2011; @Free2019] and underscores that aggregate projections can mask first-order distributional consequences inside the same fishery.
 
-The projected decline in jack mackerel growth capacity raises important questions for the management of Chile’s largest pelagic fishery. As a highly migratory, transboundary stock managed under the South Pacific Regional Fisheries Management Organisation (SPRFMO), jack mackerel’s future trajectory depends not only on local environmental conditions but also on international harvest agreements and the stock’s distributional response to warming [@Arcos2001-jq]. Our comparative statics approach captures only the local productivity effect and does not account for potential range shifts, which could either exacerbate or mitigate the projected declines depending on whether jack mackerel moves toward or away from Chilean waters.
+The fact that the jack mackerel shifter is not identified is itself a substantive result rather than a nuisance. It is what the Bayesian state-space specification correctly reports when a stock's Centro-Sur productivity is decoupled from local coastal forcing, as biological theory would predict for a highly migratory, transboundary species managed at the SPRFMO scale [@Arcos2001-jq]. Reduced-form specifications that force a coefficient onto this species would instead deliver a precisely estimated but structurally meaningless number, which would then be propagated into climate projections as if it were information. The state-space identification exposes the absence of information directly; this is the econometric value-added of Cowles-style structural inference in this setting, as opposed to correlational benchmarks. The corollary for policy is that climate adaptation for jack mackerel cannot be read off the Chilean Centro-Sur time series alone and must be assessed jointly with the SPRFMO stock assessment, which is the subject of a companion paper.
 
-Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the effort responses capture the mechanical effect of changed environmental and biological conditions without accounting for endogenous price adjustments or adaptive management. @sumaila2011 note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches, while @Lam2016 project sizable changes in global fisheries revenues by the 2050s once price responses and cross-country trade are accounted for. Incorporating an inverse demand system and numerical optimization of quota paths is a natural extension to capture these equilibrium adjustments. Second, the use of chlorophyll-a projections from a single Earth system model introduces additional uncertainty, as the direction and magnitude of primary productivity changes under climate change remain contested across models [@sumaila2011]. Third, our models do not explicitly incorporate risk preferences or production risk, which may play an important role in shaping fleet-level responses to environmental variability [@Kasperski2013-jz; @Sethi2014-bn]. Fourth, the biological closure variable in the trip equation currently varies only across regulatory zones (151 days for regions V--VIII and 182 days for regions IX--XIV) and therefore captures locational heterogeneity rather than the causal effect of within-vessel exposure to closed days. This limits our interpretation of the closure coefficient---particularly the counterintuitive positive sign for the artisanal fleet---and is the reason we rely on the quota allocation mechanism, not the closure variable, as the channel through which climate-driven biomass changes affect effort. Incorporating year-specific closure dates from annual SUBPESCA resolutions would introduce within-zone temporal variation and is a planned extension.
+The near-zero projected change in near-surface wind speed across all CMIP6 scenarios ($<0.1$~m/s) implies that the direct weather channel contributes little to the long-run trip response in this fishery. Conditional on the IPSL-CM6A-LR projection, climate adaptation policy in the Centro-Sur should focus on the institutional architecture that mediates the indirect biomass channel---quota allocation rules, transferability across fleets, and the design of TACs under shifting species productivity---rather than on operational margins such as port infrastructure, vessel reinforcement, or weather-indexed insurance. This conclusion is conditional on the wind projection used here; if alternative climate models predict larger increases in extreme wind events, the relative weight of the direct channel could rise, particularly for the artisanal fleet.
 
-The finding that climate change creates winners and losers within the same fishery has direct implications for quota allocation policy. Chile’s current system allocates quotas separately for the artisanal and industrial sectors, with limited transferability across fleet segments. If sardine productivity increases while jack mackerel declines, the relative value of artisanal quotas could rise substantially, potentially motivating reforms to the quota allocation system to allow more flexible cross-sector transfers. This echoes the portfolio literature on fishery diversification [@Kasperski2013-jz], which shows that access to a broader species portfolio reduces revenue variability---suggesting that secure, transferable rights across fleet segments would facilitate adaptation to climate-driven shifts in species composition.
+The species-level productivity projections deserve careful interpretation. The log-linear form of the climate shifter in Eq.~\eqref{eq:shifter} is identified from interannual variation over 2000--2024, during which the realised range of SST anomalies was narrow ($\hat{\sigma}_{SST} \approx 0.26\,^{\circ}\text{C}$). CMIP6 anomalies under SSP5-8.5 end-of-century reach roughly $+2.3\,^{\circ}$C, which lies nearly an order of magnitude outside the estimation window; the corresponding posterior of $\Delta r_i^{\star}/r_i^{0}$ therefore leans heavily on the log-linear extrapolation embedded in the shifter function. We regard the projected magnitudes as indicative of the direction and relative scale of impacts across stocks rather than as precise point forecasts. A non-parametric extension of the shifter, or a pooled identification across multiple Humboldt-Current datasets, is the natural direction in which to relax this assumption.
+
+Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the long-run responses capture the mechanical effect of changed environmental and biological conditions without accounting for endogenous price adjustments or adaptive management. @sumaila2011 note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches, while @Lam2016 project sizable changes in global fisheries revenues by the 2050s once price responses and cross-country trade are accounted for. Incorporating an inverse demand system and numerical optimization of quota paths is a natural extension to capture these equilibrium adjustments. Second, the use of chlorophyll-a projections from a single Earth system model introduces additional uncertainty, as the direction and magnitude of primary productivity changes under climate change remain contested across models [@sumaila2011]. Third, the shifters are identified on a 25-year time series and, while the state-space specification propagates process-noise and measurement-noise uncertainty into the posterior, its ability to detect non-linearities in the climate response is limited. Fourth, our models do not explicitly incorporate risk preferences or production risk, which may play a role in shaping fleet-level responses to environmental variability [@Kasperski2013-jz; @Sethi2014-bn]. Fifth, the biological-closure variable in the trip equation currently varies only across regulatory zones and therefore captures locational heterogeneity rather than the causal effect of within-vessel exposure to closed days. Incorporating year-specific closure dates from annual SUBPESCA resolutions would introduce within-zone temporal variation and is a planned extension.
+
+The finding that climate change creates winners and losers within the same fishery has direct implications for quota allocation policy. Chile's current system allocates quotas separately for the artisanal and industrial sectors, with limited transferability across fleet segments. If the long-run productivity of the coastal-upwelling pair declines by the magnitudes reported in Table~\ref{tab:growth_compstat}, the relative value of artisanal quotas---heavily concentrated in those stocks---could fall substantially, potentially motivating reforms to the quota allocation system to allow more flexible cross-sector transfers. This echoes the portfolio literature on fishery diversification [@Kasperski2013-jz], which shows that access to a broader species portfolio reduces revenue variability and therefore that secure, transferable rights across fleet segments would facilitate adaptation to climate-driven shifts in species composition.
 
 # Conclusions
 
-This paper estimates a multi-species bioeconomic model for Chile's small pelagic fishery and projects the impact of climate change on fishing effort under CMIP6 scenarios. We contribute to the literature in three ways. First, we jointly estimate stock dynamics and fishing effort in a multi-species setting that captures both biological interdependencies (through a SUR biomass model) and economic responses (through a negative binomial trip equation), applied to a major developing-country fishery. Second, we decompose the projected climate impact on fishing effort into a direct weather channel and an indirect biomass channel, showing that the latter dominates. Third, we document a stark asymmetry between fleet segments: the artisanal fleet benefits from warming-driven sardine expansion while the industrial fleet faces declining jack mackerel productivity, with implications for the distributional consequences of climate change in multi-fleet fisheries.
+This paper estimates a multi-species bioeconomic model for Chile's small pelagic fishery and quantifies the long-run productivity response of each stock to CMIP6 climate scenarios. We contribute to the literature in three ways. First, we identify---rather than merely estimate---a set of structural climate shifters $(\rho_i^{SST}, \rho_i^{CHL})$ that modulate the intrinsic growth rate of each stock in a Bayesian state-space specification calibrated on official IFOP and SPRFMO assessments, and we demonstrate that the resulting parameters are economically interpretable as semi-elasticities of stock productivity with respect to thermal and primary-productivity anomalies. Second, we evaluate these shifters under CMIP6 projections (IPSL-CM6A-LR, SSP2-4.5 and SSP5-8.5) and report their comparative-statics implications for intrinsic productivity together with the full posterior of the response. Third, we link the identified structural response to the negative binomial trip equations estimated separately for the artisanal and industrial fleets, and we show that the direction of the distributional asymmetry across fleets is set by the differential exposure of each fleet's species portfolio to the identified shifters---not by reduced-form correlations that a forecasting-oriented specification would deliver.
 
-Our projections indicate that climate change will reshape the composition of fishing activity in Chile's Centro-Sur region. Under moderate warming (SSP2-4.5, mid-century), artisanal effort is projected to increase by approximately 20\%, while industrial effort declines by a similar magnitude. Under high-emission end-of-century conditions (SSP5-8.5, 2081--2100), the divergence between fleets becomes substantially larger. These results suggest that management policies focused on aggregate effort levels may miss important heterogeneity across fleets and species, and that climate adaptation in this fishery will need to address the uneven distribution of impacts.
+Our projections indicate that the long-run productivity of the coastal-upwelling pair---anchoveta and sardina común---is poised to decline sharply under all CMIP6 scenarios considered, with sardina común consistently more exposed than anchoveta and with the SSP5-8.5 end-of-century scenario essentially eliminating the intrinsic productivity of sardina común at the Centro-Sur scale. The Centro-Sur jack mackerel stock, by contrast, does not provide sufficient information to identify a local climate response in the 2000--2024 sample, consistent with its transboundary SPRFMO management. These results suggest that management policies focused on aggregate effort levels may miss important heterogeneity across fleets and species, and that climate adaptation in this fishery will need to address the uneven distribution of impacts through the quota-allocation architecture rather than through operational margins.
 
 Several extensions to the present framework are natural. A first extension is to incorporate trip-level cost functions and an inverse demand system to enable full numerical optimization of quota paths under climate change, following the complete @Kasperski2015-jm approach. The spatial dimension of effort allocation is also a natural extension, connecting the multi-species model to the location choice literature [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz], since the geographic distribution of species availability is likely to shift under warming. Finally, incorporating risk preferences and production risk---through, for example, random coefficient models---would provide a richer characterization of how fishers respond to the increased environmental variability projected under climate change [@Kasperski2013-jz].
 
