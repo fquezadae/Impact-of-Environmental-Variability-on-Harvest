@@ -2,6 +2,99 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-24 (paper1: Cowles pivot executed, SUR benchmark removed)
+
+### Changed — manuscript rewrites (paper1/paper1_climate_projections.Rmd)
+
+- **Abstract**: rewritten to reflect the Cowles-style structural
+  identification. Previous version reported SUR + NB results with
+  artisanal +20--250% / industrial -22% under caps [0.2, 3.0]; new
+  version reports posterior medians of Δr/r0 under CMIP6 (anchoveta
+  -51% to -89%, sardina -90% to -100%, jurel n.i.) and reverses the
+  distributional sign: the artisanal fleet is *more* exposed via its
+  concentration in the sardina–anchoveta pair, not less.
+- **§1 Introduction (contribution paragraph)** and **§3 opener**:
+  rephrased around Bayesian state-space identification of
+  (ρ^SST, ρ^CHL) semi-elasticities; reduced-form SUR language removed.
+- **§3.3 Stock dynamics** (`{#sec:stock-dynamics}`): rewritten with
+  Pella–Tomlinson transition + log-linear climate shifter +
+  log-normal observation equation as the primary apparatus. Old
+  equations `eq1`, `eq2`, `eq2b` removed; new `eq:law-of-motion`,
+  `eq:shifter`, `eq:obs` introduced.
+- **§3.1 Observation structure for jack mackerel Centro-Sur biomass**
+  (renamed from `Imputation of missing jack mackerel biomass`):
+  describes the 16 uncensored + 2 censored + 7 latent structure of
+  the Stan likelihood. Gamma-GLM imputation procedure no longer used
+  by the structural model; only the correlations of CS with the
+  Northern and SPRFMO series are retained as descriptive context,
+  flagged explicitly as suggestive not conclusive given `N = 7`.
+- **§3.4 Projection approach**: indirect channel re-described as
+  evaluation of the identified shifter at the posterior of
+  (ρ^SST, ρ^CHL); old SUR comparative-statics phrasing removed.
+- **§4.4 Climate change projections** (`{#projections}`): completely
+  rewritten. V1 chunks deleted (`biomassprojections` with
+  `tab:biomass_proj`, `decompositiontable` with `tab:decomposition`,
+  `projfigure` with the stacked bar plot, `load_projections` with
+  the V1 RDS imports). New `growthcompstat` chunk reads
+  `paper1/tables/growth_comparative_statics.csv` and builds
+  `tab:growth_compstat`. New `growthridgeline` chunk includes
+  `figs/t4b/growth_ridgeline_cmip6.png` as the ridge-plot of
+  Δr/r0 under CMIP6. Subsection "Implications for fleet-level effort"
+  made qualitative (forward simulation of biomass trajectories and
+  the decomposition of trips by channel deferred to the companion paper).
+- **Discussion** and **Conclusions**: rebuilt around the structural
+  identification of shifters and the non-identification of
+  ρ_jurel_SST, ρ_jurel_CHL as a substantive result. Caveats updated
+  to reflect the new aparatus (log-linear extrapolation, 25-year
+  time series, propagation of process/observation noise).
+
+### Removed — SUR reduced-form benchmark
+
+- **§4.1 "Stock biomass model"** with all SUR estimation chunks
+  (`database_for_biomass_est`, `sur_data`, `sur_estimation`,
+  `sur_robustness_specs`, `build_table_helper`,
+  `model_selection_table`, `SUR_results`), the `fix_stargazer_notes`
+  wrapper usages, and the narrative that interpreted the SUR
+  coefficients. Result: ~470 lines lighter.
+- **Appendix "Additional robustness checks"** with the three SUR
+  robustness panel chunks (`SUR_rob_panel_A`, `SUR_rob_panel_B`,
+  `SUR_rob_interactions`) and their narrative. Result: the main Rmd
+  appendix now contains only Predictive diagnostics (LOO + LFO).
+- **Cap `[0.2, 3.0]`** on harvest allocation scaling and all language
+  around it. The cap mechanically masked explosive forward-simulation
+  behaviour of the SUR reduced form and is incompatible with the
+  structural specification.
+
+### Added — archival
+
+- `paper1/deprecated/sur_benchmark_deprecated.Rmd`: complete archive
+  of the removed SUR block (§4.1 and the three robustness panels),
+  with a deprecation header explaining the three reasons for removal
+  (forward simulation explodes with β ≥ 1; qualitative contradiction
+  with T4b-full on sardine thermal response; "observed-jurel-only"
+  robustness redundant with state-space missingness handling). The
+  file is not knitted as part of the paper build but preserves the
+  code for referee response if needed.
+
+### Fixed — knit-breaking issues introduced and resolved in the same session
+
+- Paths inside `knitr::include_graphics()` must be relative to the
+  `.tex` directory (`paper1/`), not to `here::here()`. Convention
+  used in this repo is `../figs/...`. Wrong path (`paper1/figs/...`
+  resolves to `paper1/paper1/figs/...` at LaTeX time) truncates the
+  PDF silently at the graphic and leaves `??` in every unresolved
+  cross-reference downstream.
+- `\ref{...}` and `\texttt{...}` cannot appear inside
+  `kableExtra::footnote(general = ..., escape = FALSE)` because
+  pandoc strips the backslash. Rewrote the offending table footnote
+  in plain prose (for cross-refs) and with `escape = TRUE` plus
+  Unicode for the technical notation (for file paths and math).
+- `lmroman9-regular` and `lmroman10-regular` do not contain glyphs
+  for ≤ (U+2264), ρ (U+03C1), ₀ (U+2080). Replaced all three with
+  ASCII (`<=`, `rho`, `0`) inside the `growthcompstat` footnote and
+  in the two children. Δ (U+0394), × (U+00D7), − (U+2212) render
+  correctly and were kept.
+
 ## 2026-04-23 (paper1: T5-minimal comparative statics + identification section wired)
 
 ### Added
