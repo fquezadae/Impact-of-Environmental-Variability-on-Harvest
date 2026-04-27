@@ -564,34 +564,46 @@ plot_sst_augmented <- function(fits_restricted, fits_chl, fits_both,
     dplyr::mutate(series = factor(series,
                                   levels = c("B_obs", "B_base",
                                              "B_sst", "B_chl", "B_both"),
-                                  labels = c("Observado",
-                                             "Baseline (sin env)",
-                                             "+ SST restringido",
-                                             "+ CHL restringido",
-                                             "+ SST & CHL restringido")))
+                                  labels = c("Observed",
+                                             "Baseline (no shifter)",
+                                             "+ SST",
+                                             "+ log CHL",
+                                             "+ SST and log CHL")),
+                  stock_id = factor(stock_id,
+                                    levels = c("anchoveta_cs",
+                                               "sardina_comun_cs",
+                                               "jurel_cs")))
+
+  stock_panel_labels <- c(
+    anchoveta_cs     = "Anchoveta",
+    sardina_comun_cs = "Sardina común",
+    jurel_cs         = "Jack mackerel"
+  )
 
   p <- ggplot(rows_long, aes(x = year, y = B / 1e3,
                              colour = series, linetype = series)) +
     geom_line(linewidth = 0.85) +
     geom_point(size = 1.4) +
-    facet_wrap(~ stock_id, ncol = 1, scales = "free_y") +
+    facet_wrap(~ stock_id, ncol = 1, scales = "free_y",
+               labeller = labeller(stock_id = stock_panel_labels)) +
     scale_colour_manual(values = c(
-      "Observado"               = "#0072B2",
-      "Baseline (sin env)"      = "#D55E00",
-      "+ SST restringido"       = "#009E73",
-      "+ CHL restringido"       = "#E69F00",
-      "+ SST & CHL restringido" = "#CC79A7"
+      "Observed"              = "#0072B2",
+      "Baseline (no shifter)" = "#D55E00",
+      "+ SST"                 = "#009E73",
+      "+ log CHL"             = "#E69F00",
+      "+ SST and log CHL"     = "#CC79A7"
     )) +
     scale_linetype_manual(values = c(
-      "Observado"               = "solid",
-      "Baseline (sin env)"      = "solid",
-      "+ SST restringido"       = "solid",
-      "+ CHL restringido"       = "solid",
-      "+ SST & CHL restringido" = "longdash"
+      "Observed"              = "solid",
+      "Baseline (no shifter)" = "solid",
+      "+ SST"                 = "solid",
+      "+ log CHL"             = "solid",
+      "+ SST and log CHL"     = "longdash"
     )) +
-    labs(title    = "Stress test T3-bis: Schaefer + shifters ambientales",
-         subtitle = "Fits restringidos (r, K fijos en priors YAML); unico parametro libre es rho(s).",
-         x = "Año", y = "Biomasa (mil t)", colour = NULL, linetype = NULL) +
+    labs(title    = NULL,
+         subtitle = NULL,
+         x = "Year", y = "Biomass (thousand t)",
+         colour = NULL, linetype = NULL) +
     theme_minimal(base_size = 11) +
     theme(legend.position = "bottom",
           legend.text = element_text(size = 9))
