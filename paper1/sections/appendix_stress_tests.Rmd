@@ -69,7 +69,10 @@ stock_label <- c(
   jurel_cs           = "Jack mackerel"
 )
 
+stock_order <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
+
 mape_tbl <- mape_raw %>%
+  dplyr::arrange(match(stock_id, stock_order)) %>%
   dplyr::transmute(
     Stock              = stock_label[stock_id],
     `Base`             = sprintf("%.1f", median_err_pct_base),
@@ -86,7 +89,7 @@ kable(mape_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       "Median absolute percent error (in percent) of one-step-ahead deterministic predictions of biomass",
       "over the 2000-2024 estimation window, evaluated at the bounded least-squares estimate of",
       "(rho_SST, rho_CHL) restricted to [-3, 3]^2. The biological parameters (r_0, K) are held fixed at",
-      "the centres of the official IFOP/SPRFMO priors. Anchoveta and sardina common have N = 24 yearly",
+      "the centres of the official IFOP/SPRFMO priors. Anchoveta and sardina común have N = 24 yearly",
       "predictions; jack mackerel has N = 17 (the seven non-surveyed years and two left-censored years",
       "are excluded from the MAPE calculation). The 20% reference threshold is descriptive only and plays",
       "no role in the structural likelihood."),
@@ -231,7 +234,7 @@ kable(priors_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       "(rho_CHL = -3); the prior is centred at zero so that posterior identification is driven by the",
       "structural likelihood rather than by the boundary solution. All priors are independent normal",
       "with sd = 1.0; no hierarchical pooling is imposed because rho_CHL switches sign between anchoveta",
-      "and sardina common."),
+      "and sardina común."),
       general_title = "Note:", escape = TRUE, threeparttable = TRUE)
 ```
 
