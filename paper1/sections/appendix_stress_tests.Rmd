@@ -2,7 +2,7 @@
 
 This appendix formalises the protocol used to elicit the prior densities
 on the climate shifters $(\rho_i^{SST}, \rho_i^{CHL})$ that enter the
-state-space specification of Section~\ref{sec:stock-dynamics}. The
+state-space specification of Section \ref{sec:stock-dynamics}. The
 protocol has two purposes. First, it documents an independent,
 reduced-form fit of the deterministic Schaefer hindcast augmented with
 SST and log-CHL forcings; this fit motivates the choice of prior centres
@@ -56,7 +56,7 @@ and is used here solely to summarise the cross-variant comparison.
 
 ## Cross-variant fit results {#sec:appendix-stress-results}
 
-Table~\ref{tab:stress-mape} reports the median absolute percent error
+Table \ref{tab:stress-mape} reports the median absolute percent error
 of the deterministic hindcast for each stock and each variant.
 
 ```{r stress-mape-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -125,7 +125,7 @@ shifter is small and positive ($\rho_{\text{jurel}}^{SST} \approx +0.6$)
 and the log-CHL shifter is pinned at the lower boundary of the
 admissible box, $\rho_{\text{jurel}}^{CHL} = -3$; we interpret the
 boundary solution as a failure of point identification rather than as
-a finding of strong climate forcing. Figure~\ref{fig:stress-traj}
+a finding of strong climate forcing. Figure \ref{fig:stress-traj}
 displays the hindcast trajectories under each variant alongside the
 observed series.
 
@@ -155,12 +155,12 @@ Centro-Sur SST and log-CHL anomalies is $r = 0.030$ (two-sided
 $p = 0.888$, $N = 25$). Collinearity between regressors therefore plays
 no role in the difficulty of identifying the shifters; a variance
 inflation diagnostic on the joint specification of
-Eq.~\eqref{eq:stress-shifter} returns values close to one for both
+Eq. \eqref{eq:stress-shifter} returns values close to one for both
 covariates. The coexistence of an essentially zero linear correlation
 between the regressors and the wide cross-variant gap between
 hindcast errors must therefore reflect features of the
 non-linear-recursive law of motion in
-Eq.~\eqref{eq:stress-law}, not features of the design matrix.
+Eq. \eqref{eq:stress-law}, not features of the design matrix.
 
 Second, the joint MLE for jack mackerel binds at the lower boundary of
 the admissible box. Across the 2000--2024 sample the climate
@@ -170,7 +170,7 @@ non-surveyed years dominate the trajectory and the climate signal is
 not separately identifiable from process and observation noise
 absorbed into the residual. This pattern recurs in the initial fit of
 the structural state-space specification reported in
-Section~\ref{identification}, where the marginal posterior of
+Section \ref{identification}, where the marginal posterior of
 $(\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})$ tracks the
 prior with no information added by the data. The structural model is
 therefore the natural setting for jack mackerel: the absence of
@@ -186,9 +186,9 @@ inferential framework.
 ## Translation to Bayesian priors {#sec:appendix-stress-priors}
 
 The priors on $(\rho_i^{SST}, \rho_i^{CHL})$ used in the state-space
-likelihood of Section~\ref{sec:stock-dynamics} are reported in
-Table~\ref{tab:stress-priors}. For each coastal stock, the prior centre
-is taken from the joint MLE of Section~\ref{sec:appendix-stress-results},
+likelihood of Section \ref{sec:stock-dynamics} are reported in
+Table \ref{tab:stress-priors}. For each coastal stock, the prior centre
+is taken from the joint MLE of Section \ref{sec:appendix-stress-results},
 rounded to one decimal place; for jack mackerel, where the joint MLE
 binds at the boundary, the prior is centred at zero and is
 deliberately uninformative. All priors are independent normal
@@ -248,4 +248,4 @@ information that the deterministic hindcast misses, most plausibly by
 disentangling process noise from observation noise. For jack mackerel,
 a posterior that essentially reproduces the prior is the correct
 report of an absence of identifying information at the Centro-Sur
-scale, as discussed in Section~\ref{identification}.
+scale, as discussed in Section \ref{identification}.

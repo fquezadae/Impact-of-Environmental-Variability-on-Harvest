@@ -3,7 +3,7 @@
 This appendix reports the mixing and effective-sample-size diagnostics
 of the four Hamiltonian Monte Carlo chains used to obtain the posterior
 of the T4b-full specification reported in
-Section~\ref{identification}. The fit was run with four chains of
+Section \ref{identification}. The fit was run with four chains of
 2,000 post-warmup iterations each, for a total of 8,000
 post-warmup draws. The non-centred parameterisation of $(r_i^{0}, K_i, B_{i,0})$
 combined with a Lewandowski--Kurowicka--Joe prior on the cross-stock
@@ -14,7 +14,7 @@ noise $\sigma_{\text{proc},i}$ and the observation noise
 $\sigma_{\text{obs},i}$---both satisfy the standard convergence
 thresholds. We report the within-group worst case (maximum split-$\hat{R}$
 and minimum bulk- and tail-ESS) for each family of top-level parameters
-in Table~\ref{tab:convergence}.
+in Table \ref{tab:convergence}.
 
 ```{r convergence-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 conv_raw <- read.csv("data/outputs/t4b/t4b_full_summary.csv",
@@ -104,7 +104,7 @@ families enjoy bulk-ESS above $3{,}000$ and tail-ESS above $5{,}900$.
 The three climate-shifter components of primary interest---
 $(\rho_i^{SST}, \rho_i^{CHL})$---attain $\hat{R} \leq 1.001$ and bulk-ESS
 above $8{,}300$ across all stocks, so the identification results of
-Section~\ref{identification} are not driven by under-mixed chains.
+Section \ref{identification} are not driven by under-mixed chains.
 
 We additionally report the absence of post-warmup divergent transitions
 across all four chains, the maximum tree depth of the No-U-Turn Sampler
@@ -113,5 +113,5 @@ energy Bayesian fraction of missing information exceeded $0.5$ on every
 chain---each of these auxiliary diagnostics is available in the
 underlying Stan fit object archived at
 \texttt{data/outputs/t4b/t4b\_full\_fit.rds}. Taken together with
-Table~\ref{tab:convergence}, the diagnostic battery supports the
+Table \ref{tab:convergence}, the diagnostic battery supports the
 posterior summaries reported in the main text.
