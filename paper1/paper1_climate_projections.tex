@@ -822,6 +822,227 @@ Zhang, J., \& Smith, M. D. (2011). Heterogeneous response to marine reserve form
 \appendix
 
 
+\section{Reduced-form stress tests and prior elicitation}\label{appendix-stress}
+
+This appendix formalises the protocol used to elicit the prior densities
+on the climate shifters \((\rho_i^{SST}, \rho_i^{CHL})\) that enter the
+state-space specification of Section\textasciitilde{}\ref{sec:stock-dynamics}. The
+protocol has two purposes. First, it documents an independent,
+reduced-form fit of the deterministic Schaefer hindcast augmented with
+SST and log-CHL forcings; this fit motivates the choice of prior centres
+and standard deviations. Second, it serves as a diagnostic for the
+identifiability of \((\rho_i^{SST}, \rho_i^{CHL})\) under a non-Bayesian
+point estimator, which we use to justify the recourse to a Bayesian
+state-space specification with weakly informative priors rather than to
+a maximum-likelihood treatment of the structural model.
+
+\subsection{A.1 Hindcast specification}\label{sec:appendix-stress-spec}
+
+For each stock \(i \in \{\text{anchoveta}, \text{sardina común}, \text{jack mackerel}\}\) we estimate a deterministic Schaefer hindcast over the 2000--2024 estimation window,
+
+\begin{equation}
+\hat B_{i,t+1} \;=\; \hat B_{i,t} \,+\, r_{i,t}\, \hat B_{i,t}\!\left(1 - \frac{\hat B_{i,t}}{K_i}\right) \,-\, C_{i,t},
+\qquad \hat B_{i,t_0} = B_{i,t_0}^{\text{obs}},
+\label{eq:stress-law}
+\end{equation}
+
+with the climate-modulated growth rate
+
+\begin{equation}
+r_{i,t} \;=\; r_i^{0} \exp\!\Big( \rho_i^{SST}\, (SST_{t-1} - \overline{SST}) \;+\; \rho_i^{CHL}\, (\log CHL_{t-1} - \overline{\log CHL}) \Big).
+\label{eq:stress-shifter}
+\end{equation}
+
+The biological parameters \((r_i^{0}, K_i)\) are held at the centres of the
+stock-specific priors elicited from the official IFOP and SPRFMO
+single-species assessments (anchoveta: \(r_i^{0} = 0.6\),
+\(K_i = 2{,}200\)\textasciitilde kt; sardina común: \(r_i^{0} = 0.9\),
+\(K_i = 3{,}000\)\textasciitilde kt; jack mackerel: \(r_i^{0} = 0.35\),
+\(K_i = 8{,}000\)\textasciitilde kt). Catches \(C_{i,t}\) are observed and identical to
+those used in the structural likelihood. The shifters
+\((\rho_i^{SST}, \rho_i^{CHL})\) are estimated by bounded least squares on
+the box \([-3, 3]^2\), minimising the median absolute percent prediction
+error,
+
+\begin{equation*}
+\text{MAPE}_i(\rho_i^{SST}, \rho_i^{CHL}) \;=\; \operatorname{median}_t \left| \frac{\hat B_{i,t} - B_{i,t}^{\text{obs}}}{B_{i,t}^{\text{obs}}} \right|.
+\end{equation*}
+
+We estimate four nested variants for each stock: a base case with
+\(\rho_i^{SST} = \rho_i^{CHL} = 0\), two univariate cases that activate
+SST or log-CHL alone, and a joint case that activates both. The
+variants are not nested in an econometric sense; the comparison is
+purely descriptive of how much hindcast error each shifter can absorb.
+We adopt a \(20\%\) MAPE threshold as a conventional benchmark for
+acceptable deterministic hindcast performance in the small-pelagic
+literature; this threshold plays no role in the structural likelihood
+and is used here solely to summarise the cross-variant comparison.
+
+\subsection{A.2 Cross-variant fit results}\label{sec:appendix-stress-results}
+
+Table\textasciitilde{}\ref{tab:stress-mape} reports the median absolute percent error
+of the deterministic hindcast for each stock and each variant.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:stress-mape-table}Median absolute percent error of the deterministic Schaefer hindcast across shifter variants. \label{tab:stress-mape}}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{lrrrr}
+\toprule
+Stock & Base & + SST & + log CHL & + SST and log CHL\\
+\midrule
+Anchoveta & 95.9 & 30.8 & 95.1 & 26.6\\
+Jack mackerel & 44.2 & 44.3 & 49.1 & 48.5\\
+Sardina común & 98.5 & 23.1 & 98.5 & 20.5\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Note:} 
+\item Median absolute percent error (in percent) of one-step-ahead deterministic predictions of biomass over the 2000-2024 estimation window, evaluated at the bounded least-squares estimate of (rho\_SST, rho\_CHL) restricted to [-3, 3]\textasciicircum{}2. The biological parameters (r\_0, K) are held fixed at the centres of the official IFOP/SPRFMO priors. Anchoveta and sardina common have N = 24 yearly predictions; jack mackerel has N = 17 (the seven non-surveyed years and two left-censored years are excluded from the MAPE calculation). The 20\% reference threshold is descriptive only and plays no role in the structural likelihood.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The headline finding is that no variant brings any of the three stocks
+below the \(20\%\) MAPE threshold. The two coastal-upwelling stocks
+benefit from activating SST: anchoveta moves from a base error of
+\(95.9\%\) to \(30.8\%\) once \(\rho_i^{SST}\) is allowed to vary, and
+sardina común from \(98.5\%\) to \(23.1\%\). The further activation of
+log-CHL improves both stocks marginally---to \(26.6\%\) and \(20.5\%\),
+respectively---but neither closes the threshold. Activating log-CHL on
+its own delivers essentially no improvement, in line with the absence
+of contemporaneous correlation between the two environmental forcings
+(see below). Jack mackerel hindcast errors remain in the
+\(44\)--\(49\%\) range across all variants, with no shifter variant
+distinguishably better than the base.
+
+The bounded least-squares coefficients of the joint variant deliver an
+internally coherent biological reading for the two coastal-upwelling
+stocks. For anchoveta, both shifters carry negative point estimates of
+similar magnitude (\(\rho_{\text{anch}}^{SST} \approx -2.3\),
+\(\rho_{\text{anch}}^{CHL} \approx -2.3\)), consistent with a stock whose
+short-run productivity is depressed by both warming and high
+chlorophyll-a anomalies. For sardina común, the SST shifter is also
+negative (\(\rho_{\text{sard}}^{SST} \approx -2.0\)) but the log-CHL
+shifter switches sign relative to anchoveta
+(\(\rho_{\text{sard}}^{CHL} \approx +2.1\)), consistent with the warm-water,
+mesotrophic affinity that distinguishes sardina from anchoveta in the
+Humboldt-Current biological literature. For jack mackerel, the SST
+shifter is small and positive (\(\rho_{\text{jurel}}^{SST} \approx +0.6\))
+and the log-CHL shifter is pinned at the lower boundary of the
+admissible box, \(\rho_{\text{jurel}}^{CHL} = -3\); we interpret the
+boundary solution as a failure of point identification rather than as
+a finding of strong climate forcing. Figure\textasciitilde{}\ref{fig:stress-traj}
+displays the hindcast trajectories under each variant alongside the
+observed series.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../data/bio_params/qa/hindcast_sst_trajectories.png}
+\caption{Deterministic Schaefer hindcast trajectories under each
+shifter variant, by stock. Solid line: observed biomass; dashed lines:
+hindcast under base (no shifter), $+$SST only, $+\log$CHL only, and
+joint $+$SST$+\log$CHL specifications. The joint specification
+delivers the lowest median absolute percent error for the two
+coastal-upwelling stocks; jack mackerel is essentially insensitive to
+the shifter activation. Biological parameters $(r_i^{0}, K_i)$ are
+fixed at the centres of the official IFOP/SPRFMO priors.}
+\label{fig:stress-traj}
+\end{figure}
+
+\subsection{A.3 Identifiability diagnostic}\label{sec:appendix-stress-diag}
+
+Two independent diagnostics support the use of weakly informative priors
+on \((\rho_i^{SST}, \rho_i^{CHL})\) in the structural model rather than a
+direct maximum-likelihood treatment.
+
+First, the two environmental forcings are statistically orthogonal over
+the 2000--2024 sample. The Pearson correlation between annual
+Centro-Sur SST and log-CHL anomalies is \(r = 0.030\) (two-sided
+\(p = 0.888\), \(N = 25\)). Collinearity between regressors therefore plays
+no role in the difficulty of identifying the shifters; a variance
+inflation diagnostic on the joint specification of
+Eq.\textasciitilde{}\eqref{eq:stress-shifter} returns values close to one for both
+covariates. The coexistence of an essentially zero linear correlation
+between the regressors and the wide cross-variant gap between
+hindcast errors must therefore reflect features of the
+non-linear-recursive law of motion in
+Eq.\textasciitilde{}\eqref{eq:stress-law}, not features of the design matrix.
+
+Second, the joint MLE for jack mackerel binds at the lower boundary of
+the admissible box. Across the 2000--2024 sample the climate
+sensitivity of the Centro-Sur stock cannot be resolved within a
+deterministic single-species hindcast: catches and the seven
+non-surveyed years dominate the trajectory and the climate signal is
+not separately identifiable from process and observation noise
+absorbed into the residual. This pattern recurs in the initial fit of
+the structural state-space specification reported in
+Section\textasciitilde{}\ref{identification}, where the marginal posterior of
+\((\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})\) tracks the
+prior with no information added by the data. The structural model is
+therefore the natural setting for jack mackerel: the absence of
+information is correctly reported as a wide marginal posterior, rather
+than as a boundary point estimate that a maximum-likelihood algorithm
+would deliver. For the two coastal stocks, the joint MLE returns
+interior solutions but with standard errors that are not separately
+informative without an explicit accounting of process and observation
+noise; the Bayesian state-space specification with priors elicited
+from this hindcast addresses both limitations within a single
+inferential framework.
+
+\subsection{A.4 Translation to Bayesian priors}\label{sec:appendix-stress-priors}
+
+The priors on \((\rho_i^{SST}, \rho_i^{CHL})\) used in the state-space
+likelihood of Section\textasciitilde{}\ref{sec:stock-dynamics} are reported in
+Table\textasciitilde{}\ref{tab:stress-priors}. For each coastal stock, the prior centre
+is taken from the joint MLE of Section\textasciitilde{}\ref{sec:appendix-stress-results},
+rounded to one decimal place; for jack mackerel, where the joint MLE
+binds at the boundary, the prior is centred at zero and is
+deliberately uninformative. All priors are independent normal
+densities with unit standard deviation, which is wide enough to allow
+the structural likelihood to update the centre by more than one full
+unit of semi-elasticity in either direction within a single posterior
+standard deviation. We do not impose hierarchical pooling across
+stocks: the sign reversal of \(\rho_i^{CHL}\) between anchoveta and
+sardina común is biologically interpretable and would be erased by a
+pooled prior with a common hyper-mean.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:stress-priors-table}Independent normal priors on the climate shifters used in the state-space likelihood of Section \ref{sec:stock-dynamics}. \label{tab:stress-priors}}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{lrrrrl}
+\toprule
+Stock & $\mu_{\rho^{SST}}$ & $\sigma_{\rho^{SST}}$ & $\mu_{\rho^{CHL}}$ & $\sigma_{\rho^{CHL}}$ & Source\\
+\midrule
+Anchoveta & -2.3 & 1.0 & -2.3 & 1.0 & Joint MLE\\
+Sardina común & -2.0 & 1.0 & +2.1 & 1.0 & Joint MLE\\
+Jack mackerel & 0.0 & 1.0 & 0.0 & 1.0 & Boundary solution; vague prior\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Note:} 
+\item Prior centres for the coastal-upwelling stocks are the joint maximum-likelihood point estimates of (rho\_SST, rho\_CHL) from the deterministic Schaefer hindcast of Appendix A.2, rounded to one decimal place. For jack mackerel the joint MLE binds at the lower boundary of the admissible box (rho\_CHL = -3); the prior is centred at zero so that posterior identification is driven by the structural likelihood rather than by the boundary solution. All priors are independent normal with sd = 1.0; no hierarchical pooling is imposed because rho\_CHL switches sign between anchoveta and sardina common.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The interpretation of the resulting posterior is straightforward. For
+the two coastal stocks, a posterior centred close to the prior centre
+with a posterior standard deviation appreciably below one is evidence
+that the structural state-space likelihood confirms the reduced-form
+hindcast point estimate; a posterior shifted by more than one prior
+standard deviation indicates that the structural model has extracted
+information that the deterministic hindcast misses, most plausibly by
+disentangling process noise from observation noise. For jack mackerel,
+a posterior that essentially reproduces the prior is the correct
+report of an absence of identifying information at the Centro-Sur
+scale, as discussed in Section\textasciitilde{}\ref{identification}.
+
 \section{Predictive diagnostics}\label{appendix-predictive}
 
 This appendix reports two out-of-sample diagnostics for the three nested
