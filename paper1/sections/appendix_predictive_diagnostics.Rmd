@@ -21,7 +21,7 @@ LOO that carries the primary identification-supporting role; LFO is
 reported as an honesty check against the possibility that the shifters
 are simply fitting idiosyncratic in-sample noise.
 
-## B.1 PSIS-LOO cross-validation
+## PSIS-LOO cross-validation
 
 We compute Pareto-smoothed importance sampling leave-one-out
 cross-validation [@Vehtari2017-qe] with moment matching applied to
@@ -91,7 +91,7 @@ observations.}
 \label{fig:loo-pareto-k}
 \end{figure}
 
-## B.2 PSIS-LFO at one-year horizon
+## PSIS-LFO at one-year horizon
 
 The leave-future-out diagnostic refits each specification on data through
 year $t_{\text{cut}}$ and evaluates the log predictive density of the

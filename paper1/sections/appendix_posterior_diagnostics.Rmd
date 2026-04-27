@@ -12,7 +12,7 @@ fluctuations, and that the year-level residuals contain no detectable
 autocorrelation that would undermine the log-normal independence
 assumption embedded in the measurement equation (\ref{eq:obs}).
 
-## C.1 Smoothed biomass versus observed SSB
+## Smoothed biomass versus observed SSB
 
 Figure \ref{fig:ppc-smooth-vs-obs} overlays the posterior median and the
 90\% credible band of the smoothed latent biomass $B_{i,t}$ against the
@@ -38,7 +38,7 @@ assessment's lower detection limit.}
 \label{fig:ppc-smooth-vs-obs}
 \end{figure}
 
-## C.2 Year-level residuals
+## Year-level residuals
 
 Figure \ref{fig:ppc-residuals} shows the standardised residuals
 $(\log B_{i,t}^{\text{obs}} - \log \hat{B}_{i,t})/\hat{\sigma}_{\text{obs},i}$
@@ -62,6 +62,6 @@ below 0.2 in absolute value for all three stocks.}
 \label{fig:ppc-residuals}
 \end{figure}
 
-Full posterior diagnostics---including trace plots, $\hat{R}$ values for
-all top-level parameters, and effective sample sizes---are archived in
-the replication repository.
+Markov-chain convergence diagnostics for all top-level parameters
+($\hat{R}$ and effective sample sizes) are reported separately in
+Appendix~\ref{appendix-convergence}.

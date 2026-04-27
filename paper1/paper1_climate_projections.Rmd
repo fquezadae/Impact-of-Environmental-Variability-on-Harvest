@@ -707,3 +707,6 @@ The source code for this project is available on
 
 ```{r appendix-posterior, child='paper1/sections/appendix_posterior_diagnostics.Rmd'}
 ```
+
+```{r appendix-convergence, child='paper1/sections/appendix_convergence_diagnostics.Rmd'}
+```
