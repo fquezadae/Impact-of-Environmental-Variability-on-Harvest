@@ -4,7 +4,7 @@ This appendix reports the mixing and effective-sample-size diagnostics
 of the four Hamiltonian Monte Carlo chains used to obtain the posterior
 of the T4b-full specification reported in
 Section~\ref{identification}. The fit was run with four chains of
-2{,}000 post-warmup iterations each, for a total of $8{,}000$
+2,000 post-warmup iterations each, for a total of 8,000
 post-warmup draws. The non-centred parameterisation of $(r_i^{0}, K_i, B_{i,0})$
 combined with a Lewandowski--Kurowicka--Joe prior on the cross-stock
 correlation matrix $\Omega$ delivers chains that mix well across all
@@ -21,6 +21,13 @@ conv_raw <- read.csv("data/outputs/t4b/t4b_full_summary.csv",
                      stringsAsFactors = FALSE) %>%
   dplyr::filter(!is.na(rhat)) %>%
   dplyr::mutate(group = gsub("\\[.*\\]", "", variable))
+
+# Drop upper-triangular duplicates of the symmetric correlation matrix Omega:
+# keep only Omega[2,1], Omega[3,1], Omega[3,2] so each off-diagonal element is
+# counted once.
+omega_lower_tri <- c("Omega[2,1]", "Omega[3,1]", "Omega[3,2]")
+conv_raw <- conv_raw %>%
+  dplyr::filter(group != "Omega" | variable %in% omega_lower_tri)
 
 top_groups <- c("r_nat", "K_nat", "B0_nat",
                 "sigma_proc", "sigma_obs",
