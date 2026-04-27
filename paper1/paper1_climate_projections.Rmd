@@ -449,7 +449,7 @@ tex_nb <- capture.output(
     header = FALSE,
     float = TRUE,
     title = paste0("Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = ",
-                    nrow(df_ind), ", $N_{ART}$ = ", nrow(df_art), ")"),
+                    nobs(nb_ind), ", $N_{ART}$ = ", nobs(nb_art), ")"),
     label = "tab:poisson_results",
     column.labels = c("Industrial", "Artisanal"),
     column.separate = c(1, 1),
@@ -690,8 +690,7 @@ Several extensions to the present framework are natural. A first extension uses 
 
 # Repository
 
-The source code for this project is available on
-[GitHub](https://github.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest)
+The source code for this project is available at \url{https://github.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest}.
 
 
 # References
