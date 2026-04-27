@@ -399,18 +399,85 @@ Preferido: **C** (es la regla real), con A y B como sensibilidades en apéndice.
 
 **Tiempo estimado:** 3 semanas continuas (Q4 2026).
 
-## T8 — Actualización con datos SERNAPESCA (bloqueada en entrega)
+## T8 — Actualización con datos SERNAPESCA v3 (bloqueada en entrega)
 
-**Sin cambios respecto a V1.** La tabla de contingencia por fecha de llegada sigue siendo válida, solo que ya no hay deadline de octubre 2026 que presione.
+**Scope clarificado 2026-04-27.** v3 NO afecta sólo el NB. El paper actual ya usa el CSV híbrido `data/bio_params/catch_annual_cs_2000_2024.csv` (SERNAPESCA 2000-2023 + IFOP 2024 placeholder; ver memoria `project_catch_data_sources.md`) que alimenta la **likelihood del T4b state-space** vía `R/08_stan_t4/08_fit_t4b_full.R:108`. Por lo tanto, si v3 llega, el re-trabajo es:
+
+- **Re-fit T4b** (3 modelos: ind, omega, full). Los posteriors de $(\rho^{SST}, \rho^{CHL})$ pueden moverse, especialmente si v3 revisa la serie histórica.
+- **Re-fit NB ind, NB art** desde `sernapesca_v3.rds`.
+- **Re-correr** `12_growth_comparative_statics.R`, `13_trip_comparative_statics.R`.
+- **Re-LOO/LFO**, re-PPC, re-convergence diagnostics.
+- **Re-knit** todo el paper.
+
+Tamaño del re-trabajo dependiente del scope de v3:
+
+- Si v3 sólo aporta 2024 (reemplazando placeholder IFOP): impacto en 1 año, posteriors probablemente casi iguales — **~3 días** de trabajo material.
+- Si v3 revisa la serie histórica 2000-2023: impacto potencialmente sustantivo en posteriors r/K — **~1–2 semanas**.
 
 | Llega antes de | Acción |
 |---|---|
-| Jun 2026 | Incorporar antes de T5 (forward sim). Re-estimación completa, ruta limpia. |
-| Sep 2026 | Incorporar durante T4–T5. Paper 1 va con SERNAPESCA v3. |
-| Dic 2026 | Incorporar durante T6–T7. Posible delay de submission a Q2 2027. |
-| Después de Dic 2026 | Submitir versión sin estos datos. Mencionar como extensión planeada en Discussion. Incorporar en R&R. |
+| Jun 2026 | Incorporar antes del polish T9. Re-estimación completa, ruta limpia → submission Q4 2026. |
+| Sep 2026 | Incorporar durante T9 polish. Paper 1 submitido con v3. |
+| Dic 2026 | Sopesar delay vs submit-con-v2 + nota en Discussion. Decisión caso a caso según magnitud del cambio. |
+| Después de Dic 2026 | Submitir con v2 (CSV híbrido actual). Mencionar v3 como extensión planeada en Discussion. Incorporar en R&R. |
 
-Mantener el principio de V1: todo el código parametrizado por `data_version`, así cuando llegue no hay que reescribir.
+Todo el código está parametrizado por `data_version` (`R/06_projections/04_forward_simulation.R:99`).
+
+---
+
+## T9 — Polish + journal submission
+
+**Status post sesiones 2026-04-24 + 2026-04-27.** Cierre técnico completo: 4 apéndices (A stress tests + prior elicitation, B PSIS-LOO/LFO, C posterior-predictive, D convergence), identificación estructural cerrada (anch/sard $\rho$ identificados; jurel n.i.), portfolio decomposition de la asimetría artesanal-industrial, end-to-end re-read y limpieza narrativa post-Cowles aplicados. El residuo antes de submit es polish + submission mechanics.
+
+### T9.1 — Cover letter (~1.5 págs)
+
+Destacar las 3 contribuciones del paper en lenguaje del journal target: (i) identificación structural > forecasting (Cowles, no Tinbergen); (ii) jurel n.i. como **feature**, no nuisance — el state-space correctamente reporta ausencia de información local cuando la stock unit es transboundary; (iii) portfolio composition driving asymmetric impact, no climate elasticities.
+
+### T9.2 — Abstract pulido
+
+El actual (Rmd L37) está OK pero requiere 2-3 pasadas para apretar a las 250-300 palabras del journal y mover el "headline" (asymmetry artesanal-industrial vía portfolio composition) a las primeras 3 oraciones.
+
+### T9.3 — Bibliography hygiene final
+
+El bib tuvo entradas fantasma históricamente; paper1 quedó limpio el 2026-04-20 (memoria `project_bibliography_hygiene.md`). Verificar que `@Richter2018` y `@Kasperski2015-jm` (entradas usadas en §3.3 + §4.4 reformulados el 2026-04-27) estén con DOI y título reales.
+
+### T9.4 — Anticipated reviewer reply (notas internas)
+
+Pre-armar 2-3 párrafos de respuesta a las 5-6 objeciones más probables:
+
+- log-linear extrapolation a $+2.3^{\circ}$C cuando $\hat{\sigma}_{SST}=0.26^{\circ}$C → ya cubierto en Discussion;
+- N=25 chicos → ya cubierto en §3.3 (PT con $\theta=1$ por identificability);
+- SUR descartado → cubierto en §3.3 + reformulación 2026-04-27;
+- falta forward simulation → "es subject of companion paper 2" ya en Discussion;
+- CHL un solo ESM (IPSL-CM6A-LR) → confirmar caveat explícito en Discussion;
+- jurel n.i. → defender como feature en cover letter.
+
+### T9.5 — Submission mechanics
+
+- Keywords (~6: climate change, fisheries, structural identification, Bayesian state-space, multi-species, Chile).
+- JEL codes: Q22 (renewable resources), Q54 (climate), Q57 (ecological economics).
+- Data availability statement (qué es público — Copernicus, CMIP6, IFOP/SPRFMO assessments — vs qué requiere acceso restringido — IFOP logbooks).
+- Conflict of interest, funding (FONDECYT Iniciación).
+- Format figs/tables al template del journal (TIFF 300dpi suelen pedir).
+
+### T9.6 — Sanity pass externo
+
+Una pasada por colega o asesor antes de submit. Saca cosas que el autor ya no ve.
+
+### Decisión de journal (revisitada 2026-04-27)
+
+V1 sugería ERE como target, JAERE como alternativa upside. V2 reafirma con orden:
+
+- **Primera opción: JAERE.** El paper tiene un componente metodológico fuerte (Cowles structural ID + state-space + assessment adoption + Bayesian prior elicitation protocol formalizado en Apéndice A) que JAERE valora. La asimetría artesanal-industrial vía portfolio composition es interpretable como economía de la regulación cuando se framea con el LMCA chileno. Decision time típico: 3-4 meses.
+- **Backup: ERE.** Audiencia más ancha, target original V1. Decision time típico: 4-6 meses.
+- **Tercera opción: Ecological Economics.** Más interdisciplinario, menos formalista — cabe si se pivota a un framing de policy más explícito (e.g. agregando análisis de bienestar del LMCA con deadweight loss explícito), lo cual ya **no es polish** sino contenido nuevo.
+
+### Cronograma T9
+
+- Si SERNAPESCA v3 llega antes de Jun 2026: re-estimación T8 (~1 semana si revisión histórica) + T9 polish (~3-4 semanas) → **submission JAERE Q4 2026**.
+- Si v3 llega después o no llega: T9 polish con datos actuales → **submission JAERE Q1 2027**, nota en Discussion sobre v3 pendiente, incorporar en R&R si v3 aparece durante revisión.
+
+**Tiempo total T9 (sin SERNAPESCA):** 4-5 semanas continuas.
 
 ---
 
