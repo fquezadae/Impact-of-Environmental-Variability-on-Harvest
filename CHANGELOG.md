@@ -2,6 +2,99 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-27 (paper1: Appendix A stress tests + Appendix D convergence + double-numbering cleanup)
+
+### Added — Appendix A (reduced-form stress tests + prior elicitation protocol)
+
+- `paper1/sections/appendix_stress_tests.Rmd`: new child with heading
+  `# Reduced-form stress tests and prior elicitation {#appendix-stress}`
+  formalising the protocol used to elicit the priors on
+  $(\rho_i^{SST}, \rho_i^{CHL})$. Four subsections:
+  **Hindcast specification** (deterministic Schaefer with log-linear
+  shifter on $r$, biological parameters $(r^0, K)$ fixed at IFOP/SPRFMO
+  prior centres, bounded LS on $[-3, 3]^2$),
+  **Cross-variant fit results** (Tabla \ref{tab:stress-mape}: median
+  absolute percent error by stock × variant; finding: 0/3 stocks cross
+  the 20% MAPE threshold under any linear shifter combination),
+  **Identifiability diagnostic** (Pearson $r(\text{SST},\log\text{CHL}) = 0.030$
+  rules out collinearity; jurel $\rho^{CHL}$ pins at $-3$ boundary;
+  diagnostic motivates the move to Bayesian state-space with weakly
+  informative priors), and
+  **Translation to Bayesian priors** (Tabla \ref{tab:stress-priors}:
+  $\mu_{\rho}$ from joint MLE rounded to one decimal, $\sigma_{\rho}=1.0$
+  for all stocks; jurel vague $N(0,1)$; no hierarchical pooling because
+  $\rho^{CHL}$ flips sign between anchoveta and sardina común).
+  Reuses pre-computed outputs from `R/07_structural_bio/09_stress_test_sst.R`
+  (`data/bio_params/qa/hindcast_sst_comparison.csv` and
+  `hindcast_sst_trajectories.png`).
+- `paper1/paper1_climate_projections.Rmd`: new child include
+  `appendix-stress` added at the top of the
+  `# (APPENDIX) Appendix {-}` block, ahead of B and C, so that Appendix A
+  numbering matches the existing prose references at L230 (jurel
+  observation structure) and L275 (prior elicitation protocol).
+- Closes item L374 of the revision plan
+  (`paper1/paper1_revision_plan.md`).
+
+### Added — Appendix D (Markov-chain convergence diagnostics)
+
+- `paper1/sections/appendix_convergence_diagnostics.Rmd`: new child
+  with heading
+  `# Markov-chain convergence diagnostics {#appendix-convergence}`.
+  Reads `data/outputs/t4b/t4b_full_summary.csv` and reports the
+  within-group worst case (max split-$\hat{R}$, min bulk- and tail-ESS)
+  for each family of top-level parameters of the T4b-full posterior:
+  $r_i^0$, $K_i$, $B_{i,0}$, $\sigma_{\text{proc},i}$,
+  $\sigma_{\text{obs},i}$, $\rho_i^{SST}$, $\rho_i^{CHL}$, and the three
+  unique off-diagonal elements of $\Omega$. All $N=24$ top-level
+  parameters satisfy the conventional thresholds ($\hat{R} \leq 1.01$,
+  bulk- and tail-ESS $\geq 400$). The worst case is at
+  $\sigma_{\text{obs},3}$ (jack mackerel observation noise) with
+  $\hat{R} = 1.009$ and tail-ESS = 936, attributable to the seven
+  non-surveyed years and the two left-censored 2012 and 2015
+  observations of the jack-mackerel series. The three primary
+  identification parameters $(\rho_i^{SST}, \rho_i^{CHL})$ all attain
+  $\hat{R} \leq 1.001$ and bulk-ESS above 8,300. Replaces the earlier
+  textual claim of L275 with explicit numbers.
+- `paper1/paper1_climate_projections.Rmd`: new child include
+  `appendix-convergence` added after `appendix-posterior` in the
+  appendix block (so the rendered order is A → B → C → D).
+- `paper1/sections/appendix_posterior_diagnostics.Rmd`: tail paragraph
+  reworded to point to the new Appendix D via
+  `\ref{appendix-convergence}` (was previously a dangling reference to
+  "the replication repository").
+- Closes item L376 of the revision plan.
+
+### Changed — Double-numbering removed from appendix subsections
+
+`bookdown` numbers subsections under `\appendix` automatically (A.1,
+A.2, B.1, …); the existing children carried hardcoded prefixes in their
+`##` headings, producing rendered output of the form
+"A.1 A.1 Hindcast specification". Prefixes removed throughout:
+
+- `paper1/sections/appendix_stress_tests.Rmd`: 4 headings.
+- `paper1/sections/appendix_predictive_diagnostics.Rmd`: 2 headings
+  (`B.1 PSIS-LOO …`, `B.2 PSIS-LFO …`).
+- `paper1/sections/appendix_posterior_diagnostics.Rmd`: 2 headings
+  (`C.1 Smoothed biomass …`, `C.2 Year-level residuals`).
+
+The label IDs (`#sec:appendix-stress-spec` etc.) and all
+cross-references via `\ref{}` are unchanged.
+
+### Changed — Stress-test figure regenerated in English
+
+- `R/07_structural_bio/09_stress_test_sst.R`: facet panels relabelled
+  from `anchoveta_cs / jurel_cs / sardina_comun_cs` to
+  `Anchoveta / Sardina común / Jack mackerel` and forced into
+  biological order (anchoveta → sardina común → jack mackerel, no longer
+  alphabetical). Series legend translated:
+  `Observado / Baseline (sin env) / + SST restringido / + CHL restringido / + SST & CHL restringido`
+  → `Observed / Baseline (no shifter) / + SST / + log CHL / + SST and log CHL`,
+  matching the column headers of Tabla \ref{tab:stress-mape}. Title
+  and subtitle removed (the figure caption already describes the
+  content). Axes: `Año / Biomasa (mil t)` → `Year / Biomass (thousand t)`.
+- `data/bio_params/qa/hindcast_sst_trajectories.png` re-saved with the
+  English layout; pixel dimensions unchanged (10×11 in @ 150 dpi).
+
 ## 2026-04-24 — later (paper1: long-run trip comparative statics + Appendix C + Schaefer clarification)
 
 ### Added — Step B: long-run trip comparative statics (§4.4)

@@ -197,7 +197,8 @@ year-to-year climate innovations. Annual climate variability
 contributes little to *next-year nowcasts* but accumulates systematically
 over decadal horizons, and the shifters $\rho_i$ are the parameters that
 quantify that accumulation. A robustness comparison using PSIS-LOO is
-reported in Appendix B (Table B.1) and confirms that the full
+reported in Appendix \ref{appendix-predictive}
+(Table \ref{tab:loo-appendix}) and confirms that the full
 specification is preferred as an in-sample description of the dynamics
 ($\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59$, SE $= 4.93$); the
 LOO and LFO results are complementary diagnostics of, respectively,
@@ -211,6 +212,9 @@ against the observed SSB series (Figure \ref{fig:ppc-smooth-vs-obs})
 shows that the identified model reproduces the historical trajectory
 within a median 90\% posterior band width of approximately 20\% of the
 mean. Residuals are roughly Gaussian and contain no detectable
-autocorrelation at one-year lag (Figure \ref{fig:ppc-residuals}). The
-full posterior diagnostics are reported in Appendix \ref{appendix-posterior}.
+autocorrelation at one-year lag (Figure \ref{fig:ppc-residuals}).
+Posterior-predictive diagnostics are reported in
+Appendix \ref{appendix-posterior}; Markov-chain convergence
+diagnostics for all top-level parameters are reported in
+Appendix \ref{appendix-convergence}.
 

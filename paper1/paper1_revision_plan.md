@@ -371,10 +371,14 @@ Preferido: **C** (es la regla real), con A y B como sensibilidades en apéndice.
 
 **Pendiente de T7 (para una sesión futura):**
 
-- **Appendix A (stress tests T3-bis)**: `results_identification.Rmd` cita "stress tests (Appendix A)" y la subsección nueva de §3.1 también. Necesita escribirse un `paper1/sections/appendix_stress_tests.Rmd` child que formalice el protocolo de stress-test que produce los priors sobre (ρ^SST, ρ^CHL). Sin eso, la cita queda colgada (texto literal "Appendix A" sin \ref, no rompe knit pero es deuda).
-- **Posterior-predictive check formal (Appendix C o inline)**: el bloque comentado en `results_identification.Rmd` L207-225 espera un `appendix_posterior_diagnostics.Rmd` con PPC smooth-vs-obs y residuals. Decidir si se formaliza o se elimina el TODO.
-- **Sección 4 "Estimation"**: el revision plan V2 pidió "describir state-space Bayesiano con Stan. Incluir sección de diagnósticos (R-hat, ESS, PPC)". Parte de esto está en §3.3 y parte en appendix predictive; pero una subsección dedicada a diagnósticos de convergencia + tabla con R-hat max, min ESS, etc. no existe todavía.
 - **Trayectorias de biomasa con bandas 90%**: el revision plan pide "trayectorias de biomasa con bandas 90% de incertidumbre propagada (no ensemble puntual); tabla de cambios en viajes por flota con intervalos". Hoy §4.4 reporta comparative statics sobre r (no trayectorias de B) y la implicancia para trips es cualitativa (forward sim → paper 2). Decisión pendiente: ¿se agrega al paper 1 una figura de B_t^{sim} con bandas, o se deja todo para paper 2?
+
+**Cerrados en sesiones posteriores:**
+
+- ✓ **2026-04-24** — *Posterior-predictive check formal (Appendix C):* `paper1/sections/appendix_posterior_diagnostics.Rmd` con C.1 smoothed-vs-obs (`t4b_full_smooth_vs_obs.png`, banda 90% ≈ 20% de la media) y C.2 residuales estandarizados (`t4b_full_residuals.png`, AR(1) < 0.2 en valor absoluto en los tres stocks). Bloque comentado de `results_identification.Rmd` L207-225 descomentado y apunta a `\ref{appendix-posterior}`.
+- ✓ **2026-04-27** — *Appendix A (stress tests + prior elicitation):* `paper1/sections/appendix_stress_tests.Rmd` con cuatro subsecciones (Hindcast specification, Cross-variant fit results, Identifiability diagnostic, Translation to Bayesian priors). Cierra las tres referencias plain-text "Appendix A" en el cuerpo (L230, L275, L320). PNG `hindcast_sst_trajectories.png` regenerada en inglés con orden biológico de paneles via `R/07_structural_bio/09_stress_test_sst.R`.
+- ✓ **2026-04-27** — *Sección 4 / convergence diagnostics (Appendix D):* `paper1/sections/appendix_convergence_diagnostics.Rmd` con tabla de max split-$\hat{R}$ y min ESS bulk/tail por familia de parámetros top-level del fit T4b-full ($N=24$). Todos los parámetros satisfacen $\hat{R} \leq 1.01$ y ESS $\geq 400$; peor caso en $\sigma_{\text{obs},3}$ con $\hat{R} = 1.009$ y tail-ESS $= 936$. Lee `data/outputs/t4b/t4b_full_summary.csv`. Reemplaza la afirmación textual de §3.3 L275 con números explícitos.
+- ✓ **2026-04-27** — *Limpieza de doble numeración en apéndices:* `bookdown` ya numera A.1, A.2, B.1, … bajo `# (APPENDIX) Appendix {-}`; los headings de los childs llevaban "B.1 …", "C.1 …", "A.1 …" hardcoded, produciendo "B.1 B.1 PSIS-LOO" en el PDF. Prefijos retirados de los 8 headings de subsection en A/B/C; los `\ref{}` por label-id se mantienen.
 
 ---
 

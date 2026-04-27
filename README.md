@@ -60,8 +60,10 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │   ├── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
 │   ├── sections/                       # Child Rmds wired into main
 │   │   ├── results_identification.Rmd        # §4.1 (T4b-full rho posteriors + PPC adequacy)
+│   │   ├── appendix_stress_tests.Rmd         # Appendix A (stress tests + prior elicitation)
 │   │   ├── appendix_predictive_diagnostics.Rmd  # Appendix B (PSIS-LOO / PSIS-LFO)
 │   │   ├── appendix_posterior_diagnostics.Rmd   # Appendix C (posterior-predictive checks)
+│   │   ├── appendix_convergence_diagnostics.Rmd # Appendix D (R-hat / ESS for top-level T4b parameters)
 │   │   └── results_loo_comparison.Rmd        # alt cut, not wired in main
 │   ├── deprecated/                     # Archived V1 material (not knitted)
 │   │   └── sur_benchmark_deprecated.Rmd  # SUR reduced-form benchmark (removed 2026-04-24)
