@@ -149,7 +149,12 @@ structure managed through SPRFMO. Econometrically, the model correctly
 reports non-identification rather than producing a spurious coefficient,
 which is a strength of the Bayesian state-space approach with structurally
 informed priors: the data can either move the prior or, as here, confirm
-that they are silent about it.
+that they are silent about it. This is the econometric dividend of
+Cowles-style structural identification in fishery climate-impact
+assessment: the structural posterior reports the absence of local
+climate signal where a reduced-form benchmark would have produced an
+artefactually precise but structurally meaningless coefficient, which
+would then propagate into climate projections as if it were information.
 
 Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
 forest plot.
