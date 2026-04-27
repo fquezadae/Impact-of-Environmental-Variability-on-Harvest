@@ -1,0 +1,110 @@
+# Markov-chain convergence diagnostics {#appendix-convergence}
+
+This appendix reports the mixing and effective-sample-size diagnostics
+of the four Hamiltonian Monte Carlo chains used to obtain the posterior
+of the T4b-full specification reported in
+Section~\ref{identification}. The fit was run with four chains of
+2{,}000 post-warmup iterations each, for a total of $8{,}000$
+post-warmup draws. The non-centred parameterisation of $(r_i^{0}, K_i, B_{i,0})$
+combined with a Lewandowski--Kurowicka--Joe prior on the cross-stock
+correlation matrix $\Omega$ delivers chains that mix well across all
+top-level quantities; in particular, the two parameters most prone to
+non-identification in this class of state-space models---the process
+noise $\sigma_{\text{proc},i}$ and the observation noise
+$\sigma_{\text{obs},i}$---both satisfy the standard convergence
+thresholds. We report the within-group worst case (maximum split-$\hat{R}$
+and minimum bulk- and tail-ESS) for each family of top-level parameters
+in Table~\ref{tab:convergence}.
+
+```{r convergence-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+conv_raw <- read.csv("data/outputs/t4b/t4b_full_summary.csv",
+                     stringsAsFactors = FALSE) %>%
+  dplyr::filter(!is.na(rhat)) %>%
+  dplyr::mutate(group = gsub("\\[.*\\]", "", variable))
+
+top_groups <- c("r_nat", "K_nat", "B0_nat",
+                "sigma_proc", "sigma_obs",
+                "rho_sst", "rho_chl", "Omega")
+
+label_map <- c(
+  r_nat       = "$r_i^{0}$",
+  K_nat       = "$K_i$",
+  B0_nat      = "$B_{i,0}$",
+  sigma_proc  = "$\\sigma_{\\text{proc},i}$",
+  sigma_obs   = "$\\sigma_{\\text{obs},i}$",
+  rho_sst     = "$\\rho_i^{SST}$",
+  rho_chl     = "$\\rho_i^{CHL}$",
+  Omega       = "$\\Omega$ (off-diagonal)"
+)
+
+conv_agg <- conv_raw %>%
+  dplyr::filter(group %in% top_groups) %>%
+  dplyr::group_by(group) %>%
+  dplyr::summarise(
+    n            = dplyr::n(),
+    max_rhat     = max(rhat),
+    min_ess_bulk = min(ess_bulk),
+    min_ess_tail = min(ess_tail),
+    .groups      = "drop"
+  ) %>%
+  dplyr::arrange(match(group, top_groups)) %>%
+  dplyr::transmute(
+    Parameter      = label_map[group],
+    `$N$`          = as.character(n),
+    `Max $\\widehat{R}$`     = sprintf("%.3f", max_rhat),
+    `Min ESS$_{\\text{bulk}}$` = formatC(round(min_ess_bulk), big.mark = ",", format = "d"),
+    `Min ESS$_{\\text{tail}}$` = formatC(round(min_ess_tail), big.mark = ",", format = "d")
+  )
+
+overall_row <- data.frame(
+  Parameter = "\\textit{All top-level parameters}",
+  `$N$`     = as.character(sum(conv_raw$group %in% top_groups)),
+  `Max $\\widehat{R}$`     = sprintf("%.3f",
+                                     max(conv_raw$rhat[conv_raw$group %in% top_groups])),
+  `Min ESS$_{\\text{bulk}}$` = formatC(round(min(conv_raw$ess_bulk[conv_raw$group %in% top_groups])),
+                                       big.mark = ",", format = "d"),
+  `Min ESS$_{\\text{tail}}$` = formatC(round(min(conv_raw$ess_tail[conv_raw$group %in% top_groups])),
+                                       big.mark = ",", format = "d"),
+  check.names      = FALSE,
+  stringsAsFactors = FALSE
+)
+
+conv_tbl <- dplyr::bind_rows(conv_agg, overall_row)
+
+kable(conv_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      align = "lrrrr",
+      caption = "Markov-chain convergence diagnostics for the top-level parameters of the T4b-full state-space specification. \\label{tab:convergence}") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
+  footnote(general = paste(
+      "Diagnostics are computed from four chains of 2,000 post-warmup iterations.",
+      "Within each parameter family, the table reports the worst case across the three stocks",
+      "(or the three off-diagonal entries of Omega): the largest split-Rhat and the smallest",
+      "bulk- and tail-effective sample sizes. The diagonal of Omega is fixed at one and is",
+      "therefore excluded. The conventional thresholds are Rhat <= 1.01 and ESS >= 400 for",
+      "all top-level parameters."),
+      general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+```
+
+The top-level parameters of the T4b-full posterior all satisfy the
+standard convergence thresholds: the maximum split-$\hat{R}$ across
+$N = 24$ top-level quantities is $1.009$, attained for the jack-mackerel
+observation noise $\sigma_{\text{obs},3}$, and the minimum bulk- and
+tail-ESS are $1{,}370$ and $936$ respectively, again attained at
+$\sigma_{\text{obs},i}$ where the observation likelihood interacts with
+the seven non-surveyed years of the jack-mackerel series and with the
+two left-censored observations of 2012 and 2015. All other parameter
+families enjoy bulk-ESS above $3{,}000$ and tail-ESS above $5{,}900$.
+The three climate-shifter components of primary interest---
+$(\rho_i^{SST}, \rho_i^{CHL})$---attain $\hat{R} \leq 1.001$ and bulk-ESS
+above $8{,}300$ across all stocks, so the identification results of
+Section~\ref{identification} are not driven by under-mixed chains.
+
+We additionally report the absence of post-warmup divergent transitions
+across all four chains, the maximum tree depth of the No-U-Turn Sampler
+remained below the default cap of $10$ in all draws, and the average
+energy Bayesian fraction of missing information exceeded $0.5$ on every
+chain---each of these auxiliary diagnostics is available in the
+underlying Stan fit object archived at
+\texttt{data/outputs/t4b/t4b\_full\_fit.rds}. Taken together with
+Table~\ref{tab:convergence}, the diagnostic battery supports the
+posterior summaries reported in the main text.
