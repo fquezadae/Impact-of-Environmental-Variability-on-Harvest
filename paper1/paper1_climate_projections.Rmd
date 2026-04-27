@@ -699,6 +699,9 @@ The source code for this project is available on
 
 # (APPENDIX) Appendix {-}
 
+```{r appendix-stress, child='paper1/sections/appendix_stress_tests.Rmd'}
+```
+
 ```{r appendix-predictive, child='paper1/sections/appendix_predictive_diagnostics.Rmd'}
 ```
 
