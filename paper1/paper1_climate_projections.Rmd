@@ -29,7 +29,7 @@ header-includes:
   - \usepackage{dcolumn}
   - \usepackage{adjustbox}
   - \usepackage{threeparttable}
-  - \author{Felipe J. Quezada-Escalona\\ \small ORCID: \href{https://orcid.org/0000-0002-9594-0403}{0000-0002-9594-0403}}
+  - \author{Felipe J. Quezada-Escalona}
   - \affil{Departamento de Economía \\ Universidad de Concepción \vspace{-48pt}}
 editor_options: 
   markdown: 
