@@ -113,9 +113,15 @@ VARIABLES = {
 }
 
 PERIODS = {
-    "historical": ("1993-01-01", "2014-12-31"),
-    "ssp245":     ("2015-01-01", "2100-12-31"),
-    "ssp585":     ("2015-01-01", "2100-12-31"),
+    # End dates use day 30 instead of 31 to remain valid across CMIP6 calendar
+    # variants. UKESM1-0-LL uses calendar 360-day (no 31st of any month);
+    # asking for "2014-12-31" raised cftime ValueError. Day 30 is valid in
+    # gregorian, standard, noleap, all_leap, julian, AND 360-day calendars.
+    # Lost-time impact: 1 day per year over 108 years -> negligible for
+    # monthly climatologies.
+    "historical": ("1993-01-01", "2014-12-30"),
+    "ssp245":     ("2015-01-01", "2100-12-30"),
+    "ssp585":     ("2015-01-01", "2100-12-30"),
 }
 
 # Pangeo's curated CMIP6 catalog on Google Cloud
