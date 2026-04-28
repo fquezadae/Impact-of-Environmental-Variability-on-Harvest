@@ -124,12 +124,7 @@ $\rho^{CHL}_{\text{sard}} = +2.17$ (CI $[+0.96, +3.37]$). At one historical
 standard deviation of $\log CHL$ ($\hat{\sigma}_{\log CHL} = 0.095$, a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardina growth by
-approximately 23\%. This is a reduced-form footprint of the well-documented
-trophic asymmetry between
-the two species: sardina filter-feeds on smaller phytoplankton and
-benefits from productivity pulses, while anchoveta preys on larger
-zooplankton whose populations are suppressed when the food web is
-dominated by small primary producers. The economic implication is
+approximately 23\%. This is a reduced-form footprint of the well-documented trophic asymmetry between the two species, summarised here for the non-specialist reader. Chlorophyll-a is a satellite-observable proxy for phytoplankton biomass, the primary producers at the base of the marine food web. Pulses of high chlorophyll-a indicate periods of strong primary productivity, typically driven by coastal upwelling that brings nutrient-rich deep water to the surface. Sardina común feeds directly on small phytoplankton and benefits from these pulses, so its productivity rises with chlorophyll-a anomalies. Anchoveta, by contrast, feeds on larger zooplankton whose populations are themselves preyed upon by small phytoplankton-feeders; when the food web is dominated by small primary producers, the zooplankton biomass that anchoveta relies on is suppressed, and anchoveta productivity falls. The opposite-signed semi-elasticities of $\rho^{CHL}_{\text{anch}}$ and $\rho^{CHL}_{\text{sard}}$ identified in Table \ref{tab:rho-posteriors} are consistent with this trophic asymmetry and are not a statistical artefact. The economic implication is
 first-order for this paper: the artisanal fleet, which lands both
 species, is not simply "climate-exposed"; it is exposed to **within-target
 heterogeneity** in the sign of climate effects. A warming-and-greening
@@ -155,6 +150,8 @@ assessment: the structural posterior reports the absence of local
 climate signal where a reduced-form benchmark would have produced an
 artefactually precise but structurally meaningless coefficient, which
 would then propagate into climate projections as if it were information.
+
+The non-identification result for jack mackerel is robust to the choice of spatial domain over which the environmental anomalies are constructed. Appendix \ref{appendix-spatial} reports refits of the full state-space specification using SST and log-CHL averaged over two alternative dominios --- an offshore-extended band (32°S--41°S, to 85°W) and a Southeast Pacific regional domain (20°S--45°S, to 90°W) --- and confirms that the posterior-to-prior standard-deviation ratio of $(\rho^{SST}_{\text{jurel}}, \rho^{CHL}_{\text{jurel}})$ remains close to unity under all spatial aggregations considered. This supports the interpretation that the relevant climate forcing for the Centro-Sur jack mackerel stock operates at a scale not captured by Chilean coastal anomalies, consistent with its transboundary SPRFMO management.
 
 Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
 forest plot.
