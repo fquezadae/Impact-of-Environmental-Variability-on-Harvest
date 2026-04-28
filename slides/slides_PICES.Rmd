@@ -70,11 +70,10 @@ xaringanExtra::use_logo(
 ]
 
 .pull-right[
-<img src="figs/catch_potential.jpeg" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto;">
-
+<img src="../figs/catch_potential.jpeg" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto;">
 
 <span style="font-size:0.55em; display:block; text-align:right; margin-top:4px;">
-**Source:** `r Citet(bib, "Cheung2010", .opts = citeopt)`
+**Source:** Cheung et al. (2010)
 </span>
 
 ]
