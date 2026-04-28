@@ -1,6 +1,6 @@
 ---
-title: "Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species
-  Small Pelagic Fishery"
+title: "Climate Shifters in a Structural Bioeconomic Model: Distributional Effects
+  on Chilean Small Pelagic Fisheries"
 subtitle: "\\begin{center}{\\color{red}\\Large\\textbf{DRAFT – PLEASE DO NOT CITE}}\\end{center}"
 author: "Felipe J. Quezada-Escalona"
 date: "`r withr::with_locale(c(LC_TIME = 'English'), format(Sys.Date(), '%B %Y'))`"
@@ -29,7 +29,7 @@ header-includes:
   - \usepackage{dcolumn}
   - \usepackage{adjustbox}
   - \usepackage{threeparttable}
-  - \author{Felipe J. Quezada-Escalona}
+  - \author{Felipe J. Quezada-Escalona\\ \small ORCID: \href{https://orcid.org/0000-0002-9594-0403}{0000-0002-9594-0403}}
   - \affil{Departamento de Economía \\ Universidad de Concepción \vspace{-48pt}}
 editor_options: 
   markdown: 
@@ -151,6 +151,8 @@ fix_stargazer_notes <- function(tex) {
 }
 
 ```
+
+\noindent\textbf{Keywords:} climate change; small pelagic fisheries; Bayesian state-space; quota allocation; multi-species; distributional effects.
 
 # Introduction
 
@@ -689,6 +691,18 @@ This paper estimates a multi-species bioeconomic model for Chile's small pelagic
 Our projections indicate that the long-run productivity of the coastal-upwelling pair---anchoveta and sardina común---is poised to decline sharply under all CMIP6 scenarios considered, with sardina común consistently more exposed than anchoveta and with the SSP5-8.5 end-of-century scenario essentially eliminating the intrinsic productivity of sardina común at the Centro-Sur scale. The Centro-Sur jack mackerel stock, by contrast, does not provide sufficient information to identify a local climate response in the 2000--2024 sample, consistent with its transboundary SPRFMO management. These results suggest that management policies focused on aggregate effort levels may miss important heterogeneity across fleets and species, and that climate adaptation in this fishery will need to address the uneven distribution of impacts through the quota-allocation architecture rather than through operational margins.
 
 Several extensions to the present framework are natural. A first extension uses the posterior of $(r_i^0, K_i, \rho_i^{SST}, \rho_i^{CHL}, \Omega)$ identified here as a prior for a Stackelberg bi-level optimization, in which the regulator chooses the time path of TACs and the artisanal and industrial fleets allocate effort across stocks under the climate-shifted law of motion. That exercise would deliver the full forward biomass trajectories under CMIP6 anomaly paths with 90\% credible bands, complementing the comparative-statics treatment of the present paper, and would follow the complete @Kasperski2015-jm approach with trip-level cost functions and an inverse demand system. We leave it to future work; the posterior reported here is archived in machine-readable form to facilitate that extension. The spatial dimension of effort allocation is also a natural extension, connecting the multi-species model to the location choice literature [e.g., @Dupont1993-jn; @Smith2005-us; @Hicks2020-mz], since the geographic distribution of species availability is likely to shift under warming. A direct route for this spatial extension is to migrate the annual NB trip equation to a daily discrete choice specification with environmentally-informed species distribution models as proxies for local availability, following the approach of @Quezada2026-cp for the U.S. West Coast Coastal Pelagic Species fishery. SDMs for the Chilean Humboldt Current System are an active area of development in IFOP and academic collaborations, and once available at sufficient spatial resolution for anchoveta, sardina común, and jack mackerel, they would allow the present framework to capture the daily and within-port heterogeneity in fishing-effort responses to climate-driven shifts in availability. Finally, incorporating risk preferences and production risk---through, for example, random coefficient models---would provide a richer characterization of how fishers respond to the increased environmental variability projected under climate change [@Kasperski2013-jz].
+
+# Acknowledgments {-}
+
+The author thanks Andrea Araya, Karen Walker, and Carola Hernández (Instituto de Fomento Pesquero, IFOP) for providing access to the trip-level logbook data and for responding to detailed methodological questions about its structure during data preparation. The author also thanks IFOP institutionally for granting access to the data through the Convenio Desempeño framework, and SPRFMO for publishing the JJM stock-assessment outputs used to construct the jack mackerel transboundary biomass and catch series referenced in Section 3.1. Comments from participants at internal seminars of the Environment for Development (EfD) Chile network and from the audience at the ICES/PICES Working Group on Small Pelagic Fish improved earlier versions of this manuscript. The author bears sole responsibility for any remaining errors.
+
+# Funding {-}
+
+Quezada-Escalona acknowledges funding from the Agencia Nacional de Investigación y Desarrollo (ANID), Government of Chile, through FONDECYT Iniciación project N° 11250223. Partial support was also provided by ANID through the INCAR2 (Centro Interdisciplinario de Investigación para la Acuicultura Sustentable) project CIA250009. The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
+
+# Data and code availability {-}
+
+All code required to replicate the analysis is openly available at \url{https://github.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest} and will be archived at submission time as a versioned Zenodo release with a citable DOI. Environmental covariates are obtained from publicly available sources --- the E.U. Copernicus Marine Service Information for the historical period (DOIs in references) and the CMIP6 archive accessed through the Earth System Grid Federation for the projection period. Stock-assessment biomass and catch series are obtained from the Instituto de Fomento Pesquero (IFOP) annual technical reports for anchoveta and sardina común (Centro-Sur Chile) and from the South Pacific Regional Fisheries Management Organisation (SPRFMO) Scientific Committee reports for jack mackerel (transboundary). The vessel-level trip and landings microdata used to estimate the negative binomial trip equation were obtained from IFOP under a Convenio Desempeño data-sharing agreement; these data are confidential at the vessel level and cannot be redistributed publicly, but are available to qualified researchers under equivalent agreements with IFOP. Vessel identifiers used in this paper have been anonymised before any code or output was archived. The replication repository contains aggregate-level processed data sufficient to reproduce all reported tables and figures.
 
 # Repository
 

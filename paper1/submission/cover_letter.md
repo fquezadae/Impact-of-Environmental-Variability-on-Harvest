@@ -14,7 +14,7 @@ The Editor
 
 Dear Editor,
 
-I am pleased to submit the manuscript "Climate Change, Stock Productivity, and Fishing Effort in Chile's Multi-Species Small Pelagic Fishery" for consideration in *Marine Resource Economics*.
+I am pleased to submit the manuscript "Climate Shifters in a Structural Bioeconomic Model: Distributional Effects on Chilean Small Pelagic Fisheries" for consideration in *Marine Resource Economics*.
 
 The paper develops an integrated bioeconomic analysis of Chile's Centro-Sur small pelagic fishery — anchoveta, sardina común, and jack mackerel — and quantifies the distributional consequences of climate change across the artisanal and industrial fleets that target them. The empirical strategy combines a Bayesian state-space model of stock dynamics, calibrated on official IFOP and SPRFMO assessments and disciplined by a transparent reduced-form stress-test protocol for prior elicitation, with a vessel-level negative binomial model of annual fishing trips. CMIP6 climate projections (IPSL-CM6A-LR; SSP2-4.5 and SSP5-8.5; mid- and end-of-century) are then propagated through the joint posterior to obtain comparative-statics objects on intrinsic stock productivity and fleet-level fishing effort. I believe the manuscript fits MRE's editorial scope along three dimensions:
 
@@ -28,7 +28,7 @@ Applying the identified parameters to CMIP6 projections, the paper reports compa
 
 The paper is sized as a self-contained identification and projection contribution. A natural downstream extension uses the posterior reported here as a prior for a Stackelberg bi-level optimization in which the regulator chooses the time path of TACs and the fleets allocate effort across stocks under the climate-shifted law of motion; that exercise would deliver forward biomass trajectories with credible bands, complementing the comparative-statics treatment of the present paper. A second natural extension migrates the annual NB trip equation to a daily discrete choice specification with environmentally-informed species distribution models as proxies for local availability, following Quezada-Escalona, Tommasi, Kaplan, Muhling & Stohs (2026, *Ecological Economics*) for the U.S. West Coast Coastal Pelagic Species fishery. Both extensions are left to future work, and the posterior is archived in machine-readable form to facilitate downstream use by my own group or independent teams.
 
-The manuscript is original work that has not been published elsewhere and is not currently under consideration at any other journal. The data and code necessary to replicate the analysis are available at [public GitHub or Zenodo DOI — fill at submission time]. I have no competing interests to declare. JEL classification: Q22 (Renewable Resources and Conservation: Fishery), Q54 (Climate; Natural Disasters; Global Warming), Q57 (Ecological Economics: Ecosystem Services; Biodiversity Conservation).
+The manuscript is original work that has not been published elsewhere and is not currently under consideration at any other journal. The data and code necessary to replicate the analysis are available at [public GitHub or Zenodo DOI — fill at submission time]. I have no competing interests to declare. JEL classification: Q22 (Renewable Resources and Conservation: Fishery), Q54 (Climate; Natural Disasters; Global Warming), Q57 (Ecological Economics: Ecosystem Services; Biodiversity Conservation). Keywords: climate change; small pelagic fisheries; Bayesian state-space; quota allocation; multi-species; distributional effects.
 
 [Suggested reviewers — optional. Three to five names with affiliations and email; identify any with a recent co-author or institutional conflict. Fill at submission time.]
 
@@ -41,6 +41,7 @@ Departamento de Economía
 Universidad de Concepción
 Concepción, Chile
 felipequezada@udec.cl
+ORCID: 0000-0002-9594-0403
 
 ---
 
@@ -60,16 +61,4 @@ felipequezada@udec.cl
   - **Latin American fishery economics / institutional:** Julio Peña-Torres (UAH, Chile) — co-author conflict if you've worked with him recently; declare. Carlos Chávez (UDD, Chile) — also potential conflict via Dresdner et al. 2013 cite. Hugo Salgado (UTalca, Chile) — same caveat.
   - Identify any with co-authorship in the last five years, current grant collaborators, your PhD committee, or institutional ties at UdeC.
 
-- **Self-citation disclosure.** The cover letter and manuscript now cite Quezada-Escalona, Tommasi, Kaplan, Muhling & Stohs (2026, *Ecological Economics*, 247, 109051). MRE's submission system may flag self-citations; that is fine — the cite is methodologically substantive (daily DCM with SDM availability proxies as the spatial extension of the present annual NB framework) and not gratuitous. If asked, the cite anchors a downstream-extension claim, not a foundational one.
-
-- **Data/code DOI.** Plan to mint a Zenodo DOI from the GitHub release at submission time so the URL is persistent and citable. The current `Impact-of-Environmental-Variability-on-Harvest` repo is a reasonable basis but may want a curated `paper1-replication` subset to avoid shipping the paper 2 scaffold (when it exists) or the deprecated SUR code paths.
-
-- **Originality declaration.** The wording above is standard for MRE; double-check the most recent version of MRE's submission guidelines for any required language about prior workshop or working-paper postings. If the paper has appeared as a working paper or in a conference proceedings (FAERE, AERE, AAEA, LACEA, IIFET, NAAFE), disclose that explicitly with the URL.
-
-- **No paper 2.** This letter does not promise a sequel paper. Modularity is presented as a feature of the present submission, the posterior is archived for downstream use, and the Stackelberg extension is named only as future work — consistent with the anticipated reviewer reply.
-
-- **LMCA framing.** The acronym is expanded on first occurrence with the Spanish name in italics, matching the convention in the abstract and Discussion paragraph 6. MRE house style accepts non-English regulatory terminology when properly introduced.
-
-- **Why MRE over JAERE.** Decision rationale (2026-04-27): the manuscript's visual balance — three of four appendices biological, tables and figures dominantly bio, Methods bio-heavy — would read at JAERE as "stock assessment paper with an econ chapter" and risk being routed to ICES JMS at desk. MRE's cross-disciplinary readership (Kasperski, Reimer, Smith, Abbott, Sumaila already in the lit review) is the natural matching market. JAERE / ERE remain the targets for paper 2 (Stackelberg + welfare formal), where the methodological-econ contribution will be the primary deliverable.
-
-- **Pending placeholders in the manuscript before submit.** Two appendices (E spatial robustness; F CMIP6 ensemble decomposition) are currently placeholders pending the corresponding analytical work. The cover letter claim 3 references Appendix E as if completed; finalise the spatial-robustness refit before submit, or soften that reference to "we plan to report" in the version that actually goes to MRE.
+- **Self-citation disclosure.** The cover letter and manuscript now cite Quezada-Escalona, Tommasi, Kaplan, Muhling & Stohs (2026, *Ecological Economics*, 247, 109051). MRE's submission system may flag self-citations; that is fi
