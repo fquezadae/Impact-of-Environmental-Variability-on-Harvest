@@ -59,9 +59,27 @@ import numpy as np
 OUTPUT_DIR = r"D:\GitHub\climate_projections\CMIP6"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Bounding box for Centro-Sur Chile (matches INCAR2 + paper 1 Section 3.1)
-LAT_MIN, LAT_MAX = -56, -32
-LON_MIN, LON_MAX = -81, -65
+# Bounding box: extended to cover three nested spatial domains used in
+# the paper's results AND its Appendix E spatial-robustness check on the
+# jack mackerel non-identification result:
+#
+#   1. Centro-Sur EEZ (paper 1 Sections 3.1 + 4.1, main results):
+#        approx lat [-42, -32], lon [-75, -70]
+#   2. Offshore-extended band (Appendix E variant 1):
+#        lat [-41, -32], lon [-85, -65]
+#   3. Southeast Pacific regional (Appendix E variant 2):
+#        lat [-45, -20], lon [-90, -65]
+#
+# We download a single super-bbox that contains all three; the per-domain
+# spatial averages for SST and log-CHL are then computed in R from the
+# same NetCDF files.
+#
+# Earlier version of this script used a smaller bbox lat [-56, -32] x
+# lon [-81, -65] inherited from INCAR2. That covered domain 1 only and
+# would have required a re-download to do Appendix E. Bbox extended on
+# 2026-04-28 to anticipate Appendix E.
+LAT_MIN, LAT_MAX = -56, -20
+LON_MIN, LON_MAX = -90, -65
 
 # Six-model ensemble (source_id values as used in CMIP6 metadata)
 MODELS = [
