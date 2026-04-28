@@ -59,7 +59,13 @@ LON_MIN, LON_MAX = -90, -65
 
 # Combos to fetch from ESGF (Pangeo gap-fill list)
 # Each tuple: (source_id, variable_id, default_variant, fallback_variants)
+#
+# Updated 2026-04-28 PM after ssp245 batch finished: CESM2/chlos missing from
+# Pangeo for ssp245+ssp585 (was OK for historical). Added to the list so
+# ESGF fallback covers it for the SSP scenarios. Skip logic in fetch_one
+# means historical CESM2/chlos already on disk will be preserved.
 COMBOS = [
+    ("CESM2",         "chlos", "r1i1p1f1", ["r4i1p1f1"]),
     ("CESM2",         "uas",   "r1i1p1f1", ["r4i1p1f1"]),
     ("CESM2",         "vas",   "r1i1p1f1", ["r4i1p1f1"]),
     ("CNRM-ESM2-1",   "chlos", "r1i1p1f2", ["r1i1p1f1"]),

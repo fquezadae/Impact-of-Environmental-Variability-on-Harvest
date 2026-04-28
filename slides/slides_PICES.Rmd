@@ -27,10 +27,7 @@ class: title-slide, center, middle, inverse
 
 Departamento de Econom&iacute;a &mdash; Universidad de Concepci&oacute;n
 
-<br>
-
 ICES/PICES Small Pelagic Symposium &mdash; La Paz, M&eacute;xico
-
 May 8, 2026
 
 ```{r setup, include=FALSE}
@@ -59,7 +56,8 @@ xaringanExtra::use_logo(
 .framebox-gold { border: 1.5px solid #f59f18; border-radius: 6px; padding: 8px 12px; margin: 6px 0; background: #fffaf0; }
 </style>
 
-.tight[
+
+.pull-left[
 - Small pelagic stocks fluctuate sharply &mdash; biology, prices, regulation, weather all move year-to-year.
 
 - Standard projection tools assume **constant fishing rates or full quota uptake** &mdash; the choice is assumed away.
@@ -71,11 +69,24 @@ xaringanExtra::use_logo(
 - **My approach:** treat fisher participation as a *count process* &mdash; estimate it separately by fleet, then propagate to comparative statics.
 ]
 
+.pull-right[
+<img src="figs/catch_potential.jpeg" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto;">
+
+
+<span style="font-size:0.55em; display:block; text-align:right; margin-top:4px;">
+**Source:** `r Citet(bib, "Cheung2010", .opts = citeopt)`
+</span>
+
+]
+
 > Today: identification strategy + heterogeneity in revealed responses + roadmap to welfare counterfactuals.
+
 
 ???
 
-- 1 min. Setup r&aacute;pido. No clima como protagonista; clima como *un* shifter del entorno.
+Recordar que uno apreta C para clonar, P para Presenter View, H para tener un mapa de las teclas
+1 min. Setup r&aacute;pido. No clima como protagonista; clima como *un* shifter del entorno.
+
 
 ---
 
