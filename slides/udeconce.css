@@ -94,6 +94,28 @@ span.udecgold {
   color: #004b87; /* título en azul */
 }
 
+/* ---- Blockquote: take-home destacado ---- */
+.remark-slide-content blockquote {
+  border-left: 5px solid var(--udec-gold);
+  background-color: #fffaf0;
+  padding: 10px 16px;
+  margin: 14px 0;
+  font-style: italic;
+  color: #2a2a2a;
+  border-radius: 0 4px 4px 0;
+}
+
+.remark-slide-content blockquote p {
+  margin: 0;
+}
+
+/* En slides inverse (azul), invertir colores del blockquote */
+.inverse blockquote {
+  background-color: rgba(245, 159, 24, 0.12);
+  border-left-color: var(--udec-gold);
+  color: #fff;
+}
+
 
 /* Columnas clásicas de xaringan (remark) */
 .pull-left, .pull-right {
