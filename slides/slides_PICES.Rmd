@@ -190,9 +190,9 @@ $$T_{vy}^g \sim \text{NB}\!\left(\exp(U_{vy}'\beta_g),\,\theta_g\right)$$
 with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 
 - $p_{sy}$: ex-vessel prices, by species.
-- $H^{alloc}_{vy}$: vessel-level quota allocation (LMCA $\times$ RAE).
+- $H^{alloc}_{vy}$: vessel-level quota allocation.
 - $Z_v$: hold capacity, vessel type.
-- $O_{vy}$: bad-weather days, *vedas*.
+- $O_{vy}$: bad-weather days, closures.
 ]
 
 .pull-right[
@@ -204,7 +204,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 
 ## Identification of $\beta_g$
 
-LMCA shares vary across **vessels** $\times$ **years** (regional TAC moves; vessel share fixed). Reduced-form mapping; full structural identification deferred to Paper 2.
+Quota shares vary across **vessels** $\times$ **years** (regional TAC moves; vessel share fixed). Reduced-form mapping.
 ]
 
 ???
@@ -214,7 +214,7 @@ LMCA shares vary across **vessels** $\times$ **years** (regional TAC moves; vess
 
 ---
 
-# What drives fisher participation? &mdash; Estimates by fleet
+# What drives fisher participation?
 
 <table style="width:100%; font-size:0.78em; border-collapse:collapse;">
 <thead>
@@ -227,7 +227,7 @@ LMCA shares vary across **vessels** $\times$ **years** (regional TAC moves; vess
 </thead>
 <tbody>
 <tr style="border-bottom:1px solid #ddd;">
-<td style="padding:4px 8px;">$H^{alloc}_{vy}$ (allocated quota)</td>
+<td style="padding:4px 8px;">$H^{alloc}_{vy}$</td>
 <td style="text-align:center;"><b>(+)&#8201;<sup>***</sup></b></td>
 <td style="text-align:center;"><b>(+)&#8201;<sup>***</sup></b></td>
 <td style="padding:4px 8px;">Quota = binding budget constraint, both fleets.</td>
@@ -248,7 +248,7 @@ LMCA shares vary across **vessels** $\times$ **years** (regional TAC moves; vess
 <td style="padding:4px 8px;">Price &mdash; anchoveta</td>
 <td style="text-align:center;">0</td>
 <td style="text-align:center;"><b>(&minus;)&#8201;<sup>***</sup></b></td>
-<td style="padding:4px 8px;">Simultaneity sign &mdash; addressed in Paper 2.</td>
+<td style="padding:4px 8px;">Simultaneity sign.</td>
 </tr>
 <tr style="border-bottom:1px solid #ddd;">
 <td style="padding:4px 8px;">Hold capacity (log)</td>
@@ -263,17 +263,17 @@ LMCA shares vary across **vessels** $\times$ **years** (regional TAC moves; vess
 <td style="padding:4px 8px;">ART vulnerable; IND insulated by vessel size.</td>
 </tr>
 <tr style="border-bottom:2px solid #113b63;">
-<td style="padding:4px 8px;"><i>Veda</i> days</td>
+<td style="padding:4px 8px;">Closure days</td>
 <td style="text-align:center;"><b>(&minus;)&#8201;<sup>***</sup></b></td>
-<td style="text-align:center;">n/a</td>
-<td style="padding:4px 8px;">Largest single coefficient for IND.</td>
+<td style="text-align:center;"><b>(+)&#8201;<sup>***</sup></b><sup style="color:#c4830a;">&dagger;</sup></td>
+<td style="padding:4px 8px;">IND: largest single coef. ART: zone FE collinear.</td>
 </tr>
 </tbody>
 </table>
 
-<span class="small-note">Negative binomial, vessel-clustered robust SEs. Sign and significance shown; full table in appendix. <sup>***</sup> $p < 0.01$.</span>
+<span class="small-note">Negative binomial, vessel-clustered robust SEs. Sign and significance shown; full table in appendix. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable).</span>
 
-.tldr[Two fleets, **completely different participation models**. Same regulatory variables, opposite signs.]
+.tldr[Two fleets, **completely different participation models**.]
 
 ???
 
@@ -284,23 +284,53 @@ LMCA shares vary across **vessels** $\times$ **years** (regional TAC moves; vess
 
 # Comparative statics &mdash; the fleet asymmetry
 
-| Fleet | Counterfactual | $\%\Delta T$ (marginal) | $\Pr(\text{portfolio loss} > 50\%)$ |
-|---|---|---:|---:|
-| **Artisanal** | mid-century, moderate scenario | **&minus;8.7%** | **0.95** |
-| | end-century, severe scenario | **&minus;9.4%** | **0.99** |
-| **Industrial** | mid-century, moderate | &minus;0.9% | 0.12 |
-| | end-century, severe | &minus;0.9% | 0.12 |
+<table style="width:100%; font-size:0.85em; border-collapse:collapse; margin:8px 0;">
+<thead>
+<tr style="background-color:#eaeaea; border-bottom:2px solid #113b63;">
+<th style="text-align:left; padding:6px 10px; width:18%;">Fleet</th>
+<th style="text-align:left; padding:6px 10px; width:38%;">Counterfactual</th>
+<th style="text-align:right; padding:6px 10px; width:22%;">$\%\Delta T$ (marginal)</th>
+<th style="text-align:right; padding:6px 10px; width:22%;">$\Pr(\text{portfolio loss} > 50\%)$</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color:#fff7e6;">
+<td style="padding:6px 10px;" rowspan="2"><b>Artisanal</b></td>
+<td style="padding:6px 10px;">mid-century, moderate (SSP2-4.5)</td>
+<td style="text-align:right; padding:6px 10px;"><b>&minus;8.7%</b></td>
+<td style="text-align:right; padding:6px 10px;"><b>0.95</b></td>
+</tr>
+<tr style="background-color:#fff7e6; border-bottom:1px solid #d8d8d8;">
+<td style="padding:6px 10px;">end-century, severe (SSP5-8.5)</td>
+<td style="text-align:right; padding:6px 10px;"><b>&minus;9.4%</b></td>
+<td style="text-align:right; padding:6px 10px;"><b>0.99</b></td>
+</tr>
+<tr>
+<td style="padding:6px 10px;" rowspan="2"><b>Industrial</b></td>
+<td style="padding:6px 10px;">mid-century, moderate (SSP2-4.5)</td>
+<td style="text-align:right; padding:6px 10px;">&minus;0.9%</td>
+<td style="text-align:right; padding:6px 10px;">0.12</td>
+</tr>
+<tr style="border-bottom:2px solid #113b63;">
+<td style="padding:6px 10px;">end-century, severe (SSP5-8.5)</td>
+<td style="text-align:right; padding:6px 10px;">&minus;0.9%</td>
+<td style="text-align:right; padding:6px 10px;">0.12</td>
+</tr>
+</tbody>
+</table>
+
+<span class="small-note">
+$\%\Delta T$: change in annual trips vs baseline; *marginal* over all posterior draws.
+</span>
 
 .pull-left[
-- ART: ~9&times; larger contraction than IND.
-- ART: near-certain portfolio loss.
-- *Conditional* on no portfolio loss: &minus;2% ART vs &minus;1% IND.
+- ART: ~9&times; larger contraction than IND; near-certain portfolio loss.
+- *Conditional* on no collapse: &minus;2% ART vs &minus;1% IND.
 ]
 
 .pull-right[
-- $\Rightarrow$ Asymmetry runs through **portfolio composition + LMCA cross-sector limits**.
-- *Not* through trip-level price elasticities.
-- IND's protection partly rests on jack mackerel &mdash; whose long-run shifter is **n.i.** (deferred).
+- $\Rightarrow$ Asymmetry runs through **probability of portfolio collapse**; quota cross-sector limits lock it in.
+- IND's protection rests on jack mackerel (long-run shifter **n.i.**).
 ]
 
 ???
@@ -317,32 +347,32 @@ class: inverse, center, middle
 
 ---
 
-# Three structural extensions &Rightarrow; welfare counterfactuals
+# Three structural extensions &Rightarrow; welfare
 
 .pull-left[
-## (i) Trip-level cost (translog)
-$$C_{vg} = \sum_i \alpha_{g,X_i} X_{ivg} + \tfrac{1}{2}\sum_{i,j}\alpha_{g,X_i X_j} X_{ivg}X_{jvg}$$
+## What gets added on top of Paper 1
 
-with $X_{vg}=[w; h_{vg}; x; Z_v; Env]$, $g \in \{\text{ART, IND}\}$. SUR per fleet.
+**(i) Trip-level cost function** &mdash; translog $C_{vg}(w, h, x, Z, Env)$, SUR by fleet. Recovers **input demands** (fuel, labor, ice) via Shephard's lemma and elasticities of input substitution under climate shocks.
 
-## (ii) Inverse demand (IAIDS)
-$$\ln p_{iy} = \sum_j \gamma_j \ln h_{j,y} + \gamma_H \ln H_y + \gamma_{FM} \ln P^{FM}_y + \epsilon_{iy}$$
+**(ii) Inverse demand (IAIDS)** &mdash; $\ln p_{iy}$ as a function of all species' landings, instrumented by SST, CHL, fuel prices. Resolves the simultaneity that forced the anchoveta-price puzzle in Paper 1.
 
-3SLS; $h_{j,y}$ instrumented by SST, CHL, fuel prices.
-
-$\Rightarrow$ resolves the anchoveta-price puzzle from Paper 1.
+**(iii) Vessel dynamic optimization** &mdash; $\max_{T_g, h_{g\tau}} \sum_\tau \delta^\tau [P(h)\,h - C_g(h)]$ s.t. quota cap. Solved per fleet, posterior over $(T^*_g, h^*_{g\tau})$ under each scenario.
 ]
 
 .pull-right[
-## (iii) Vessel dynamic optimization
-$$\max_{\,h_{g\tau},\,T_g\,} \sum_{\tau=1}^{T_g}\delta^\tau\!\left\{P(h)\,h_{g\tau} - C_g(h_{g\tau}\!\mid\!w,x,Z,Env)\right\}$$
-$$\text{s.t.}\;\; q_{t+1}=\omega\,\bar q - {\textstyle\sum} h_{g\tau}\geq 0$$
-
 ## Counterfactuals it enables
-- **Equilibrium price adjustment** under reduced supply.
-- **Species substitution** within the harvest decision.
-- **Policy levers**: LMCA cross-sector reform, RAE redesign, state-contingent TACs &mdash; each evaluated as an *adaptation instrument*, not just allocation.
+
+- **Equilibrium prices** under reduced supply.
+
+- **Species substitution &amp; optimal quota allocation** &mdash; vessel target choice and social planner's $\bar Q_s$ jointly determined.
+
+- **Policy reforms** as adaptation:
+  - Cross-sector quota transferability.
+  - RAE redesign (multi-zone permits).
+  - State-contingent TACs.
 ]
+
+<span class="small-note">Full equations in appendix.</span>
 
 ???
 
@@ -356,11 +386,11 @@ $$\text{s.t.}\;\; q_{t+1}=\omega\,\bar q - {\textstyle\sum} h_{g\tau}\geq 0$$
 .tight[
 1. **Paper 1**: a fleet-specific NB model of annual trips reveals **two completely different participation technologies** in the same fishery &mdash; ART and IND respond to different prices, different operating constraints, different scales.
 
-2. **Paper 1**: under counterfactual shocks, the ART:IND participation asymmetry is **~9:1**. The mechanism is **portfolio composition $\times$ LMCA cross-sector limits**, not differential elasticities.
+2. **Paper 1**: under counterfactual shocks, the ART:IND participation asymmetry is **~9:1**, running through the **probability of portfolio collapse**; quota cross-sector limits lock it in.
 
-3. **Paper 2**: closes the loop &mdash; cost, demand, dynamic optimization &mdash; to deliver welfare counterfactuals and evaluate policy reforms (LMCA transferability, RAE redesign).
+3. **Paper 2**: closes the loop &mdash; **input demand, inverse demand, vessel &times; social-planner joint optimization** &mdash; to deliver welfare counterfactuals: equilibrium prices, species substitution &amp; optimal quota allocation, and policy reforms (cross-sector transferability, RAE redesign, state-contingent TACs).
 
-4. **Joint message for S9**: adaptive capacity is not a property of fishers; it is a property of the **bundle (portfolio &times; permit &times; institution &times; market)** they sit in. The empirical model has to respect that structure.
+4. **Joint message for S9**: adaptive capacity is not a property of fishers; it is a property of the **bundle (portfolio &times; permit &times; institution &times; market)** they sit in. Identifying adaptation requires modeling all four dimensions jointly &mdash; pooling, fixed prices, or aggregate effort all bias the answer.
 ]
 
 ???
@@ -375,37 +405,23 @@ class: inverse, center, middle
 
 # &iexcl;Gracias! / Thank you
 
-<span style="color:#f59f18; font-size:1.3em; font-weight:bold;">Questions?</span>
+<span style="color:#f59f18; font-size:1.6em; font-weight:bold;">Questions?</span>
 
 <br>
 
 **Felipe J. Quezada-Escalona**
-[felipequezada@udec.cl](mailto:felipequezada@udec.cl) &middot; [felipequezada.com](https://felipequezada.com)
 
-<br>
+[felipequezada@udec.cl](mailto:felipequezada@udec.cl)
 
-<img src="https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png" width="200">
+[felipequezada.com](https://felipequezada.com)
+
+
+<img src="https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png" width="250">
+
 
 <span style="font-size:0.75em; color:lightgray;">
 Funded by ANID-Chile, FONDECYT Iniciaci&oacute;n N&deg; 11250223.
 </span>
-
----
-
-# Selected references
-
-.tight[
-- Birkenbach, A.M. et al. (2024). Catch shares and the management of multispecies fisheries. *MRE*.
-- Cheung, W.W.L. et al. (2010). Large-scale redistribution of maximum fisheries catch potential. *GCB*.
-- Free, C.M. et al. (2019). Impacts of historical warming on marine fisheries production. *Science*.
-- Kasperski, S. (2015). Optimal multispecies harvesting in ecologically and economically interdependent fisheries. *ERE*.
-- Kasperski, S. & Holland, D.S. (2013). Income diversification and risk for fishermen. *PNAS*.
-- Lam, V.W.Y. et al. (2016). Projected change in global fisheries revenues. *Sci Rep*.
-- Pe&ntilde;a-Torres, J. et al. (2017). Multi-species mixed fisheries in Chile. *Marine Policy*.
-- Reimer, M.N. & Haynie, A.C. (2022). Structural models in fisheries economics. *ARRE*.
-- Sumaila, U.R. et al. (2011). Climate change impacts on world fisheries. *Nature CC*.
-- Quezada, F.J. (2026). Climate variability and fishers' decisions on the U.S. West Coast.
-]
 
 ---
 

@@ -46,6 +46,12 @@ a {
   text-decoration: none;
 }
 
+/* Links on inverse (blue) slides — make them visible */
+.inverse a {
+  color: #f59f18 !important;
+  text-decoration: underline;
+}
+
 
 .remark-slide-content {
   border-top: 80px solid #113b63;
