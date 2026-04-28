@@ -1,39 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Source+Code+Pro:wght@400;600&display=swap');
-
 :root {
   --udec-blue: #113b63;
   --udec-gold: #f59f18;
-}
-
-/* Force xaringan-default fonts everywhere */
-body,
-.remark-slide-content,
-.remark-slide-content h1,
-.remark-slide-content h2,
-.remark-slide-content h3,
-.remark-slide-content h4,
-.remark-slide-content p,
-.remark-slide-content li,
-.remark-slide-content td,
-.remark-slide-content th {
-  font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif !important;
-}
-
-.remark-slide-content code,
-.remark-slide-content pre,
-.remark-slide-content tt,
-.remark-code,
-.remark-inline-code {
-  font-family: 'Source Code Pro', 'Consolas', monospace !important;
-}
-
-/* Logo: smaller and positioned inside the blue bar */
-.remark-slide-content > .slide-logo,
-.remark-logo {
-  top: 12px !important;
-  right: 24px !important;
-  width: 70px !important;
-  height: auto !important;
 }
 
 /* Custom title slide */
@@ -41,7 +8,7 @@ body,
   background-color: var(--udec-blue) !important;
   color: white !important;
   background-image: url(https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png);
-  background-position: 7.5% 0%;
+  background-position: 7.5% 10%;
   background-size: 200px;
   background-repeat: no-repeat;
 }
@@ -80,29 +47,9 @@ a {
 }
 
 
-/* Slide layout: full-width blue header behind the h1 title */
 .remark-slide-content {
-  padding-top: 0 !important;
-  padding-left: 64px;
-  padding-right: 64px;
-}
+  border-top: 80px solid #113b63;
 
-.remark-slide-content > h1:first-child,
-.remark-slide-content > h1 {
-  background-color: var(--udec-blue);
-  color: #fff !important;
-  margin: 0 -64px 0.8em -64px;       /* extend to slide edges */
-  padding: 18px 64px 16px 64px;       /* vertical breathing room */
-  font-weight: 700;
-  font-size: 1.6em;
-  line-height: 1.2;
-}
-
-/* Inverse / divider slides keep solid blue (no banner above) */
-.inverse > h1 {
-  background-color: transparent;
-  margin: 0;
-  padding: 0;
 }
 
 
