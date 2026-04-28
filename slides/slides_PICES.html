@@ -379,11 +379,25 @@ box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 color: #004b87; 
 }
 
+.card {
+background-color: #f7f7f7;
+border: 1px solid #e2e2e2;
+border-radius: 6px;
+padding: 10px 14px;
+margin: 4px 0;
+}
+.card p:first-child {
+margin-top: 0;
+}
+.card p:last-child {
+margin-bottom: 0;
+}
+
 .tldr {
 border-left: 5px solid var(--udec-gold);
 background-color: #fffaf0;
 padding: 10px 16px;
-margin: 14px 0;
+margin: 32px 0 14px 0;
 font-style: italic;
 color: #2a2a2a;
 border-radius: 0 4px 4px 0;
@@ -491,7 +505,7 @@ top:1em;right:1em;
 - Small pelagic stocks fluctuate sharply &amp;mdash; biology, prices, regulation, weather all move year-to-year.
 - Standard projection tools assume **constant fishing rates or full quota uptake** &amp;mdash; the choice is assumed away.
 - But fishers **choose**: whether to participate, which species to target, how many trips to take.
-- These choices are **mediated** by quotas (LMCA), portfolio composition, and operating constraints.
+- These choices are **mediated** by quotas, portfolio composition, and operating constraints.
 ]
 .pull-right[
 &lt;img src=&quot;../figs/catch_potential.jpeg&quot; style=&quot;width:100%;max-width:100%;height:auto;display:block;margin:0 auto;&quot;&gt;
@@ -518,33 +532,32 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 # The project &amp;mdash; two papers, one structural pipeline
 
 .pull-left[
-.framebox-gold[
+.card[
 **Paper 1** (today&#39;s results)
 *Reduced-form effort + identified stock dynamics*
 
-- **Negative binomial** trip equation, estimated separately by fleet (LMCA-induced cross-sectional variation in `\(H^{alloc}\)`).
+- **Negative binomial** trip equation, estimated separately by fleet.
 - Bayesian state-space stock dynamics with structural climate shifters (in appendix).
 - Comparative statics under counterfactual scenarios.
-
-Target submission 2026.
 ]
 ]
 
 .pull-right[
-.framebox[
+.card[
 **Paper 2** (today&#39;s roadmap)
 *Welfare counterfactuals*
 
-- Translog **cost** function (intra-annual, by gear).
+- Translog **cost** function (trip-level, by fleet).
 - **Inverse demand** (IAIDS, 3SLS).
 - **Dynamic vessel optimization** `\(\Rightarrow\)` optimal `\(T_g, h_{g\tau}\)` under counterfactual shocks.
 - Welfare, prices, **species substitution**.
 
-Estimation 2026&amp;ndash;2027.
 ]
 ]
 
-.tldr[The two papers share the **same identified stock dynamics**. Paper 1 stops at participation; Paper 2 closes the loop through prices and profits.]
+&lt;div style=&quot;height: 100px;&quot;&gt;&lt;/div&gt;
+
+.tldr[The two papers share the **same identified stock dynamics**. Paper 1 stops at participation; Paper 2 closes the loop through prices, cost and profits to estimate optimal harvest and quota allocation.]
 
 ???
 
@@ -565,20 +578,20 @@ class: inverse, center, middle
 
 .pull-left[
 ## Stocks &amp; sectors
-- **Anchoveta**, **common sardine**, **jack mackerel**.
+- **Anchoveta** (*Engraulis ringens*), **sardine** (*Strangomera bentincki*), **jack mackerel** (*Trachurus murphyi*).
 - ~94% of national landings; mostly purse seiners.
 - Two sectors: **artisanal** (ART), **industrial** (IND).
 
-## The LMCA quota regime
-- *L&amp;iacute;mite M&amp;aacute;ximo de Captura por Armador*: TAC split between sectors with **limited cross-sector transferability**.
-- IND quotas partially tradable within sector; ART partly under **RAE**.
+## Quota regime
+- TAC split between sectors with **limited cross-sector transferability**.
+- IND quotas partially tradable within sector; ART under spatial collective-property rights (i.e. **RAE**).
 ]
 
 .pull-right[
 ## Fleet portfolios are very different
 
 - **ART**: ~ {anchoveta, sardine}. Concentrated.
-- **IND**: ~ 95% jack mackerel + 5% sardine. Diversified into the *transboundary* stock.
+- **IND**: ~ 95% jack mackerel + 5% sardine.
 
 ## Mobility
 
@@ -599,18 +612,20 @@ class: inverse, center, middle
 .pull-left[
 **Artisanal**
 
-&lt;img src=&quot;data:image/png;base64,#../figs/strategy_transitions_ART.svg&quot; width=&quot;95%&quot; style=&quot;display: block; margin: auto;&quot; /&gt;
+&lt;img src=&quot;data:image/png;base64,#../figs/strategy_transitions_ART.svg&quot; height=&quot;280px&quot; style=&quot;display: block; margin: auto;&quot; /&gt;
 ]
 
 .pull-right[
 **Industrial**
 
-&lt;img src=&quot;data:image/png;base64,#../figs/strategy_transitions_IND.svg&quot; width=&quot;95%&quot; style=&quot;display: block; margin: auto;&quot; /&gt;
+&lt;img src=&quot;data:image/png;base64,#../figs/strategy_transitions_IND.svg&quot; height=&quot;280px&quot; style=&quot;display: block; margin: auto;&quot; /&gt;
 ]
 
+&lt;div style=&quot;clear: both; text-align: center; margin-top: 8px;&quot;&gt;
 &lt;span class=&quot;small-note&quot;&gt;Trip-level target-species transitions, IFOP logbooks 2013&amp;ndash;2024.&lt;/span&gt;
+&lt;/div&gt;
 
-.tldr[ART: anchoveta&amp;harr;sardine dominates; jurel essentially absent. IND: rotation across all three. Same fishery, very different revealed choice sets.]
+.tldr[ART: anchoveta&amp;harr;sardine dominates; jack mackerel essentially absent. IND: rotation across all three. Same fishery, very different revealed choice sets.]
 
 ???
 
@@ -682,7 +697,7 @@ LMCA shares vary across **vessels** `\(\times\)` **years** (regional TAC moves; 
 &lt;td style=&quot;padding:4px 8px;&quot;&gt;Price &amp;mdash; jack mackerel&lt;/td&gt;
 &lt;td style=&quot;text-align:center;&quot;&gt;&lt;b&gt;(+)&amp;#8201;&lt;sup&gt;***&lt;/sup&gt;&lt;/b&gt;&lt;/td&gt;
 &lt;td style=&quot;text-align:center;&quot;&gt;0&lt;/td&gt;
-&lt;td style=&quot;padding:4px 8px;&quot;&gt;IND oriented to jurel; ART has no exposure.&lt;/td&gt;
+&lt;td style=&quot;padding:4px 8px;&quot;&gt;IND oriented to jack mackerel; ART has no exposure.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr style=&quot;border-bottom:1px solid #ddd;&quot;&gt;
 &lt;td style=&quot;padding:4px 8px;&quot;&gt;Price &amp;mdash; sardine&lt;/td&gt;
@@ -746,7 +761,7 @@ LMCA shares vary across **vessels** `\(\times\)` **years** (regional TAC moves; 
 .pull-right[
 - `\(\Rightarrow\)` Asymmetry runs through **portfolio composition + LMCA cross-sector limits**.
 - *Not* through trip-level price elasticities.
-- IND&#39;s protection partly rests on jurel &amp;mdash; whose long-run shifter is **n.i.** (deferred).
+- IND&#39;s protection partly rests on jack mackerel &amp;mdash; whose long-run shifter is **n.i.** (deferred).
 ]
 
 ???
@@ -769,7 +784,7 @@ class: inverse, center, middle
 ## (i) Trip-level cost (translog)
 `$$C_{vg} = \sum_i \alpha_{g,X_i} X_{ivg} + \tfrac{1}{2}\sum_{i,j}\alpha_{g,X_i X_j} X_{ivg}X_{jvg}$$`
 
-with `\(X_{vg}=[w; h_{vg}; x; Z_v; Env]\)`. SUR per gear.
+with `\(X_{vg}=[w; h_{vg}; x; Z_v; Env]\)`, `\(g \in \{\text{ART, IND}\}\)`. SUR per fleet.
 
 ## (ii) Inverse demand (IAIDS)
 `$$\ln p_{iy} = \sum_j \gamma_j \ln h_{j,y} + \gamma_H \ln H_y + \gamma_{FM} \ln P^{FM}_y + \epsilon_{iy}$$`
@@ -918,7 +933,7 @@ Three nested specs: **ind**, **omega**, **full**.
 
 - Reduced-form linear stress tests on growth increments do **not** close the hindcast under SST/CHL forcing alone, consistent with structural non-identification.
 
-- **Implication:** climate-driven projection for jurel CS must come from a **transboundary, game-theoretic** model (cf. Session S9, bullet 2), not a CS-only structural fit.
+- **Implication:** climate-driven projection for jack mackerel CS must come from a **transboundary, game-theoretic** model (cf. Session S9, bullet 2), not a CS-only structural fit.
 ]
 
 ---

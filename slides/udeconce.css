@@ -94,12 +94,29 @@ span.udecgold {
   color: #004b87; /* título en azul */
 }
 
+/* ---- Card gris (.card[ ... ]) ---- */
+.card {
+  background-color: #f7f7f7;
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 4px 0;
+}
+
+.card p:first-child {
+  margin-top: 0;
+}
+
+.card p:last-child {
+  margin-bottom: 0;
+}
+
 /* ---- Take-home destacado (.tldr[ ... ]) ---- */
 .tldr {
   border-left: 5px solid var(--udec-gold);
   background-color: #fffaf0;
   padding: 10px 16px;
-  margin: 14px 0;
+  margin: 32px 0 14px 0;
   font-style: italic;
   color: #2a2a2a;
   border-radius: 0 4px 4px 0;
