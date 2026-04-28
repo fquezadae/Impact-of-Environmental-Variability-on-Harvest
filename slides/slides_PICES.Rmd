@@ -2,11 +2,10 @@
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile"
 subtitle: "A multi-species structural approach"
 author: "Felipe J. Quezada-Escalona"
-date: "May 8, 2026"
+date: "ICES/PICES Small Pelagic Symposium &mdash; La Paz, M&eacute;xico, May 8, 2026"
 output:
   xaringan::moon_reader:
     self_contained: true
-    seal: false
     css: ["default", "default-fonts", "udeconce.css"]
     nature:
       highlightStyle: github
@@ -17,19 +16,6 @@ output:
       in_header: katex.html
 ---
 
-class: title-slide, center, middle, inverse
-
-# The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile
-## A multi-species structural approach &mdash; FONDECYT project, 2025&ndash;2028
-
-
-**Felipe J. Quezada-Escalona**
-
-Departamento de Econom&iacute;a &mdash; Universidad de Concepci&oacute;n
-
-ICES/PICES Small Pelagic Symposium &mdash; La Paz, M&eacute;xico
-May 8, 2026
-
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
@@ -38,11 +24,12 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ```{r use-logo, echo=FALSE}
 xaringanExtra::use_logo(
   image_url = "https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png",
+  width = "70px",
+  height = "82px",
+  position = xaringanExtra::css_position(top = "0.6em", right = "1em"),
   exclude_class = c("inverse", "hide_logo", "title-slide")
 )
 ```
-
----
 
 # Motivation
 
