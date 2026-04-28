@@ -379,6 +379,25 @@ box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 color: #004b87; 
 }
 
+.tldr {
+border-left: 5px solid var(--udec-gold);
+background-color: #fffaf0;
+padding: 10px 16px;
+margin: 14px 0;
+font-style: italic;
+color: #2a2a2a;
+border-radius: 0 4px 4px 0;
+display: block;
+clear: both;
+}
+.tldr p {
+margin: 0;
+}
+.inverse .tldr {
+background-color: rgba(245, 159, 24, 0.15);
+color: #fff;
+}
+
 .pull-left, .pull-right {
 box-sizing: border-box;
 display: block;
@@ -460,28 +479,20 @@ top:1em;right:1em;
 # Motivation
 
 &lt;style&gt;
-.pull-left { width: 47% !important; }
-.pull-right { width: 51% !important; }
+.pull-left { width: 55% !important; }
+.pull-right { width: 45% !important; }
 .small-note { font-size: 0.75em; color: #555; }
 .tight ul { margin-top: 0; margin-bottom: 0; }
 .tight li { margin-bottom: 2px; }
-.framebox { border: 1.5px solid #113b63; border-radius: 6px; padding: 8px 12px; margin: 6px 0; }
-.framebox-gold { border: 1.5px solid #f59f18; border-radius: 6px; padding: 8px 12px; margin: 6px 0; background: #fffaf0; }
 &lt;/style&gt;
 
 
 .pull-left[
 - Small pelagic stocks fluctuate sharply &amp;mdash; biology, prices, regulation, weather all move year-to-year.
-
 - Standard projection tools assume **constant fishing rates or full quota uptake** &amp;mdash; the choice is assumed away.
-
 - But fishers **choose**: whether to participate, which species to target, how many trips to take.
-
 - These choices are **mediated** by quotas (LMCA), portfolio composition, and operating constraints.
-
-- **My approach:** treat fisher participation as a *count process* &amp;mdash; estimate it separately by fleet, then propagate to comparative statics.
 ]
-
 .pull-right[
 &lt;img src=&quot;../figs/catch_potential.jpeg&quot; style=&quot;width:100%;max-width:100%;height:auto;display:block;margin:0 auto;&quot;&gt;
 
@@ -491,7 +502,9 @@ top:1em;right:1em;
 
 ]
 
-&gt; Today: identification strategy + heterogeneity in revealed responses + roadmap to welfare counterfactuals.
+
+
+.tldr[**My approach:** treat fisher participation as a *count process* &amp;mdash; estimate it separately by fleet, then propagate to comparative statics.]
 
 
 ???
@@ -531,7 +544,7 @@ Estimation 2026&amp;ndash;2027.
 ]
 ]
 
-&gt; The two papers share the **same identified stock dynamics**. Paper 1 stops at participation; Paper 2 closes the loop through prices and profits.
+.tldr[The two papers share the **same identified stock dynamics**. Paper 1 stops at participation; Paper 2 closes the loop through prices and profits.]
 
 ???
 
@@ -597,7 +610,7 @@ class: inverse, center, middle
 
 &lt;span class=&quot;small-note&quot;&gt;Trip-level target-species transitions, IFOP logbooks 2013&amp;ndash;2024.&lt;/span&gt;
 
-&gt; ART: anchoveta&amp;harr;sardine dominates; jurel essentially absent. IND: rotation across all three. Same fishery, very different revealed choice sets.
+.tldr[ART: anchoveta&amp;harr;sardine dominates; jurel essentially absent. IND: rotation across all three. Same fishery, very different revealed choice sets.]
 
 ???
 
@@ -706,7 +719,7 @@ LMCA shares vary across **vessels** `\(\times\)` **years** (regional TAC moves; 
 
 &lt;span class=&quot;small-note&quot;&gt;Negative binomial, vessel-clustered robust SEs. Sign and significance shown; full table in appendix. &lt;sup&gt;***&lt;/sup&gt; `\(p &lt; 0.01\)`.&lt;/span&gt;
 
-&gt; Two fleets, **completely different participation models**. Same regulatory variables, opposite signs.
+.tldr[Two fleets, **completely different participation models**. Same regulatory variables, opposite signs.]
 
 ???
 
