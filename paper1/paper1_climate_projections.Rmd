@@ -729,9 +729,8 @@ The source code for this project is available at \url{https://github.com/fquezad
 ```
 
 
-# Spatial robustness of the jack mackerel non-identification result {#appendix-spatial}
-
-\textit{[To be completed: refit of the full state-space specification under alternative spatial domains for SST and CHL averaging. Results pending.]}
+```{r appendix-spatial, child='paper1/sections/appendix_spatial_jurel.Rmd'}
+```
 
 # Decomposition of projection uncertainty across the CMIP6 ensemble {#appendix-ensemble}
 
