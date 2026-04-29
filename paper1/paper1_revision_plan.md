@@ -3,17 +3,29 @@
 **Felipe J. Quezada-Escalona** · Abril 2026
 
 > **V2 · Post-decisión arquitectural 2026-04-20.** Esta versión reemplaza el plan original de abril 2026. Deadline se relaja de "submission octubre 2026" a **"accepted febrero 2028"**. La arquitectura cambia de *SUR reduced-form proyectado* a *modelo bio estructural (Schaefer) con shifters climáticos estimados en state-space*. La versión V1 queda preservada en el historial de git para referencia.
+>
+> **Estado de ejecución (consolidado 2026-04-29 PM):** T1 (CMIP6
+> ensemble) ejecutado completo con 6 modelos; T2-T4 (adopción de
+> assessments + hindcast + Stan state-space) ejecutados; T5 (growth
+> comparative statics) ejecutado en versión ensemble; T6 (NB trip
+> mapping) ejecutado y wired al manuscrito; T7 (manuscript polish)
+> sustancialmente cerrado. Apéndices A, B, C, D, E ejecutados; **F
+> (variance decomp growth) y G (variance decomp trips) ejecutados como
+> Bloque 4 y 5 nuevos** post-bug-fix de unidades chlos en
+> `01_cmip6_deltas.R`. Detalle de cada bloque en `CHANGELOG.md` y en
+> las memorias `project_*_executed.md`.
 
 ---
 
 # 1. Resumen ejecutivo
 
-## Decisiones centrales
+## Decisiones centrales (reafirmadas 2026-04-29 PM, post-Apéndice G)
 
-- **Target editorial:** *Environmental and Resource Economics (ERE)*. Alternativa: *Journal of the Association of Environmental and Resource Economists (JAERE)* si el paper sale más fuerte de lo esperado bajo la nueva arquitectura. MRE como plan B.
+- **Target editorial primario: *Journal of the Association of Environmental and Resource Economists (JAERE)*.** Decisión revisitada 2026-04-29 PM con el paper post-Apéndice G en mano. Plan B definido: *Marine Resource Economics (MRE)* second submission si JAERE rechaza, con submission inmediata para preservar margen al deadline FONDECYT. La decisión 2026-04-27 que apuntaba a MRE primario queda superseded; el paper ahora carga tres contribuciones metodológicas adicionales (ensemble 6-modelo bien documentado, variance decomposition dual F+G, identificación formal del floor effect en trips) que apuntan al sweet spot de JAERE más que de MRE.
+- **Cronograma de submission:** target **agosto-septiembre 2026** para JAERE first submission. Eso preserva ~14-18 meses de holgura para Plan B (MRE second submission) si JAERE rechaza, mantiene el deadline FONDECYT (accepted febrero 2028) cómodamente alcanzable.
 - **Deadline real:** accepted febrero 2028. Deriva de hito interno FONDECYT, no de deadline editorial externo.
-- **Arquitectura:** modelo bio estructural de producción excedente por especie (Schaefer o Pella-Tomlinson), con `r`, `K`, `M` adoptados del stock assessment oficial (IFOP para sardina común y anchoveta centro-sur; SPRFMO SS3 para jurel). Shifters climáticos `ρ^SST` y `ρ^CHL` estimados vía state-space Bayesiano (Stan) como modulación de `r` o `K`.
-- **Contribución nítida:** "cómo incorporar shocks climáticos identificados a nivel de ecosistema en un modelo bioeconómico con assessment oficial, y sus consecuencias distributivas entre flota artesanal e industrial bajo regulación status-quo".
+- **Arquitectura:** modelo bio estructural de producción excedente por especie (Schaefer, $\theta=1$ por identificability), con `r`, `K`, `M` adoptados del stock assessment oficial (IFOP para sardina común y anchoveta centro-sur; SPRFMO SS3 para jurel). Shifters climáticos `ρ^SST` y `ρ^CHL` estimados vía state-space Bayesiano (Stan/cmdstanr) como modulación log-lineal de `r`.
+- **Contribución nítida (post-Apéndice G):** "(i) identificación estructural Cowles-style de shifters climáticos en un modelo bioeconómico calibrado con assessments oficiales; (ii) propagación de incertidumbre a comparative statics integrando posterior structural × ensemble CMIP6 6-modelo, con variance decomposition dual al nivel de productividad de stock y al nivel de viajes por flota; (iii) mecanismo policy: la incidencia distributiva del cambio climático en esta pesquería está gobernada por la interacción entre composición de portafolio y la limitada transferibilidad cross-sector del LMCA, no por elasticidades de comportamiento diferenciales".
 
 ## Cambio arquitectural respecto a V1
 
@@ -464,20 +476,31 @@ Pre-armar 2-3 párrafos de respuesta a las 5-6 objeciones más probables:
 
 Una pasada por colega o asesor antes de submit. Saca cosas que el autor ya no ve.
 
-### Decisión de journal (revisitada 2026-04-27)
+### Decisión de journal (revisitada 2026-04-29 PM, post-Apéndice G)
 
-V1 sugería ERE como target, JAERE como alternativa upside. V2 reafirma con orden:
+V1 sugería ERE como target, JAERE como alternativa upside. V2 (2026-04-27) reafirmó JAERE primero con MRE como plan B. **V2.1 (2026-04-29 PM) confirma JAERE como primary target dado que el paper post-Apéndice G refuerza el caso técnico**:
 
-- **Primera opción: JAERE.** El paper tiene un componente metodológico fuerte (Cowles structural ID + state-space + assessment adoption + Bayesian prior elicitation protocol formalizado en Apéndice A) que JAERE valora. La asimetría artesanal-industrial vía portfolio composition es interpretable como economía de la regulación cuando se framea con el LMCA chileno. Decision time típico: 3-4 meses.
-- **Backup: ERE.** Audiencia más ancha, target original V1. Decision time típico: 4-6 meses.
-- **Tercera opción: Ecological Economics.** Más interdisciplinario, menos formalista — cabe si se pivota a un framing de policy más explícito (e.g. agregando análisis de bienestar del LMCA con deadweight loss explícito), lo cual ya **no es polish** sino contenido nuevo.
+- **Primera opción: JAERE.** El paper tiene tres componentes metodológicos que JAERE valora explícitamente: (i) Cowles structural identification + state-space Bayesiano + assessment adoption + prior elicitation protocol formalizado en Apéndice A; (ii) **propagación dual de incertidumbre con variance decomposition (Apéndice F al nivel de stock, Apéndice G al nivel de flota)** — una contribución técnica única en la literatura SPF; (iii) policy mechanism vía portfolio × LMCA framework. Decision time típico esperado: 5-7 meses.
+- **Backup definido: MRE.** Si JAERE rechaza, second submission inmediata a MRE (1-2 semanas turnaround para reformatear). MRE acepta papers cross-disc bio/econ con sofisticación moderada y tiene decision time típico 3-4 meses. La combinación JAERE → MRE preserva el deadline FONDECYT (accepted feb 2028) si la submission JAERE es antes de fin de Q3 2026.
+- **Tercera opción: ERE.** Si MRE también rechaza (poco probable), ERE como backup wide-audience. Decision time típico 4-6 meses.
 
-### Cronograma T9
+### Cronograma submission (V2.1)
 
-- Si SERNAPESCA v3 llega antes de Jun 2026: re-estimación T8 (~1 semana si revisión histórica) + T9 polish (~3-4 semanas) → **submission JAERE Q4 2026**.
-- Si v3 llega después o no llega: T9 polish con datos actuales → **submission JAERE Q1 2027**, nota en Discussion sobre v3 pendiente, incorporar en R&R si v3 aparece durante revisión.
+| Submit JAERE | First decision esperada | Si R&R + accept | Si reject → MRE submit | MRE accept | Llega a feb 2028 |
+|---|---|---|---|---|---|
+| **Jun 2026** | Nov 2026 | Mar-May 2027 | Dic 2026 | Abr-Ago 2027 | ✓ Holgura amplia |
+| **Sep 2026** | Feb 2027 | Jun-Oct 2027 | Mar 2027 | Jul-Nov 2027 | ✓ Holgura cómoda |
+| **Dic 2026** | May 2027 | Sep 2027-Ene 2028 | Jun 2027 | Oct 2027-Feb 2028 | ⚠ Ajustado |
+| **Mar 2027** | Ago 2027 | Dic 2027-Abr 2028 | Sep 2027 | Ene-May 2028 | ⚠ Riesgo |
 
-**Tiempo total T9 (sin SERNAPESCA):** 4-5 semanas continuas.
+**Target operativo: submission JAERE entre agosto-septiembre 2026** para mantener Plan B viable.
+
+### Tareas restantes para submission
+
+- Si SERNAPESCA v3 llega antes de Jun 2026: re-estimación T8 (~1 semana si revisión histórica) + T9 polish (~3-4 semanas) → **submission JAERE Q3 2026**.
+- Si v3 llega después o no llega: T9 polish con datos actuales (CSV híbrido SERNAPESCA 2000-2023 + IFOP 2024) → **submission JAERE agosto-septiembre 2026**, nota en Discussion sobre v3 pendiente, incorporar en R&R si v3 aparece durante revisión.
+
+**Tiempo total T9 restante (sin SERNAPESCA):** 3-4 semanas continuas. Tareas remanentes: bib audit final + suggested reviewers definitivos para JAERE + Zenodo DOI release + format al template JAERE (TIFF 300dpi, JEL codes Q22/Q54/Q57, abstract pulido a 250-300 palabras, cover letter destacando las 3 contribuciones en lenguaje JAERE).
 
 ---
 
@@ -583,18 +606,37 @@ La Ruta C se adoptó tras confirmar que los stock assessments oficiales están d
 
 ---
 
-# 9. Decisión editorial pendiente
+# 9. Decisión editorial — JAERE primary, MRE backup (cerrada 2026-04-29 PM)
 
-**¿ERE o JAERE?**
+**Decisión cerrada 2026-04-29 PM, post-Apéndice G:** primary target JAERE, secondary target MRE como Plan B definido. ERE como tertiary fallback.
 
-JAERE es más técnico y valora estimación Bayesiana state-space. Con la nueva arquitectura, paper 1 pasa a ser competitivo para JAERE, no solo ERE.
+## Comparativa de targets
 
-| Criterio | ERE | JAERE |
-|---|---|---|
-| Prestigio | Alto | Alto (ranking similar) |
-| Fit con estimación Bayesiana | Bueno | Excelente |
-| Audiencia | Econ ambiental general | Econ ambiental técnico |
-| Tiempo a decisión típico | 4–6 meses | 5–7 meses |
-| Aceptación esperada con V2 | Media-alta | Media |
+| Criterio | JAERE (primary) | MRE (Plan B) | ERE (tertiary) |
+|---|---|---|---|
+| Prestigio | Alto (top tier econ ambiental) | Medio-alto (top en marine resource econ) | Alto |
+| Fit con identificación Cowles + state-space Bayesiano | Excelente | Bueno | Bueno |
+| Fit con variance decomposition F+G | Excelente (contribución técnica reconocida) | Buena (cross-disc) | Buena |
+| Fit con policy mechanism (portfolio × LMCA) | Bueno | Excelente | Excelente |
+| Audiencia | Econ ambiental técnica | Marine resource econ cross-disc | Econ ambiental general |
+| Tiempo a decisión típico | 5–7 meses | 3–4 meses | 4–6 meses |
+| Acceptance probability con V2.1 | Media | Alta | Media-alta |
 
-Recomendación tentativa: **submitir primero a JAERE** dado que el componente metodológico (state-space + assessment adoption) se valora más ahí. Si rechazo, ERE. Decisión final a revisitar en Q4 2026 cuando el draft esté completo.
+## Justificación de JAERE primary
+
+Tres argumentos cierran la decisión a favor de JAERE como primary target:
+
+1. **Sofisticación metodológica.** Post-sesión 2026-04-29 PM, el paper carga (i) identificación estructural Cowles-style, (ii) state-space Bayesiano con assessment-derived priors, (iii) ensemble 6-modelo CMIP6 con variance decomposition dual al nivel de stock y al nivel de flota, (iv) identificación formal del floor effect en trips. Esa combinación es exactly el tipo de contribución que JAERE recibe regularmente y que MRE recibe ocasionalmente. Submitir a MRE primero "deja plata sobre la mesa" en términos de placement.
+2. **Margen al deadline.** Submission JAERE en agosto-septiembre 2026 deja ~14-18 meses de holgura para Plan B (MRE second submission post-reject), lo cual hace la apuesta JAERE-primero **dominantemente segura** dado el deadline FONDECYT (accepted feb 2028). Ver tabla cronograma en sección T9.
+3. **Reviewer reports técnicos.** Aun en el caso de rechazo JAERE, los reviewer reports de un journal técnico top suelen ser sustantivos y mejoran el paper para la second submission a MRE. Este es upside puro de la apuesta JAERE-primero.
+
+## Plan B operativo (MRE second submission)
+
+- **Trigger:** rejection JAERE (desk reject o post-review).
+- **Turnaround:** 1-2 semanas para reformatear al template MRE (ya alineado con field convention; ajustes son mecánicos: figuras a TIFF 300dpi, abstract a límite MRE ~250 palabras, JEL codes mantenidos).
+- **Cover letter MRE:** énfasis en (i) policy mechanism portfolio × LMCA, (ii) cross-disciplinary balance bio/econ, (iii) novel ensemble + variance decomposition.
+- **Tiempo a acceptance esperado:** 3-4 meses first decision + 2-3 meses R&R + 1-2 meses second decision = 6-9 meses total.
+
+## Decisión revisitable
+
+Esta decisión se cierra el 2026-04-29 PM con el paper post-Apéndice G en mano y se ejecuta en submission Q3 2026. La revisita solo se hace si (a) Sanity pass externo (Dresdner) sugiere que el paper tiene un problema que cambia su tier-fit, (b) SERNAPESCA v3 introduce un cambio sustantivo que reformula la contribución, o (c) factor estratégico externo (e.g., editor JAERE conocido publica algo que ya no deja espacio para el paper).
