@@ -344,6 +344,15 @@ process_simple_var <- function(model, var) {
 }
 
 # Procesa wind_speed para un modelo. Necesita uas y vas en TODOS los exp.
+#
+# Convencion: spatial-aggregate por mes ANTES de combinar uas/vas. Esto evita
+# problemas de grids divergentes entre uas y vas (UKESM publica uas en u-points
+# y vas en v-points del C-grid, distinto numero de celdas en bbox), y reduce
+# el merge a "date" 1D (robusto a float precision en lat/lon).
+#
+# Sesgo por Jensen: sqrt(<uas>^2 + <vas>^2) vs <sqrt(uas^2 + vas^2)> es chico
+# (<2%) para bbox pequena con poca variabilidad direccional intra-mes.
+# Trade-off explicito; consistente entre modelos.
 process_wind_speed <- function(model) {
   exps <- c("historical", SSPS)
   uas_files <- setNames(sapply(exps, function(e) filepath_cmip6(model,"uas",e)), exps)
@@ -356,42 +365,59 @@ process_wind_speed <- function(model) {
                                  reason = "uas/vas incompletos en algun exp")))
   }
 
-  uas_hist <- read_cmip6_var(uas_files["historical"], "uas", BASELINE_HIST, BBOX)
-  vas_hist <- read_cmip6_var(vas_files["historical"], "vas", BASELINE_HIST, BBOX)
-  uas_sp   <- read_cmip6_var(uas_files["ssp245"], "uas", BASELINE_SPLICE, BBOX)
-  vas_sp   <- read_cmip6_var(vas_files["ssp245"], "vas", BASELINE_SPLICE, BBOX)
-  if (any(sapply(list(uas_hist, vas_hist, uas_sp, vas_sp), is.null))) {
+  # Helper: read + spatial-mean per timestamp -> data.table(date, value)
+  read_monthly_scalar <- function(file, var, drange) {
+    dt <- read_cmip6_var(file, var, drange, BBOX)
+    if (is.null(dt)) return(NULL)
+    dt[, .(value = mean(value, na.rm = TRUE)), by = date]
+  }
+
+  # Combina uas+vas a wind_speed monthly (sqrt suma cuadrados) sobre date comun
+  combine_uv_monthly <- function(u_dt, v_dt, tag = "") {
+    if (is.null(u_dt) || is.null(v_dt)) return(NULL)
+    m <- merge(u_dt, v_dt, by = "date", suffixes = c("_uas", "_vas"))
+    if (nrow(m) == 0) {
+      cat(sprintf("    [wind %s] merge by date -> 0 filas\n", tag))
+      return(NULL)
+    }
+    if (nrow(m) != nrow(u_dt) || nrow(m) != nrow(v_dt)) {
+      cat(sprintf("    [wind %s] partial date overlap: nrow uas=%d vas=%d merged=%d\n",
+                  tag, nrow(u_dt), nrow(v_dt), nrow(m)))
+    }
+    m[, value := sqrt(value_uas^2 + value_vas^2)]
+    m[, .(date, value)]
+  }
+
+  uas_hist <- read_monthly_scalar(uas_files["historical"], "uas", BASELINE_HIST)
+  vas_hist <- read_monthly_scalar(vas_files["historical"], "vas", BASELINE_HIST)
+  uas_sp   <- read_monthly_scalar(uas_files["ssp245"], "uas", BASELINE_SPLICE)
+  vas_sp   <- read_monthly_scalar(vas_files["ssp245"], "vas", BASELINE_SPLICE)
+
+  bh <- combine_uv_monthly(uas_hist, vas_hist, paste(model, "hist"))
+  bs <- combine_uv_monthly(uas_sp,   vas_sp,   paste(model, "splice"))
+  if (is.null(bh) || is.null(bs)) {
     return(list(rows = NULL,
                 log = data.table(model = model, var = "wind_speed",
                                  stage = "baseline",
-                                 reason = "uas/vas hist o splice vacios")))
+                                 reason = "no merge uas/vas baseline (ver consola)")))
   }
-
-  base_uas <- rbind(uas_hist, uas_sp)
-  base_vas <- rbind(vas_hist, vas_sp)
-  base <- merge(base_uas, base_vas,
-                by = c("lon", "lat", "date", "month"),
-                suffixes = c("_uas", "_vas"))
-  base[, value := sqrt(value_uas^2 + value_vas^2)]
-  base_agg <- agg_year_mean(base[, .(date, value)], "wind_speed")
+  base <- rbind(bh, bs)
+  base_agg <- agg_year_mean(base, "wind_speed")
 
   rows <- list(); skipped <- list()
   for (ssp in SSPS) {
     for (wname in names(WINDOWS_FUT)) {
-      uas_fut <- read_cmip6_var(uas_files[ssp], "uas", WINDOWS_FUT[[wname]], BBOX)
-      vas_fut <- read_cmip6_var(vas_files[ssp], "vas", WINDOWS_FUT[[wname]], BBOX)
-      if (is.null(uas_fut) || is.null(vas_fut)) {
+      uas_fut <- read_monthly_scalar(uas_files[ssp], "uas", WINDOWS_FUT[[wname]])
+      vas_fut <- read_monthly_scalar(vas_files[ssp], "vas", WINDOWS_FUT[[wname]])
+      fut <- combine_uv_monthly(uas_fut, vas_fut, paste(model, ssp, wname))
+      if (is.null(fut)) {
         skipped[[length(skipped) + 1L]] <- data.table(
           model = model, var = "wind_speed",
           stage = sprintf("future/%s/%s", ssp, wname),
-          reason = "uas o vas futuro vacio")
+          reason = "no merge uas/vas (ver consola)")
         next
       }
-      fut <- merge(uas_fut, vas_fut,
-                   by = c("lon", "lat", "date", "month"),
-                   suffixes = c("_uas", "_vas"))
-      fut[, value := sqrt(value_uas^2 + value_vas^2)]
-      fut_agg <- agg_year_mean(fut[, .(date, value)], "wind_speed")
+      fut_agg <- agg_year_mean(fut, "wind_speed")
       rows[[length(rows) + 1L]] <- data.table(
         model              = model,
         scenario           = ssp,
