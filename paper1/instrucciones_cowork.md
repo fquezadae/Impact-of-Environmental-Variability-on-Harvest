@@ -1,5 +1,33 @@
 # Instrucciones para Claude Cowork — Revisión paper Climate-SPF Chile
 
+> **STATUS: EJECUTADO COMPLETO 2026-04-23 a 2026-04-29.**
+>
+> Este archivo es el handoff histórico que enumeró los 11 cambios del
+> pivote post-Cowles (eliminación del SUR strawman, reformulación de
+> contribución 3 alrededor de portfolio × LMCA, ensemble multi-modelo
+> CMIP6, Apéndices E/F/G, citas Cline / Oken / Holland, glosario para
+> economistas, etc.). Todos los Cambios 1-11 están materializados en el
+> manuscrito y el código.
+>
+> **Trazabilidad:**
+> - Cambios 1-10 ejecutados en sesiones 2026-04-23 a 2026-04-27 (ver
+>   entradas correspondientes en `CHANGELOG.md`).
+> - Cambio 11 (ensemble CMIP6) — placeholder en este doc — ejecutado
+>   completo en sesión 2026-04-29 PM, con bug fix de unidades chlos
+>   descubierto y resuelto en el camino, más Apéndice F refresh y
+>   Apéndice G nuevo (variance decomp Δtrips). Ver entry
+>   `2026-04-29 PM` del `CHANGELOG.md` y memorias
+>   `project_cmip6_ensemble_deltas_executed.md`,
+>   `project_t5_ensemble_executed.md`,
+>   `project_t7_ensemble_executed.md`,
+>   `project_appendix_f_variance_decomp.md`,
+>   `project_appendix_g_trips_variance.md`.
+>
+> El archivo se conserva como referencia histórica del scope de la
+> revisión post-Cowles. Para tareas pendientes hacia submission,
+> consultar `paper1_revision_plan.md` (sección T9 polish + submission
+> mechanics).
+
 ## Contexto
 
 El manuscrito actual (`paper1_climate_projections.pdf` / archivo fuente correspondiente) contiene cinco menciones a un contraste con un "reduced-form Seemingly Unrelated Regression (SUR) of growth increments on environmental anomalies" como benchmark contra el cual se compara la especificación state-space estructural. El SUR no se estima ni se reporta en ningún lugar del paper; funciona como strawman retórico.
