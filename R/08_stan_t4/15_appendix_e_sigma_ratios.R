@@ -191,8 +191,8 @@ if (isTRUE(getOption("appE.sigma.run_main", TRUE))) {
                                   "offshore_ext"   = "#2ca02c",
                                   "se_pacific"     = "#d62728")) +
     labs(x = "Posterior mean (90% CI)", y = NULL,
-         title = "Apendice E -- shifters ambientales por dominio",
-         subtitle = "Centering: media 2000-2024 en cada dominio") +
+         title = "Apendice E -- shifters ambientales por dominio del covariado de jurel",
+         subtitle = "Anch/sard ven D1 (centro_sur_eez) en los 3 fits; solo jurel itera entre dominios") +
     theme_bw(base_size = 10) +
     theme(legend.position = "none",
           panel.grid.minor = element_blank(),
@@ -219,5 +219,34 @@ if (isTRUE(getOption("appE.sigma.run_main", TRUE))) {
     cat("[appE-sigma] -> ZONA GRIS: ratios entre 0.7 y 0.85. Discutir caso.\n")
   }
 
-  invisible(list(long = long, wide = wide, diag = diag))
+  # Sanity: anch y sard ven el mismo covariado en los 3 fits, asi que sus rho
+  # posteriors solo se mueven via Omega (chico). Si rho_anch o rho_sard se
+  # corre mas de 0.5 SD posterior entre dominios, hay algo raro -- bandera.
+  cat("\n[appE-sigma] Sanity anch/sard estabilidad cross-domain ",
+      "(deberian ser ~iguales):\n")
+  anchsard <- long %>%
+    dplyr::filter(stock %in% c("anchoveta_cs", "sardina_comun_cs"),
+                  domain %in% APP_E_DOMAINS_ORDER) %>%
+    dplyr::group_by(stock, shifter) %>%
+    dplyr::summarise(
+      mean_min      = min(mean_post, na.rm = TRUE),
+      mean_max      = max(mean_post, na.rm = TRUE),
+      mean_range    = mean_max - mean_min,
+      sigma_post_med = stats::median(sigma_post, na.rm = TRUE),
+      n_post_sd     = mean_range / sigma_post_med,   # rango en SD posteriores
+      .groups = "drop"
+    )
+  print(anchsard)
+  bad_anchsard <- anchsard %>% dplyr::filter(n_post_sd > 0.5)
+  if (nrow(bad_anchsard) > 0) {
+    cat("[appE-sigma] -> ALERTA sanity: anch/sard rho se corren >0.5 SD ",
+        "entre fits. Posible bug en armado de matrices SST_c/logCHL_c.\n")
+    print(bad_anchsard)
+  } else {
+    cat("[appE-sigma] -> Sanity OK: anch/sard rho estables (<0.5 SD post) ",
+        "across dominios.\n")
+  }
+
+  invisible(list(long = long, wide = wide, diag = diag,
+                 jurel = jur, anchsard_sanity = anchsard))
 }
