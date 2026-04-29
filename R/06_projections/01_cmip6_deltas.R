@@ -193,9 +193,18 @@ read_cmip6_var <- function(filepath, varname, date_range, bbox) {
   t_idx <- which(dates >= date_range[1] & dates <= date_range[2])
   if (length(t_idx) == 0) return(NULL)
 
+  # Deteccion de grid:
+  #   1. nav_lon/nav_lat (ORCA en IPSL, GFDL, CNRM, MPI-ESM ocean)  -> curvilinear
+  #   2. lat/lon como variables 2D                                  -> curvilinear (POP en CESM2)
+  #   3. lon/lat 1D como dims (atmospheric uas/vas, GFDL ocean)     -> regular
   if ("nav_lon" %in% names(nc$var)) {
     lon2d <- ncvar_get(nc, "nav_lon")
     lat2d <- ncvar_get(nc, "nav_lat")
+    grid_type <- "curvilinear"
+  } else if (all(c("lon", "lat") %in% names(nc$var)) &&
+             length(dim(ncvar_get(nc, "lon"))) == 2L) {
+    lon2d <- ncvar_get(nc, "lon")
+    lat2d <- ncvar_get(nc, "lat")
     grid_type <- "curvilinear"
   } else if (all(c("lon", "lat") %in% names(nc$dim))) {
     lon1d <- ncvar_get(nc, "lon")
@@ -203,6 +212,11 @@ read_cmip6_var <- function(filepath, varname, date_range, bbox) {
     grid_type <- "regular"
   } else {
     stop("Grid desconocido en ", basename(filepath))
+  }
+  # POP / algunos ORCA publican lon en 0-360. Normalizar a -180/180 para que
+  # el filtro de bbox negativo funcione.
+  if (grid_type == "curvilinear") {
+    lon2d <- ifelse(lon2d > 180, lon2d - 360, lon2d)
   }
 
   v <- nc$var[[varname]]
@@ -456,7 +470,10 @@ compute_ensemble_deltas <- function() {
 # =============================================================================
 # RUN
 # =============================================================================
+# Default TRUE para que source() lo ejecute. Si solo queres cargar las
+# funciones sin correr el main (e.g., tests, exploracion):
+#   options(cmip6.deltas.run_main = FALSE); source(".../01_cmip6_deltas.R")
 
-if (sys.nframe() == 0) {
+if (isTRUE(getOption("cmip6.deltas.run_main", TRUE))) {
   deltas_ensemble <- compute_ensemble_deltas()
 }
