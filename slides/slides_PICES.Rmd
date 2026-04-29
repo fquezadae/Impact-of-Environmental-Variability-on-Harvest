@@ -297,12 +297,12 @@ Quota shares vary across **vessels** $\times$ **years** (regional TAC moves; ves
 <tr style="background-color:#fff7e6;">
 <td style="padding:6px 10px;" rowspan="2"><b>Artisanal</b></td>
 <td style="padding:6px 10px;">mid-century, moderate (SSP2-4.5)</td>
-<td style="text-align:right; padding:6px 10px;"><b>&minus;8.7%</b></td>
+<td style="text-align:right; padding:6px 10px;"><b>&minus;8.6%</b></td>
 <td style="text-align:right; padding:6px 10px;"><b>0.95</b></td>
 </tr>
 <tr style="background-color:#fff7e6; border-bottom:1px solid #d8d8d8;">
 <td style="padding:6px 10px;">end-century, severe (SSP5-8.5)</td>
-<td style="text-align:right; padding:6px 10px;"><b>&minus;9.4%</b></td>
+<td style="text-align:right; padding:6px 10px;"><b>&minus;9.5%</b></td>
 <td style="text-align:right; padding:6px 10px;"><b>0.99</b></td>
 </tr>
 <tr>
@@ -320,7 +320,7 @@ Quota shares vary across **vessels** $\times$ **years** (regional TAC moves; ves
 </table>
 
 <span class="small-note">
-$\%\Delta T$: change in annual trips vs baseline; *marginal* over all posterior draws.
+$\%\Delta T$: change in annual trips vs baseline; *marginal* over all posterior draws. Cross-median across a 6-model CMIP6 ensemble.
 </span>
 
 .pull-left[
@@ -481,13 +481,15 @@ knitr::include_graphics("../figs/t4b/t4b_full_rho_shifters.png")
 
 # Appendix C &middot; Stock productivity comparative statics
 
-| Stock | Scenario | $\Delta r/r_0$ (median) | 90% CI | $\Pr(\Delta < 0)$ |
+| Stock | Scenario | $\Delta r/r_0$ (cross-median) | 90% CI | $\Pr(\Delta < 0)$ |
 |---|---|---:|---:|---:|
-| **Anchoveta** | SSP2-4.5, mid-century | **&minus;51%** | [&minus;74%, &minus;17%] | 0.99 |
-| | SSP5-8.5, end-century | **&minus;89%** | [&minus;98%, &minus;50%] | 0.99 |
-| **Sardine** | SSP2-4.5, mid-century | **&minus;90%** | [&minus;95%, &minus;82%] | 1.00 |
+| **Anchoveta** | SSP2-4.5, mid-century | **&minus;51%** | [&minus;68%, &minus;27%] | 1.00 |
+| | SSP5-8.5, end-century | **&minus;90%** | [&minus;98%, &minus;54%] | 0.99 |
+| **Sardine** | SSP2-4.5, mid-century | **&minus;79%** | [&minus;86%, &minus;67%] | 1.00 |
 | | SSP5-8.5, end-century | **&minus;100%** | [&minus;100%, &minus;99%] | 1.00 |
 | Jack mackerel | all scenarios | n.i. | n.i. | n.i. |
+
+<span class="small-note">Cross-median across CMIP6 ensemble of 6 GCMs (CESM2, CNRM-ESM2-1, GFDL-ESM4, IPSL-CM6A-LR, MPI-ESM1-2-HR, UKESM1-0-LL); 90% CI is the within-posterior credible interval averaged across models.</span>
 
 ---
 
@@ -531,22 +533,38 @@ knitr::include_graphics("../figs/t4b/t4b_ppc_B_smooth_vs_obs.png")
 knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png")
 ```
 
-<span class="small-note">Posterior $\Delta r / r_0$ across SSP $\times$ period combinations.</span>
+<span class="small-note">Posterior $\Delta r / r_0$ across SSP $\times$ period combinations, one ridge per CMIP6 model (6-GCM ensemble).</span>
 
 ---
 
-# Appendix H &middot; Paper 2 &mdash; data inputs
+# Appendix H &middot; Variance decomposition of trip response
+
+```{r vardecomp, out.width='75%', fig.align='center'}
+knitr::include_graphics("../figs/t4b/appendix_g_trips_variance_decomposition.png")
+```
+
+.tight[
+- **Within-model** (posterior + vessel heterogeneity) dominates: **96%** for ART SSP2-4.5 mid, saturating at **100%** under SSP5-8.5 end. IND: **98%** &rarr; **100%**.
+- **Between-model** (CMIP6 ensemble): at most **4%**, often $\approx 0$.
+- The narrow cross-IQR in Table 5 is *not* climate-model consensus &mdash; it is a **floor effect**: once $f^H_v \to 0$, $\%\Delta T \to \exp(-\beta_g H^{alloc}_v)$ &mdash; a fleet-mechanical quantity, not a climate magnitude.
+]
+
+---
+
+# Appendix I &middot; Paper 2 &mdash; data inputs
 
 .tight[
 **Already in hand (Paper 1):**
-- Trip-level catch and price data (IFOP, 2013&ndash;2024).
+- Trip-level catch and price data (IFOP logbooks, 2013&ndash;2024).
+- All-gear official catch series (SERNAPESCA, transparency request **AH010T0006857**, May 2025).
 - Vessel characteristics & ports of operation.
-- Environmental covariates (Copernicus, GlobColour).
+- Environmental covariates (Copernicus, GlobColour, CMIP6 6-GCM ensemble).
+
+**Caveat &mdash; IFOP panel coverage** (cross-validated vs SERNAPESCA vessel-level): IND 68% by vessel count, >90% by catch &rarr; representative; ART 32% by count, ~70% by catch &rarr; covers the **purse-seine artisanal** subset; non-PS gears (lampara, lines) excluded.
 
 **To request / acquire for Paper 2:**
 - Variable-input prices: crew wage, diesel cost, ice & supplies.
-- Quota prices (auction or secondary markets, if available; informs forward-looking behavior cf. Birkenbach et al. 2024).
-- Permits by vessel; ITQ holdings by sector.
-- LMCA quota allocations and inter-fleet transfers (SERNAPESCA).
-- Fish-meal world price &mdash; demand instrument.
+- Quota prices (auction or secondary markets, if available).
+- Permits by vessel; quota holdings by sector.
+- Fish-meal world price &mdash; demand instrument for IAIDS.
 ]
