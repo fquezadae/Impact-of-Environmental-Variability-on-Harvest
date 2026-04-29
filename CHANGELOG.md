@@ -2,6 +2,259 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-29 PM (paper1: CMIP6 6-model ensemble, chlos units bug fix, Appendix G new)
+
+### Fixed — chlos units bug in `R/06_projections/01_cmip6_deltas.R`
+
+- **Symptom (pre-fix).** `data/cmip6/deltas_ensemble.csv` reported
+  `delta = 0` for `var = "logchl"` in 5 of 6 CMIP6 models
+  (CESM2, CNRM-ESM2-1, GFDL-ESM4, MPI-ESM1-2-HR, UKESM1-0-LL); only
+  IPSL-CM6A-LR carried non-zero chl deltas. Bug went undetected by the
+  existing sanity check (`R/06_projections/00b_sanity_check_ensemble.R`)
+  because `|delta| < log(2)` is satisfied vacuously when delta = 0.
+- **Root cause.** `agg_year_mean()` applied a floor of `pmax(., 0.01)`
+  before `log()` to handle below-detection cells. The floor is
+  numerically valid in mg m-3 (the unit of chl in the Copernicus L4
+  ocean colour product on which T4b's `logCHL_c` is identified). CMIP6
+  publishes `chlos` in **kg m-3** (SI standard) for 5 of 6 ensemble
+  models — IPSL is the exception, publishing in mg m-3. Realistic chl
+  in kg m-3 (1e-7 to 1e-6) falls always below the floor of 0.01,
+  saturating to `log(0.01) = -4.605` for every grid-cell-year, which
+  drives `baseline_mean = future_mean` exactly and `delta = 0` per
+  arithmetic identity.
+- **Fix.** `read_cmip6_var()` now reads the `units` attribute of the
+  `chlos` netCDF variable and converts to mg m-3 before downstream
+  aggregation:
+    `kg m-3 → x 1e6`,
+    `g m-3 → x 1e3`,
+    `mg m-3 → x 1` (no-op).
+  Heuristic fallback for unrecognised units strings: if
+  `median(|arr|) < 1e-3`, assume kg m-3 and apply x 1e6 (with warning);
+  otherwise assume mg m-3. Each `chlos` file processed during a run now
+  prints `[chlos units] <file>: units='<str>' -> x<scale> -> mg/m3`
+  to console for audit.
+- **Confirmation by run output.** Post-fix run (2026-04-29 PM) confirmed
+  IPSL-CM6A-LR `units='mg m-3'` (x1, no conversion); the other five
+  models `units='kg m-3'` (x1e6 each). `00b_sanity_check_ensemble.R`
+  passed all asserts.
+- **Numerical impact (cross-model summary, post-fix):**
+    - `logchl ssp245 mid`: mean +0.005 +/- 0.038 (was 0 mechanical)
+    - `logchl ssp245 end`: mean -0.022 +/- 0.052 (was 0 mechanical)
+    - `logchl ssp585 mid`: mean +0.007 +/- 0.037 (was 0 mechanical)
+    - `logchl ssp585 end`: mean -0.067 +/- 0.154, q05 = -0.297 (was 0)
+  Cross-model q05 of -0.30 in SSP5-8.5 end-of-century is the most
+  consequential change: combined with rho^CHL_anch = -2.3 it generates
+  exp(0.69) ~ +99% offsets to the SST collapse in some posterior
+  draws / models, and combined with rho^CHL_sard = +2.1 it deepens the
+  sardine collapse.
+- **Downstream re-runs required and executed:**
+    - `R/08_stan_t4/12_growth_comparative_statics.R` (T5).
+    - `R/08_stan_t4/13_trip_comparative_statics.R` (T7).
+    - `R/08_stan_t4/16_appendix_f_variance_decomposition.R` (App F).
+  T4b posteriors NOT refit (the bug was downstream of identification;
+  shifters are unchanged).
+
+### Refactored — `R/08_stan_t4/_compstat_utils.R` (new shared utilities)
+
+- **Motivation.** T7 previously sourced the entire T5 script
+  (`12_growth_comparative_statics.R`) to import `t5_load_scenarios()`
+  and the `T5_*` constants. After the T5 ensemble rewrite, T5's main
+  guard became default-TRUE for source(), so `source(T5)` from T7
+  triggered a full T5 run as a side effect.
+- **Solution.** Extracted shared symbols into a new module:
+  `R/08_stan_t4/_compstat_utils.R`. Contents:
+    - Constants: `COMPSTAT_DELTAS_CSV`, `COMPSTAT_STOCKS`,
+      `COMPSTAT_STOCK_LABEL`, `COMPSTAT_SSPS`, `COMPSTAT_WINDOWS`,
+      `COMPSTAT_SCENARIO_LABEL`, `COMPSTAT_NON_IDENTIFIED_STOCKS`.
+    - Function: `compstat_load_scenarios()` returning the per-model
+      scenario tibble `(model, scenario, window, scenario_key, DSST,
+      DlogCHL)`.
+- **Wiring.**
+    - `12_growth_comparative_statics.R`: now sources
+      `_compstat_utils.R`; `T5_*` constants are aliases of `COMPSTAT_*`;
+      `t5_load_scenarios()` is a thin wrapper around
+      `compstat_load_scenarios()`.
+    - `13_trip_comparative_statics.R`: now sources `_compstat_utils.R`
+      directly (no longer sources T5). `T6_*` constants are aliases.
+    - `16_appendix_f_variance_decomposition.R`: unchanged; still sources
+      T5 with the option-toggle pattern (preserves `t5_extract_draws`,
+      `t5_compute_r_eff`).
+    - `17_appendix_g_trips_variance_decomposition.R` (new, see below):
+      sources `_compstat_utils.R` and `13_trip_comparative_statics.R`
+      with `t6.run_main = FALSE`.
+
+### Added — Step 3a: T5 ensemble (`12_growth_comparative_statics.R`)
+
+- Rewrite of T5 to iterate over all 6 CMIP6 models in
+  `data/cmip6/deltas_ensemble.csv`. T4b posteriors reused from disk
+  (`data/outputs/t4b/t4b_full_fit.rds`); only the cross-join changes.
+  Inner: 16,000 draws x 22 (model, ssp, window) combos x 3 stocks ~ 1M
+  rows.
+- **Within-model** summary: `(stock, model, ssp, window)` with median,
+  q05, q95, prob_decline.
+- **Cross-model** summary: `(stock, ssp, window)` with median across
+  models of the within-model medians, q25/q75 (cross-IQR), and median
+  of the within-model q05/q95 (within posterior CI).
+- **Outputs:**
+    - `tables/growth_comparative_statics.csv` — formatted, n.i. for
+      jurel.
+    - `tables/growth_comparative_statics_raw.csv` — numeric cross-model.
+    - `tables/growth_comparative_statics_by_model.csv` — long, one row
+      per `(stock, model, ssp, window)`.
+    - `figs/t4b/growth_ridgeline_cmip6.png` — 3x4 facet, one ridge per
+      CMIP6 model in each scenario-window.
+- **Sanity +1°C:** anchoveta -64.7%, sardine -93.7% — matches paper-old
+  (-65% / -94%) confirming rho_sst structural identification preserved.
+- **Headline post-fix numbers:** anch SSP5-8.5 end cross-median -89.6%
+  (Pr_decline 0.99, was 1.00 pre-fix mechanically); sardine SSP5-8.5
+  end -99.9% (Pr_decline 1.00).
+
+### Added — Step 3b: T7 ensemble (`13_trip_comparative_statics.R`)
+
+- Complete rewrite of T7 to iterate over the CMIP6 ensemble. Pipeline:
+    `r_eff[d, s, m, c] = r_base[d, s] * exp(rho_sst[d,s] * DSST[m,c]
+                                           + rho_chl[d,s] * DlogCHL[m,c])`
+    -> `B_star = K * (1 - F_hist / r_eff)`
+    -> `factor_B = B_star / B_hist`  (jurel override = 1.0)
+    -> `factor_H[d, v, m, c] = sum_s omega_v_s * factor_B[d, s, m, c]`
+    -> `factor_trips[d, v, m, c] = exp(beta_H[fleet(v)] * H_alloc_hist[v]
+                                       * (factor_H - 1))`.
+- Memory-safe per-vessel loop preserved. Inner table 16K x 22 = 352K
+  rows; total `factor_trips_dt` = 292M rows; runs in ~50s on a modern
+  laptop.
+- **Within-model summary** at `(fleet, model, ssp, window)` collapsed
+  over `(draws x vessels within fleet)`: marginal/conditional medians,
+  q05/q95, Pr_loss, factor_H stats.
+- **Cross-model summary** at `(fleet, ssp, window)`: median across
+  models of the within-model medians, cross-IQR, within-CI averaged
+  across models. Mirrors the T5 ensemble summary structure exactly.
+- **Pr(extinct)** also reported with within-model + cross-model
+  decomposition by `(stock, ssp, window)`.
+- **Outputs (5 tables):**
+    - `paper1/tables/trip_comparative_statics.csv` — formatted paper.
+    - `paper1/tables/trip_comparative_statics_raw.csv` — numeric
+      cross-model.
+    - `paper1/tables/trip_comparative_statics_by_model.csv` — long,
+      one row per `(fleet, model, ssp, window)`.
+    - `paper1/tables/trip_comparative_statics_extinct.csv` — Pr(extinct)
+      cross-model.
+    - `paper1/tables/trip_comparative_statics_extinct_by_model.csv` —
+      Pr(extinct) by model.
+- **Headline numbers (cross-model):** asymmetry ART/IND robust to
+  ensemble — ART -8.6% to -9.5% marginal (Pr_loss 0.95-0.99); IND -0.9%
+  marginal (Pr_loss 0.12 stable across all four scenarios). Cross-IQR
+  ~0.1pp in many cells, formally identified as a floor effect (see
+  Appendix G below).
+- **Main guard default-FALSE** for T7 (heavy run, avoid accidental
+  trigger). Run with `options(t6.run_main = TRUE)`.
+
+### Added — Appendix G new (`17_appendix_g_trips_variance_decomposition.R`)
+
+- New script and child Rmd for the variance decomposition of the
+  fleet-level trip response, paralleling Appendix F's decomposition for
+  growth. Two-way decomposition under the law of total variance:
+    `Var_total(%Delta T_f) = E_m[Var_(d,v)(%Delta T_f | m, fleet)]
+                           + Var_m[E_(d,v)(%Delta T_f | m, fleet)]`
+  where m = CMIP6 model, d = T4b posterior draw, v = vessel within
+  fleet.
+- The within-model component pools posterior + vessel heterogeneity by
+  design (paralelism with F + vessel heterogeneity is a fixed feature
+  of the fleet that does not shrink with more data). A 3-way
+  decomposition that separates the three sources is available in the
+  same `factor_trips_dt` and noted in the script for reviewer requests.
+- **Headline result.** The within-model component dominates: 96% of
+  total variance for ART under SSP2-4.5 mid-century, saturating at
+  100% under SSP5-8.5 end-of-century. For IND: 98% rising to 100%.
+  Between-model is at most 4% in the SSP2-4.5 mid-century cells,
+  numerically zero (to the nearest percent) in the remaining 6 cells.
+- **Reading.** This is *not* CMIP6 ensemble agreement on the climate
+  signal; it is the mechanical signature of floor-effect saturation of
+  the underlying Schaefer biomass collapse — once `factor_H ~ 0`, the
+  trip response converges to `exp(-beta * H_alloc)`, a quantity
+  determined by fleet business mechanics rather than by climate
+  magnitude. The narrow cross-IQR in Table 5 of the main results is
+  thus formally identified as a floor effect, not as climate consensus.
+- **Outputs:**
+    - `tables/appendix_g_trips_variance_decomposition.csv` — formatted.
+    - `tables/appendix_g_trips_variance_decomposition_raw.csv` —
+      numeric.
+    - `figs/t4b/appendix_g_trips_variance_decomposition.png` — stacked
+      bars.
+- **Manuscript wiring.**
+    - `paper1/sections/appendix_g_trips_variance_decomposition.Rmd` new
+      child, with prose using inline `r ...` to auto-resolve numbers
+      from the raw CSV (zero hardcoded numbers; robust to re-runs).
+    - `paper1/paper1_climate_projections.Rmd`: child include after
+      Appendix F. Prose updates in §3.2, §3.4, §4.3.3 footnote, §5
+      Discussion (caveats), and §6 Conclusions to reference Appendix G
+      as the companion of F.
+
+### Re-ran — Appendix F variance decomposition (post-chlos-fix)
+
+- `R/08_stan_t4/16_appendix_f_variance_decomposition.R` re-run with the
+  corrected chl deltas. Sardine decomposition virtually unchanged
+  (climate-bottleneck robust at 77-91% between in three of four cells);
+  anchoveta decomposition shifted in SSP5-8.5 end-of-century from
+  88% / 12% (within / between) pre-fix to **97% / 3%** post-fix, with
+  `sd_total` rising from 0.196 to 0.339 (+73%). The chl heterogeneity
+  cross-model amplifies the within-variance via
+  rho^CHL_anch * DlogCHL, which is a structural signal not present in
+  the pre-fix run.
+- **New caveat** in `appendix_variance_decomposition.Rmd`: a paragraph
+  documenting the systematic mean-vs-median divergence between
+  Appendix F (mean -83.1% for anch SSP5-8.5 end, required by the law
+  of total variance) and Table 4 (median -89.6%, robust to the
+  collapse tail). The gap is left-skew driven; both are valid; we
+  report median in the headline table and mean in the variance
+  decomposition by construction.
+
+### Updated — main manuscript (`paper1_climate_projections.Rmd`)
+
+- **Table 5 chunk** (`tripcompstat`, L642-720): rewritten to consume
+  the new cross-model schema of `trip_comparative_statics_raw.csv`.
+  Table preserves the 5-column structure (Fleet, Scenario, Pr loss,
+  marginal, conditional) but the bands are now cross-model
+  median + cross-IQR. Footnote updated with the floor-effect caveat
+  cross-referencing Appendix G.
+- **Body prose §4.3.2:** anch SSP2-4.5 mid 45 -> 51%, sard 80 -> 79%;
+  ΔlogCHL qualifier expanded ("near zero in cross-model median, with
+  non-trivial inter-model spread"); SSP5-8.5 end now mentions the
+  q05 ΔlogCHL = -0.30; "0.99 rather than 1" caveat added with
+  mechanistic explanation.
+- **Discussion §5 second caveat:** new paragraph closing on the
+  Appendix G reading — narrow cross-IQR is floor effect, not climate
+  consensus; marginal information value of expanding the CMIP6
+  ensemble for fleet-level trips is small relative to tightening the
+  structural posterior or refining vessel heterogeneity.
+- **Conclusions §6 contribution 2:** new sentence on Appendix G as
+  companion decomposition.
+- **Cosmetic fix:** `16{,}000` -> `$16{,}000$` in
+  `appendix_variance_decomposition.Rmd` (math mode forces the curly
+  braces to render as invisible groupers, producing `16,000` in the
+  PDF).
+- **Cross-references** in §3.2 (data) and §3.4 (projection-approach)
+  updated to mention "Appendix F for stock-level productivity and
+  Appendix G for fleet-level trips".
+
+### Files added / modified summary
+
+- New: `R/08_stan_t4/_compstat_utils.R`,
+  `R/08_stan_t4/17_appendix_g_trips_variance_decomposition.R`,
+  `paper1/sections/appendix_g_trips_variance_decomposition.Rmd`.
+- Modified: `R/06_projections/01_cmip6_deltas.R`,
+  `R/08_stan_t4/12_growth_comparative_statics.R`,
+  `R/08_stan_t4/13_trip_comparative_statics.R`,
+  `paper1/paper1_climate_projections.Rmd`,
+  `paper1/sections/appendix_variance_decomposition.Rmd`.
+- Regenerated outputs: `data/cmip6/deltas_ensemble.csv`,
+  all `tables/growth_comparative_statics*.csv`,
+  all `paper1/tables/trip_comparative_statics*.csv`,
+  `tables/appendix_f_variance_decomposition*.csv`,
+  `tables/appendix_g_trips_variance_decomposition*.csv`,
+  `figs/t4b/growth_ridgeline_cmip6.png`,
+  `figs/t4b/appendix_f_variance_decomposition.png`,
+  `figs/t4b/appendix_g_trips_variance_decomposition.png`.
+
 ## 2026-04-27 (paper1: Appendix A stress tests + Appendix D convergence + double-numbering cleanup)
 
 ### Added — Appendix A (reduced-form stress tests + prior elicitation protocol)
