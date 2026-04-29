@@ -87,7 +87,7 @@ knitr::kable(appF_tab,
 
 The decomposition reveals a sharp contrast between the two identified
 stocks. For *sardine*, the between-model component dominates the
-total variance in three of the four scenario--window pairs (between $79$
+total variance in three of the four scenario--window pairs (between $77$
 and $91\%$ of total variance). The within-model posterior of
 $\rho^{SST}_{\text{sard}}$ is tight enough that the bottleneck on the
 projection is not the structural inference but disagreement among the
@@ -97,27 +97,42 @@ than tightening the structural posterior with additional historical
 data.
 
 For *anchoveta*, the within-model component is comparable to or larger
-than the between-model component, and reaches $88\%$ of the total
-variance under SSP5-8.5 by end-of-century. This reflects a wider
-posterior on $\rho^{SST}_{\text{anch}}$: the historical record from
-2000 to 2024 has identified the anchoveta shifter less precisely than
-the sardine shifter, consistent with the wider $90\%$ credible interval
-in the structural Section \ref{identification}. The bottleneck on the
-anchoveta projection is therefore the structural posterior; tightening
-the historical inference would do more for the anchoveta projection
-than expanding the ensemble.
+than the between-model component across all scenarios, and reaches
+$97\%$ of the total variance under SSP5-8.5 by end-of-century. This
+reflects a wider posterior on $\rho^{SST}_{\text{anch}}$ together with
+the larger between-draw heterogeneity that ensemble chl deltas induce
+once chl is on a comparable scale across models: the historical record
+from 2000 to 2024 has identified the anchoveta shifter less precisely
+than the sardine shifter, consistent with the wider $90\%$ credible
+interval in the structural Section \ref{identification}, and the
+nontrivial cross-model spread of $\Delta\log\text{CHL}$ under SSP5-8.5
+end-of-century combines with $\rho^{CHL}_{\text{anch}} < 0$ to widen
+the within-model distribution further. The bottleneck on the anchoveta
+projection is therefore the structural posterior; tightening the
+historical inference would do more for the anchoveta projection than
+expanding the ensemble.
 
 The single exception in the table is *sardine* under SSP5-8.5
-end-of-century, where the within share rises to $61\%$. This row is a
+end-of-century, where the within share rises to $59\%$. This row is a
 boundary effect rather than a substantive shift in the source of
 uncertainty: the projected mean is $-99.5\%$ and the total $SD$ is
-$0.009$, so the distribution is essentially pinned at the lower bound
+$0.010$, so the distribution is essentially pinned at the lower bound
 of $-100\%$. Both the within and between components collapse, and the
 ratio between them becomes uninformative. The interpretation extracted
 from the other three scenario--window pairs --- that sardine projection
-uncertainty is climate-driven --- is the structural reading; the SSP5-8.5
-end-of-century cell is reported for completeness but should be read with
-the floor effect in mind.
+uncertainty is climate-driven --- is the structural reading; the
+SSP5-8.5 end-of-century cell is reported for completeness but should be
+read with the floor effect in mind.
+
+The means reported in Table \ref{tab:appF-decomp} differ slightly from
+the medians reported in Table \ref{tab:growth_compstat} of the main
+results section because the within-model distribution of
+$\Delta r^*_s / r^{(0)}_s$ is left-skewed: posterior draws in which the
+stock collapses pull the median down, while posterior draws in which
+chl-driven offsets attenuate the SST collapse pull the mean up. The
+gap is largest for anchoveta under SSP5-8.5 end-of-century (mean
+$-83.1\%$ vs.\ median $-89.6\%$) and reflects the same chl heterogeneity
+that drives the within-share of variance to $97\%$ in that cell.
 
 Figure \ref{fig:appF-decomp} visualises the decomposition as stacked
 shares of total variance.
@@ -133,8 +148,9 @@ are climate-driven in three of four cells; the SSP5-8.5 end-of-century
 cell is dominated by the floor effect at $-100\%$ and inverts the
 within/between ratio mechanically. Anchoveta projections are
 posterior-driven, particularly under SSP5-8.5 by end-of-century, where
-$88\%$ of the total variance is attributable to the structural
-posterior. Jack mackerel omitted (non-identified shifter).}
+$97\%$ of the total variance is attributable to the structural
+posterior together with chl-driven heterogeneity in posterior draws.
+Jack mackerel omitted (non-identified shifter).}
 \label{fig:appF-decomp}
 \end{figure}
 

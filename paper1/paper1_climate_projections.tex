@@ -583,10 +583,10 @@ Table \ref{tab:env_projections} summarizes the projected environmental changes f
 \toprule
 SSP & Window & $\Delta$ SST ($^{\circ}$C) & $\Delta$ CHL (\%) & $\Delta$ wind speed (m/s)\\
 \midrule
-SSP2-4.5 & 2081--2100 & $+1.44$ \,[$+0.96$, $+1.91$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.19$ \,[$+0.10$, $+0.24$]\\
-SSP2-4.5 & 2041--2060 & $+0.74$ \,[$+0.52$, $+0.92$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.14$ \,[$+0.13$, $+0.15$]\\
-SSP5-8.5 & 2081--2100 & $+2.39$ \,[$+1.93$, $+3.29$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.42$ \,[$+0.36$, $+0.45$]\\
-SSP5-8.5 & 2041--2060 & $+0.92$ \,[$+0.61$, $+1.23$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.21$ \,[$+0.14$, $+0.32$]\\
+SSP2-4.5 & 2081--2100 & $+1.44$ \,[$+0.96$, $+1.91$] & $+0.0$ \,[$-3.6$, $+1.4$] & $+0.19$ \,[$+0.10$, $+0.24$]\\
+SSP2-4.5 & 2041--2060 & $+0.74$ \,[$+0.52$, $+0.92$] & $+2.2$ \,[$+0.0$, $+2.8$] & $+0.14$ \,[$+0.13$, $+0.15$]\\
+SSP5-8.5 & 2081--2100 & $+2.39$ \,[$+1.93$, $+3.29$] & $-1.3$ \,[$-7.4$, $+3.0$] & $+0.42$ \,[$+0.36$, $+0.45$]\\
+SSP5-8.5 & 2041--2060 & $+0.92$ \,[$+0.61$, $+1.23$] & $+0.7$ \,[$-2.3$, $+3.4$] & $+0.21$ \,[$+0.14$, $+0.32$]\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -606,20 +606,20 @@ Table \ref{tab:growth_compstat} reports the comparative-statics object \(\Delta 
 \toprule
 Stock & Scenario & $n_m$ & $\Delta SST$ ($^{\circ}$C) & $\Delta \log\text{CHL}$ & $\Delta r_i^{\star}/r_i^{0}$ (cross median) & Cross-model IQR & Within posterior 90\% CI & $\Pr(\Delta<0)$\\
 \midrule
-Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & -45.4\% & {}[-52.7\%, -40.4\%] & {}[-64.5\%, -17.3\%] & 1.00\\
-Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -71.0\% & {}[-74.5\%, -58.3\%] & {}[-90.4\%, -27.5\%] & 1.00\\
-Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & -59.3\% & {}[-71.0\%, -46.8\%] & {}[-79.2\%, -25.7\%] & 1.00\\
-Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & -90.1\% & {}[-96.0\%, -85.6\%] & {}[-98.3\%, -54.3\%] & 1.00\\
-Sardine CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & -79.8\% & {}[-93.2\%, -74.6\%] & {}[-86.6\%, -69.0\%] & 1.00\\
+Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.022 & -50.7\% & {}[-52.7\%, -47.8\%] & {}[-68.0\%, -27.0\%] & 1.00\\
+Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -71.0\% & {}[-76.3\%, -60.4\%] & {}[-91.1\%, -31.0\%] & 1.00\\
+Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.007 & -62.4\% & {}[-68.0\%, -55.9\%] & {}[-80.9\%, -31.2\%] & 1.00\\
+Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & -0.013 & -89.6\% & {}[-91.5\%, -87.4\%] & {}[-98.3\%, -54.2\%] & 0.99\\
+Sardine CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.022 & -78.6\% & {}[-93.2\%, -72.5\%] & {}[-85.7\%, -67.3\%] & 1.00\\
 \addlinespace
-Sardine CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -97.3\% & {}[-98.9\%, -90.1\%] & {}[-98.9\%, -92.9\%] & 1.00\\
-Sardine CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & -91.6\% & {}[-96.6\%, -80.8\%] & {}[-95.4\%, -84.0\%] & 1.00\\
-Sardine CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & -99.9\% & {}[-100.0\%, -99.4\%] & {}[-100.0\%, -99.2\%] & 1.00\\
-Jack mackerel CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
+Sardine CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -97.2\% & {}[-98.9\%, -89.8\%] & {}[-98.9\%, -92.6\%] & 1.00\\
+Sardine CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.007 & -91.1\% & {}[-96.7\%, -78.5\%] & {}[-95.1\%, -83.2\%] & 1.00\\
+Sardine CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & -0.013 & -99.9\% & {}[-100.0\%, -99.4\%] & {}[-100.0\%, -99.3\%] & 1.00\\
+Jack mackerel CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.022 & n.i. & n.i. & n.i. & n.i.\\
 Jack mackerel CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
 \addlinespace
-Jack mackerel CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
-Jack mackerel CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
+Jack mackerel CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.007 & n.i. & n.i. & n.i. & n.i.\\
+Jack mackerel CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & -0.013 & n.i. & n.i. & n.i. & n.i.\\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -638,7 +638,7 @@ Jack mackerel CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & n.i. & n.i. & n.i.
 \caption{Posterior distribution of the proportional change in intrinsic stock productivity under CMIP6 scenarios, six-model ensemble. Ridges are kernel-smoothed marginal posteriors of the proportional change in intrinsic productivity derived from draws of the state-space full specification, with one ridge per CMIP6 model in each scenario--window pair; vertical line at zero. CESM2 is absent from the SSP2-4.5 panels because chl-ssp245 is not published in the NCAR CMIP6 catalogue. Jack mackerel is omitted because its climate shifter is not identified in the 2000--2024 sample.}\label{fig:growthridgeline}
 \end{figure}
 
-The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (cross-model median \(+0.58\,^{\circ}\)C, \(\Delta\log\text{CHL}\approx 0\)), the cross-model median of anchoveta's intrinsic productivity declines by \(45\%\) and sardina común's by \(80\%\), with posterior probability of negative impact equal to one in both cases. Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median \(+2.39\,^{\circ}\)C, \(\Delta\log\text{CHL}\approx 0\)) the cross-model medians deepen to \(-90\%\) and \(-99.9\%\) respectively, and the entire \(90\%\) credible interval of each stock lies below zero in every model of the ensemble. The identified signs confirm the qualitative reading of the shifters in Section \ref{identification}: both coastal stocks respond negatively to SST, but sardina común carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardina than for anchoveta.
+The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (cross-model median \(+0.58\,^{\circ}\)C; \(\Delta\log\text{CHL}\) near zero in the cross-model median, with non-trivial inter-model spread), the cross-model median of anchoveta's intrinsic productivity declines by \(51\%\) and sardina común's by \(79\%\), with posterior probability of negative impact equal to one in both cases. Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median \(+2.39\,^{\circ}\)C, \(\Delta\log\text{CHL}\) cross-model median \(-0.013\) with \(5\)th-percentile of \(-0.30\) across models) the cross-model medians deepen to \(-90\%\) and \(-99.9\%\) respectively, and the entire \(90\%\) credible interval of sardine's response lies below zero in every model of the ensemble; the anchoveta cross-model probability of decline is \(0.99\) rather than \(1\) because under a small fraction of (model, draw) pairs a sufficiently negative \(\Delta\log\text{CHL}\) combined with \(\rho^{CHL}_{\text{anch}}<0\) offsets the SST-driven collapse. The identified signs confirm the qualitative reading of the shifters in Section \ref{identification}: both coastal stocks respond negatively to SST, but sardina común carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardina than for anchoveta.
 
 The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes what the steady-state intrinsic productivity of each stock would be under a counterfactual climate, \emph{holding fixed} the law of motion and the fishery's regulatory regime. This is precisely what the structural identification of the shifters permits: because \((\rho_i^{SST}, \rho_i^{CHL})\) are invariant to the joint distribution of \((SST, B, C)\), they can be evaluated at climate regimes that lie outside the estimation window---in particular at an SST anomaly of +2.3\(^{\circ}\)C that is roughly nine historical standard deviations beyond the 2000--2024 mean. Reduced-form correlational specifications do not license this extrapolation.
 
@@ -648,7 +648,7 @@ Table \ref{tab:trip_compstat} translates the comparative-statics object on intri
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:tripcompstat}Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. \label{tab:trip_compstat}}
+\caption{\label{tab:tripcompstat}Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. Entries are cross-model medians with cross-model IQRs in brackets, aggregated within each CMIP6 model over posterior draws and vessels within fleet. \label{tab:trip_compstat}}
 \centering
 \fontsize{9}{11}\selectfont
 \begin{threeparttable}
@@ -656,19 +656,19 @@ Table \ref{tab:trip_compstat} translates the comparative-statics object on intri
 \toprule
 Fleet & Scenario & $\Pr(f^H_v < 0.5)$ & $\%\Delta$ trips (marginal) & $\%\Delta$ trips (conditional)\\
 \midrule
-Artisanal & SSP2-4.5, 2041-2060 & 0.95 & -8.7\%\,[-57.0\%,\,-0.1\%] & -2.0\%\,[-28.2\%,\,+0.8\%]\\
-Artisanal & SSP2-4.5, 2081-2100 & 0.98 & -9.3\%\,[-58.4\%,\,-0.1\%] & -1.8\%\,[-26.9\%,\,+2.2\%]\\
-Artisanal & SSP5-8.5, 2041-2060 & 0.97 & -9.2\%\,[-58.1\%,\,-0.1\%] & -1.8\%\,[-27.5\%,\,+0.7\%]\\
-Artisanal & SSP5-8.5, 2081-2100 & 0.99 & -9.4\%\,[-58.9\%,\,-0.1\%] & -1.3\%\,[-24.3\%,\,+3.4\%]\\
-Industrial & SSP2-4.5, 2041-2060 & 0.12 & -0.9\%\,[-15.4\%,\,+0.0\%] & -0.8\%\,[-8.4\%,\,+0.0\%]\\
-Industrial & SSP2-4.5, 2081-2100 & 0.12 & -0.9\%\,[-15.4\%,\,+0.0\%] & -0.8\%\,[-9.2\%,\,+0.0\%]\\
-Industrial & SSP5-8.5, 2041-2060 & 0.12 & -0.9\%\,[-15.4\%,\,+0.0\%] & -0.8\%\,[-8.8\%,\,+0.0\%]\\
-Industrial & SSP5-8.5, 2081-2100 & 0.12 & -0.9\%\,[-15.4\%,\,+0.0\%] & -0.8\%\,[-9.2\%,\,+0.0\%]\\
+Artisanal & SSP2-4.5, 2041-2060 & 0.95\,[0.93,\,0.96] & -8.6\%\,[-8.7\%,\,-8.0\%] & -2.1\%\,[-2.5\%,\,-1.9\%]\\
+Artisanal & SSP2-4.5, 2081-2100 & 0.98\,[0.97,\,0.99] & -9.3\%\,[-9.4\%,\,-9.2\%] & -1.8\%\,[-1.8\%,\,-1.4\%]\\
+Artisanal & SSP5-8.5, 2041-2060 & 0.98\,[0.96,\,0.98] & -9.2\%\,[-9.3\%,\,-8.8\%] & -1.8\%\,[-1.8\%,\,-1.7\%]\\
+Artisanal & SSP5-8.5, 2081-2100 & 0.99\,[0.99,\,0.99] & -9.5\%\,[-9.5\%,\,-9.4\%] & -0.9\%\,[-1.2\%,\,-0.7\%]\\
+Industrial & SSP2-4.5, 2041-2060 & 0.12\,[0.11,\,0.12] & -0.9\%\,[-0.9\%,\,-0.8\%] & -0.8\%\,[-0.8\%,\,-0.7\%]\\
+Industrial & SSP2-4.5, 2081-2100 & 0.12\,[0.12,\,0.12] & -0.9\%\,[-0.9\%,\,-0.9\%] & -0.8\%\,[-0.8\%,\,-0.8\%]\\
+Industrial & SSP5-8.5, 2041-2060 & 0.12\,[0.12,\,0.12] & -0.9\%\,[-0.9\%,\,-0.9\%] & -0.8\%\,[-0.8\%,\,-0.8\%]\\
+Industrial & SSP5-8.5, 2081-2100 & 0.12\,[0.12,\,0.12] & -0.9\%\,[-0.9\%,\,-0.9\%] & -0.8\%\,[-0.8\%,\,-0.8\%]\\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Entries are posterior medians with 90\% credible intervals, aggregated over posterior draws of the full state-space specification and vessels within fleet. f\_H is the composition-weighted biomass factor relative to the historical baseline: f\_H = sum over species of omega\_vs * B\_star\_s / B\_hist\_s, where B\_star\_s = K\_s * (1 - F\_hist\_s / r\_eff\_s) is the Schaefer steady-state biomass and omega\_vs is the vessel's realized catch share in species s. Pr(f\_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half. The marginal median integrates over all posterior draws; the conditional median restricts to draws with f\_H >= 0.5, isolating the pure climate-elasticity component from the steady-state collapse component of the trip response. Jack mackerel is treated as non-identified (factor\_B = 1) consistent with the identification discussion in the Results section. Raw numerical values and by-stock extinction probabilities are archived in tables/trip\_comparative\_statics\_raw.csv and tables/trip\_comparative\_statics\_extinct.csv.
+\item Entries summarise the posterior of the proportional change in fleet-level annual trips, computed for each of the six CMIP6 models in the ensemble and then aggregated across models. Within each model, the posterior is integrated over draws of the full state-space specification and vessels within fleet (composition-weighted exposure). Cross-model medians and 25th-to-75th-percentile inter-quartile ranges across the n\_m models are reported in brackets; the median across models of the within-model 5th-to-95th-percentile posterior interval (within posterior CI) is archived in tables/trip\_comparative\_statics\_raw.csv. f\_H is the composition-weighted biomass factor relative to the historical baseline: f\_H = sum over species of omega\_vs * B\_star\_s / B\_hist\_s, where B\_star\_s = K\_s * (1 - F\_hist\_s / r\_eff\_s) is the Schaefer steady-state biomass and omega\_vs is the vessel's realized catch share in species s. Pr(f\_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half. The marginal median integrates over all posterior draws within each model; the conditional median restricts to draws with f\_H >= 0.5, isolating the pure climate-elasticity component from the steady-state collapse component of the trip response. Jack mackerel is treated as non-identified (factor\_B = 1) consistent with the identification discussion in the Results section. Raw numerical values, by-model disaggregation, and by-stock extinction probabilities are archived in tables/trip\_comparative\_statics\_raw.csv, tables/trip\_comparative\_statics\_by\_model.csv, and tables/trip\_comparative\_statics\_extinct.csv. The narrow cross-IQR observed in many cells reflects a floor effect: once Schaefer steady-state collapse saturates the portfolio-weighted biomass factor across models, the trip response converges to exp(-beta * H\_alloc * 1), independent of climate magnitude. See Appendix F for a complementary variance decomposition of the underlying productivity response.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -1678,22 +1678,22 @@ scenario--window pairs.
 \toprule
 Stock & Scenario & $n_m$ & Mean $\%\Delta$ & $SD$ total & $\%$ within & $\%$ between\\
 \midrule
-Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & $-44.4\%$ & 0.199 & $56\%$ & $44\%$\\
-Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & $-65.4\%$ & 0.220 & $69\%$ & $31\%$\\
-Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & $-55.9\%$ & 0.209 & $56\%$ & $44\%$\\
-Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & $-85.5\%$ & 0.196 & $88\%$ & $12\%$\\
-Sardine CS & SSP2-4.5, 2041-2060 & 5 & $-78.8\%$ & 0.163 & $9\%$ & $91\%$\\
+Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & $-48.0\%$ & 0.180 & $64\%$ & $36\%$\\
+Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & $-64.9\%$ & 0.232 & $62\%$ & $38\%$\\
+Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & $-58.4\%$ & 0.188 & $68\%$ & $32\%$\\
+Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & $-83.1\%$ & 0.339 & $97\%$ & $3\%$\\
+Sardine CS & SSP2-4.5, 2041-2060 & 5 & $-77.7\%$ & 0.172 & $9\%$ & $91\%$\\
 \addlinespace
-Sardine CS & SSP2-4.5, 2081-2100 & 5 & $-94.1\%$ & 0.066 & $21\%$ & $79\%$\\
-Sardine CS & SSP5-8.5, 2041-2060 & 6 & $-87.4\%$ & 0.114 & $14\%$ & $86\%$\\
-Sardine CS & SSP5-8.5, 2081-2100 & 6 & $-99.5\%$ & 0.009 & $61\%$ & $39\%$\\
+Sardine CS & SSP2-4.5, 2081-2100 & 5 & $-94.2\%$ & 0.064 & $23\%$ & $77\%$\\
+Sardine CS & SSP5-8.5, 2041-2060 & 6 & $-86.7\%$ & 0.122 & $13\%$ & $87\%$\\
+Sardine CS & SSP5-8.5, 2081-2100 & 6 & $-99.5\%$ & 0.010 & $59\%$ & $41\%$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 The decomposition reveals a sharp contrast between the two identified
 stocks. For \emph{sardine}, the between-model component dominates the
-total variance in three of the four scenario--window pairs (between \(79\)
+total variance in three of the four scenario--window pairs (between \(77\)
 and \(91\%\) of total variance). The within-model posterior of
 \(\rho^{SST}_{\text{sard}}\) is tight enough that the bottleneck on the
 projection is not the structural inference but disagreement among the
@@ -1703,27 +1703,42 @@ than tightening the structural posterior with additional historical
 data.
 
 For \emph{anchoveta}, the within-model component is comparable to or larger
-than the between-model component, and reaches \(88\%\) of the total
-variance under SSP5-8.5 by end-of-century. This reflects a wider
-posterior on \(\rho^{SST}_{\text{anch}}\): the historical record from
-2000 to 2024 has identified the anchoveta shifter less precisely than
-the sardine shifter, consistent with the wider \(90\%\) credible interval
-in the structural Section \ref{identification}. The bottleneck on the
-anchoveta projection is therefore the structural posterior; tightening
-the historical inference would do more for the anchoveta projection
-than expanding the ensemble.
+than the between-model component across all scenarios, and reaches
+\(97\%\) of the total variance under SSP5-8.5 by end-of-century. This
+reflects a wider posterior on \(\rho^{SST}_{\text{anch}}\) together with
+the larger between-draw heterogeneity that ensemble chl deltas induce
+once chl is on a comparable scale across models: the historical record
+from 2000 to 2024 has identified the anchoveta shifter less precisely
+than the sardine shifter, consistent with the wider \(90\%\) credible
+interval in the structural Section \ref{identification}, and the
+nontrivial cross-model spread of \(\Delta\log\text{CHL}\) under SSP5-8.5
+end-of-century combines with \(\rho^{CHL}_{\text{anch}} < 0\) to widen
+the within-model distribution further. The bottleneck on the anchoveta
+projection is therefore the structural posterior; tightening the
+historical inference would do more for the anchoveta projection than
+expanding the ensemble.
 
 The single exception in the table is \emph{sardine} under SSP5-8.5
-end-of-century, where the within share rises to \(61\%\). This row is a
+end-of-century, where the within share rises to \(59\%\). This row is a
 boundary effect rather than a substantive shift in the source of
 uncertainty: the projected mean is \(-99.5\%\) and the total \(SD\) is
-\(0.009\), so the distribution is essentially pinned at the lower bound
+\(0.010\), so the distribution is essentially pinned at the lower bound
 of \(-100\%\). Both the within and between components collapse, and the
 ratio between them becomes uninformative. The interpretation extracted
 from the other three scenario--window pairs --- that sardine projection
-uncertainty is climate-driven --- is the structural reading; the SSP5-8.5
-end-of-century cell is reported for completeness but should be read with
-the floor effect in mind.
+uncertainty is climate-driven --- is the structural reading; the
+SSP5-8.5 end-of-century cell is reported for completeness but should be
+read with the floor effect in mind.
+
+The means reported in Table \ref{tab:appF-decomp} differ slightly from
+the medians reported in Table \ref{tab:growth_compstat} of the main
+results section because the within-model distribution of
+\(\Delta r^*_s / r^{(0)}_s\) is left-skewed: posterior draws in which the
+stock collapses pull the median down, while posterior draws in which
+chl-driven offsets attenuate the SST collapse pull the mean up. The
+gap is largest for anchoveta under SSP5-8.5 end-of-century (mean
+\(-83.1\%\) vs.~median \(-89.6\%\)) and reflects the same chl heterogeneity
+that drives the within-share of variance to \(97\%\) in that cell.
 
 Figure \ref{fig:appF-decomp} visualises the decomposition as stacked
 shares of total variance.
@@ -1739,8 +1754,9 @@ are climate-driven in three of four cells; the SSP5-8.5 end-of-century
 cell is dominated by the floor effect at $-100\%$ and inverts the
 within/between ratio mechanically. Anchoveta projections are
 posterior-driven, particularly under SSP5-8.5 by end-of-century, where
-$88\%$ of the total variance is attributable to the structural
-posterior. Jack mackerel omitted (non-identified shifter).}
+$97\%$ of the total variance is attributable to the structural
+posterior together with chl-driven heterogeneity in posterior draws.
+Jack mackerel omitted (non-identified shifter).}
 \label{fig:appF-decomp}
 \end{figure}
 

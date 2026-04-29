@@ -631,7 +631,7 @@ knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png", error = FALSE)
 
 ```
 
-The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (cross-model median $+0.58\,^{\circ}$C, $\Delta\log\text{CHL}\approx 0$), the cross-model median of anchoveta's intrinsic productivity declines by $45\%$ and sardina común's by $80\%$, with posterior probability of negative impact equal to one in both cases. Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median $+2.39\,^{\circ}$C, $\Delta\log\text{CHL}\approx 0$) the cross-model medians deepen to $-90\%$ and $-99.9\%$ respectively, and the entire $90\%$ credible interval of each stock lies below zero in every model of the ensemble. The identified signs confirm the qualitative reading of the shifters in Section \ref{identification}: both coastal stocks respond negatively to SST, but sardina común carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardina than for anchoveta.
+The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (cross-model median $+0.58\,^{\circ}$C; $\Delta\log\text{CHL}$ near zero in the cross-model median, with non-trivial inter-model spread), the cross-model median of anchoveta's intrinsic productivity declines by $51\%$ and sardina común's by $79\%$, with posterior probability of negative impact equal to one in both cases. Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median $+2.39\,^{\circ}$C, $\Delta\log\text{CHL}$ cross-model median $-0.013$ with $5$th-percentile of $-0.30$ across models) the cross-model medians deepen to $-90\%$ and $-99.9\%$ respectively, and the entire $90\%$ credible interval of sardine's response lies below zero in every model of the ensemble; the anchoveta cross-model probability of decline is $0.99$ rather than $1$ because under a small fraction of (model, draw) pairs a sufficiently negative $\Delta\log\text{CHL}$ combined with $\rho^{CHL}_{\text{anch}}<0$ offsets the SST-driven collapse. The identified signs confirm the qualitative reading of the shifters in Section \ref{identification}: both coastal stocks respond negatively to SST, but sardina común carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardina than for anchoveta.
 
 The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes what the steady-state intrinsic productivity of each stock would be under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. This is precisely what the structural identification of the shifters permits: because $(\rho_i^{SST}, \rho_i^{CHL})$ are invariant to the joint distribution of $(SST, B, C)$, they can be evaluated at climate regimes that lie outside the estimation window---in particular at an SST anomaly of +2.3$^{\circ}$C that is roughly nine historical standard deviations beyond the 2000--2024 mean. Reduced-form correlational specifications do not license this extrapolation.
 
@@ -648,25 +648,36 @@ tcs <- read.csv("paper1/tables/trip_comparative_statics_raw.csv",
 # "\\%" porque el kable sale con escape = FALSE (para que los math symbols
 # del header pasen tal cual a LaTeX).
 fmt_pct <- function(x) sprintf("%+.1f\\%%", 100 * (x - 1))
-fmt_band <- function(q05, q95) {
+fmt_band_pct <- function(q25, q75) {
   sprintf("[%+.1f\\%%,\\,%+.1f\\%%]",
-          100 * (q05 - 1), 100 * (q95 - 1))
+          100 * (q25 - 1), 100 * (q75 - 1))
+}
+fmt_pr_band <- function(q25, q75) {
+  sprintf("[%.2f,\\,%.2f]", q25, q75)
 }
 
 tcs_tbl <- tcs %>%
   dplyr::mutate(
     Fleet    = ifelse(TIPO_FLOTA == "ART", "Artisanal", "Industrial"),
     Scenario = scenario_label,
-    pr_loss_col = sprintf("%.2f", pr_portfolio_loss),
-    trips_marg_col = paste0(fmt_pct(factor_trips_marg_med),
-                            "\\,", fmt_band(factor_trips_marg_q05,
-                                            factor_trips_marg_q95)),
+    # Pr(loss): cross-model median + cross-IQR
+    pr_loss_col = paste0(sprintf("%.2f", pr_portfolio_loss_cross_med),
+                         "\\,",
+                         fmt_pr_band(pr_portfolio_loss_cross_q25,
+                                     pr_portfolio_loss_cross_q75)),
+    # Marginal trips: cross-model median + cross-IQR
+    trips_marg_col = paste0(fmt_pct(factor_trips_marg_cross_med),
+                            "\\,",
+                            fmt_band_pct(factor_trips_marg_cross_q25,
+                                         factor_trips_marg_cross_q75)),
+    # Conditional trips: cross-model median of within-model medians + cross-IQR
     trips_cond_col = ifelse(
-      is.na(factor_trips_cond_med),
+      is.na(factor_trips_cond_cross_med),
       "collapse-dom.",
-      paste0(fmt_pct(factor_trips_cond_med),
-             "\\,", fmt_band(factor_trips_cond_q05,
-                             factor_trips_cond_q95))
+      paste0(fmt_pct(factor_trips_cond_cross_med),
+             "\\,",
+             fmt_band_pct(factor_trips_cond_cross_q25,
+                          factor_trips_cond_cross_q75))
     )
   ) %>%
   dplyr::arrange(Fleet, Scenario) %>%
@@ -681,21 +692,25 @@ tcs_tbl <- tcs %>%
 kable(tcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       linesep = "",
       align = "llcll",
-      caption = "Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. \\label{tab:trip_compstat}") %>%
+      caption = "Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. Entries are cross-model medians with cross-model IQRs in brackets, aggregated within each CMIP6 model over posterior draws and vessels within fleet. \\label{tab:trip_compstat}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
   footnote(general = paste(
-    "Entries are posterior medians with 90% credible intervals, aggregated over",
-    "posterior draws of the full state-space specification and vessels within fleet.",
+    "Entries summarise the posterior of the proportional change in fleet-level annual trips,",
+    "computed for each of the six CMIP6 models in the ensemble and then aggregated across models.",
+    "Within each model, the posterior is integrated over draws of the full state-space specification and vessels within fleet (composition-weighted exposure).",
+    "Cross-model medians and 25th-to-75th-percentile inter-quartile ranges across the n_m models are reported in brackets;",
+    "the median across models of the within-model 5th-to-95th-percentile posterior interval (within posterior CI) is archived in tables/trip_comparative_statics_raw.csv.",
     "f_H is the composition-weighted biomass factor relative to the historical baseline:",
     "f_H = sum over species of omega_vs * B_star_s / B_hist_s,",
     "where B_star_s = K_s * (1 - F_hist_s / r_eff_s) is the Schaefer steady-state biomass",
     "and omega_vs is the vessel's realized catch share in species s.",
     "Pr(f_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half.",
-    "The marginal median integrates over all posterior draws;",
+    "The marginal median integrates over all posterior draws within each model;",
     "the conditional median restricts to draws with f_H >= 0.5, isolating the pure climate-elasticity component",
     "from the steady-state collapse component of the trip response.",
     "Jack mackerel is treated as non-identified (factor_B = 1) consistent with the identification discussion in the Results section.",
-    "Raw numerical values and by-stock extinction probabilities are archived in tables/trip_comparative_statics_raw.csv and tables/trip_comparative_statics_extinct.csv."
+    "Raw numerical values, by-model disaggregation, and by-stock extinction probabilities are archived in tables/trip_comparative_statics_raw.csv, tables/trip_comparative_statics_by_model.csv, and tables/trip_comparative_statics_extinct.csv.",
+    "The narrow cross-IQR observed in many cells reflects a floor effect: once Schaefer steady-state collapse saturates the portfolio-weighted biomass factor across models, the trip response converges to exp(-beta * H_alloc * 1), independent of climate magnitude. See Appendix F for a complementary variance decomposition of the underlying productivity response."
   ),
   general_title = "Note:", escape = TRUE, threeparttable = TRUE)
 
