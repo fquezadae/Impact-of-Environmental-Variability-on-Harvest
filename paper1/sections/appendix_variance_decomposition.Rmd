@@ -86,7 +86,7 @@ knitr::kable(appF_tab,
 ```
 
 The decomposition reveals a sharp contrast between the two identified
-stocks. For *common sardine*, the between-model component dominates the
+stocks. For *sardine*, the between-model component dominates the
 total variance in three of the four scenario--window pairs (between $79$
 and $91\%$ of total variance). The within-model posterior of
 $\rho^{SST}_{\text{sard}}$ is tight enough that the bottleneck on the
@@ -107,7 +107,7 @@ anchoveta projection is therefore the structural posterior; tightening
 the historical inference would do more for the anchoveta projection
 than expanding the ensemble.
 
-The single exception in the table is *common sardine* under SSP5-8.5
+The single exception in the table is *sardine* under SSP5-8.5
 end-of-century, where the within share rises to $61\%$. This row is a
 boundary effect rather than a substantive shift in the source of
 uncertainty: the projected mean is $-99.5\%$ and the total $SD$ is

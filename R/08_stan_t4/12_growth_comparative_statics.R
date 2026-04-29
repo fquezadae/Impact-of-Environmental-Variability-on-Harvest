@@ -68,7 +68,7 @@ T5_FIG_OUT         <- "figs/t4b/growth_ridgeline_cmip6.png"
 T5_STOCKS <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
 T5_STOCK_LABEL <- c(
   anchoveta_cs     = "Anchoveta CS",
-  sardina_comun_cs = "Common sardine CS",
+  sardina_comun_cs = "Sardine CS",
   jurel_cs         = "Jack mackerel CS"
 )
 
@@ -228,9 +228,9 @@ t5_summarise_cross <- function(within_summ) {
       scenario_key   = paste(scenario, window, sep = "_"),
       scenario_label = T5_SCENARIO_LABEL[scenario_key]
     ) %>%
-    arrange(stock_id,
+    arrange(factor(stock_id, levels = T5_STOCKS),
             factor(scenario, levels = T5_SSPS),
-            factor(window,  levels = T5_WINDOWS))
+            factor(window,   levels = T5_WINDOWS))
 }
 
 # -----------------------------------------------------------------------------

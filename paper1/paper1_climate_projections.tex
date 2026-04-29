@@ -112,20 +112,6 @@
 \usepackage{threeparttable}
 \author{Felipe J. Quezada-Escalona}
 \affil{Departamento de Economía \\ Universidad de Concepción \vspace{-48pt}}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -586,7 +572,7 @@ The projection methodology is summarized in Section \ref{projection-approach}. U
 
 \subsubsection{Projected environmental changes}\label{projected-environmental-changes}
 
-Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area, reported as cross-model medians with the inter-model interquartile range (IQR) in brackets. Sea-surface temperature warms by a cross-model median of \(+0.6\) to \(+2.6\,^{\circ}\)C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century and an inter-model spread that grows with the forcing. The chlorophyll-a signal is small in magnitude relative to the cross-model spread: the cross-model median of \(\Delta\log\text{CHL}\) is close to zero in every scenario--window pair while individual models disagree on the sign, reflecting the well-documented inter-model disagreement on primary-productivity changes under climate forcing in CMIP6. Near-surface wind speed increases modestly under all scenarios (cross-model median \(+0.1\) to \(+0.4\) m/s), with a larger increase under SSP5-8.5 end-of-century than the single-model IPSL projection on which an earlier version of this paper was based; the inter-model IQR remains comparable to the median and the implications for the direct weather channel are still small in magnitude.
+Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area, reported as cross-model medians with the inter-model interquartile range (IQR) in brackets. Chlorophyll-a is reported as a percentage change, \(\%\Delta\text{CHL} = (\exp(\Delta\log\text{CHL}) - 1)\times 100\), computed per model and then summarised across the ensemble; the structural model is fitted on \(\Delta\log\text{CHL}\) and that scale is used in all downstream calculations (Section \ref{projection-approach}). Sea-surface temperature warms by a cross-model median of \(+0.6\) to \(+2.6\,^{\circ}\)C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century and an inter-model spread that grows with the forcing. The chlorophyll-a signal is small in magnitude relative to the cross-model spread: the cross-model median of \(\%\Delta\text{CHL}\) is close to zero in every scenario--window pair while individual models disagree on the sign, reflecting the well-documented inter-model disagreement on primary-productivity changes under climate forcing in CMIP6. Near-surface wind speed increases modestly under all scenarios (cross-model median \(+0.1\) to \(+0.4\) m/s), with a larger increase under SSP5-8.5 end-of-century than the single-model IPSL projection on which an earlier version of this paper was based; the inter-model IQR remains comparable to the median and the implications for the direct weather channel are still small in magnitude.
 
 \begin{table}[!h]
 \centering
@@ -595,12 +581,12 @@ Table \ref{tab:env_projections} summarizes the projected environmental changes f
 \fontsize{9}{11}\selectfont
 \begin{tabular}[t]{lllll}
 \toprule
-SSP & Window & $\Delta$ SST ($^{\circ}$C) & $\Delta\log$ CHL & $\Delta$ wind speed (m/s)\\
+SSP & Window & $\Delta$ SST ($^{\circ}$C) & $\Delta$ CHL (\%) & $\Delta$ wind speed (m/s)\\
 \midrule
-SSP2-4.5 & 2081--2100 & $+1.44$ \,[$+0.96$, $+1.91$] & $+0.000$ \,[$+0.000$, $+0.000$] & $+0.19$ \,[$+0.10$, $+0.24$]\\
-SSP2-4.5 & 2041--2060 & $+0.74$ \,[$+0.52$, $+0.92$] & $+0.000$ \,[$+0.000$, $+0.000$] & $+0.14$ \,[$+0.13$, $+0.15$]\\
-SSP5-8.5 & 2081--2100 & $+2.39$ \,[$+1.93$, $+3.29$] & $+0.000$ \,[$+0.000$, $+0.000$] & $+0.42$ \,[$+0.36$, $+0.45$]\\
-SSP5-8.5 & 2041--2060 & $+0.92$ \,[$+0.61$, $+1.23$] & $+0.000$ \,[$+0.000$, $+0.000$] & $+0.21$ \,[$+0.14$, $+0.32$]\\
+SSP2-4.5 & 2081--2100 & $+1.44$ \,[$+0.96$, $+1.91$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.19$ \,[$+0.10$, $+0.24$]\\
+SSP2-4.5 & 2041--2060 & $+0.74$ \,[$+0.52$, $+0.92$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.14$ \,[$+0.13$, $+0.15$]\\
+SSP5-8.5 & 2081--2100 & $+2.39$ \,[$+1.93$, $+3.29$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.42$ \,[$+0.36$, $+0.45$]\\
+SSP5-8.5 & 2041--2060 & $+0.92$ \,[$+0.61$, $+1.23$] & $+0.0$ \,[$+0.0$, $+0.0$] & $+0.21$ \,[$+0.14$, $+0.32$]\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -624,16 +610,16 @@ Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & -45.4\% & {}[-52.7\%, 
 Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -71.0\% & {}[-74.5\%, -58.3\%] & {}[-90.4\%, -27.5\%] & 1.00\\
 Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & -59.3\% & {}[-71.0\%, -46.8\%] & {}[-79.2\%, -25.7\%] & 1.00\\
 Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & -90.1\% & {}[-96.0\%, -85.6\%] & {}[-98.3\%, -54.3\%] & 1.00\\
-Jack mackerel CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
+Sardine CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & -79.8\% & {}[-93.2\%, -74.6\%] & {}[-86.6\%, -69.0\%] & 1.00\\
 \addlinespace
+Sardine CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -97.3\% & {}[-98.9\%, -90.1\%] & {}[-98.9\%, -92.9\%] & 1.00\\
+Sardine CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & -91.6\% & {}[-96.6\%, -80.8\%] & {}[-95.4\%, -84.0\%] & 1.00\\
+Sardine CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & -99.9\% & {}[-100.0\%, -99.4\%] & {}[-100.0\%, -99.2\%] & 1.00\\
+Jack mackerel CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
 Jack mackerel CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
+\addlinespace
 Jack mackerel CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
 Jack mackerel CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & n.i. & n.i. & n.i. & n.i.\\
-Common sardine CS & SSP2-4.5, 2041-2060 & 5 & +0.58 & +0.000 & -79.8\% & {}[-93.2\%, -74.6\%] & {}[-86.6\%, -69.0\%] & 1.00\\
-Common sardine CS & SSP2-4.5, 2081-2100 & 5 & +1.31 & +0.000 & -97.3\% & {}[-98.9\%, -90.1\%] & {}[-98.9\%, -92.9\%] & 1.00\\
-\addlinespace
-Common sardine CS & SSP5-8.5, 2041-2060 & 6 & +0.92 & +0.000 & -91.6\% & {}[-96.6\%, -80.8\%] & {}[-95.4\%, -84.0\%] & 1.00\\
-Common sardine CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & +0.000 & -99.9\% & {}[-100.0\%, -99.4\%] & {}[-100.0\%, -99.2\%] & 1.00\\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
@@ -1696,17 +1682,17 @@ Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & $-44.4\%$ & 0.199 & $56\%$ & $44\%$\\
 Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & $-65.4\%$ & 0.220 & $69\%$ & $31\%$\\
 Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & $-55.9\%$ & 0.209 & $56\%$ & $44\%$\\
 Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & $-85.5\%$ & 0.196 & $88\%$ & $12\%$\\
-Common sardine CS & SSP2-4.5, 2041-2060 & 5 & $-78.8\%$ & 0.163 & $9\%$ & $91\%$\\
+Sardine CS & SSP2-4.5, 2041-2060 & 5 & $-78.8\%$ & 0.163 & $9\%$ & $91\%$\\
 \addlinespace
-Common sardine CS & SSP2-4.5, 2081-2100 & 5 & $-94.1\%$ & 0.066 & $21\%$ & $79\%$\\
-Common sardine CS & SSP5-8.5, 2041-2060 & 6 & $-87.4\%$ & 0.114 & $14\%$ & $86\%$\\
-Common sardine CS & SSP5-8.5, 2081-2100 & 6 & $-99.5\%$ & 0.009 & $61\%$ & $39\%$\\
+Sardine CS & SSP2-4.5, 2081-2100 & 5 & $-94.1\%$ & 0.066 & $21\%$ & $79\%$\\
+Sardine CS & SSP5-8.5, 2041-2060 & 6 & $-87.4\%$ & 0.114 & $14\%$ & $86\%$\\
+Sardine CS & SSP5-8.5, 2081-2100 & 6 & $-99.5\%$ & 0.009 & $61\%$ & $39\%$\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 The decomposition reveals a sharp contrast between the two identified
-stocks. For \emph{common sardine}, the between-model component dominates the
+stocks. For \emph{sardine}, the between-model component dominates the
 total variance in three of the four scenario--window pairs (between \(79\)
 and \(91\%\) of total variance). The within-model posterior of
 \(\rho^{SST}_{\text{sard}}\) is tight enough that the bottleneck on the
@@ -1727,7 +1713,7 @@ anchoveta projection is therefore the structural posterior; tightening
 the historical inference would do more for the anchoveta projection
 than expanding the ensemble.
 
-The single exception in the table is \emph{common sardine} under SSP5-8.5
+The single exception in the table is \emph{sardine} under SSP5-8.5
 end-of-century, where the within share rises to \(61\%\). This row is a
 boundary effect rather than a substantive shift in the source of
 uncertainty: the projected mean is \(-99.5\%\) and the total \(SD\) is

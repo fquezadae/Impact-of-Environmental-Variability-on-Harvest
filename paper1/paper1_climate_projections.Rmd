@@ -511,7 +511,7 @@ The projection methodology is summarized in Section \ref{projection-approach}. U
 
 ### Projected environmental changes
 
-Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area, reported as cross-model medians with the inter-model interquartile range (IQR) in brackets. Sea-surface temperature warms by a cross-model median of $+0.6$ to $+2.6\,^{\circ}$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century and an inter-model spread that grows with the forcing. The chlorophyll-a signal is small in magnitude relative to the cross-model spread: the cross-model median of $\Delta\log\text{CHL}$ is close to zero in every scenario--window pair while individual models disagree on the sign, reflecting the well-documented inter-model disagreement on primary-productivity changes under climate forcing in CMIP6. Near-surface wind speed increases modestly under all scenarios (cross-model median $+0.1$ to $+0.4$ m/s), with a larger increase under SSP5-8.5 end-of-century than the single-model IPSL projection on which an earlier version of this paper was based; the inter-model IQR remains comparable to the median and the implications for the direct weather channel are still small in magnitude.
+Table \ref{tab:env_projections} summarizes the projected environmental changes for the Centro-Sur study area, reported as cross-model medians with the inter-model interquartile range (IQR) in brackets. Chlorophyll-a is reported as a percentage change, $\%\Delta\text{CHL} = (\exp(\Delta\log\text{CHL}) - 1)\times 100$, computed per model and then summarised across the ensemble; the structural model is fitted on $\Delta\log\text{CHL}$ and that scale is used in all downstream calculations (Section \ref{projection-approach}). Sea-surface temperature warms by a cross-model median of $+0.6$ to $+2.6\,^{\circ}$C depending on the scenario, with the strongest warming under SSP5-8.5 end-of-century and an inter-model spread that grows with the forcing. The chlorophyll-a signal is small in magnitude relative to the cross-model spread: the cross-model median of $\%\Delta\text{CHL}$ is close to zero in every scenario--window pair while individual models disagree on the sign, reflecting the well-documented inter-model disagreement on primary-productivity changes under climate forcing in CMIP6. Near-surface wind speed increases modestly under all scenarios (cross-model median $+0.1$ to $+0.4$ m/s), with a larger increase under SSP5-8.5 end-of-century than the single-model IPSL projection on which an earlier version of this paper was based; the inter-model IQR remains comparable to the median and the implications for the direct weather channel are still small in magnitude.
 
 ```{r envprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -520,11 +520,15 @@ deltas_ens <- readr::read_csv("data/cmip6/deltas_ensemble.csv",
 
 env_stats <- deltas_ens %>%
   dplyr::filter(var %in% c("sst", "logchl", "wind_speed")) %>%
+  dplyr::mutate(
+    # Para CHL convertir log-anomaly a porcentaje: %ΔCHL = (exp(Δlog) - 1) * 100
+    delta_disp = ifelse(var == "logchl", (exp(delta) - 1) * 100, delta)
+  ) %>%
   dplyr::group_by(var, scenario, window) %>%
   dplyr::summarise(
-    med = median(delta),
-    q25 = quantile(delta, 0.25),
-    q75 = quantile(delta, 0.75),
+    med = median(delta_disp),
+    q25 = quantile(delta_disp, 0.25),
+    q75 = quantile(delta_disp, 0.75),
     .groups = "drop"
   )
 
@@ -536,7 +540,7 @@ fmt_cell <- function(med, q25, q75, digits = 2) {
 env_stats <- env_stats %>%
   dplyr::mutate(
     cell = dplyr::case_when(
-      var == "logchl"     ~ fmt_cell(med, q25, q75, digits = 3),
+      var == "logchl"     ~ fmt_cell(med, q25, q75, digits = 1),
       TRUE                ~ fmt_cell(med, q25, q75, digits = 2)
     )
   )
@@ -552,7 +556,7 @@ env_wide <- env_stats %>%
   dplyr::transmute(
     SSP, Window,
     `$\\Delta$ SST ($^{\\circ}$C)`         = sst,
-    `$\\Delta\\log$ CHL`                   = logchl,
+    `$\\Delta$ CHL (\\%)`                  = logchl,
     `$\\Delta$ wind speed (m/s)`           = wind_speed
   )
 
@@ -575,6 +579,12 @@ Table \ref{tab:growth_compstat} reports the comparative-statics object $\Delta r
 gcs <- read.csv("paper1/tables/growth_comparative_statics.csv",
                 stringsAsFactors = FALSE, check.names = FALSE,
                 colClasses = "character")
+
+# Orden custom de stocks: anchoveta, sardine, jack mackerel.
+gcs <- gcs[order(factor(gcs$Stock,
+                        levels = c("Anchoveta CS",
+                                   "Sardine CS",
+                                   "Jack mackerel CS"))), ]
 
 # El CSV viene con "%" crudo en las celdas. Para que no las interprete LaTeX
 # como comentarios, las escapamos como "\\%".

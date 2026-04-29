@@ -37,9 +37,15 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-# Reusar t5_load_scenarios, t5_extract_draws, t5_compute_r_eff sin correr main
+# Reusar t5_load_scenarios, t5_extract_draws, t5_compute_r_eff sin correr main.
+# Restauramos t5.run_main al valor previo (default TRUE) para no contaminar la
+# sesion: si despues el usuario hace source(.../12_growth_comparative_statics.R),
+# el main debe correr.
+.appf_t5_save <- getOption("t5.run_main", TRUE)
 options(t5.run_main = FALSE)
 source("R/08_stan_t4/12_growth_comparative_statics.R")
+options(t5.run_main = .appf_t5_save)
+rm(.appf_t5_save)
 
 APPF_TABLE_OUT <- "tables/appendix_f_variance_decomposition.csv"
 APPF_FIG_OUT   <- "figs/t4b/appendix_f_variance_decomposition.png"
@@ -87,7 +93,7 @@ appf_decompose <- function(draws_scen,
       scenario_key         = paste(scenario, window, sep = "_"),
       scenario_label       = T5_SCENARIO_LABEL[scenario_key]
     ) %>%
-    arrange(stock_id,
+    arrange(factor(stock_id, levels = T5_STOCKS),
             factor(scenario, levels = T5_SSPS),
             factor(window,   levels = T5_WINDOWS))
 
