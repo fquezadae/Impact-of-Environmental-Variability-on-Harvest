@@ -435,12 +435,18 @@ class: inverse, center, middle
 
 # Appendix A &middot; Stock dynamics &mdash; spec & priors
 
+<style>
+.appendixA .pull-left { width: 55% !important; }
+.appendixA .pull-right { width: 43% !important; padding-left: 1rem; }
+</style>
+
+.appendixA[
+
 .pull-left[
 **Process** (Schaefer with shifter on $r$):
 $$B_{i,t+1} = B_{i,t} + r_{i,t}B_{i,t}\!\left(1 - \tfrac{B_{i,t}}{K_i}\right) - C_{i,t} + \varepsilon_{i,t}$$
 
-with structural climate shifter
-$$r_{i,t} = r_i^{0}\exp\!\big(\rho_i^{SST}\Delta SST_{t-1} + \rho_i^{CHL}\Delta\log CHL_{t-1}\big)$$
+with $r_{i,t} = r_i^{0}\exp(\rho_i^{SST}\Delta SST_{t-1} + \rho_i^{CHL}\Delta \log CHL_{t-1})$.
 
 **Observation** (log-normal):
 $\log B_{i,t}^{obs} = \log B_{i,t} + u_{i,t}$.
@@ -450,16 +456,20 @@ Three nested specs: **ind**, **omega**, **full**.
 
 .pull-right[
 **Priors:**
-- $r_i^0, K_i, \sigma_{proc}, \sigma_{obs}$: from IFOP / SPRFMO single-species assessments.
+
+- $r_i^0, K_i, \sigma_{proc}, \sigma_{obs}$ from IFOP / SPRFMO single-species assessments.
+
 - $\rho_i^{SST}, \rho_i^{CHL} \sim \mathcal{N}(\hat\rho_i^{stress},\,1)$.
+
 - $\Omega$: LKJ.
 
 **Estimation:** Stan / HMC, 4 chains $\times$ 2000 post-warmup; $\hat R < 1.01$, $ESS > 400$.
 ]
+]
 
 ---
 
-# Appendix B &middot; Climate shifters &mdash; posterior identification
+# Appendix B &middot; Climate shifters 
 
 ```{r fig_rho_shifters, out.width='62%', fig.align='center'}
 knitr::include_graphics("../figs/t4b/t4b_full_rho_shifters.png")
