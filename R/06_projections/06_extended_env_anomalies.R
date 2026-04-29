@@ -213,16 +213,16 @@ build_annual_env <- function(sst_mon, chl_mon, window) {
     mutate(year = lubridate::year(date)) %>%
     filter(year %in% window) %>%
     group_by(domain, year) %>%
-    summarise(sst = mean(sst, na.rm = TRUE),
-              n_months_sst = sum(!is.na(sst)),
+    summarise(n_months_sst = sum(!is.na(sst)),         # contar ANTES de reasignar
+              sst          = mean(sst, na.rm = TRUE),
               .groups = "drop")
 
   chl_yr <- chl_mon %>%
     mutate(year = lubridate::year(date)) %>%
     filter(year %in% window) %>%
     group_by(domain, year) %>%
-    summarise(chl = mean(chl, na.rm = TRUE),
-              n_months_chl = sum(!is.na(chl)),
+    summarise(n_months_chl = sum(!is.na(chl)),         # idem
+              chl          = mean(chl, na.rm = TRUE),
               .groups = "drop")
 
   env <- full_join(sst_yr, chl_yr, by = c("domain", "year")) %>%
