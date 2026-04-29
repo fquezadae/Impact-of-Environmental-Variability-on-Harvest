@@ -2,7 +2,91 @@
 
 Notable changes to the project, in reverse chronological order.
 
-## 2026-04-29 PM (paper1: CMIP6 6-model ensemble, chlos units bug fix, Appendix G new)
+## 2026-04-29 PM tarde (paper1: SERNAPESCA v3 official catch series + IFOP panel sanity)
+
+### Changed — catch series upgraded to SERNAPESCA v3 (all-gear official 2000-2024)
+
+- `data/bio_params/catch_annual_cs_2000_2024.csv` regenerated from the
+  SERNAPESCA `BD_desembarque.csv` database (transparency request
+  AH010T0006857; filed 24 April 2025, responded 5 May 2025 via official
+  letter DN-02040/2025, archived in
+  `data/bio_params/refs/sernapesca_v3/ah010t0006857.pdf`). Replaces the
+  v2 hybrid (SERNAPESCA 2000-2023 + IFOP-cerco 2024 placeholder).
+- New generator: `R/01_data/99b_aggregate_catch_cs_from_sernapesca_v3.R`.
+  Filters: regions V-X plus Ñuble (8 administrative regions); species
+  Anchoveta / Sardina común / Jurel; agents Industrial + Artesanal
+  (excludes Acuicultura and Fábrica). Path resolution tries 4
+  candidate locations to support running from the local repo, the
+  user's OneDrive raw archive, or the Cowork sandbox.
+- New provenance directory: `data/bio_params/refs/sernapesca_v3/` with
+  the official letter PDF (171 KB; tracked) and a `README.md`
+  documenting the source files, request scope, processing pipeline,
+  and citation block. The bulk CSVs/XLSX (~20 MB combined) are kept
+  outside the repo for size; locations documented in the README.
+- Diff v3 vs v2 across the 75 cells (3 stocks x 25 years): worst
+  -0.0195% (172 t in 882 kt jurel 2024). Zero cells with |diff| > 1%.
+  The IFOP-cerco placeholder for 2024 was ex-post nearly exact because
+  purse-seine accounted for >99.5% of total Centro-Sur landings in 2024
+  for the three target species. **No re-fit required:** T4b posteriors,
+  NB trip equation, T5 / T7 / Apéndice F / Apéndice G are all
+  unaffected at the reported precision.
+- Manuscript Data and code availability statement (L757) updated to
+  cite the SERNAPESCA transparency request explicitly and reference
+  the new generator script. The deprecated v2 generator
+  (`99_aggregate_catch_cs_from_xlsx.R`) is preserved for traceability
+  but no longer the canonical path.
+
+### Added — IFOP panel sanity vs SERNAPESCA vessel-level (auxiliary xlsx)
+
+- Cross-validation of the trip-equation panel (`poisson_dt.rds`,
+  built from IFOP logbooks) against the SERNAPESCA vessel-level
+  pelagic landings (`AH010T0006857_*pelagicos_2012_2024.xlsx`,
+  delivered as part of the same transparency request) for the
+  2013-2024 Centro-Sur sample.
+- **Industrial fleet** — coverage and composition match within
+  tolerance: 40 IFOP vessels of 59 in SERNAPESCA (68% by count, >90%
+  by catch); catch-weighted omega_jur 0.878 IFOP vs 0.857 SERNAPESCA
+  (gap 2pp); aggregate jurel landings -10.3% (within sample noise).
+  **No correction needed**.
+- **Artisanal fleet** — the IFOP panel represents the purse-seine
+  artisanal subset, not all-ART: 859 IFOP vessels of 2,689 in
+  SERNAPESCA (32% by count, ~70% by catch). Catch-weighted aggregate
+  omega_jur 0.021 IFOP vs 0.052 SERNAPESCA (factor 2.5x). The gap
+  reflects a structural bimodality: 54% of SERNAPESCA-ART catch
+  comes from vessel-years with zero jurel landings (purse-seine
+  vessels targeting the anchoveta-sardine pair) and 46% from
+  vessel-years with non-zero jurel (lampara, lines, fixed nets).
+  IFOP logbooks cover the first segment systematically and the
+  second segment only marginally. Filtering SERNAPESCA-ART by
+  vessel-year catch threshold (50 / 100 / 200 / 500 / 1000 t) does
+  *not* close the gap — confirms population mismatch rather than
+  size mismatch.
+- **Implication.** The panel's portfolio weights $\omega_{v,s}$
+  correctly describe the purse-seine fleet that operates under the
+  LMCA architecture. Smaller artisanal vessels using non-purse-seine
+  gears (~30% of total CS artisanal landings; higher proportional
+  jurel exposure) are not modeled in the trip equation but appear in
+  the SERNAPESCA all-gear landings used as the biomass likelihood
+  input. The fleet asymmetry of Table 5 is unchanged in direction;
+  only the artisanal exposure is moderately attenuated (ART
+  protection by the n.i. jurel anchor is roughly 3 percentage points
+  larger in the broader all-ART universe).
+
+### Manuscript edits
+
+- §3.3.2 Total annual trips (after the "approximately 95% of observed
+  fishing revenue" sentence): inserted the SERNAPESCA cross-validation
+  paragraph with sample sizes and the explicit purse-seine restriction.
+- §5 Discussion: added a sixth limitation paragraph documenting the
+  panel-coverage caveat, parallel to the fifth (zone-only closure
+  variable). Cites the SERNAPESCA cross-validation as confirming the
+  panel's representativeness for the purse-seine artisanal subset and
+  flags the all-gear sample-weighting extension as future work.
+- §6 Data and code availability: catch-source citation upgraded to
+  reference SERNAPESCA explicitly (request AH010T0006857) and the new
+  generator script.
+
+
 
 ### Fixed — chlos units bug in `R/06_projections/01_cmip6_deltas.R`
 
