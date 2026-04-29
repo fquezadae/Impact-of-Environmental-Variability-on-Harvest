@@ -214,7 +214,7 @@ Two external series---jack mackerel biomass from the Northern acoustic zone (Ari
 
 \subsection{Future climate data}\label{future-climate-data}
 
-Climate projections for SST, chlorophyll-a, and near-surface wind speed are obtained from the CMIP6 archive, using a six-model ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR) selected to span the CMIP6 equilibrium climate sensitivity distribution. We use monthly outputs for two future scenarios---SSP2-4.5 (moderate) and SSP5-8.5 (high emissions). The projection horizons, baseline period, and delta-method procedure used to translate CMIP6 outputs into our empirical models are presented in Section \ref{projection-approach}; the per-model decomposition of projection uncertainty appears in Appendix \ref{appendix-ensemble}.
+Climate projections for SST, chlorophyll-a, and near-surface wind speed are obtained from the CMIP6 archive, using a six-model ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR) selected to span the CMIP6 equilibrium climate sensitivity distribution. We use monthly outputs for two future scenarios---SSP2-4.5 (moderate) and SSP5-8.5 (high emissions). The projection horizons, baseline period, and delta-method procedure used to translate CMIP6 outputs into our empirical models are presented in Section \ref{projection-approach}; the per-model decomposition of projection uncertainty appears in Appendix \ref{appendix-ensemble} for stock-level intrinsic productivity and in Appendix \ref{appendix-trips-ensemble} for fleet-level trips.
 
 \subsection{Econometric models}\label{econometric-models}
 
@@ -310,7 +310,7 @@ Trips, harvest, and prices may be jointly determined within the year, implying p
 
 We assess the impact of climate change on the Chilean small pelagic fishery through two channels: (i) a \emph{direct weather channel}, in which projected changes in wind speed alter the number of bad-weather days that constrain fishing operations and thus enter the negative binomial trip equation; and (ii) an \emph{indirect biomass channel}, in which projected changes in SST and CHL modify each stock's intrinsic productivity \(r_{i,t}\) through the climate shifter \((\rho_i^{SST}, \rho_i^{CHL})\) of Eq. \eqref{eq:shifter} and, by that route, the law of motion in Eq. \eqref{eq:law-of-motion}.
 
-Climate projections are derived from a six-model CMIP6 ensemble---IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, and MPI-ESM1-2-HR---under two Shared Socioeconomic Pathways: SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions). The ensemble was selected to span the CMIP6 distribution of equilibrium climate sensitivity. We apply the delta method (\citeproc{ref-Burke2015}{Burke et al., 2015}; \citeproc{ref-Free2019}{Free et al., 2019}) independently to each model, which preserves the observed interannual variability and fine-scale spatial structure from satellite records while imposing the climate-change signal from CMIP6. For each model and variable, the delta is computed as the difference (additive for SST and wind speed) or, for chlorophyll-a, the difference of natural logarithms (so that the resulting \(\Delta \log\text{CHL}\) enters the shifter on its native estimation scale), between the CMIP6 future climatology and a spliced historical baseline that combines the CMIP6 historical run for 2000--2014 with the SSP2-4.5 run for 2015--2024 (CMIP6 historical runs end in 2014, so the splice is required to match the 2000--2024 estimation window of the structural model). For CESM2, which lacks chlorophyll under SSP2-4.5 in the NCAR CMIP6 catalogue, we splice the historical 2000--2014 segment with the SSP5-8.5 2015--2024 segment for chlorophyll only; the two scenarios are virtually indistinguishable in the near term and the substitution preserves CESM2's contribution to SSP5-8.5 chlorophyll deltas. We consider two future time windows: mid-century (2041--2060) and end-of-century (2081--2100). Comparative statics are then reported integrating over both the structural-parameter posterior and the cross-model dimension of the ensemble; the variance decomposition of the resulting projection uncertainty is reported in Appendix \ref{appendix-ensemble}.
+Climate projections are derived from a six-model CMIP6 ensemble---IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, and MPI-ESM1-2-HR---under two Shared Socioeconomic Pathways: SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions). The ensemble was selected to span the CMIP6 distribution of equilibrium climate sensitivity. We apply the delta method (\citeproc{ref-Burke2015}{Burke et al., 2015}; \citeproc{ref-Free2019}{Free et al., 2019}) independently to each model, which preserves the observed interannual variability and fine-scale spatial structure from satellite records while imposing the climate-change signal from CMIP6. For each model and variable, the delta is computed as the difference (additive for SST and wind speed) or, for chlorophyll-a, the difference of natural logarithms (so that the resulting \(\Delta \log\text{CHL}\) enters the shifter on its native estimation scale), between the CMIP6 future climatology and a spliced historical baseline that combines the CMIP6 historical run for 2000--2014 with the SSP2-4.5 run for 2015--2024 (CMIP6 historical runs end in 2014, so the splice is required to match the 2000--2024 estimation window of the structural model). For CESM2, which lacks chlorophyll under SSP2-4.5 in the NCAR CMIP6 catalogue, we splice the historical 2000--2014 segment with the SSP5-8.5 2015--2024 segment for chlorophyll only; the two scenarios are virtually indistinguishable in the near term and the substitution preserves CESM2's contribution to SSP5-8.5 chlorophyll deltas. We consider two future time windows: mid-century (2041--2060) and end-of-century (2081--2100). Comparative statics are then reported integrating over both the structural-parameter posterior and the cross-model dimension of the ensemble; the variance decomposition of the resulting projection uncertainty is reported in Appendix \ref{appendix-ensemble} for stock-level intrinsic productivity and in Appendix \ref{appendix-trips-ensemble} for fleet-level trips.
 
 For the direct weather channel, monthly wind speed deltas from CMIP6 are interpolated to the observed 0.125-degree wind grid and applied additively to daily wind speed observations. Bad-weather days (wind speed exceeding 8 m/s) are then recomputed under each scenario and entered into the NB trip equation. For the indirect biomass channel, we evaluate the climate shifter of Eq. \eqref{eq:shifter} at the posterior draws of \((\rho_i^{SST}, \rho_i^{CHL})\) from the full state-space specification, taking \(\Delta SST\) and \(\Delta \log CHL\) as the scenario- and window-specific CMIP6 anomalies relative to the 2000--2024 estimation baseline. This yields a full posterior distribution over \(r_{i,t}^{\star} / r_i^{0}\) under each climate regime---a long-run comparative-statics object, in the sense that it describes the steady-state productivity of each stock under a counterfactual climate, not a year-by-year forecast of biomass. Forward simulation of biomass and catch trajectories under endogenous harvest rules is left to future work; the posterior reported here is archived to facilitate that extension.
 
@@ -668,7 +668,7 @@ Industrial & SSP5-8.5, 2081-2100 & 0.12\,[0.12,\,0.12] & -0.9\%\,[-0.9\%,\,-0.9\
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Entries summarise the posterior of the proportional change in fleet-level annual trips, computed for each of the six CMIP6 models in the ensemble and then aggregated across models. Within each model, the posterior is integrated over draws of the full state-space specification and vessels within fleet (composition-weighted exposure). Cross-model medians and 25th-to-75th-percentile inter-quartile ranges across the n\_m models are reported in brackets; the median across models of the within-model 5th-to-95th-percentile posterior interval (within posterior CI) is archived in tables/trip\_comparative\_statics\_raw.csv. f\_H is the composition-weighted biomass factor relative to the historical baseline: f\_H = sum over species of omega\_vs * B\_star\_s / B\_hist\_s, where B\_star\_s = K\_s * (1 - F\_hist\_s / r\_eff\_s) is the Schaefer steady-state biomass and omega\_vs is the vessel's realized catch share in species s. Pr(f\_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half. The marginal median integrates over all posterior draws within each model; the conditional median restricts to draws with f\_H >= 0.5, isolating the pure climate-elasticity component from the steady-state collapse component of the trip response. Jack mackerel is treated as non-identified (factor\_B = 1) consistent with the identification discussion in the Results section. Raw numerical values, by-model disaggregation, and by-stock extinction probabilities are archived in tables/trip\_comparative\_statics\_raw.csv, tables/trip\_comparative\_statics\_by\_model.csv, and tables/trip\_comparative\_statics\_extinct.csv. The narrow cross-IQR observed in many cells reflects a floor effect: once Schaefer steady-state collapse saturates the portfolio-weighted biomass factor across models, the trip response converges to exp(-beta * H\_alloc * 1), independent of climate magnitude. See Appendix F for a complementary variance decomposition of the underlying productivity response.
+\item Entries summarise the posterior of the proportional change in fleet-level annual trips, computed for each of the six CMIP6 models in the ensemble and then aggregated across models. Within each model, the posterior is integrated over draws of the full state-space specification and vessels within fleet (composition-weighted exposure). Cross-model medians and 25th-to-75th-percentile inter-quartile ranges across the n\_m models are reported in brackets; the median across models of the within-model 5th-to-95th-percentile posterior interval (within posterior CI) is archived in tables/trip\_comparative\_statics\_raw.csv. f\_H is the composition-weighted biomass factor relative to the historical baseline: f\_H = sum over species of omega\_vs * B\_star\_s / B\_hist\_s, where B\_star\_s = K\_s * (1 - F\_hist\_s / r\_eff\_s) is the Schaefer steady-state biomass and omega\_vs is the vessel's realized catch share in species s. Pr(f\_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half. The marginal median integrates over all posterior draws within each model; the conditional median restricts to draws with f\_H >= 0.5, isolating the pure climate-elasticity component from the steady-state collapse component of the trip response. Jack mackerel is treated as non-identified (factor\_B = 1) consistent with the identification discussion in the Results section. Raw numerical values, by-model disaggregation, and by-stock extinction probabilities are archived in tables/trip\_comparative\_statics\_raw.csv, tables/trip\_comparative\_statics\_by\_model.csv, and tables/trip\_comparative\_statics\_extinct.csv. The narrow cross-IQR observed in many cells reflects a floor effect: once Schaefer steady-state collapse saturates the portfolio-weighted biomass factor across models, the trip response converges to exp(-beta * H\_alloc * 1), independent of climate magnitude. Appendix G reports the formal two-way variance decomposition of the fleet-level trip response, which confirms that the within-model component (posterior plus vessel heterogeneity) dominates the total variance under saturated regimes; Appendix F reports the analogous decomposition for the underlying productivity response.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -689,13 +689,13 @@ The small projected change in near-surface wind speed across the CMIP6 ensemble 
 
 The species-level productivity projections deserve careful interpretation. The log-linear form of the climate shifter in Eq. \eqref{eq:shifter} is identified from interannual variation over 2000--2024, during which the realised range of SST anomalies was narrow (\(\hat{\sigma}_{SST} \approx 0.26\,^{\circ}\text{C}\)). CMIP6 anomalies under SSP5-8.5 end-of-century reach roughly \(+2.3\,^{\circ}\)C, which lies nearly an order of magnitude outside the estimation window; the corresponding posterior of \(\Delta r_i^{\star}/r_i^{0}\) therefore leans heavily on the log-linear extrapolation embedded in the shifter function. We regard the projected magnitudes as indicative of the direction and relative scale of impacts across stocks rather than as precise point forecasts. The log-linear shifter is a maintained simplification: thermal-tolerance arguments in the climate-fisheries literature (\citeproc{ref-Cheung2010}{Cheung et al., 2010}; \citeproc{ref-Free2019}{Free et al., 2019}) imply that for stocks operating below their thermal optimum the implied productivity response under high warming is, if anything, \emph{under-stated} by a log-linear specification, so the projected magnitudes for SSP5-8.5 end-of-century should be read as conservative within the class of monotone shifter functions consistent with the identified posterior signs. A non-parametric extension of the shifter, or a pooled identification across multiple Humboldt-Current datasets, is the natural direction in which to relax this assumption.
 
-Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the long-run responses capture the mechanical effect of changed environmental and biological conditions without accounting for endogenous price adjustments or adaptive management. Sumaila et al. (\citeproc{ref-sumaila2011}{2011}) note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches, while Lam et al. (\citeproc{ref-Lam2016}{2016}) project sizable changes in global fisheries revenues by the 2050s once price responses and cross-country trade are accounted for. Incorporating an inverse demand system and numerical optimization of quota paths is a natural extension to capture these equilibrium adjustments. Second, although our projections integrate over a six-model CMIP6 ensemble, the cross-model spread in chlorophyll-a remains substantial: the cross-model median of \(\Delta \log\text{CHL}\) is close to zero in all scenario--window pairs while the inter-model dispersion is comparable in magnitude to the median, reflecting the well-documented disagreement among Earth system models on the direction and magnitude of primary productivity changes (\citeproc{ref-sumaila2011}{Sumaila et al., 2011}). The variance decomposition reported in Appendix \ref{appendix-ensemble} shows that, for the sardine projection, the between-model component accounts for \(79\)--\(91\)\% of total projection variance under three of the four scenario--window pairs, so the residual ensemble uncertainty on this stock is large despite the multi-model integration. Third, the shifters are identified on a 25-year time series and, while the state-space specification propagates process-noise and measurement-noise uncertainty into the posterior, its ability to detect non-linearities in the climate response is limited. The posterior-to-prior standard-deviation ratios reported in Table \ref{tab:rho-posteriors} provide a direct empirical check that the data update the prior for anchoveta and sardina común (ratios in the \(0.43\)--\(0.83\) range), while leaving the jurel shifters at the prior (ratios essentially equal to one)---the latter being the basis of our non-identification finding. Fourth, our models do not explicitly incorporate risk preferences or production risk, which may play a role in shaping fleet-level responses to environmental variability (\citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Sethi2014-bn}{Sethi et al., 2014}). Fifth, the biological-closure variable in the trip equation currently varies only across regulatory zones and therefore captures locational heterogeneity rather than the causal effect of within-vessel exposure to closed days. Incorporating year-specific closure dates from annual SUBPESCA resolutions would introduce within-zone temporal variation and is a planned extension.
+Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the long-run responses capture the mechanical effect of changed environmental and biological conditions without accounting for endogenous price adjustments or adaptive management. Sumaila et al. (\citeproc{ref-sumaila2011}{2011}) note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches, while Lam et al. (\citeproc{ref-Lam2016}{2016}) project sizable changes in global fisheries revenues by the 2050s once price responses and cross-country trade are accounted for. Incorporating an inverse demand system and numerical optimization of quota paths is a natural extension to capture these equilibrium adjustments. Second, although our projections integrate over a six-model CMIP6 ensemble, the cross-model spread in chlorophyll-a remains substantial: the cross-model median of \(\Delta \log\text{CHL}\) is close to zero in all scenario--window pairs while the inter-model dispersion is comparable in magnitude to the median, reflecting the well-documented disagreement among Earth system models on the direction and magnitude of primary productivity changes (\citeproc{ref-sumaila2011}{Sumaila et al., 2011}). The variance decomposition reported in Appendix \ref{appendix-ensemble} shows that, for the sardine projection, the between-model component accounts for \(77\)--\(91\)\% of total projection variance under three of the four scenario--window pairs, so the residual ensemble uncertainty on this stock is large despite the multi-model integration. The fleet-level trip projections in Table \ref{tab:trip_compstat}, by contrast, exhibit narrow cross-model interquartile ranges that should not be read as climate consensus: the corresponding decomposition reported in Appendix \ref{appendix-trips-ensemble} attributes \(96\)--\(100\)\% of the total variance in \(\Delta T_f / T_f^{(0)}\) to the within-model component (posterior pooled with vessel heterogeneity within fleet), reflecting a floor-effect saturation in which the Schaefer steady-state biomass collapse drives the trip response into a fleet-specific plateau independent of the climate magnitude. The substantive implication is that the marginal information value of expanding the CMIP6 ensemble for fleet-level trip projections is small relative to that of tightening the structural posterior on \((\rho^{SST}_s, \rho^{CHL}_s)\) or refining the description of vessel heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\); what governs the heterogeneity in trip outcomes across vessels and fleets is not which CMIP6 model is correct---given that all of them imply portfolio collapse for the two coastal stocks---but the differential economic exposure to that collapse imposed by historical catch composition and quota allocation. Third, the shifters are identified on a 25-year time series and, while the state-space specification propagates process-noise and measurement-noise uncertainty into the posterior, its ability to detect non-linearities in the climate response is limited. The posterior-to-prior standard-deviation ratios reported in Table \ref{tab:rho-posteriors} provide a direct empirical check that the data update the prior for anchoveta and sardina común (ratios in the \(0.43\)--\(0.83\) range), while leaving the jurel shifters at the prior (ratios essentially equal to one)---the latter being the basis of our non-identification finding. Fourth, our models do not explicitly incorporate risk preferences or production risk, which may play a role in shaping fleet-level responses to environmental variability (\citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Sethi2014-bn}{Sethi et al., 2014}). Fifth, the biological-closure variable in the trip equation currently varies only across regulatory zones and therefore captures locational heterogeneity rather than the causal effect of within-vessel exposure to closed days. Incorporating year-specific closure dates from annual SUBPESCA resolutions would introduce within-zone temporal variation and is a planned extension.
 
 The finding that climate change creates winners and losers within the same fishery has direct implications for quota allocation policy. Chile's current regime---the \emph{Límite Máximo de Captura por Armador} (LMCA)---allocates quotas separately for the artisanal and industrial sectors and stipulates limited transferability across fleet segments. Under such a rule, the climate-driven divergence in stock productivity reported in Table \ref{tab:growth_compstat} translates one-to-one into a divergent loss of effective quota value across the artisanal--industrial divide: this is a feature of the allocation rule, not of the climate signal alone. If the long-run productivity of the coastal-upwelling pair declines by the magnitudes reported in Table \ref{tab:growth_compstat}, the relative value of artisanal quotas---heavily concentrated in those stocks---could fall substantially, potentially motivating reforms to the LMCA to allow more flexible cross-sector transfers. This echoes the portfolio literature on fishery diversification (\citeproc{ref-Cline2017-dp}{Cline et al., 2017}; \citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}), which shows that access to a broader species portfolio reduces revenue variability and buffers communities against abrupt regime shifts. Oken et al. (\citeproc{ref-Oken2021-of}{2021}) further document that institutional access constraints --- such as limits on transferability of fishing rights --- can substantially reduce the realized benefits of diversification, which is precisely the channel through which the LMCA's cross-sector restrictions translate into amplified climate exposure for the artisanal segment. Secure, transferable rights across fleet segments would facilitate adaptation to climate-driven shifts in species composition (\citeproc{ref-Holland2016-rj}{Holland \& Kasperski, 2016}).
 
 \section{Conclusions}\label{conclusions}
 
-This paper estimates a multi-species bioeconomic model for Chile's small pelagic fishery and quantifies the long-run productivity response of each stock to CMIP6 climate scenarios. We contribute to the literature in three ways. First, we identify---rather than merely estimate---a set of structural climate shifters \((\rho_i^{SST}, \rho_i^{CHL})\) that modulate the intrinsic growth rate of each stock in a Bayesian state-space specification calibrated on official IFOP and SPRFMO assessments, and we demonstrate that the resulting parameters are economically interpretable as semi-elasticities of stock productivity with respect to thermal and primary-productivity anomalies. Second, we evaluate these shifters under a six-model CMIP6 ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR) under SSP2-4.5 and SSP5-8.5, and report their comparative-statics implications for intrinsic productivity together with the full posterior of the response, separating cross-model uncertainty from within-model posterior uncertainty via the variance decomposition reported in Appendix \ref{appendix-ensemble}. Third, we link the identified structural response to the negative binomial trip equations estimated separately for the artisanal and industrial fleets, and we show that the direction of the distributional asymmetry across fleets is governed by the interaction between portfolio composition and the LMCA's limited cross-sector transferability, with the artisanal segment bearing the sharper long-run loss because its historical landings are concentrated in the two stocks whose climate semi-elasticities are identified and economically large. This finding extends the portfolio mechanism documented by Kasperski \& Holland (\citeproc{ref-Kasperski2013-jz}{2013}) and Cline et al. (\citeproc{ref-Cline2017-dp}{2017}) to the climate-impact setting and to a quota regime --- the LMCA --- that constrains the cross-sector reallocation of fishing rights, in line with the access-constraint argument of Oken et al. (\citeproc{ref-Oken2021-of}{2021}).
+This paper estimates a multi-species bioeconomic model for Chile's small pelagic fishery and quantifies the long-run productivity response of each stock to CMIP6 climate scenarios. We contribute to the literature in three ways. First, we identify---rather than merely estimate---a set of structural climate shifters \((\rho_i^{SST}, \rho_i^{CHL})\) that modulate the intrinsic growth rate of each stock in a Bayesian state-space specification calibrated on official IFOP and SPRFMO assessments, and we demonstrate that the resulting parameters are economically interpretable as semi-elasticities of stock productivity with respect to thermal and primary-productivity anomalies. Second, we evaluate these shifters under a six-model CMIP6 ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR) under SSP2-4.5 and SSP5-8.5, and report their comparative-statics implications for intrinsic productivity together with the full posterior of the response, separating cross-model uncertainty from within-model posterior uncertainty via the variance decomposition reported in Appendix \ref{appendix-ensemble}. The companion decomposition for fleet-level trips in Appendix \ref{appendix-trips-ensemble} shows that, once the Schaefer steady-state collapse saturates the portfolio for the two coastal stocks, the within-model component (posterior pooled with vessel heterogeneity) accounts for essentially the entire total variance, so the policy-relevant uncertainty in the trip projections lies on the within-model side rather than in disagreement across CMIP6 models. Third, we link the identified structural response to the negative binomial trip equations estimated separately for the artisanal and industrial fleets, and we show that the direction of the distributional asymmetry across fleets is governed by the interaction between portfolio composition and the LMCA's limited cross-sector transferability, with the artisanal segment bearing the sharper long-run loss because its historical landings are concentrated in the two stocks whose climate semi-elasticities are identified and economically large. This finding extends the portfolio mechanism documented by Kasperski \& Holland (\citeproc{ref-Kasperski2013-jz}{2013}) and Cline et al. (\citeproc{ref-Cline2017-dp}{2017}) to the climate-impact setting and to a quota regime --- the LMCA --- that constrains the cross-sector reallocation of fishing rights, in line with the access-constraint argument of Oken et al. (\citeproc{ref-Oken2021-of}{2021}).
 
 Our projections indicate that the long-run productivity of the coastal-upwelling pair---anchoveta and sardina común---is poised to decline sharply under all CMIP6 scenarios considered, with sardina común consistently more exposed than anchoveta and with the SSP5-8.5 end-of-century scenario essentially eliminating the intrinsic productivity of sardina común at the Centro-Sur scale. The Centro-Sur jack mackerel stock, by contrast, does not provide sufficient information to identify a local climate response in the 2000--2024 sample, consistent with its transboundary SPRFMO management. These results suggest that management policies focused on aggregate effort levels may miss important heterogeneity across fleets and species, and that climate adaptation in this fishery will need to address the uneven distribution of impacts through the quota-allocation architecture rather than through operational margins.
 
@@ -1657,7 +1657,7 @@ within-model mean. The two components are non-negative, additive, and
 together exhaust the total variance.
 
 We compute Equation \eqref{eq:appF-decomp} by Monte Carlo from the
-T4b-full posterior (16\{,\}000 draws) crossed with the six-model CMIP6
+T4b-full posterior (\(16{,}000\) draws) crossed with the six-model CMIP6
 ensemble described in Section \ref{projections}. The non-identified
 shifter for jack mackerel implies a posterior dominated by the prior;
 the decomposition for that stock has no structural interpretation and is
@@ -1772,5 +1772,191 @@ it does not by itself privilege either investment, but it does argue
 against the framing that the dominant source of uncertainty in
 climate-coupled stock projections is uniformly one or the other across
 species.
+
+\section{Decomposition of trip-level projection uncertainty across the CMIP6 ensemble}\label{appendix-trips-ensemble}
+
+The fleet-level comparative statics on trips reported in
+Section \ref{sec:tripresults} (Table \ref{tab:trip_compstat}) integrate
+over three sources of uncertainty: the posterior of the structural
+shifters \((\rho^{SST}_s, \rho^{CHL}_s)\) given the historical record,
+the heterogeneity of catch composition \((\omega_{v,s})\) and historical
+quota allocation \((H^{\text{alloc}}_v)\) across vessels within fleet,
+and the spread of climate-forced trajectories across the CMIP6 ensemble.
+This appendix decomposes the total variance of the projected percentage
+change in fleet-level annual trips, \(\Delta T_f / T_f^{(0)}\), into a
+within-model component (posterior uncertainty pooled with vessel
+heterogeneity within fleet) and a between-model component (CMIP6
+ensemble spread), using the law of total variance. It is the
+companion to Appendix \ref{appendix-ensemble} and answers a different
+diagnostic question: \emph{whether the narrow cross-model interquartile
+range observed for fleet-level trip responses in
+Table \ref{tab:trip_compstat} reflects climate consensus or a
+floor-effect saturation of the underlying biomass collapse.}
+
+\subsection{Decomposition}\label{decomposition-1}
+
+Let \(X_{f,m,d,v}\) denote the percentage change in annual trips for
+vessel \(v\) in fleet \(f\) implied by climate model \(m\) and posterior draw
+\(d\) under a fixed scenario--window pair \((SSP, w)\). The total variance
+of \(X_{f,\cdot,\cdot,\cdot}\) across \((m, d, v)\) admits the decomposition
+
+\begin{equation}
+\underbrace{\mathrm{Var}_{(m,d,v)}(X_{f,\cdot,\cdot,\cdot})}_{\text{total}}
+\;=\;
+\underbrace{\mathbb{E}_m\!\left[\mathrm{Var}_{(d,v)}(X_{f,m,\cdot,\cdot} \mid m)\right]}_{\text{within-model (posterior + vessels)}}
+\;+\;
+\underbrace{\mathrm{Var}_m\!\left[\mathbb{E}_{(d,v)}(X_{f,m,\cdot,\cdot} \mid m)\right]}_{\text{between-model (climate)}}
+\label{eq:appG-decomp}
+\end{equation}
+
+The first term is the average variance within a model, taken over
+posterior draws and vessels within fleet jointly: it captures
+uncertainty about the structural elasticities and heterogeneity in
+vessel exposure under a \emph{fixed} climate forcing. The second term is
+the variance across CMIP6 models of the within-model means: it captures
+uncertainty about the magnitude of the climate forcing itself.
+
+We pool posterior draws and vessel heterogeneity into the within-model
+component for two reasons. First, structural parallelism with
+Appendix \ref{appendix-ensemble}, which reports an exactly analogous
+two-way decomposition for stock-level intrinsic productivity. Second,
+vessel heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\) is a fixed
+feature of the historical fleet that does not shrink with longer
+historical samples or larger climate ensembles; reporting it as part of
+the within-model component is faithful to the reading that a longer
+record or a richer ensemble would not, by construction, reduce that
+share. A three-way decomposition that separates posterior, vessel,
+and climate contributions can be obtained from the same
+\texttt{factor\_trips\_dt} object generated by the trip-pipeline script and is
+provided in the supplementary code; the qualitative pattern is
+unchanged.
+
+We compute Equation \eqref{eq:appG-decomp} by Monte Carlo from the
+T4b-full posterior crossed with the six-model CMIP6 ensemble, propagated
+through the Schaefer steady-state biomass equation under historical
+average fishing pressure and the negative binomial trip equation, for
+each of the 830 vessels in the panel.
+
+\subsection{Results}\label{results-2}
+
+Table \ref{tab:appG-decomp} reports the decomposition for the four
+scenario--window pairs and two fleets.
+
+\begin{table}
+
+\caption{\label{tab:appG-decomp}Variance decomposition of $\Delta T_f / T_f^{(0)}$ into within-model (posterior pooled with vessel heterogeneity) and between-model (CMIP6) components. $n_m$ is the number of CMIP6 models contributing to the cell.}
+\centering
+\begin{tabular}[t]{llcrrrr}
+\toprule
+Fleet & Scenario & $n_m$ & Mean $\%\Delta$ & $SD$ total & $\%$ within & $\%$ between\\
+\midrule
+Artisanal & SSP2-4.5, 2041-2060 & 5 & $-15.2\%$ & 0.1811 & $96\%$ & $4\%$\\
+Artisanal & SSP2-4.5, 2081-2100 & 5 & $-17.4\%$ & 0.1941 & $100\%$ & $0\%$\\
+Artisanal & SSP5-8.5, 2041-2060 & 6 & $-17.0\%$ & 0.1912 & $100\%$ & $0\%$\\
+Artisanal & SSP5-8.5, 2081-2100 & 6 & $-17.8\%$ & 0.1978 & $100\%$ & $0\%$\\
+Industrial & SSP2-4.5, 2041-2060 & 5 & $-2.7\%$ & 0.0456 & $98\%$ & $2\%$\\
+\addlinespace
+Industrial & SSP2-4.5, 2081-2100 & 5 & $-3.1\%$ & 0.0494 & $100\%$ & $0\%$\\
+Industrial & SSP5-8.5, 2041-2060 & 6 & $-3.1\%$ & 0.0485 & $100\%$ & $0\%$\\
+Industrial & SSP5-8.5, 2081-2100 & 6 & $-3.2\%$ & 0.0497 & $100\%$ & $0\%$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The decomposition shows that the within-model component dominates the
+total variance across all eight scenario--window/fleet cells: it
+accounts for 96\% of total variance for the artisanal
+fleet under SSP2-4.5 mid-century and saturates at 100\%
+under SSP5-8.5 end-of-century; for the industrial fleet, the
+within-model share rises from 98\%
+under SSP2-4.5 mid-century to 100\% under SSP5-8.5
+end-of-century. The between-model component---the share of total
+variance attributable to disagreement across CMIP6 models on the
+magnitude of climate forcing---is at most \(4\%\) of total variance in
+the SSP2-4.5 mid-century cells and is numerically zero, to the nearest
+percent, in the remaining six cells. This is \emph{not} a statement that the
+CMIP6 ensemble is in tight agreement on the climate signal that drives
+fleet-level trips, in the sense that one would attribute to the
+sub-ensemble of CMIP6 models with similar equilibrium climate
+sensitivity; it is the mechanical signature of floor-effect saturation
+of the underlying biomass collapse channel.
+
+The mechanism is straightforward. Once the Schaefer steady-state
+biomass factor \(f^H_v\) collapses across most posterior draws, the
+negative binomial trip equation maps that collapse into
+\(\exp(\beta_f \cdot H^{\text{alloc}}_v \cdot (f^H_v - 1)) \approx
+\exp(-\beta_f \cdot H^{\text{alloc}}_v)\), a quantity determined by the
+fleet-specific business mechanics (\(\beta_f\) and the historical quota
+allocation) rather than by the magnitude of the climate forcing. Once
+all CMIP6 models drive the system into this saturation region, the
+between-model spread of the within-model mean trip response collapses
+to a narrow band---numerically near zero in the present sample---while
+the within-model variance retains the dispersion induced by vessel
+heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\) and by the
+structural posterior across that subset of draws in which the portfolio
+survives. The total \(SD\) values are correspondingly small in absolute
+magnitude (0.1978 for the artisanal fleet and
+0.0497 for the industrial fleet under SSP5-8.5
+end-of-century), confirming that what little variance remains is
+within-model.
+
+The means reported in Table \ref{tab:appG-decomp} are systematically
+more negative than the medians reported in Table \ref{tab:trip_compstat}
+of the main results section---for example, \(-17.8\%\) for the artisanal
+fleet under SSP5-8.5 end-of-century in this appendix versus \(-9.5\%\) in
+Table \ref{tab:trip_compstat}. This is the same left-skew mechanism
+documented in Appendix \ref{appendix-ensemble} for the underlying
+productivity response: posterior draws and vessels in which the
+portfolio collapses pull the median up toward the floor at
+\(\exp(-\beta_f \cdot H^{\text{alloc}}_v) - 1\), while the mean integrates
+over the long left tail of vessel-and-draw configurations in which the
+collapse drives \(f^H_v\) deep into negative territory and the trip
+response down with it. Both summaries are valid; we report cross-model
+medians in the main results table because the median is robust to the
+extreme tail and is the natural complement to the cross-model
+inter-quartile range, and we report cross-model means in this appendix
+because the law of total variance in
+Equation \eqref{eq:appG-decomp} is constructed on means rather than
+medians.
+
+This reading is consistent with the underlying biomass-level
+decomposition reported in Appendix \ref{appendix-ensemble}: for
+sardine---the stock that drives the artisanal fleet's portfolio
+collapse---the SSP5-8.5 end-of-century cell exhibits a total \(SD\) of
+\(0.010\) and an inverted within/between ratio that the appendix
+explicitly reads as a floor effect at the lower bound of \(-100\%\). The
+fleet-level decomposition reported here inherits that floor effect: the
+total \(SD\) for the artisanal fleet under SSP5-8.5 end-of-century is
+0.1978 and the corresponding industrial cell is
+0.0497, both of which are small absolute magnitudes and
+mechanically consistent with the saturated regime.
+
+The substantive policy implication is that, for fleet-level trip
+projections, the marginal information value of expanding the CMIP6
+ensemble is small relative to that of tightening the structural
+posterior or refining the description of vessel heterogeneity within
+fleet. The dominant uncertainty is \emph{not} ``which climate model is
+right'' but ``given that all of them imply portfolio collapse for the
+two coastal stocks, how does the resulting heterogeneous economic
+exposure across vessels translate into trip-level effort.'' This is the
+econometric counterpart of the well-known result in the climate-impacts
+literature that ensemble averaging masks first-order distributional
+heterogeneity downstream of the climate signal (\citeproc{ref-Cline2017-dp}{Cline et al., 2017}; \citeproc{ref-Free2019}{Free et al., 2019}; \citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Oken2021-of}{Oken et al., 2021}).
+
+Figure \ref{fig:appG-decomp} visualises the decomposition.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figs/t4b/appendix_g_trips_variance_decomposition.png}
+\caption{Variance decomposition of $\Delta T_f / T_f^{(0)}$ across the
+CMIP6 ensemble. Bars stack to one within each scenario--window pair
+and split the total variance into within-model (posterior pooled with
+vessel heterogeneity, blue) and between-model (CMIP6 spread, orange)
+components. The within-model component dominates across all cells,
+reflecting the floor-effect saturation of the underlying Schaefer
+steady-state biomass collapse rather than tight cross-model agreement
+on the climate signal.}
+\label{fig:appG-decomp}
+\end{figure}
 
 \end{document}

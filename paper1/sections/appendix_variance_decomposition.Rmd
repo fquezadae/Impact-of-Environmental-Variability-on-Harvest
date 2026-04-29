@@ -39,7 +39,7 @@ within-model mean. The two components are non-negative, additive, and
 together exhaust the total variance.
 
 We compute Equation \eqref{eq:appF-decomp} by Monte Carlo from the
-T4b-full posterior (16{,}000 draws) crossed with the six-model CMIP6
+T4b-full posterior ($16{,}000$ draws) crossed with the six-model CMIP6
 ensemble described in Section \ref{projections}. The non-identified
 shifter for jack mackerel implies a posterior dominated by the prior;
 the decomposition for that stock has no structural interpretation and is
