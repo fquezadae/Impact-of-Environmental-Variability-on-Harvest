@@ -184,9 +184,10 @@ if (isTRUE(getOption("appE.sigma.run_main", TRUE))) {
   p <- ggplot(long_pl,
               aes(x = mean_post, y = domain, color = domain)) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
-    geom_pointrange(aes(xmin = q5, xmax = q95), fatten = 2.5) +
+    geom_pointrange(aes(xmin = q5, xmax = q95), size = 0.4) +
     facet_grid(stock ~ shifter, scales = "free_x",
-               labeller = label_parsed) +
+               labeller = labeller(stock = label_value,
+                                   shifter = label_parsed)) +
     scale_color_manual(values = c("centro_sur_eez" = "#1f77b4",
                                   "offshore_ext"   = "#2ca02c",
                                   "se_pacific"     = "#d62728")) +
