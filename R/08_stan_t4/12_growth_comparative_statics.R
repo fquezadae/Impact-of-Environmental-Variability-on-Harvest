@@ -68,8 +68,8 @@ T5_FIG_OUT         <- "figs/t4b/growth_ridgeline_cmip6.png"
 T5_STOCKS <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
 T5_STOCK_LABEL <- c(
   anchoveta_cs     = "Anchoveta CS",
-  sardina_comun_cs = "Sardina comun CS",
-  jurel_cs         = "Jurel CS"
+  sardina_comun_cs = "Common sardine CS",
+  jurel_cs         = "Jack mackerel CS"
 )
 
 T5_SSPS    <- c("ssp245", "ssp585")
@@ -348,14 +348,22 @@ t5_plot_ridgeline <- function(draws_scen, path = T5_FIG_OUT) {
     mutate(pct_clip = pmin(pmax(pct_change, -1), 3))
 
   excluded <- setdiff(unique(draws_scen$stock_id), unique(plot_df$stock_id))
-  subtitle_note <- paste0(
-    "Ensemble CMIP6 (", length(unique(plot_df$model)),
-    " modelos); 1 ridge por modelo. ",
+  has_cesm2_gap <- "CESM2" %in% plot_df$model &&
+                   !any(plot_df$model == "CESM2" & plot_df$scenario == "ssp245")
+  subtitle_lines <- c(
+    sprintf("CMIP6 ensemble (%d models); one ridge per model.",
+            length(unique(plot_df$model))),
     if (length(excluded) > 0)
-      paste0("Stocks no identificados excluidos (",
-             paste(T5_STOCK_LABEL[excluded], collapse = ", "), ").")
-    else ""
+      sprintf("Non-identified stocks excluded (%s).",
+              paste(T5_STOCK_LABEL[excluded], collapse = ", "))
+    else NULL,
+    if (has_cesm2_gap)
+      "CESM2 absent from SSP2-4.5 panels: chl ssp245 not published in NCAR CMIP6 catalog."
+    else NULL
   )
+  subtitle_note <- paste(subtitle_lines, collapse = "\n")
+
+  x_breaks <- c(-1, -0.75, -0.5, -0.25, 0, 0.25, 0.5)
 
   if (.HAS_GGRIDGES) {
     p <- ggplot(plot_df,
@@ -365,30 +373,34 @@ t5_plot_ridgeline <- function(draws_scen, path = T5_FIG_OUT) {
                                     color = "white", linewidth = 0.2) +
       facet_grid(stock_label ~ scenario_label, scales = "free_y") +
       scale_x_continuous(labels = scales::percent_format(accuracy = 1),
-                         breaks = c(-1, -0.5, 0, 0.5, 1, 2, 3)) +
+                         breaks = x_breaks) +
+      coord_cartesian(xlim = c(-1, 0.5)) +
       geom_vline(xintercept = 0, linetype = "dashed", color = "grey30") +
       scale_fill_brewer(palette = "Set2", guide = "none") +
-      labs(x = "Cambio % en r_eff vs baseline historico",
+      labs(x = "% change in r_eff vs historical baseline (2000-2024)",
            y = NULL,
-           title = "Comparative statics del crecimiento bajo CMIP6 ensemble",
+           title = "Growth comparative statics under CMIP6 ensemble",
            subtitle = subtitle_note) +
       theme_minimal(base_size = 10) +
       theme(strip.text = element_text(face = "bold", size = 9),
             plot.title = element_text(face = "bold"),
-            axis.text.y = element_text(size = 8))
+            plot.subtitle = element_text(size = 8.5, color = "grey25"),
+            axis.text.y = element_text(size = 9),
+            axis.text.x = element_text(size = 8))
   } else {
-    message("[T5] ggridges no disponible -- usando violin")
+    message("[T5] ggridges not available -- falling back to violin")
     p <- ggplot(plot_df,
                 ggplot2::aes(x = model, y = pct_clip, fill = model)) +
       geom_violin(alpha = 0.6, color = "white", scale = "width") +
       facet_grid(stock_label ~ scenario_label, scales = "free_y") +
-      scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+      scale_y_continuous(labels = scales::percent_format(accuracy = 1),
+                         breaks = x_breaks) +
+      coord_flip(ylim = c(-1, 0.5)) +
       geom_hline(yintercept = 0, linetype = "dashed", color = "grey30") +
-      coord_flip() +
       scale_fill_brewer(palette = "Set2", guide = "none") +
-      labs(y = "Cambio % en r_eff vs baseline historico",
+      labs(y = "% change in r_eff vs historical baseline (2000-2024)",
            x = NULL,
-           title = "Comparative statics del crecimiento bajo CMIP6 ensemble",
+           title = "Growth comparative statics under CMIP6 ensemble",
            subtitle = subtitle_note) +
       theme_minimal(base_size = 10)
   }
