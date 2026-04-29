@@ -1,0 +1,6 @@
+model,var,stage,reason
+CESM2,chlos,future/ssp245/mid,archivo missing o sin meses en rango
+CESM2,chlos,future/ssp245/end,archivo missing o sin meses en rango
+CESM2,uas,baseline,archivo hist o splice missing
+CESM2,vas,baseline,archivo hist o splice missing
+CESM2,wind_speed,all,uas/vas incompletos en algun exp

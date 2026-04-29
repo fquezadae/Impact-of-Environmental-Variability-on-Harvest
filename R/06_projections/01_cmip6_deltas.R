@@ -193,30 +193,41 @@ read_cmip6_var <- function(filepath, varname, date_range, bbox) {
   t_idx <- which(dates >= date_range[1] & dates <= date_range[2])
   if (length(t_idx) == 0) return(NULL)
 
-  # Deteccion de grid:
-  #   1. nav_lon/nav_lat (ORCA en IPSL, GFDL, CNRM, MPI-ESM ocean)  -> curvilinear
-  #   2. lat/lon como variables 2D                                  -> curvilinear (POP en CESM2)
-  #   3. lon/lat 1D como dims (atmospheric uas/vas, GFDL ocean)     -> regular
-  if ("nav_lon" %in% names(nc$var)) {
-    lon2d <- ncvar_get(nc, "nav_lon")
-    lat2d <- ncvar_get(nc, "nav_lat")
-    grid_type <- "curvilinear"
-  } else if (all(c("lon", "lat") %in% names(nc$var)) &&
-             length(dim(ncvar_get(nc, "lon"))) == 2L) {
-    lon2d <- ncvar_get(nc, "lon")
-    lat2d <- ncvar_get(nc, "lat")
-    grid_type <- "curvilinear"
-  } else if (all(c("lon", "lat") %in% names(nc$dim))) {
-    lon1d <- ncvar_get(nc, "lon")
-    lat1d <- ncvar_get(nc, "lat")
-    grid_type <- "regular"
-  } else {
-    stop("Grid desconocido en ", basename(filepath))
+  # Deteccion de grid tolerante a varios naming conventions:
+  #   - nav_lon/nav_lat                (IPSL, GFDL/Omon, CNRM, MPI ORCA)
+  #   - lon/lat 2D                     (CESM2 POP)
+  #   - longitude/latitude 2D          (UKESM1-0-LL ORCA)
+  #   - lon/lat 1D (dim o var)         (atmospheric uas/vas regular)
+  #   - longitude/latitude 1D          (algunos modelos atm)
+  pick <- function(names_try) {
+    for (n in names_try) {
+      if (n %in% names(nc$var)) {
+        v <- ncvar_get(nc, n)
+        return(list(values = v, is_2d = !is.null(dim(v)) && length(dim(v)) == 2L))
+      }
+      if (n %in% names(nc$dim)) {
+        return(list(values = nc$dim[[n]]$vals, is_2d = FALSE))
+      }
+    }
+    NULL
   }
-  # POP / algunos ORCA publican lon en 0-360. Normalizar a -180/180 para que
-  # el filtro de bbox negativo funcione.
-  if (grid_type == "curvilinear") {
+  lon_info <- pick(c("nav_lon", "lon", "longitude"))
+  lat_info <- pick(c("nav_lat", "lat", "latitude"))
+  if (is.null(lon_info) || is.null(lat_info)) {
+    stop("Grid desconocido en ", basename(filepath),
+         " -- vars=[", paste(names(nc$var), collapse = ","),
+         "] dims=[", paste(names(nc$dim), collapse = ","), "]")
+  }
+  if (lon_info$is_2d || lat_info$is_2d) {
+    lon2d <- lon_info$values
+    lat2d <- lat_info$values
+    grid_type <- "curvilinear"
+    # POP / algunos ORCA publican lon en 0-360. Normalizar para bbox negativo.
     lon2d <- ifelse(lon2d > 180, lon2d - 360, lon2d)
+  } else {
+    lon1d <- lon_info$values
+    lat1d <- lat_info$values
+    grid_type <- "regular"
   }
 
   v <- nc$var[[varname]]
