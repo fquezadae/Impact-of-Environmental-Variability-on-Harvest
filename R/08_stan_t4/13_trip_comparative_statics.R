@@ -1,10 +1,14 @@
 # =============================================================================
-# FONDECYT -- 13_trip_comparative_statics.R   (T6 / step B paper1)
+# FONDECYT -- 13_trip_comparative_statics.R   (T7 ENSEMBLE 6 modelos)
 #
-# Long-run comparative statics sobre TRIPS -- conecta el posterior T4b-full con
-# la negative binomial trip equation via el Schaefer steady-state bajo F_hist.
+# Long-run comparative statics sobre TRIPS bajo el ensemble CMIP6 de 6 modelos
+# (rewrite 2026-04-29 PM, ver project_cmip6_ensemble_deltas_executed.md).
+# Connecta el posterior T4b-full con la negative binomial trip equation via el
+# Schaefer steady-state bajo F_hist, ahora iterando sobre cada modelo del
+# ensemble en vez de usar IPSL solo.
+#
 # Es el companion de 12_growth_comparative_statics.R (T5, growth rates) y
-# alimenta la tabla tab:trip_compstat en paper1 §4.4 "Implications for
+# alimenta la tabla tab:trip_compstat en paper1 sec 4.4 "Implications for
 # fleet-level effort".
 #
 # Framing Cowles: steady-state bajo status-quo F, no forward simulation.
@@ -12,52 +16,60 @@
 #
 # Pipeline matematico:
 #
-#   (1) r_eff[d,s,c] = r_base[d,s] * exp(rho_sst[d,s]*DSST[c] + rho_chl[d,s]*DlogCHL[c])
+#   (1) r_eff[d,s,m,c] = r_base[d,s] *
+#                        exp(rho_sst[d,s]*DSST[m,c] + rho_chl[d,s]*DlogCHL[m,c])
 #
 #   (2) Schaefer steady-state:
-#       B_star[d,s,c] = K[d,s] * (1 - F_hist[s]/r_eff[d,s,c])
-#       Extincion si F_hist[s] >= r_eff[d,s,c]. Flag y reportar Pr(extinct).
+#       B_star[d,s,m,c] = K[d,s] * (1 - F_hist[s] / r_eff[d,s,m,c])
+#       Extincion si F_hist[s] >= r_eff[d,s,m,c]. Flag y reportar Pr(extinct).
 #
-#   (3) factor_B[d,s,c] = B_star[d,s,c] / B_hist[s]
+#   (3) factor_B[d,s,m,c] = B_star[d,s,m,c] / B_hist[s]
 #       B_hist = mediana de biomass 2000-2024 (IFOP/SPRFMO, consistente con Stan)
 #
 #   (4) omega[v,s] = share historico realizado de especie s en captura vessel v
-#       desde H_33/H_114/H_26 en poisson_dt.rds:
 #         omega[v,s] = sum_y H_{s,vy} / sum_y (H_33 + H_114 + H_26)_{vy}
 #
-#   (5) factor_H[d,v,c] = sum_s omega[v,s] * factor_B[d,s,c]
+#   (5) factor_H[d,v,m,c] = sum_s omega[v,s] * factor_B[d,s,m,c]
 #       Convencion: jurel_cs no identificado -> factor_B_jurel = 1.0 para
 #       todos los draws (posterior prior-dominado; propagarlo mete ruido
 #       espurio al portfolio). Asuncion explicita.
 #
-#   (6) factor_trips con semi-elasticity (el NB estima H_alloc_vy en niveles,
-#       NO log, asi que la traduccion correcta del posterior a trips es):
-#       factor_trips[d,v,c] = exp( beta_H[fleet(v)] * H_alloc_hist[v] *
-#                                  (factor_H[d,v,c] - 1) )
-#       H_alloc_hist[v] = mediana de H_alloc_vy por vessel.
-#       Consecuencia: heterogeneidad intra-flota -- vessels grandes responden
-#       mas en log-trips a mismo %Delta H_alloc. Los IC [q05,q95] sobre
-#       (draws x vessels within fleet) lo capturan.
+#   (6) factor_trips con semi-elasticity:
+#       factor_trips[d,v,m,c] = exp( beta_H[fleet(v)] * H_alloc_hist[v] *
+#                                    (factor_H[d,v,m,c] - 1) )
 #
-#   (7) Agregar por flota: mediana, q05, q95, Pr(Delta trips < 0) sobre
-#       draws x vessels within fleet. Pr(extinct) reportado por stock x scenario.
+#   (7) Resumen WITHIN-MODEL: para cada (fleet, m, ssp, window) agregar
+#       sobre (draws x vessels within fleet) -> mediana, q05/q95, Pr_loss,
+#       cond_med/q05/q95.
 #
-# Sanity check: DSST=0, DlogCHL=0 -> r_eff = r_base, B_star = B_star_hist,
-# factor_B = 1.0 exacto (asumiendo F_hist proporcional congruente), y
-# factor_trips = 1.0 exacto.
+#   (8) Resumen CROSS-MODEL: para cada (fleet, ssp, window) agregar sobre
+#       el axis m -> mediana de medianas (cross-model med), q25/q75 (cross-IQR),
+#       y mediana de los q05/q95 within-model (within posterior CI tipico).
+#       Paralelo exacto a t5_summarise_cross() en el growth compstat.
+#
+# Sanity check: DSST=0, DlogCHL=0 -> r_eff = r_base, factor_trips != 1.0
+# (Schaefer-eq B_star bajo F_hist no es B_hist en general); pero el unit-test
+# factor_H=1 -> factor_trips=1.0 exacto se chequea.
 #
 # Entradas:
 #   - data/outputs/t4b/t4b_full_fit.rds        (cmdstanr CmdStanMCMC)
-#   - data/projections/cmip6_deltas.rds        (data.table CMIP6 deltas)
+#   - data/cmip6/deltas_ensemble.csv           (long format ensemble)
 #   - data/bio_params/catch_annual_cs_2000_2024.csv  (captura IFOP-consistente)
 #   - data/bio_params/official_biomass_series.csv    (anch/sard biomass_total_t)
 #   - data/bio_params/acoustic_biomass_series.csv    (jurel_cs biomass_t)
 #   - data/trips/poisson_dt.rds                (panel NB con H_33/H_114/H_26)
 #
-# Salidas:
-#   - tables/trip_comparative_statics.csv          (formateado para paper)
-#   - tables/trip_comparative_statics_raw.csv      (numerico crudo)
-#   - tables/trip_comparative_statics_extinct.csv  (Pr extinct por stock x scen)
+# Salidas (paralelas a T5 ensemble):
+#   - paper1/tables/trip_comparative_statics.csv
+#         formato paper, fleet x scenario, cross-model + IQR + within-CI
+#   - paper1/tables/trip_comparative_statics_raw.csv
+#         numerico cross-model
+#   - paper1/tables/trip_comparative_statics_by_model.csv
+#         long, fila por (fleet x model x scenario x window) -- debug + Apendice
+#   - paper1/tables/trip_comparative_statics_extinct.csv
+#         Pr(extinct) cross-model + IQR por stock x scenario
+#   - paper1/tables/trip_comparative_statics_extinct_by_model.csv
+#         Pr(extinct) por stock x model x scenario (debug)
 #
 # Corre con:
 #   options(t6.run_main = TRUE)
@@ -84,37 +96,39 @@ source_utf8 <- function(file, envir = globalenv()) {
   invisible(NULL)
 }
 source_utf8("R/00_config/config.R")
-
-# Reuso del builder de escalares CMIP6 del T5
-source_utf8("R/08_stan_t4/12_growth_comparative_statics.R")
-# Nota: 12_growth_comparative_statics.R define t5_build_scenario_scalars() y
-# constantes T5_*. No ejecuta t5_run() porque el main guard requiere option
-# t5.run_main = TRUE.
+# Constantes y compstat_load_scenarios() compartidas con T5 y Apendice F.
+# Antes T7 hacia source(T5) directo; eso traia el main guard default-TRUE de T5
+# como side-effect. Refactor 2026-04-29 PM separa lo "shared" del "main".
+source_utf8("R/08_stan_t4/_compstat_utils.R")
 
 # -----------------------------------------------------------------------------
 # Constantes
 # -----------------------------------------------------------------------------
 
 T6_FIT_RDS           <- "data/outputs/t4b/t4b_full_fit.rds"
-T6_DELTAS_RDS        <- "data/projections/cmip6_deltas.rds"
+T6_DELTAS_CSV        <- COMPSTAT_DELTAS_CSV
 T6_CATCH_CSV         <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T6_OFF_BIO_CSV       <- "data/bio_params/official_biomass_series.csv"
 T6_ACU_BIO_CSV       <- "data/bio_params/acoustic_biomass_series.csv"
 T6_POISSON_RDS       <- "data/trips/poisson_dt.rds"
 
-T6_TABLE_OUT         <- "paper1/tables/trip_comparative_statics.csv"
-T6_TABLE_RAW_OUT     <- "paper1/tables/trip_comparative_statics_raw.csv"
-T6_TABLE_EXTINCT_OUT <- "paper1/tables/trip_comparative_statics_extinct.csv"
+T6_TABLE_OUT             <- "paper1/tables/trip_comparative_statics.csv"
+T6_TABLE_RAW_OUT         <- "paper1/tables/trip_comparative_statics_raw.csv"
+T6_TABLE_BYMODEL_OUT     <- "paper1/tables/trip_comparative_statics_by_model.csv"
+T6_TABLE_EXTINCT_OUT     <- "paper1/tables/trip_comparative_statics_extinct.csv"
+T6_TABLE_EXTINCT_BYMODEL <- "paper1/tables/trip_comparative_statics_extinct_by_model.csv"
 
 T6_WINDOW    <- 2000:2024                 # consistente con T4B_FULL_WINDOW
-T6_STOCKS    <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
-T6_STOCK_IDX <- setNames(seq_along(T6_STOCKS), T6_STOCKS)
 
-T6_STOCK_LABEL <- c(
-  anchoveta_cs     = "Anchoveta CS",
-  sardina_comun_cs = "Sardina comun CS",
-  jurel_cs         = "Jurel CS"
-)
+# Aliases hacia compstat shared (refactor 2026-04-29 PM)
+T6_STOCKS                <- COMPSTAT_STOCKS
+T6_STOCK_LABEL           <- COMPSTAT_STOCK_LABEL
+T6_SSPS                  <- COMPSTAT_SSPS
+T6_WINDOWS               <- COMPSTAT_WINDOWS
+T6_SCENARIO_LABEL        <- COMPSTAT_SCENARIO_LABEL
+T6_NON_IDENTIFIED_STOCKS <- COMPSTAT_NON_IDENTIFIED_STOCKS
+
+T6_STOCK_IDX <- setNames(seq_along(T6_STOCKS), T6_STOCKS)
 
 # Species-code map (confirmado vs R/01_data_cleaning/tac_processing.R:130-133)
 #   H_114 -> anchoveta; H_33 -> sardina_comun; H_26 -> jurel
@@ -124,29 +138,16 @@ T6_CATCH_COL_OF <- c(
   jurel_cs         = "H_26"
 )
 
-# Stocks cuyo shifter NO esta identificado por la data 2000-2024.
-# Convencion paper1: jurel reportado como "n.i." en growth tables y, aqui,
-# se fija factor_B = 1.0 para no contaminar el portfolio con posterior
-# prior-dominado. Ver project_jurel_ni_convention.md.
-T6_NON_IDENTIFIED_STOCKS <- c("jurel_cs")
-
-T6_SSPS    <- c("ssp245", "ssp585")
-T6_WINDOWS <- c("mid", "end")
-
-T6_SCENARIO_LABEL <- c(
-  ssp245_mid = "SSP2-4.5, 2041-2060",
-  ssp245_end = "SSP2-4.5, 2081-2100",
-  ssp585_mid = "SSP5-8.5, 2041-2060",
-  ssp585_end = "SSP5-8.5, 2081-2100"
-)
-
 T6_FLEET_LABEL <- c(
   ART = "Artisanal",
   IND = "Industrial"
 )
 
+# Threshold de portfolio loss (consistente con T7 single-IPSL pre-ensemble)
+T6_LOSS_THRESHOLD <- 0.5
+
 # -----------------------------------------------------------------------------
-# Paso 1 -- F_hist y B_hist por stock (desde series consistentes con Stan)
+# Paso 1 -- F_hist y B_hist por stock (sin cambios, no depende de modelo CMIP6)
 # -----------------------------------------------------------------------------
 
 t6_load_biology <- function() {
@@ -164,9 +165,6 @@ t6_load_biology <- function() {
 
   bio <- dplyr::bind_rows(off, ac)
 
-  # F proporcional anual (catch/biomass). NOTA: sin correccion por survival
-  # midseason -- consistente con la likelihood Schaefer de t4b_state_space_full.stan
-  # que trata C como sustraccion del stock de inicio de ano.
   fb <- dplyr::inner_join(catch, bio, by = c("stock_id", "year")) %>%
     dplyr::mutate(F_prop = catch_t / biomass_t)
 
@@ -181,7 +179,7 @@ t6_load_biology <- function() {
       .groups = "drop"
     )
 
-  cat("[T6] F_hist y B_hist por stock (mediana 2000-2024, IFOP-consistent):\n")
+  cat("[T7] F_hist y B_hist por stock (mediana 2000-2024, IFOP-consistent):\n")
   print(summ %>%
           dplyr::mutate(F_hist = round(F_hist, 3),
                         B_hist_kt = round(B_hist_t / 1e3, 0)))
@@ -191,7 +189,7 @@ t6_load_biology <- function() {
 }
 
 # -----------------------------------------------------------------------------
-# Paso 2 -- Extraer draws posteriores (r_base, K_nat, rho_sst, rho_chl)
+# Paso 2 -- Extraer draws posteriores (sin cambios)
 # -----------------------------------------------------------------------------
 
 t6_extract_draws <- function(fit_rds = T6_FIT_RDS,
@@ -218,50 +216,38 @@ t6_extract_draws <- function(fit_rds = T6_FIT_RDS,
   })
   draws_long <- dplyr::bind_rows(long_list)
 
-  cat("[T6] Posterior draws extraidos: N_total =", nrow(draws_long),
+  cat("[T7] Posterior draws extraidos: N_total =", nrow(draws_long),
       "(", length(unique(draws_long$.draw)), "draws x",
-      length(stocks), "stocks )\n")
-  cat("    Units check -- K_nat en miles de t (mil_t), biomass en Stan data en mil_t\n")
-  cat("    K_nat median por stock:",
-      paste(round(tapply(draws_long$K_nat, draws_long$stock_id, median), 0),
-            collapse = " | "), "\n\n")
+      length(stocks), "stocks )\n\n")
 
   draws_long
 }
 
 # -----------------------------------------------------------------------------
-# Paso 3 -- factor_B[d,s,c] via Schaefer steady-state bajo F_hist
+# Paso 3 -- factor_B[d,s,m,c] via Schaefer steady-state bajo F_hist
 # -----------------------------------------------------------------------------
-# OJO UNIDADES: el Stan trabaja con biomass en MIL_T (miles de toneladas).
-# K_nat del posterior esta en mil_t. B_hist la convertimos a mil_t antes de
-# calcular el factor (aunque en verdad el factor es ratio y no importa la
-# unidad siempre que sea la misma arriba y abajo -- pero los F_hist requieren
-# que catch/biomass esten en la misma unidad, y catch_annual_cs_2000_2024.csv
-# usa t -- F_prop = catch_t / biomass_t es dimensionless, OK).
+# Cambio vs T7 viejo: scen_df ahora trae columna `model`. cross-join por
+# (.draw x stock_id) x (model x ssp x window).
 
-t6_compute_factor_B <- function(draws_long, bio_summary, scen_dt) {
+t6_compute_factor_B <- function(draws_long, bio_summary, scen_df) {
 
   bio_summary <- bio_summary %>%
     dplyr::select(stock_id, F_hist, B_hist_t)
 
-  scen_df <- tibble::as_tibble(scen_dt) %>%
-    dplyr::select(ssp, window, DSST, DlogCHL) %>%
-    dplyr::mutate(scenario_key = paste(ssp, window, sep = "_"))
+  scen_keep <- scen_df %>%
+    dplyr::select(model, scenario = scenario, window, DSST, DlogCHL,
+                  scenario_key)
 
   dt <- draws_long %>%
     dplyr::left_join(bio_summary, by = "stock_id") %>%
-    tidyr::crossing(scen_df) %>%
+    tidyr::crossing(scen_keep) %>%
     dplyr::mutate(
       r_eff    = r_base * exp(rho_sst * DSST + rho_chl * DlogCHL),
       extinct  = F_hist >= r_eff,
       # K_nat en mil_t; B_hist_t en t. Convertimos K_nat_t = K_nat * 1e3 para
-      # que factor_B = B_star_t / B_hist_t sea dimensionless.
+      # que factor_B sea dimensionless.
       K_nat_t  = K_nat * 1e3,
       # Si extinct, B_star = 0 (colapso total bajo Schaefer cuando F >= r).
-      # Usamos 0 en vez de NA para que el portfolio del vessel compute
-      # correctamente: un stock extinto contribuye con 0 * omega al factor_H,
-      # que es lo economicamente correcto (captura desaparece) y no dropea
-      # al vessel entero del agregado.
       B_star_t = dplyr::if_else(extinct,
                                 0.0,
                                 K_nat_t * (1 - F_hist / r_eff)),
@@ -283,46 +269,75 @@ t6_compute_factor_B <- function(draws_long, bio_summary, scen_dt) {
 }
 
 # -----------------------------------------------------------------------------
-# Paso 3b -- Pr(extinction) por stock x scenario
+# Paso 3b -- Pr(extinction) WITHIN-MODEL: por (stock, model, ssp, window)
 # -----------------------------------------------------------------------------
 
-t6_summarise_extinction <- function(factor_B_dt) {
-  # Ojo: t6_compute_factor_B ya sobreescribio extinct=FALSE para jurel. Eso
-  # es lo que queremos reportar (al lector no le comunicamos un Pr ext de
-  # jurel derivado de un posterior no identificado).
+t6_summarise_extinction_within <- function(factor_B_dt) {
   factor_B_dt %>%
-    dplyr::group_by(stock_id, ssp, window) %>%
+    dplyr::group_by(stock_id, model, scenario, window) %>%
     dplyr::summarise(
       n_draws       = dplyr::n(),
       n_extinct     = sum(extinct),
       pr_extinct    = mean(extinct),
-      # Los draws extinct contribuyen factor_B=0 al resumen: eso es honesto.
-      # Si la mediana queda en 0, significa que >50% de los draws colapsan.
       factor_B_med  = median(factor_B),
       factor_B_q05  = quantile(factor_B, 0.05),
       factor_B_q95  = quantile(factor_B, 0.95),
       .groups = "drop"
     ) %>%
     dplyr::mutate(
-      scenario_key  = paste(ssp, window, sep = "_"),
-      stock_label   = T6_STOCK_LABEL[stock_id],
+      scenario_key   = paste(scenario, window, sep = "_"),
+      stock_label    = T6_STOCK_LABEL[stock_id],
       scenario_label = T6_SCENARIO_LABEL[scenario_key],
       non_identified = stock_id %in% T6_NON_IDENTIFIED_STOCKS
     ) %>%
-    dplyr::arrange(stock_id,
-                   factor(ssp, levels = T6_SSPS),
-                   factor(window, levels = T6_WINDOWS))
+    dplyr::arrange(stock_id, model,
+                   factor(scenario, levels = T6_SSPS),
+                   factor(window,   levels = T6_WINDOWS))
 }
 
 # -----------------------------------------------------------------------------
-# Paso 4 -- omega[v,s] + H_alloc_hist[v] desde poisson_dt.rds
+# Paso 3c -- Pr(extinction) CROSS-MODEL: agregando sobre m
+# -----------------------------------------------------------------------------
+# Convencion (paralela a t5_summarise_cross):
+#   pr_extinct_cross_med = median across m del pr_extinct within m
+#   pr_extinct_cross_q25 = q25  across m del pr_extinct within m (IQR cross-model)
+#   pr_extinct_cross_q75 = q75  across m del pr_extinct within m
+#   factor_B_cross_med   = median across m del factor_B_med within m
+#   factor_B_cross_q25/q75 = IQR cross-model de factor_B_med
+
+t6_summarise_extinction_cross <- function(extinct_within) {
+  extinct_within %>%
+    dplyr::group_by(stock_id, scenario, window) %>%
+    dplyr::summarise(
+      n_models               = dplyr::n(),
+      pr_extinct_cross_med   = median(pr_extinct),
+      pr_extinct_cross_q25   = quantile(pr_extinct, 0.25),
+      pr_extinct_cross_q75   = quantile(pr_extinct, 0.75),
+      factor_B_cross_med     = median(factor_B_med),
+      factor_B_cross_q25     = quantile(factor_B_med, 0.25),
+      factor_B_cross_q75     = quantile(factor_B_med, 0.75),
+      factor_B_within_q05    = median(factor_B_q05),
+      factor_B_within_q95    = median(factor_B_q95),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(
+      scenario_key   = paste(scenario, window, sep = "_"),
+      stock_label    = T6_STOCK_LABEL[stock_id],
+      scenario_label = T6_SCENARIO_LABEL[scenario_key],
+      non_identified = stock_id %in% T6_NON_IDENTIFIED_STOCKS
+    ) %>%
+    dplyr::arrange(factor(stock_id, levels = T6_STOCKS),
+                   factor(scenario, levels = T6_SSPS),
+                   factor(window,   levels = T6_WINDOWS))
+}
+
+# -----------------------------------------------------------------------------
+# Paso 4 -- omega[v,s] + H_alloc_hist[v] desde poisson_dt.rds (sin cambios)
 # -----------------------------------------------------------------------------
 
 t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
   pdt <- as.data.table(readRDS(poisson_rds))
 
-  # omega_v,s = share historico realizado
-  # Sumar H_*_vy por vessel a lo largo de los anios disponibles
   v_catch <- pdt[, .(
     H_anch = sum(H_114, na.rm = TRUE),
     H_sard = sum(H_33,  na.rm = TRUE),
@@ -331,10 +346,9 @@ t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
 
   v_catch[, H_tot := H_anch + H_sard + H_jur]
 
-  # Vessels con H_tot == 0 se dropean (ningun catch en las 3 especies)
   dropped <- v_catch[H_tot == 0, .N]
   if (dropped > 0) {
-    cat("[T6] WARNING: dropeando", dropped,
+    cat("[T7] WARNING: dropeando", dropped,
         "vessels con captura cero en las 3 especies.\n")
   }
   v_catch <- v_catch[H_tot > 0]
@@ -345,8 +359,6 @@ t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
     omega_jur  = H_jur  / H_tot
   )]
 
-  # H_alloc_hist[v] = mediana de H_alloc_vy por vessel (mas robusto que mean
-  # a outliers de entrada tardia / año-con-cero-cuota)
   v_halloc <- pdt[!is.na(H_alloc_vy),
                   .(H_alloc_hist = median(H_alloc_vy),
                     n_years      = .N),
@@ -355,7 +367,7 @@ t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
   vtab <- merge(v_catch, v_halloc, by = "COD_BARCO", all.x = TRUE)
   vtab <- vtab[!is.na(H_alloc_hist) & H_alloc_hist > 0]
 
-  cat("[T6] Vessel table construida:",
+  cat("[T7] Vessel table construida:",
       nrow(vtab), "vessels (ART:",
       vtab[TIPO_FLOTA == "ART", .N], "| IND:",
       vtab[TIPO_FLOTA == "IND", .N], ").\n")
@@ -375,11 +387,8 @@ t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
 }
 
 # -----------------------------------------------------------------------------
-# Paso 5 -- Re-estimar NB para beta_H_ind y beta_H_art
+# Paso 5 -- Re-estimar NB para beta_H_ind y beta_H_art (sin cambios)
 # -----------------------------------------------------------------------------
-# Replica el chunk est_poisson del Rmd (paper1_climate_projections.Rmd L398-416).
-# Re-estimacion in-script en vez de serializar: el NB fit es barato (<1s) y
-# mantiene el script auto-contenido y reproducible.
 
 t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
   poisson_df <- readRDS(poisson_rds)
@@ -398,13 +407,11 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
   beta_H_ind <- as.numeric(coef(nb_ind)["H_alloc_vy"])
   beta_H_art <- as.numeric(coef(nb_art)["H_alloc_vy"])
 
-  cat("[T6] NB reestimado (in-script):\n")
+  cat("[T7] NB reestimado (in-script):\n")
   cat("    IND: beta_H(H_alloc_vy) =", sprintf("%.6f", beta_H_ind),
       "(N =", nrow(df_ind), ")\n")
   cat("    ART: beta_H(H_alloc_vy) =", sprintf("%.6f", beta_H_art),
-      "(N =", nrow(df_art), ")\n")
-  cat("    (semi-elasticity -- multiplicar por H_alloc_hist[v] en ton/t\n",
-      "     para obtener elasticity-a-la-mediana por vessel)\n\n")
+      "(N =", nrow(df_art), ")\n\n")
 
   list(
     beta_H = c(ART = beta_H_art, IND = beta_H_ind),
@@ -413,37 +420,35 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
 }
 
 # -----------------------------------------------------------------------------
-# Paso 6 -- factor_H[d,v,c] y factor_trips[d,v,c] por vessel
+# Paso 6 -- factor_H[d,v,m,c] y factor_trips[d,v,m,c] por vessel
 # -----------------------------------------------------------------------------
-# Estrategia de memoria: evitamos la CJ completa (draws x scenarios x vessels ~
-# 15M+ filas). Para cada vessel, calculamos factor_H y factor_trips sobre las
-# 12K filas (draws x scenarios) vectorialmente, y rbind-listamos solo el resultado.
+# Memoria-safe: loop por vessel. Inner table ahora es (.draw x model x ssp
+# x window) ~ 16K x 22 = 352K filas. Multiplied por ~hundreds de vessels =
+# ~50-100M rows totales (manageable como rbindlist por vessel).
 
 t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H) {
 
-  # Pivotear factor_B a wide en stock (draws x scenarios x {anch,sard,jur})
   fb_wide <- as.data.table(factor_B_dt)[
-    , .(.draw, stock_id, ssp, window, factor_B)
+    , .(.draw, stock_id, model, scenario, window, factor_B)
   ] %>%
-    data.table::dcast(.draw + ssp + window ~ stock_id,
+    data.table::dcast(.draw + model + scenario + window ~ stock_id,
                       value.var = "factor_B")
 
-  # Renombrar columnas stock -> abreviadas para consumir por vessel
   setnames(fb_wide,
            old = c("anchoveta_cs", "sardina_comun_cs", "jurel_cs"),
            new = c("fB_anch", "fB_sard", "fB_jur"),
            skip_absent = TRUE)
 
-  # Defensivo: jurel override a 1.0 lo hace t6_compute_factor_B, pero si por
-  # alguna razon quedara NA, lo llenamos neutral.
   fb_wide[is.na(fB_jur), fB_jur := 1.0]
-
-  # Post-fix NA->0 en extinct: fB_anch y fB_sard son siempre numericos
-  # (cero si extinct), asi que el portfolio computa correctamente sin NA.
 
   vt <- as.data.table(vessel_tab)
 
-  # Loop por vessel -- simple y memory-safe
+  cat("[T7] Loop por vessel sobre", nrow(vt),
+      "vessels x", nrow(fb_wide), "(.draw x model x scenario)\n",
+      "    -> total filas factor_trips =",
+      formatC(nrow(vt) * nrow(fb_wide), format = "d", big.mark = ","), "\n")
+  t0 <- Sys.time()
+
   chunks <- vector("list", nrow(vt))
   for (i in seq_len(nrow(vt))) {
     v <- vt[i]
@@ -459,7 +464,8 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H) {
       COD_BARCO    = v$COD_BARCO,
       TIPO_FLOTA   = v$TIPO_FLOTA,
       .draw        = fb_wide$.draw,
-      ssp          = fb_wide$ssp,
+      model        = fb_wide$model,
+      scenario     = fb_wide$scenario,
       window       = fb_wide$window,
       factor_H     = factor_H,
       factor_trips = factor_trips
@@ -467,191 +473,240 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H) {
   }
 
   out <- rbindlist(chunks)
-  out[, scenario_key := paste(ssp, window, sep = "_")]
+  out[, scenario_key := paste(scenario, window, sep = "_")]
 
-  cat("[T6] factor_trips computado: N =", nrow(out), "rows (",
-      length(unique(out$COD_BARCO)), "vessels x",
-      length(unique(out$.draw)), "draws x",
-      length(unique(out$scenario_key)), "scenarios )\n\n")
+  cat(sprintf("    Done en %.1fs. N filas = %s\n\n",
+              as.numeric(Sys.time() - t0, units = "secs"),
+              formatC(nrow(out), format = "d", big.mark = ",")))
 
   out
 }
 
 # -----------------------------------------------------------------------------
-# Paso 7 -- Resumen por flota x scenario
+# Paso 7a -- Resumen WITHIN-MODEL: (fleet x model x ssp x window)
 # -----------------------------------------------------------------------------
+# Aggregacion sobre (draws x vessels within fleet) -- pooling identico al T7
+# viejo. La unica diferencia: ahora el agregado es por modelo CMIP6 m, no
+# colapsando todo el ensemble a un solo punto.
 
-t6_summarise_trips <- function(ft_dt, threshold = 0.5) {
-  # Opcion (a') -- reportar tres objetos:
-  #
-  #   (i)  factor_trips marginal: mediana sobre TODOS los draws. Mezcla
-  #        colapsos y supervivencia. Es lo que leeria un policymaker como
-  #        "respuesta agregada" — pero esta dominada por los draws donde
-  #        el portfolio se evapora bajo Schaefer steady-state.
-  #
-  #   (ii) Pr(portfolio loss > 50%): fraccion de draws donde factor_H <
-  #        threshold (default 0.5). Proxy de "functional degradation" del
-  #        portfolio del vessel — no confundir con extincion de stock
-  #        individual (que esta en la tabla extinct).
-  #
-  #   (iii) factor_trips condicional: mediana restringida a draws donde
-  #         factor_H >= threshold. Es la "respuesta pura al clima" sin
-  #         mezclar con el piso de colapso. Sirve para separar la señal
-  #         de elasticidad climatica de la señal de Schaefer-steady-state-
-  #         -collapse. Si threshold produce un subset vacio para alguna
-  #         flota x scenario, la cond queda NA y se reporta como "collapse
-  #         dominated" en la tabla formateada.
-
+t6_summarise_trips_within <- function(ft_dt, threshold = T6_LOSS_THRESHOLD) {
   ft_dt[, survive := factor_H >= threshold]
 
   summ <- ft_dt[, .(
     n_obs                 = .N,
     n_survive             = sum(survive),
-    # (i) marginal (all draws)
     factor_trips_marg_med = median(factor_trips),
     factor_trips_marg_q05 = quantile(factor_trips, 0.05),
     factor_trips_marg_q95 = quantile(factor_trips, 0.95),
-    # (ii) portfolio loss probability
     pr_portfolio_loss     = mean(!survive),
-    # (iii) conditional (draws with factor_H >= threshold)
     factor_trips_cond_med = if (sum(survive) > 0)
                               median(factor_trips[survive]) else NA_real_,
     factor_trips_cond_q05 = if (sum(survive) > 0)
                               quantile(factor_trips[survive], 0.05) else NA_real_,
     factor_trips_cond_q95 = if (sum(survive) > 0)
                               quantile(factor_trips[survive], 0.95) else NA_real_,
-    # factor_H stats (para lectura sanidad)
     factor_H_med          = median(factor_H),
     factor_H_q05          = quantile(factor_H, 0.05),
     factor_H_q95          = quantile(factor_H, 0.95),
-    # Pr(decline) marginal
     pr_decline            = mean(factor_trips < 1)
-  ), by = .(TIPO_FLOTA, ssp, window)]
+  ), by = .(TIPO_FLOTA, model, scenario, window)]
 
-  summ[, scenario_key := paste(ssp, window, sep = "_")]
+  summ[, scenario_key := paste(scenario, window, sep = "_")]
   summ[, scenario_label := T6_SCENARIO_LABEL[scenario_key]]
   summ[, fleet_label    := T6_FLEET_LABEL[as.character(TIPO_FLOTA)]]
 
-  # setorder de data.table no toma factor(...) como expresion -> cols aux
-  summ[, ssp_ord    := factor(ssp,    levels = T6_SSPS)]
-  summ[, window_ord := factor(window, levels = T6_WINDOWS)]
-  setorder(summ, TIPO_FLOTA, ssp_ord, window_ord)
+  summ[, ssp_ord    := factor(scenario, levels = T6_SSPS)]
+  summ[, window_ord := factor(window,   levels = T6_WINDOWS)]
+  setorder(summ, TIPO_FLOTA, model, ssp_ord, window_ord)
   summ[, c("ssp_ord", "window_ord") := NULL]
 
   summ
 }
 
 # -----------------------------------------------------------------------------
-# Paso 7b -- Sanity: DSST=0, DlogCHL=0 -> factor_trips ~ 1.0
+# Paso 7b -- Resumen CROSS-MODEL: (fleet x ssp x window)
 # -----------------------------------------------------------------------------
+# Convencion exacta paralela a t5_summarise_cross():
+#   *_cross_med   = median across m del *_med within m
+#   *_cross_q25/q75 = IQR cross-model del *_med
+#   *_within_q05/q95 = mediana across m del posterior q05/q95 within m
+#                      (90% CI tipico dentro de un modelo)
+#   pr_*_cross_med = median across m del pr_* within m
 
-t6_sanity_noclimate <- function(draws_long, bio_summary,
-                                vessel_tab, beta_H) {
+t6_summarise_trips_cross <- function(within_summ) {
+  ws <- as.data.table(within_summ)
+  ws[, .(
+    n_models                = .N,
+    # Marginal (all draws within model)
+    factor_trips_marg_cross_med = median(factor_trips_marg_med),
+    factor_trips_marg_cross_q25 = quantile(factor_trips_marg_med, 0.25),
+    factor_trips_marg_cross_q75 = quantile(factor_trips_marg_med, 0.75),
+    factor_trips_marg_within_q05 = median(factor_trips_marg_q05),
+    factor_trips_marg_within_q95 = median(factor_trips_marg_q95),
+    # Conditional (factor_H >= threshold within model)
+    factor_trips_cond_cross_med = median(factor_trips_cond_med, na.rm = TRUE),
+    factor_trips_cond_cross_q25 = quantile(factor_trips_cond_med, 0.25, na.rm = TRUE),
+    factor_trips_cond_cross_q75 = quantile(factor_trips_cond_med, 0.75, na.rm = TRUE),
+    factor_trips_cond_within_q05 = median(factor_trips_cond_q05, na.rm = TRUE),
+    factor_trips_cond_within_q95 = median(factor_trips_cond_q95, na.rm = TRUE),
+    n_models_cond_valid     = sum(!is.na(factor_trips_cond_med)),
+    # Pr loss
+    pr_portfolio_loss_cross_med = median(pr_portfolio_loss),
+    pr_portfolio_loss_cross_q25 = quantile(pr_portfolio_loss, 0.25),
+    pr_portfolio_loss_cross_q75 = quantile(pr_portfolio_loss, 0.75),
+    # factor_H
+    factor_H_cross_med      = median(factor_H_med),
+    factor_H_cross_q25      = quantile(factor_H_med, 0.25),
+    factor_H_cross_q75      = quantile(factor_H_med, 0.75),
+    # Pr decline marginal
+    pr_decline_cross_med    = median(pr_decline)
+  ), by = .(TIPO_FLOTA, scenario, window)] -> cross
 
-  # Construir un "scenario" sintetico con DSST=0, DlogCHL=0
-  scen0 <- data.table(ssp = "none", window = "none",
-                      DSST = 0, DlogCHL = 0)
-  scen0[, scenario_key := "none_none"]
+  cross[, scenario_key   := paste(scenario, window, sep = "_")]
+  cross[, scenario_label := T6_SCENARIO_LABEL[scenario_key]]
+  cross[, fleet_label    := T6_FLEET_LABEL[as.character(TIPO_FLOTA)]]
 
-  fb0 <- t6_compute_factor_B(draws_long, bio_summary, scen0)
-  # Bajo (DSST=0, DlogCHL=0): r_eff = r_base. Entonces
-  #   factor_B = K*(1 - F_hist/r_base) / B_hist
-  # Esto NO es 1.0 exacto -- es el ratio de Schaefer-equilibrium B_star bajo
-  # F_hist y los draws posteriores de (r,K). Para ser 1.0 exacto necesitariamos
-  # que el pasado haya estado en equilibrio Schaefer con (r_base, K) medianos,
-  # lo cual no es el caso (Stan fitea trajectorias, no eq steady-state).
-  # El sanity util es: con DSST=0, DlogCHL=0, factor_trips debe ser IGUAL al
-  # valor que saldria de evaluar el pipeline con scenario CMIP6 sustituyendo
-  # sus deltas por cero. No es un check trivial de 1.0.
+  cross[, ssp_ord    := factor(scenario, levels = T6_SSPS)]
+  cross[, window_ord := factor(window,   levels = T6_WINDOWS)]
+  setorder(cross, TIPO_FLOTA, ssp_ord, window_ord)
+  cross[, c("ssp_ord", "window_ord") := NULL]
 
-  ft0 <- t6_compute_factor_trips(fb0, vessel_tab, beta_H)
-  med_ft <- median(ft0$factor_trips, na.rm = TRUE)
-
-  cat("[T6] Sanity check (DSST=0, DlogCHL=0):\n")
-  cat("    factor_trips medio:", sprintf("%.4f", med_ft), "\n")
-  cat("    (NO necesariamente 1.0 -- depende de si el hindcast historico\n",
-      "     estaba en Schaefer steady-state bajo F_hist; si factor_B != 1\n",
-      "     bajo clima nulo, factor_trips tampoco lo sera.)\n\n")
-
-  # Sanity check MAS STRICTO: factor_trips = 1.0 exacto si forzamos factor_B=1.
-  vt_dummy <- copy(vessel_tab)
-  # Un vessel de prueba con cualquier portfolio; factor_H = 1 por construccion
-  # si factor_B es 1 para los 3 stocks. Veamos que factor_trips = exp(0) = 1.
-  test_factor_H <- 1.0
-  test_factor_trips <- exp(
-    beta_H["IND"] * vt_dummy[TIPO_FLOTA == "IND", median(H_alloc_hist)] *
-    (test_factor_H - 1)
-  )
-  cat("    factor_trips bajo factor_H=1 (unit test):",
-      sprintf("%.6f", test_factor_trips),
-      if (abs(test_factor_trips - 1) < 1e-10) " OK\n" else " FAIL\n")
-  cat("\n")
-
-  invisible(list(factor_B_dt = fb0, factor_trips_dt = ft0))
+  cross
 }
 
 # -----------------------------------------------------------------------------
-# Paso 8 -- Escribir tablas (formateada + raw + extinct)
+# Paso 7c -- Sanity unit-test: factor_H = 1 -> factor_trips = 1.0 exacto
 # -----------------------------------------------------------------------------
 
-t6_write_tables <- function(summ, extinct_summ,
-                            path_fmt     = T6_TABLE_OUT,
-                            path_raw     = T6_TABLE_RAW_OUT,
-                            path_extinct = T6_TABLE_EXTINCT_OUT) {
+t6_sanity_unit_test <- function(vessel_tab, beta_H) {
+  vt <- as.data.table(vessel_tab)
+  test_factor_H <- 1.0
+  test_factor_trips <- exp(
+    beta_H["IND"] * vt[TIPO_FLOTA == "IND", median(H_alloc_hist)] *
+    (test_factor_H - 1)
+  )
+  ok <- abs(test_factor_trips - 1) < 1e-10
+  cat(sprintf("[T7] Sanity unit-test factor_H=1 -> factor_trips = %.6f  %s\n",
+              test_factor_trips, if (ok) "OK" else "FAIL"))
+  cat("    (sanity con DSST=0, DlogCHL=0 NO da factor_trips=1 en general:\n",
+      "     historico no esta en Schaefer steady-state bajo F_hist; r_eff=r_base\n",
+      "     pero factor_B = K(1-F/r_base)/B_hist != 1.0 generico.)\n\n")
+  invisible(ok)
+}
 
-  dir.create(dirname(path_fmt), recursive = TRUE, showWarnings = FALSE)
+# -----------------------------------------------------------------------------
+# Paso 8 -- Escribir tablas (formateada cross + raw cross + by-model + extinct)
+# -----------------------------------------------------------------------------
 
-  # Tabla formateada para paper — tres objetos de opcion (a'):
-  # marginal trips, portfolio-loss probability, conditional trips.
-  fmt <- summ[, .(
-    Fleet           = fleet_label,
-    Scenario        = scenario_label,
-    # Marginal (all draws)
-    `%Delta trips (marginal, median)` = sprintf("%+.1f%%",
-                                                100 * (factor_trips_marg_med - 1)),
-    `%Delta trips (marginal, 90%)`    = sprintf("[%+.1f%%, %+.1f%%]",
-                                                100 * (factor_trips_marg_q05 - 1),
-                                                100 * (factor_trips_marg_q95 - 1)),
-    # Portfolio loss probability
-    `Pr(portfolio loss > 50%)` = sprintf("%.2f", pr_portfolio_loss),
-    # Conditional (draws where factor_H >= 0.5)
-    `%Delta trips (conditional, median)` = ifelse(is.na(factor_trips_cond_med),
-                                                  "collapse-dom.",
-                                                  sprintf("%+.1f%%",
-                                                          100 * (factor_trips_cond_med - 1))),
-    `%Delta trips (conditional, 90%)`    = ifelse(is.na(factor_trips_cond_med),
-                                                  "—",
-                                                  sprintf("[%+.1f%%, %+.1f%%]",
-                                                          100 * (factor_trips_cond_q05 - 1),
-                                                          100 * (factor_trips_cond_q95 - 1))),
-    `factor_H (median)` = sprintf("%.3f", factor_H_med)
+t6_write_tables <- function(cross_trips, within_trips, cross_ext, within_ext,
+                            path_main      = T6_TABLE_OUT,
+                            path_raw       = T6_TABLE_RAW_OUT,
+                            path_bymodel   = T6_TABLE_BYMODEL_OUT,
+                            path_extinct   = T6_TABLE_EXTINCT_OUT,
+                            path_ext_bym   = T6_TABLE_EXTINCT_BYMODEL) {
+
+  dir.create(dirname(path_main), recursive = TRUE, showWarnings = FALSE)
+
+  # -- (i) Tabla formateada cross-model paper --------------------------------
+  fmt_pct <- function(x) ifelse(is.na(x), "—",
+                                sprintf("%+.1f%%", 100 * (x - 1)))
+  fmt_band <- function(lo, hi) ifelse(is.na(lo) | is.na(hi),
+                                       "—",
+                                       sprintf("[%+.1f%%, %+.1f%%]",
+                                               100 * (lo - 1), 100 * (hi - 1)))
+
+  fmt <- as.data.table(cross_trips)[, .(
+    Fleet                                = fleet_label,
+    Scenario                             = scenario_label,
+    n_models                             = n_models,
+    # Marginal: cross-model + cross-IQR + within-CI
+    `%Delta trips marg cross med`        = fmt_pct(factor_trips_marg_cross_med),
+    `%Delta trips marg cross IQR`        = fmt_band(factor_trips_marg_cross_q25,
+                                                    factor_trips_marg_cross_q75),
+    `%Delta trips marg within posterior CI` = fmt_band(factor_trips_marg_within_q05,
+                                                        factor_trips_marg_within_q95),
+    # Pr portfolio loss
+    `Pr loss cross med`                  = sprintf("%.2f", pr_portfolio_loss_cross_med),
+    `Pr loss cross IQR`                  = sprintf("[%.2f, %.2f]",
+                                                   pr_portfolio_loss_cross_q25,
+                                                   pr_portfolio_loss_cross_q75),
+    # Conditional (climate-pure response, draws with factor_H >= threshold)
+    `%Delta trips cond cross med`        = ifelse(is.na(factor_trips_cond_cross_med),
+                                                   "collapse-dom.",
+                                                   fmt_pct(factor_trips_cond_cross_med)),
+    `%Delta trips cond cross IQR`        = ifelse(is.na(factor_trips_cond_cross_q25) |
+                                                   is.na(factor_trips_cond_cross_q75),
+                                                   "—",
+                                                   fmt_band(factor_trips_cond_cross_q25,
+                                                            factor_trips_cond_cross_q75)),
+    `factor_H cross med`                 = sprintf("%.3f", factor_H_cross_med),
+    `factor_H cross IQR`                 = sprintf("[%.3f, %.3f]",
+                                                   factor_H_cross_q25,
+                                                   factor_H_cross_q75)
   )]
+  write.csv(fmt, path_main, row.names = FALSE)
+  cat("[T7] Tabla principal cross-model:", path_main, "\n")
 
-  write.csv(fmt, path_fmt, row.names = FALSE)
-  cat("[T6] Tabla formateada:", path_fmt, "\n")
+  # -- (ii) Raw numerico cross-model -----------------------------------------
+  write.csv(cross_trips, path_raw, row.names = FALSE)
+  cat("[T7] Tabla cross-model raw:", path_raw, "\n")
 
-  write.csv(summ, path_raw, row.names = FALSE)
-  cat("[T6] Tabla numerica raw:", path_raw, "\n")
-
-  # Tabla extinction por stock x scenario
-  ext_fmt <- as.data.table(extinct_summ)[, .(
-    Stock      = stock_label,
-    Scenario   = scenario_label,
-    `Pr(extinct)`     = sprintf("%.3f", pr_extinct),
-    `factor_B (median)` = ifelse(non_identified,
-                                 "n.i.",
-                                 sprintf("%.3f", factor_B_med)),
-    `factor_B (q05)`    = ifelse(non_identified,
-                                 "n.i.",
-                                 sprintf("%.3f", factor_B_q05)),
-    `factor_B (q95)`    = ifelse(non_identified,
-                                 "n.i.",
-                                 sprintf("%.3f", factor_B_q95)),
-    `Non-identified`    = non_identified
+  # -- (iii) By-model long --------------------------------------------------
+  bym_out <- as.data.table(within_trips)[, .(
+    Fleet         = fleet_label,
+    model         = model,
+    Scenario      = scenario_label,
+    n_obs,
+    pct_trips_marg_med = round(100 * (factor_trips_marg_med - 1), 2),
+    pct_trips_marg_q05 = round(100 * (factor_trips_marg_q05 - 1), 2),
+    pct_trips_marg_q95 = round(100 * (factor_trips_marg_q95 - 1), 2),
+    pr_portfolio_loss  = round(pr_portfolio_loss, 3),
+    pct_trips_cond_med = round(100 * (factor_trips_cond_med - 1), 2),
+    pct_trips_cond_q05 = round(100 * (factor_trips_cond_q05 - 1), 2),
+    pct_trips_cond_q95 = round(100 * (factor_trips_cond_q95 - 1), 2),
+    factor_H_med       = round(factor_H_med, 4),
+    factor_H_q05       = round(factor_H_q05, 4),
+    factor_H_q95       = round(factor_H_q95, 4),
+    pr_decline         = round(pr_decline, 3)
   )]
+  write.csv(bym_out, path_bymodel, row.names = FALSE)
+  cat("[T7] Tabla by-model:", path_bymodel, "\n")
 
+  # -- (iv) Extinction cross-model formateada --------------------------------
+  ext_fmt <- as.data.table(cross_ext)[, .(
+    Stock              = stock_label,
+    Scenario           = scenario_label,
+    n_models           = n_models,
+    `Pr(extinct) cross med`   = ifelse(non_identified, "n.i.",
+                                       sprintf("%.3f", pr_extinct_cross_med)),
+    `Pr(extinct) cross IQR`   = ifelse(non_identified, "n.i.",
+                                       sprintf("[%.3f, %.3f]",
+                                               pr_extinct_cross_q25,
+                                               pr_extinct_cross_q75)),
+    `factor_B cross med`      = ifelse(non_identified, "n.i.",
+                                       sprintf("%.3f", factor_B_cross_med)),
+    `factor_B cross IQR`      = ifelse(non_identified, "n.i.",
+                                       sprintf("[%.3f, %.3f]",
+                                               factor_B_cross_q25,
+                                               factor_B_cross_q75)),
+    `Non-identified`          = non_identified
+  )]
   write.csv(ext_fmt, path_extinct, row.names = FALSE)
-  cat("[T6] Tabla extinct/factor_B:", path_extinct, "\n\n")
+  cat("[T7] Tabla extinct cross-model:", path_extinct, "\n")
+
+  # -- (v) Extinction by-model long -----------------------------------------
+  ext_bym <- as.data.table(within_ext)[, .(
+    Stock              = stock_label,
+    model              = model,
+    Scenario           = scenario_label,
+    pr_extinct         = round(pr_extinct, 4),
+    factor_B_med       = round(factor_B_med, 4),
+    factor_B_q05       = round(factor_B_q05, 4),
+    factor_B_q95       = round(factor_B_q95, 4),
+    `Non-identified`   = non_identified
+  )]
+  write.csv(ext_bym, path_ext_bym, row.names = FALSE)
+  cat("[T7] Tabla extinct by-model:", path_ext_bym, "\n\n")
 
   invisible(list(fmt = fmt, ext_fmt = ext_fmt))
 }
@@ -661,84 +716,91 @@ t6_write_tables <- function(summ, extinct_summ,
 # -----------------------------------------------------------------------------
 
 t6_run <- function() {
-  cat(strrep("=", 60), "\n",
-      "T6 -- Long-run comparative statics sobre TRIPS (Schaefer ss + NB)\n",
-      strrep("=", 60), "\n\n", sep = "")
+  cat(strrep("=", 70), "\n",
+      "T7 ENSEMBLE -- Trip comparative statics (Schaefer ss + NB), 6 modelos\n",
+      strrep("=", 70), "\n\n", sep = "")
 
   # Biologia historica
-  bio <- t6_load_biology()
+  bio    <- t6_load_biology()
 
   # Posterior T4b-full
-  draws <- t6_extract_draws()
+  draws  <- t6_extract_draws()
 
-  # Escalares CMIP6 (reuso de T5)
-  scen  <- t5_build_scenario_scalars()
+  # Escenarios CMIP6 (per-model)
+  scen   <- compstat_load_scenarios()
 
-  # factor_B por draw x stock x scenario + Pr(extinct)
-  fB    <- t6_compute_factor_B(draws, bio$summary, scen)
-  ext   <- t6_summarise_extinction(fB)
+  # factor_B[d, s, m, c] + Pr(extinct) within / cross
+  fB     <- t6_compute_factor_B(draws, bio$summary, scen)
+  ext_w  <- t6_summarise_extinction_within(fB)
+  ext_c  <- t6_summarise_extinction_cross(ext_w)
 
-  cat("[T6] Pr(extinct) por stock x scenario:\n")
-  print(as.data.table(ext)[, .(stock_label, scenario_label,
-                               pr_extinct = round(pr_extinct, 3),
-                               fB_med = round(factor_B_med, 3),
-                               non_id = non_identified)])
+  cat("[T7] Pr(extinct) cross-model por stock x scenario:\n")
+  print(as.data.table(ext_c)[, .(stock_label, scenario_label, n_models,
+                                 pr_ext_cross_med  = round(pr_extinct_cross_med, 3),
+                                 pr_ext_cross_IQR  = sprintf("[%.2f, %.2f]",
+                                                             pr_extinct_cross_q25,
+                                                             pr_extinct_cross_q75),
+                                 fB_cross_med      = round(factor_B_cross_med, 3),
+                                 non_id            = non_identified)])
   cat("\n")
 
-  # Vessel table (omega + H_alloc_hist)
-  vtab  <- t6_build_vessel_table()
+  # Vessel table + NB beta_H
+  vtab   <- t6_build_vessel_table()
+  nbres  <- t6_fit_nb()
 
-  # NB fit y beta_H por flota
-  nbres <- t6_fit_nb()
+  # Sanity unit-test (no climate)
+  t6_sanity_unit_test(vtab, nbres$beta_H)
 
-  # Sanity check (scenario sintetico DSST=0, DlogCHL=0)
-  t6_sanity_noclimate(draws, bio$summary, vtab, nbres$beta_H)
+  # factor_H[d,v,m,c] y factor_trips[d,v,m,c]
+  ft     <- t6_compute_factor_trips(fB, vtab, nbres$beta_H)
 
-  # factor_trips[d,v,c]
-  ft    <- t6_compute_factor_trips(fB, vtab, nbres$beta_H)
+  # Resumenes within / cross
+  trips_w <- t6_summarise_trips_within(ft, threshold = T6_LOSS_THRESHOLD)
+  trips_c <- t6_summarise_trips_cross(trips_w)
 
-  # Resumen por flota x scenario
-  summ  <- t6_summarise_trips(ft)
-
-  cat("[T6] Resumen factor_trips por flota x scenario (tres objetos):\n")
-  print(summ[, .(fleet_label, scenario_label,
-                 trips_marg = sprintf("%+.1f%% [%+.1f%%, %+.1f%%]",
-                                      100 * (factor_trips_marg_med - 1),
-                                      100 * (factor_trips_marg_q05 - 1),
-                                      100 * (factor_trips_marg_q95 - 1)),
-                 Pr_loss    = round(pr_portfolio_loss, 2),
-                 trips_cond = ifelse(is.na(factor_trips_cond_med),
-                                     "collapse-dom.",
-                                     sprintf("%+.1f%% [%+.1f%%, %+.1f%%]",
-                                             100 * (factor_trips_cond_med - 1),
-                                             100 * (factor_trips_cond_q05 - 1),
-                                             100 * (factor_trips_cond_q95 - 1))),
-                 fH_med     = round(factor_H_med, 3))])
+  cat("[T7] Resumen factor_trips cross-model por flota x scenario:\n")
+  print(trips_c[, .(fleet_label, scenario_label,
+                    trips_marg = sprintf("%+.1f%% [%+.1f%%, %+.1f%%]",
+                                         100 * (factor_trips_marg_cross_med - 1),
+                                         100 * (factor_trips_marg_cross_q25 - 1),
+                                         100 * (factor_trips_marg_cross_q75 - 1)),
+                    Pr_loss    = sprintf("%.2f [%.2f, %.2f]",
+                                          pr_portfolio_loss_cross_med,
+                                          pr_portfolio_loss_cross_q25,
+                                          pr_portfolio_loss_cross_q75),
+                    trips_cond = ifelse(is.na(factor_trips_cond_cross_med),
+                                        "collapse-dom.",
+                                        sprintf("%+.1f%% [%+.1f%%, %+.1f%%]",
+                                                100 * (factor_trips_cond_cross_med - 1),
+                                                100 * (factor_trips_cond_cross_q25 - 1),
+                                                100 * (factor_trips_cond_cross_q75 - 1))),
+                    fH_med     = round(factor_H_cross_med, 3))])
   cat("\n")
-  cat("    Leyenda: trips_marg = mediana sobre todos los draws (mezcla\n",
-      "             colapsos y supervivencia).\n",
-      "             Pr_loss  = Pr(factor_H < 0.5) = portfolio pierde >50%.\n",
-      "             trips_cond = mediana restringida a draws con factor_H >= 0.5\n",
-      "             (respuesta climatica pura, sin piso de colapso).\n\n")
+  cat("    Leyenda: trips_marg = cross-model med [IQR cross-model].\n",
+      "             Pr_loss    = cross-model med [IQR cross-model] de Pr(factor_H<0.5).\n",
+      "             trips_cond = cross-model med [IQR cross-model] de mediana within-model\n",
+      "                          restringida a draws con factor_H >= 0.5.\n\n")
 
   # Escribir tablas
-  t6_write_tables(summ, ext)
+  t6_write_tables(trips_c, trips_w, ext_c, ext_w)
 
   invisible(list(
-    scenarios      = scen,
-    biology        = bio,
-    draws          = draws,
-    factor_B       = fB,
-    extinct_summ   = ext,
-    vessel_tab     = vtab,
-    nb             = nbres,
-    factor_trips   = ft,
-    summary        = summ
+    scenarios          = scen,
+    biology            = bio,
+    draws              = draws,
+    factor_B           = fB,
+    extinct_within     = ext_w,
+    extinct_cross      = ext_c,
+    vessel_tab         = vtab,
+    nb                 = nbres,
+    factor_trips       = ft,
+    trips_within       = trips_w,
+    trips_cross        = trips_c
   ))
 }
 
 # -----------------------------------------------------------------------------
-# Main guard
+# Main guard (default-FALSE: T7 es pesado, evitar trigger accidental)
 # -----------------------------------------------------------------------------
 
 if (isTRUE(getOption("t6.run_main", FALSE))) {

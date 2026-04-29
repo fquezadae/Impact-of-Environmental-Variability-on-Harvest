@@ -239,6 +239,62 @@ read_cmip6_var <- function(filepath, varname, date_range, bbox) {
   count_vec[time_pos] <- length(t_idx)
   arr <- ncvar_get(nc, varname, start = start_vec, count = count_vec)
 
+  # ---------------------------------------------------------------------------
+  # Unit normalization para chlos: convertir a mg m-3 antes de aggregation/floor.
+  #
+  # Bug detectado 2026-04-29 PM: el floor `pmax(., 0.01)` en agg_year_mean es
+  # valido en escala mg m-3 (sentinel "below detection / land cell"). CMIP6
+  # publica chlos en kg m-3 (SI estandar) en 5/6 modelos del ensemble, donde
+  # los valores tipicos (0.1-1 mg/m3 = 1e-7 a 1e-6 kg/m3) caen SIEMPRE bajo
+  # 0.01 kg/m3 -> floor uniforme -> log(0.01) = -4.605 en todas las celdas
+  # -> delta espurio = 0 (CESM2/CNRM/GFDL/MPI/UKESM). Solo IPSL escapaba (publica
+  # en mg/m3). T4b fitea logCHL en mg/m3 (Copernicus L4 ocean color), por lo que
+  # apples-to-apples requiere mg/m3 aqui tambien.
+  #
+  # Politica:
+  #   1) Lee atributo `units` del netCDF.
+  #   2) Aplica scale determinista para units conocidos.
+  #   3) Fallback heuristico si units desconocido (median del arr): chl tipico
+  #      esta en [0.05, 5] mg/m3; si median < 1e-3 -> casi seguro kg/m3.
+  # ---------------------------------------------------------------------------
+  if (varname == "chlos") {
+    units_attr <- ncatt_get(nc, varname, "units")
+    units_str  <- if (isTRUE(units_attr$hasatt))
+                    tolower(trimws(units_attr$value)) else ""
+    # Normalizar separadores comunes a "kg m-3"
+    units_norm <- gsub("[ \\.\\^]+", " ", units_str)
+    scale_to_mg <- switch(
+      units_norm,
+      "kg m-3"   = 1e6,
+      "kg/m3"    = 1e6,
+      "kg/m-3"   = 1e6,
+      "kgm-3"    = 1e6,
+      "g m-3"    = 1e3,
+      "g/m3"     = 1e3,
+      "mg m-3"   = 1,
+      "mg/m3"    = 1,
+      "mg m^-3"  = 1,
+      NA_real_
+    )
+    if (is.na(scale_to_mg)) {
+      sample_med <- median(abs(arr[!is.na(arr) & arr > 0]), na.rm = TRUE)
+      if (!is.na(sample_med) && sample_med < 1e-3) {
+        warning(sprintf("[chlos] units '%s' desconocido en %s; heuristica detecta kg/m3 (median=%.2e), aplicando 1e6.",
+                        units_str, basename(filepath), sample_med))
+        scale_to_mg <- 1e6
+      } else {
+        warning(sprintf("[chlos] units '%s' desconocido en %s; asumiendo mg/m3 (median=%.2e).",
+                        units_str, basename(filepath), sample_med))
+        scale_to_mg <- 1
+      }
+    }
+    cat(sprintf("    [chlos units] %s: units='%s' -> x%g -> mg/m3\n",
+                basename(filepath),
+                if (nchar(units_str) > 0) units_str else "<missing>",
+                scale_to_mg))
+    arr <- arr * scale_to_mg
+  }
+
   if (grid_type == "regular") {
     if (all(lon1d >= 0) && bbox$lon_min < 0) {
       lon_idx <- which(lon1d >= bbox$lon_min + 360 &

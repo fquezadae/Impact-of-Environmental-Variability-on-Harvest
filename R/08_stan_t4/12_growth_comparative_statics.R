@@ -54,77 +54,33 @@ source_utf8 <- function(file, envir = globalenv()) {
   invisible(NULL)
 }
 source_utf8("R/00_config/config.R")
+# Utilidades compartidas entre T5/T7/Apendice F. Define las constantes
+# COMPSTAT_* y la funcion compstat_load_scenarios. Aliases T5_* abajo.
+source_utf8("R/08_stan_t4/_compstat_utils.R")
 
 # -----------------------------------------------------------------------------
 # Constantes
 # -----------------------------------------------------------------------------
 
 T5_FIT_RDS         <- "data/outputs/t4b/t4b_full_fit.rds"
-T5_DELTAS_CSV      <- "data/cmip6/deltas_ensemble.csv"
+T5_DELTAS_CSV      <- COMPSTAT_DELTAS_CSV
 T5_TABLE_OUT       <- "tables/growth_comparative_statics.csv"
 T5_TABLE_BYMODEL   <- "tables/growth_comparative_statics_by_model.csv"
 T5_FIG_OUT         <- "figs/t4b/growth_ridgeline_cmip6.png"
 
-T5_STOCKS <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
-T5_STOCK_LABEL <- c(
-  anchoveta_cs     = "Anchoveta CS",
-  sardina_comun_cs = "Sardine CS",
-  jurel_cs         = "Jack mackerel CS"
-)
-
-T5_SSPS    <- c("ssp245", "ssp585")
-T5_WINDOWS <- c("mid", "end")
-
-T5_SCENARIO_LABEL <- c(
-  ssp245_mid = "SSP2-4.5, 2041-2060",
-  ssp245_end = "SSP2-4.5, 2081-2100",
-  ssp585_mid = "SSP5-8.5, 2041-2060",
-  ssp585_end = "SSP5-8.5, 2081-2100"
-)
-
-# Stocks no identificados estructuralmente -- jurel es n.i. en los 3 dominios
-# del Apendice E. Reportar como "n.i." en tabla formateada; conservar numeros
-# en *_raw.csv y *_by_model.csv para trazabilidad.
-T5_NON_IDENTIFIED_STOCKS <- c("jurel_cs")
+# Aliases hacia los compstat shared (refactor 2026-04-29 PM, ver _compstat_utils.R)
+T5_STOCKS                <- COMPSTAT_STOCKS
+T5_STOCK_LABEL           <- COMPSTAT_STOCK_LABEL
+T5_SSPS                  <- COMPSTAT_SSPS
+T5_WINDOWS               <- COMPSTAT_WINDOWS
+T5_SCENARIO_LABEL        <- COMPSTAT_SCENARIO_LABEL
+T5_NON_IDENTIFIED_STOCKS <- COMPSTAT_NON_IDENTIFIED_STOCKS
 
 # -----------------------------------------------------------------------------
-# Paso 1 -- Cargar deltas del ensemble y pivotear a wide (model, ssp, window)
+# Paso 1 -- Cargar deltas del ensemble (per-model) -- alias a compstat_load_scenarios
 # -----------------------------------------------------------------------------
-# Output: tibble con columnas (model, scenario, window, scenario_key,
-# DSST, DlogCHL). Los pares (model, ssp, window) sin ambos delta (e.g.,
-# CESM2/chlos/ssp245) quedan filtrados.
-
 t5_load_scenarios <- function(deltas_csv = T5_DELTAS_CSV) {
-
-  d <- data.table::fread(deltas_csv)
-
-  # T4b solo usa SST y log-CHL. Los uas/vas/wind_speed son para T7.
-  scen_long <- d[var %in% c("sst", "logchl"),
-                 .(model, scenario, window, var, delta)]
-
-  scen_wide <- as_tibble(scen_long) %>%
-    pivot_wider(names_from = var, values_from = delta) %>%
-    rename(DSST = sst, DlogCHL = logchl) %>%
-    filter(!is.na(DSST), !is.na(DlogCHL)) %>%
-    mutate(scenario_key = paste(scenario, window, sep = "_")) %>%
-    arrange(model, scenario, window)
-
-  cat("[T5] Escenarios CMIP6 cargados:\n")
-  cat(sprintf("    n_filas=%d (combos model x ssp x window con SST+CHL)\n",
-              nrow(scen_wide)))
-  cat(sprintf("    modelos: %s\n",
-              paste(unique(scen_wide$model), collapse = ", ")))
-  print(scen_wide %>%
-          group_by(scenario, window) %>%
-          summarise(n_models = n(),
-                    DSST_mean    = round(mean(DSST), 3),
-                    DSST_sd      = round(sd(DSST), 3),
-                    DlogCHL_mean = round(mean(DlogCHL), 4),
-                    DlogCHL_sd   = round(sd(DlogCHL), 4),
-                    .groups = "drop"))
-  cat("\n")
-
-  scen_wide
+  compstat_load_scenarios(deltas_csv)
 }
 
 # -----------------------------------------------------------------------------
