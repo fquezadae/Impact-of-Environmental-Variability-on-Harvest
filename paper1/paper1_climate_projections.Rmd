@@ -31,13 +31,13 @@ header-includes:
   - \usepackage{fancyhdr}
   - \pagestyle{fancy}
   - \fancyhf{}
-  - \fancyhead[LE,RO]{Asymmetric Climate Impacts on Fishing Effort}
-  - \fancyhead[RE,LO]{\thepage}
-  - \renewcommand{\headrulewidth}{0pt}
-  - \author{Felipe J. Quezada-Escalona}
-  - \affil{Associate Professor, Department of Economics, Universidad de Concepci\'on. Mailing address: Victoria 471, Concepci\'on, Chile. Email: felipequezada@udec.cl. \vspace{-48pt}}
-  - \newcommand{\keywords}[1]{\par\noindent\textbf{Keywords:} #1}
-  - \newcommand{\jelcodes}[1]{\par\noindent\textbf{JEL Codes:} #1}
+  - "\\fancyhead[LE,RO]{Asymmetric Climate Impacts on Fishing Effort}"
+  - "\\fancyhead[RE,LO]{\\thepage}"
+  - "\\renewcommand{\\headrulewidth}{0pt}"
+  - "\\author{Felipe J. Quezada-Escalona}"
+  - "\\affil{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: felipequezada@udec.cl. \\vspace{-48pt}}"
+  - "\\newcommand{\\keywords}[1]{\\par\\noindent\\textbf{Keywords:} #1}"
+  - "\\newcommand{\\jelcodes}[1]{\\par\\noindent\\textbf{JEL Codes:} #1}"
 editor_options:
   markdown: 
     wrap: 72
