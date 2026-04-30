@@ -11,6 +11,15 @@
 # alimenta la tabla tab:trip_compstat en paper1 sec 4.4 "Implications for
 # fleet-level effort".
 #
+# 2026-04-30: agregado el DIRECT WEATHER CHANNEL (vessel-specific A) que el
+# sec 3.4 promete. Para cada (vessel, model, scenario, window) tomamos la serie
+# diaria de wind al COG, sumamos Deltawind del CMIP6 y recontamos exceedances de
+# 8 m/s; el Deltadays_bw resultante entra al exponente del factor_trips con
+# semi-elasticidad beta_weather del NB fitteado in-script. Implementacion en
+# _weather_channel_utils.R con cache en data/cmip6/delta_days_bw_vessel.rds.
+# beta_weather_IND = -0.0001 (ns), beta_weather_ART = -0.002*** -> el direct channel
+# contribuye solo en ART y refuerza la asimetria ART/IND ya identificada.
+#
 # Framing Cowles: steady-state bajo status-quo F, no forward simulation.
 # Forward sim con trayectorias y reglas endogenas => paper 2.
 #
@@ -34,9 +43,14 @@
 #       todos los draws (posterior prior-dominado; propagarlo mete ruido
 #       espurio al portfolio). Asuncion explicita.
 #
-#   (6) factor_trips con semi-elasticity:
+#   (5b) Deltadays_bw[v,m,c] vessel-specific via _weather_channel_utils.R: shift
+#        empirical CDF de speed_max al COG, recontar exceedances > 8 m/s.
+#
+#   (6) factor_trips con semi-elasticity y AMBOS canales:
 #       factor_trips[d,v,m,c] = exp( beta_H[fleet(v)] * H_alloc_hist[v] *
-#                                    (factor_H[d,v,m,c] - 1) )
+#                                    (factor_H[d,v,m,c] - 1) +
+#                                    beta_weather[fleet(v)] *
+#                                    Deltadays_bw[v,m,c] )
 #
 #   (7) Resumen WITHIN-MODEL: para cada (fleet, m, ssp, window) agregar
 #       sobre (draws x vessels within fleet) -> mediana, q05/q95, Pr_loss,
@@ -100,6 +114,8 @@ source_utf8("R/00_config/config.R")
 # Antes T7 hacia source(T5) directo; eso traia el main guard default-TRUE de T5
 # como side-effect. Refactor 2026-04-29 PM separa lo "shared" del "main".
 source_utf8("R/08_stan_t4/_compstat_utils.R")
+# Direct weather channel (2026-04-30): wc_compute_vessel_delta_days_bw().
+source_utf8("R/08_stan_t4/_weather_channel_utils.R")
 
 # -----------------------------------------------------------------------------
 # Constantes
@@ -404,18 +420,23 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
   nb_ind <- MASS::glm.nb(f, data = df_ind)
   nb_art <- MASS::glm.nb(f, data = df_art)
 
-  beta_H_ind <- as.numeric(coef(nb_ind)["H_alloc_vy"])
-  beta_H_art <- as.numeric(coef(nb_art)["H_alloc_vy"])
+  beta_H_ind  <- as.numeric(coef(nb_ind)["H_alloc_vy"])
+  beta_H_art  <- as.numeric(coef(nb_art)["H_alloc_vy"])
+  beta_W_ind  <- as.numeric(coef(nb_ind)["days_bad_weather"])
+  beta_W_art  <- as.numeric(coef(nb_art)["days_bad_weather"])
 
   cat("[T7] NB reestimado (in-script):\n")
-  cat("    IND: beta_H(H_alloc_vy) =", sprintf("%.6f", beta_H_ind),
+  cat("    IND: beta_H(H_alloc_vy)    =", sprintf("%.6f", beta_H_ind),
       "(N =", nrow(df_ind), ")\n")
-  cat("    ART: beta_H(H_alloc_vy) =", sprintf("%.6f", beta_H_art),
-      "(N =", nrow(df_art), ")\n\n")
+  cat("    IND: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_ind), "\n")
+  cat("    ART: beta_H(H_alloc_vy)    =", sprintf("%.6f", beta_H_art),
+      "(N =", nrow(df_art), ")\n")
+  cat("    ART: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_art), "\n\n")
 
   list(
-    beta_H = c(ART = beta_H_art, IND = beta_H_ind),
-    fits   = list(art = nb_art, ind = nb_ind)
+    beta_H       = c(ART = beta_H_art,  IND = beta_H_ind),
+    beta_weather = c(ART = beta_W_art,  IND = beta_W_ind),
+    fits         = list(art = nb_art, ind = nb_ind)
   )
 }
 
@@ -426,7 +447,9 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
 # x window) ~ 16K x 22 = 352K filas. Multiplied por ~hundreds de vessels =
 # ~50-100M rows totales (manageable como rbindlist por vessel).
 
-t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H) {
+t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H,
+                                     beta_weather = NULL,
+                                     vessel_delta_dbw = NULL) {
 
   fb_wide <- as.data.table(factor_B_dt)[
     , .(.draw, stock_id, model, scenario, window, factor_B)
@@ -443,6 +466,24 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H) {
 
   vt <- as.data.table(vessel_tab)
 
+  # Direct weather channel (vessel-specific Deltadays_bw). Si beta_weather o
+  # vessel_delta_dbw es NULL, se usa direct_term=0 -> retrocompatible con la
+  # version solo-indirect.
+  use_direct <- !is.null(beta_weather) && !is.null(vessel_delta_dbw)
+  if (use_direct) {
+    vd <- as.data.table(vessel_delta_dbw)[
+      , .(COD_BARCO, model, scenario, window, delta_days_bw)
+    ]
+    # Key string para alinear via named-vector lookup contra fb_wide. match()
+    # implicito en `[]` con names. Mas robusto que merge() porque no depende
+    # del orden de retorno; directly indexed.
+    fb_key <- paste(fb_wide$model, fb_wide$scenario, fb_wide$window, sep = "|")
+    cat(sprintf("[T7] Direct weather channel ON: beta_weather ART=%.5f, IND=%.5f\n",
+                beta_weather[["ART"]], beta_weather[["IND"]]))
+  } else {
+    cat("[T7] Direct weather channel OFF (legacy mode, indirect only)\n")
+  }
+
   cat("[T7] Loop por vessel sobre", nrow(vt),
       "vessels x", nrow(fb_wide), "(.draw x model x scenario)\n",
       "    -> total filas factor_trips =",
@@ -451,25 +492,59 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H) {
 
   chunks <- vector("list", nrow(vt))
   for (i in seq_len(nrow(vt))) {
-    v <- vt[i]
-    beta <- beta_H[[as.character(v$TIPO_FLOTA)]]
+    v       <- vt[i]
+    beta    <- beta_H[[as.character(v$TIPO_FLOTA)]]
+    beta_w  <- if (use_direct) beta_weather[[as.character(v$TIPO_FLOTA)]] else 0
 
     factor_H <- v$omega_anch * fb_wide$fB_anch +
                 v$omega_sard * fb_wide$fB_sard +
                 v$omega_jur  * fb_wide$fB_jur
 
-    factor_trips <- exp(beta * v$H_alloc_hist * (factor_H - 1))
+    if (use_direct) {
+      # Vessel-specific Deltadays_bw via named-vector lookup. vd_v tiene ~22 rows
+      # (1 per (model, scenario, window)); fb_key tiene ~350K rows. El lookup
+      # fb_key contra el named-vector preserva orden de fb_wide row-by-row.
+      vd_v <- vd[COD_BARCO == v$COD_BARCO]
+      delta_lookup <- setNames(
+        vd_v$delta_days_bw,
+        paste(vd_v$model, vd_v$scenario, vd_v$window, sep = "|")
+      )
+      delta_days_bw <- unname(delta_lookup[fb_key])
+      # Si vessel no matchea o algun (m,s,w) falta (no deberia; safety belt).
+      delta_days_bw[is.na(delta_days_bw)] <- 0
 
-    chunks[[i]] <- data.table(
-      COD_BARCO    = v$COD_BARCO,
-      TIPO_FLOTA   = v$TIPO_FLOTA,
-      .draw        = fb_wide$.draw,
-      model        = fb_wide$model,
-      scenario     = fb_wide$scenario,
-      window       = fb_wide$window,
-      factor_H     = factor_H,
-      factor_trips = factor_trips
-    )
+      indirect_term <- beta * v$H_alloc_hist * (factor_H - 1)
+      direct_term   <- beta_w * delta_days_bw
+      factor_trips  <- exp(indirect_term + direct_term)
+
+      chunks[[i]] <- data.table(
+        COD_BARCO        = v$COD_BARCO,
+        TIPO_FLOTA       = v$TIPO_FLOTA,
+        .draw            = fb_wide$.draw,
+        model            = fb_wide$model,
+        scenario         = fb_wide$scenario,
+        window           = fb_wide$window,
+        factor_H         = factor_H,
+        delta_days_bw    = delta_days_bw,
+        factor_trips_ind = exp(indirect_term),
+        factor_trips     = factor_trips
+      )
+    } else {
+      factor_trips <- exp(beta * v$H_alloc_hist * (factor_H - 1))
+
+      chunks[[i]] <- data.table(
+        COD_BARCO        = v$COD_BARCO,
+        TIPO_FLOTA       = v$TIPO_FLOTA,
+        .draw            = fb_wide$.draw,
+        model            = fb_wide$model,
+        scenario         = fb_wide$scenario,
+        window           = fb_wide$window,
+        factor_H         = factor_H,
+        delta_days_bw    = 0,
+        factor_trips_ind = factor_trips,
+        factor_trips     = factor_trips
+      )
+    }
   }
 
   out <- rbindlist(chunks)
@@ -586,11 +661,14 @@ t6_sanity_unit_test <- function(vessel_tab, beta_H) {
     (test_factor_H - 1)
   )
   ok <- abs(test_factor_trips - 1) < 1e-10
-  cat(sprintf("[T7] Sanity unit-test factor_H=1 -> factor_trips = %.6f  %s\n",
+  cat(sprintf("[T7] Sanity unit-test factor_H=1 -> factor_trips_indirect = %.6f  %s\n",
               test_factor_trips, if (ok) "OK" else "FAIL"))
-  cat("    (sanity con DSST=0, DlogCHL=0 NO da factor_trips=1 en general:\n",
-      "     historico no esta en Schaefer steady-state bajo F_hist; r_eff=r_base\n",
-      "     pero factor_B = K(1-F/r_base)/B_hist != 1.0 generico.)\n\n")
+  cat("    (testea SOLO el canal indirect. factor_trips total incluye ademas\n",
+      "     beta_weather*Deltadays_bw del direct channel; con Deltawind=0 ese termino\n",
+      "     se anula y el sanity total = sanity indirect. Con DSST=0,\n",
+      "     DlogCHL=0 NO da factor_trips=1 en general: historico no esta en\n",
+      "     Schaefer steady-state bajo F_hist; r_eff=r_base pero factor_B =\n",
+      "     K(1-F/r_base)/B_hist != 1.0 generico.)\n\n")
   invisible(ok)
 }
 
@@ -608,10 +686,10 @@ t6_write_tables <- function(cross_trips, within_trips, cross_ext, within_ext,
   dir.create(dirname(path_main), recursive = TRUE, showWarnings = FALSE)
 
   # -- (i) Tabla formateada cross-model paper --------------------------------
-  fmt_pct <- function(x) ifelse(is.na(x), "—",
+  fmt_pct <- function(x) ifelse(is.na(x), "--",
                                 sprintf("%+.1f%%", 100 * (x - 1)))
   fmt_band <- function(lo, hi) ifelse(is.na(lo) | is.na(hi),
-                                       "—",
+                                       "--",
                                        sprintf("[%+.1f%%, %+.1f%%]",
                                                100 * (lo - 1), 100 * (hi - 1)))
 
@@ -636,7 +714,7 @@ t6_write_tables <- function(cross_trips, within_trips, cross_ext, within_ext,
                                                    fmt_pct(factor_trips_cond_cross_med)),
     `%Delta trips cond cross IQR`        = ifelse(is.na(factor_trips_cond_cross_q25) |
                                                    is.na(factor_trips_cond_cross_q75),
-                                                   "—",
+                                                   "--",
                                                    fmt_band(factor_trips_cond_cross_q25,
                                                             factor_trips_cond_cross_q75)),
     `factor_H cross med`                 = sprintf("%.3f", factor_H_cross_med),
@@ -744,15 +822,22 @@ t6_run <- function() {
                                  non_id            = non_identified)])
   cat("\n")
 
-  # Vessel table + NB beta_H
+  # Vessel table + NB beta_H y beta_weather
   vtab   <- t6_build_vessel_table()
   nbres  <- t6_fit_nb()
 
-  # Sanity unit-test (no climate)
+  # Sanity unit-test sobre el termino indirect (no climate -> factor_trips=1)
   t6_sanity_unit_test(vtab, nbres$beta_H)
 
-  # factor_H[d,v,m,c] y factor_trips[d,v,m,c]
-  ft     <- t6_compute_factor_trips(fB, vtab, nbres$beta_H)
+  # Deltadays_bw vessel-specific (direct weather channel, via wc helper). Cacheado
+  # en data/cmip6/delta_days_bw_vessel.rds; force=TRUE para recomputar tras
+  # cambios en deltas_ensemble o en el panel COG.
+  vdbw <- wc_compute_vessel_delta_days_bw(use_cache = TRUE, force = FALSE)
+
+  # factor_H[d,v,m,c] y factor_trips[d,v,m,c] con AMBOS canales
+  ft     <- t6_compute_factor_trips(fB, vtab, nbres$beta_H,
+                                     beta_weather    = nbres$beta_weather,
+                                     vessel_delta_dbw = vdbw)
 
   # Resumenes within / cross
   trips_w <- t6_summarise_trips_within(ft, threshold = T6_LOSS_THRESHOLD)

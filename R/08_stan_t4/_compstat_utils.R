@@ -75,8 +75,11 @@ compstat_load_scenarios <- function(deltas_csv = COMPSTAT_DELTAS_CSV,
 
   d <- data.table::fread(deltas_csv)
 
-  # Solo SST y log-CHL son inputs para T4b. uas/vas/wind_speed son para T7
-  # (no usados ahi tampoco al dia de hoy: T7 solo entra por el canal r_eff).
+  # Solo SST y log-CHL son inputs para T4b (canal indirect via r_eff). El
+  # Deltawind_speed (var = "wind_speed") es input para el direct weather channel
+  # de T7 desde 2026-04-30; lo carga _weather_channel_utils.R por separado
+  # filtrando var=="wind_speed". uas/vas siguen sin uso (sin componente
+  # direccional en este modelo).
   scen_long <- d[var %in% c("sst", "logchl"),
                  .(model, scenario, window, var, delta)]
 
