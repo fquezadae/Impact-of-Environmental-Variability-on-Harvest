@@ -138,7 +138,7 @@ $\Rightarrow$ Same shock, **different choice sets**.
 
 ???
 
-- LMCA es la pieza institucional clave; H_alloc es la variable que acopla TAC a comportamiento.
+- LMCA es la pieza institucional clave; H_alloc es la variable que acopla biomasa a comportamiento.
 
 ---
 
@@ -193,6 +193,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 - $H^{alloc}_{vy}$: vessel-level quota allocation.
 - $Z_v$: hold capacity, vessel type.
 - $O_{vy}$: bad-weather days, closures.
+- Vessel-clustered robust SEs.
 ]
 
 .pull-right[
@@ -200,17 +201,18 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 
 - Overdispersion $\sigma^2/\mu$: **22.4** (ART), **4.9** (IND). Poisson rejected at $p < 0.001$.
 - Two fleets, two technologies, two choice sets &mdash; no pooling.
-- Vessel-clustered robust SEs.
 
-## Identification of $\beta_g$
 
-Quota shares vary across **vessels** $\times$ **years** (regional TAC moves; vessel share fixed). Reduced-form mapping.
+## Biomass affects **quota allocation**  
+
+Quota allocated vary across **vessels** $\times$ **years** (sector and regional TAC moves conditional on biomass; vessel share fixed). Reduced-form mapping.
 ]
 
 ???
 
 - Audience S9: enfatizar que la NB es un *modelo de elecci&oacute;n* (count process) &mdash; no es solo descriptivo.
 - Identification claim honesta: reduced form, suficiente para mapear cambios en environment a effort.
+- H_alloc es la variable que acopla biomasa a comportamiento.
 
 ---
 
@@ -271,7 +273,7 @@ Quota shares vary across **vessels** $\times$ **years** (regional TAC moves; ves
 </tbody>
 </table>
 
-<span class="small-note">Negative binomial, vessel-clustered robust SEs. Sign and significance shown; full table in appendix. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable).</span>
+<span class="small-note">Negative binomial, vessel-clustered robust SEs. Sign and significance shown. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable).</span>
 
 .tldr[Two fleets, **completely different participation models**.]
 
@@ -352,21 +354,21 @@ class: inverse, center, middle
 .pull-left[
 ## What gets added on top of Paper 1
 
-**(i) Trip-level cost function** &mdash; translog $C_{vg}(w, h, x, Z, Env)$, SUR by fleet. Recovers **input demands** (fuel, labor, ice) via Shephard's lemma and elasticities of input substitution under climate shocks.
+**(i) Trip-level cost function** &mdash; translog $C_{vg}(w, h, x, Z, Env)$, SUR by fleet. Recovers **input demands** (fuel, labor, ice) and elasticities of input substitution under climate shocks.
 
-**(ii) Inverse demand (IAIDS)** &mdash; $\ln p_{iy}$ as a function of all species' landings, instrumented by SST, CHL, fuel prices. Resolves the simultaneity that forced the anchoveta-price puzzle in Paper 1.
+**(ii) Inverse demand (IAIDS)** &mdash; $\ln p_{iy}$ as a function of all species' landings, instrumented by SST, CHL, fuel prices. Resolves the simultaneity observed in paper 1.
 
-**(iii) Vessel dynamic optimization** &mdash; $\max_{T_g, h_{g\tau}} \sum_\tau \delta^\tau [P(h)\,h - C_g(h)]$ s.t. quota cap. Solved per fleet, posterior over $(T^*_g, h^*_{g\tau})$ under each scenario.
+**(iii) Vessel dynamic optimization** &mdash; $\max_{T_g, h_{g\tau}} \sum_\tau \delta^\tau [P(h)\,h - C_g(h)]$ s.t. quota cap. $(T^*_g, h^*_{g\tau})$ under each scenario.
 ]
 
 .pull-right[
-## Counterfactuals it enables
+## Optimization model allows for
 
-- **Equilibrium prices** under reduced supply.
+**(i) Prediction under a changing climate of:** Equilibrium prices and species substitution
 
-- **Species substitution &amp; optimal quota allocation** &mdash; vessel target choice and social planner's $\bar Q_s$ jointly determined.
+**(ii) Define optimal quota allocation**
 
-- **Policy reforms** as adaptation:
+**(iii) Study policy reforms (i.e., contrafactuals) as adaptation:**
   - Cross-sector quota transferability.
   - RAE redesign (multi-zone permits).
   - State-contingent TACs.
@@ -384,13 +386,13 @@ class: inverse, center, middle
 # Takeaways
 
 .tight[
-1. **Paper 1**: a fleet-specific NB model of annual trips reveals **two completely different participation technologies** in the same fishery &mdash; ART and IND respond to different prices, different operating constraints, different scales.
+1. **Paper 1**: fleet-specific NB model of annual trips reveals **two completely different participation technologies** in the same fishery.
 
 2. **Paper 1**: under counterfactual shocks, the ART:IND participation asymmetry is **~9:1**, running through the **probability of portfolio collapse**; quota cross-sector limits lock it in.
 
-3. **Paper 2**: closes the loop &mdash; **input demand, inverse demand, vessel &times; social-planner joint optimization** &mdash; to deliver welfare counterfactuals: equilibrium prices, species substitution &amp; optimal quota allocation, and policy reforms (cross-sector transferability, RAE redesign, state-contingent TACs).
+3. **Paper 2**: closes the loop &mdash; **input demand, inverse demand, vessel &times; social-planner joint optimization** &mdash; to deliver welfare counterfactuals: equilibrium prices, species substitution &amp; optimal quota allocation, and policy reforms.]
 
-4. **Joint message for S9**: adaptive capacity is not a property of fishers; it is a property of the **bundle (portfolio &times; permit &times; institution &times; market)** they sit in. Identifying adaptation requires modeling all four dimensions jointly &mdash; pooling, fixed prices, or aggregate effort all bias the answer.
+.tldr[Adaptive capacity is not a property of fishers; it is a property of the **bundle (portfolio &times; permit &times; institution &times; market)** they sit in. Identifying adaptation requires modeling all four dimensions jointly &mdash; pooling, fixed prices, or aggregate effort all bias the answer.
 ]
 
 ???
@@ -539,7 +541,7 @@ knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png")
 
 # Appendix H &middot; Variance decomposition of trip response
 
-```{r vardecomp, out.width='75%', fig.align='center'}
+```{r vardecomp, out.width='55%', fig.align='center'}
 knitr::include_graphics("../figs/t4b/appendix_g_trips_variance_decomposition.png")
 ```
 
@@ -554,17 +556,10 @@ knitr::include_graphics("../figs/t4b/appendix_g_trips_variance_decomposition.png
 # Appendix I &middot; Paper 2 &mdash; data inputs
 
 .tight[
-**Already in hand (Paper 1):**
 - Trip-level catch and price data (IFOP logbooks, 2013&ndash;2024).
-- All-gear official catch series (SERNAPESCA, transparency request **AH010T0006857**, May 2025).
+- All-gear official catch series (SERNAPESCA).
 - Vessel characteristics & ports of operation.
 - Environmental covariates (Copernicus, GlobColour, CMIP6 6-GCM ensemble).
-
-**Caveat &mdash; IFOP panel coverage** (cross-validated vs SERNAPESCA vessel-level): IND 68% by vessel count, >90% by catch &rarr; representative; ART 32% by count, ~70% by catch &rarr; covers the **purse-seine artisanal** subset; non-PS gears (lampara, lines) excluded.
-
-**To request / acquire for Paper 2:**
-- Variable-input prices: crew wage, diesel cost, ice & supplies.
-- Quota prices (auction or secondary markets, if available).
-- Permits by vessel; quota holdings by sector.
-- Fish-meal world price &mdash; demand instrument for IAIDS.
 ]
+
+.tldr[**Caveat &mdash; IFOP panel coverage** covers the **purse-seine artisanal** subset; non-PS gears (lampara, lines) excluded.]
