@@ -5,7 +5,7 @@
 <!-- Badges -->
 ![R](https://img.shields.io/badge/R-%E2%89%A54.2-276DC3?logo=r)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-work%20in%20progress-orange)
+![Status](https://img.shields.io/badge/status-paper%201%20submission--ready%20(MRE%2C%20May%202026)-blue)
 
 ## Overview
 
@@ -15,8 +15,8 @@ The project is organized into **two papers**:
 
 | Paper | Title | Status |
 |---|---|---|
-| **Paper 1** | Climate Change, Stock Productivity, and Fishing Effort | Draft ready |
-| **Paper 2** | Optimal Quota Allocation under Climate Change: A Bioeconomic Approach | In progress |
+| **Paper 1** | Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries | Submission-ready (target *Marine Resource Economics*, end May 2026) |
+| **Paper 2** | Optimal Quota Allocation under Climate Change: A Bioeconomic Approach | In progress (target JAERE/ERE 2027–2028) |
 
 ## Paper 1: Climate projections
 
@@ -29,35 +29,57 @@ six-model CMIP6 ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1,
 UKESM1-0-LL, MPI-ESM1-2-HR) under SSP2-4.5 and SSP5-8.5 to obtain
 posterior distributions of the long-run comparative-statics change in
 each stock's intrinsic productivity under mid-century (2041–2060) and
-end-of-century (2081–2100) climate regimes. Links to a negative
-binomial model of annual fishing trips, estimated separately for the
-artisanal and industrial fleets, and propagates the trip response
-through the same ensemble × posterior cross-product. Reports formal
-two-way variance decompositions (within-model posterior vs.
-between-model CMIP6 spread) for both the productivity response
-(Appendix F) and the fleet-level trip response (Appendix G).
+end-of-century (2081–2100) climate regimes. Couples this with a
+negative binomial model of annual fishing trips with year fixed
+effects (absorbing the 2019 *estallido social* and the 2020–2022 COVID
+period), estimated separately for the artisanal and industrial fleets.
+Climate propagates to vessel effort through **two channels**: an
+*indirect* channel via the structural biomass shifters, and a *direct*
+channel via vessel-specific exposure to severe winds (computed from
+each vessel's empirical CDF of historical wind speed at the
+center-of-gravity of its operations, evaluated at the projected CMIP6
+delta). Reports formal two-way variance decompositions (within-model
+posterior vs. between-model CMIP6 spread) for both the productivity
+response (Appendix F) and the fleet-level trip response (Appendix G).
 
-**Key finding:** the coastal-upwelling pair (anchoveta and sardina
-común) faces sharp long-run productivity declines under all six CMIP6
-models considered (cross-model median −51% to −90% for anchoveta,
-−79% to −99.9% for sardina común) while the local response of the
-transzonal jack mackerel stock is not identified at the Centro-Sur
-scale. Propagating the posterior through a Schaefer steady-state
-biomass equation under historical average fishing pressure and through
-the estimated negative binomial trip equation, the artisanal fleet
-exhibits a cross-model posterior probability of portfolio loss above
-0.95 under every CMIP6 scenario; the industrial fleet's loss
-probability is 0.12, stable across scenarios, driven entirely by its
-five-percent exposure to sardina común and partially insulated by 95%
-allocation to jack mackerel. The distributional asymmetry between the
-two fleets is governed by the interaction between portfolio composition
-(differential exposure to the identified shifters) and the LMCA's
-limited cross-sector quota transferability. The variance
-decompositions in Appendices F and G quantify the relative
-contribution of climate-ensemble vs. structural-posterior uncertainty
-species-by-species and fleet-by-fleet, and explicitly identify the
-narrow cross-model interquartile range observed for fleet-level trips
-as a floor-effect saturation rather than as climate consensus.
+**Key findings.**
+
+1. The climate semi-elasticities are sharply *identified* for the two
+   coastal-upwelling stocks (anchoveta and sardina común) and
+   structurally *non-identified* for jack mackerel. Non-identification
+   is documented with a triple-evidence package (Appendix E):
+   (i) spatial-domain robustness across three alternative coastal
+   windows, (ii) dual-source state-space augmenting the Centro-Sur with
+   the Northern Chilean acoustic series (CS↔Norte log-correlation
+   0.88), and (iii) coherence with the SPRFMO transzonal index
+   (CS↔SPRFMO *r* = 0.11). Across all three lines `σ_post/σ_prior`
+   stays close to one for the jurel shifters. Treated as `n.i.` in all
+   manuscript tables and figures.
+
+2. The two coastal stocks face sharp long-run productivity declines
+   under every CMIP6 model considered (cross-model median −51% to
+   −90% for anchoveta and −79% to −99.9% for sardina común,
+   between mid-century SSP2-4.5 and end-of-century SSP5-8.5), with a
+   floor effect for sardine in the worst-case window.
+
+3. The fleet-level effort response is asymmetric: the **artisanal
+   fleet contracts by 8.1–10.2%** while the **industrial fleet
+   contracts by 0.7–1.1%**, an asymmetry of roughly **eleven to one**
+   (marginal). Conditional on no portfolio collapse (`f^H_v > 0.5`)
+   the asymmetry narrows to ~3.4:1. The artisanal fleet's
+   probability of portfolio loss > 50% under SSP5-8.5 end-of-century
+   is 0.99; the industrial fleet's is 0.12, partially insulated by
+   its 95% allocation to the *n.i.* jurel stock. The distributional
+   asymmetry is governed by the interaction between portfolio
+   composition (differential exposure to the identified shifters and
+   to severe winds) and the LMCA quota regime's limited cross-sector
+   transferability.
+
+4. Variance decompositions: 97–100% of the dispersion in projected
+   fleet-level effort changes is *within-model* (posterior + vessel
+   heterogeneity) rather than *between-model* CMIP6 spread. The
+   narrow cross-model interquartile range in the headline table is a
+   floor-effect saturation, not climate-model consensus.
 
 ## Paper 2: Bioeconomic optimization
 

@@ -2,6 +2,190 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-04-30 (paper1: direct weather channel, year FE, dual-jurel, MRE front matter & intro pivot)
+
+This entry consolidates a single-day push that closes the manuscript for the
+MRE submission target (end May 2026). All bullets refer to paper 1 unless
+stated otherwise.
+
+### Added — direct weather channel (vessel-specific, empirical CDF)
+
+- Closes the inconsistency in §3.4: the manuscript had promised both an
+  *indirect* (biomass) and a *direct* (weather) climate channel, but the
+  T7 ensemble code was propagating only the indirect one. The direct
+  channel now translates CMIP6 `Δuas`, `Δvas` deltas into vessel-specific
+  `Δdays_bw` (bad-weather days) via each vessel's empirical CDF of historical
+  wind speeds at the COG, evaluated at the 8 m/s threshold; the resulting
+  vessel-level `Δdays_bw` is multiplied by `β_w^g` from the NB trip
+  equation and combined multiplicatively with the indirect biomass factor.
+- New helper: `R/08_stan_t4/_weather_channel_utils.R` (~280 lines, ASCII only).
+  Implements: COG mapping for each vessel, historical and projected
+  `days_bw` per CMIP6 grid cell, vessel-level `Δdays_bw` with file cache.
+- Modified: `R/08_stan_t4/13_trip_comparative_statics.R`. Output schema
+  extended with `delta_days_bw`, `factor_trips_ind` (indirect-only), and
+  `factor_trips` (combined). Adds `t6_compute_factor_trips(beta_weather,
+  vessel_delta_dbw)`.
+- Modified: `R/08_stan_t4/_compstat_utils.R` — comment update flagging
+  that `wind_speed` columns in the deltas CSV are now consumed by
+  `_weather_channel_utils.R`.
+- Caveat (documented in §5 7th caveat and Appendix G caption): CESM2 has
+  no `uas/vas` data on the standard grid, so the direct channel is
+  evaluated on the 5-model subset; the indirect channel uses all six
+  models.
+
+### Added — year fixed effects in the NB trip equation (primary spec)
+
+- The primary trip equation now includes `factor(year)` to absorb
+  aggregate non-climate shocks contemporaneous with the panel — most
+  consequentially the *estallido social* of 2019 and the COVID-19 period
+  2020–2022, which were contaminating the cross-year identification of
+  `β_w^ART`.
+- Magnitude effect on `β_w^ART`: halved from `-0.0018` (no FE) to
+  `-0.0008` (with FE). Sensitivity comparison printed at the end of the
+  estimation chunk (`sens_ind`, `sens_art` data frames). The relative
+  trip projection `T_v^FUT / T_v^HIST` does not depend on the year-FE
+  values themselves (they cancel in the ratio), so the comparative
+  statics are robust to this choice.
+- Modified: `R/04_models/poisson_model.R` — dataset construction
+  unchanged, retains the documented `expand_grid` proxy 151/182 closure
+  variable. The §5 5th caveat now cites the full regulatory chronology
+  (D.Ex. 115/1998 + 5 modifications + 530/2016 + 137/2021 + 05/2024).
+- Modified: `paper1/paper1_climate_projections.Rmd` chunks `est_poisson`
+  and `tabla_poisson`. The NB table now omits year-FE coefficients via
+  `omit = "factor\\\\(year\\\\)"` and reports the FE inclusion in the
+  add-lines block. Three pseudo-R² are computed in the estimation chunk
+  (McFadden, Cragg-Uhler/Nagelkerke, deviance R²); **Cragg-Uhler is the
+  one displayed** (0.282 IND, 0.611 ART) as it is bounded on [0,1] and
+  the most OLS-like for reviewers; the others are emitted via `message()`
+  for diagnostic logging.
+- §4.3.3 numbers updated end-to-end: ART −8.1% to −10.2% marginal,
+  −2.1% to −2.7% conditional; IND −0.7% to −1.1% marginal, −0.7% to
+  −0.8% conditional. Marginal asymmetry **~11:1**; conditional **~3.4:1**.
+- §4.3.1 and §4.2 prose reformulated; the footnote that previously
+  said `β_closures^ART` was "expected to become negative" was removed.
+
+### Added — Appendix E.4 dual-source jack mackerel state-space (triple-evidence package)
+
+- New Stan program: `paper1/stan/t4b_state_space_full_dualjurel.stan`
+  (~280 lines). Augments the T4b-full model with a second observation
+  equation for the jack mackerel Northern Chilean acoustic biomass
+  series (IFOP, 2010–2024), sharing `ρ^SST_jurel` and `ρ^CHL_jurel` with
+  the CS state. Driver: `R/08_stan_t4/08b_fit_t4b_full_dualjurel.R`.
+- Source data: new `data/bio_params/catch_jurel_norte_chile.csv` (25 years
+  × 5 northern Chilean regions, 3.34 Mt total over 2000–2024) and 14 new
+  rows of `jurel_norte` appended to
+  `data/bio_params/acoustic_biomass_series.csv`. CS↔Norte log-correlation
+  is 0.88 over the 2010–2024 overlap.
+- Outcome: identification of `(ρ^SST_jurel, ρ^CHL_jurel)` does **not**
+  close. `σ_post/σ_prior ∈ {0.94, 0.99}`, well above the 0.7 threshold
+  used for anchoveta and sardine. Confirms that the bottleneck is
+  *structural*, not sample size.
+- Manuscript: `paper1/sections/appendix_spatial_jurel.Rmd` extended with
+  a new subsection "Dual-source extension" (after the spatial-domain
+  table, ~line 260). The "Implication for the main claim" paragraph is
+  reformulated to package three lines of evidence: (i) spatial-domain
+  robustness across D1/D2/D3, (ii) dual-source CS+Norte fit, (iii)
+  OROP-PS coherence (CS vs SPRFMO transzonal index, *r* = 0.11 over
+  *N* = 17 overlapping years).
+- Convention: jack mackerel is reported as `n.i.` in all manuscript
+  tables and figures; raw CSV outputs preserve the numerical posteriors
+  for reproducibility (see `project_jurel_ni_convention.md`).
+
+### Changed — comparative statics post direct channel + year FE
+
+- Table 5 (`tab:trip_compstat`) regenerated with both channels active
+  and the year-FE NB. Cross-median across 6-model CMIP6 ensemble:
+  - **Artisanal:** mid SSP2-4.5 −8.1% (cond −2.1%); end SSP5-8.5
+    −10.2% (cond −2.7%). Pr(portfolio loss > 50%) = 0.95 / 0.99.
+  - **Industrial:** mid SSP2-4.5 −0.7% (cond −0.7%); end SSP5-8.5
+    −1.1% (cond −0.8%). Pr(portfolio loss > 50%) = 0.12.
+  - Asymmetry: ~11:1 marginal, ~3.4:1 conditional.
+- Appendix G (`appendix_g_trips_variance_decomposition`) re-run on the
+  post-direct-channel output. Within-model variance now dominates at
+  **97–100%** (was 96–100%) across all SSP × period × fleet cells; the
+  floor-effect saturation message is unchanged. The narrow cross-IQR in
+  Table 5 is *not* climate-model consensus — it is the
+  fleet-mechanical floor `T → exp(−β_g · H^alloc_v)` once `f^H_v → 0`.
+
+### Changed — front matter, intro, and section labels for MRE
+
+- **Editorial target switched JAERE → MRE.** Decision date 2026-04-30
+  PM late, post triple-evidence jurel + regulatory-chronology
+  consolidation. Justification: bioeconomic content dominates and the
+  identification-of-shifters narrative reads more naturally for MRE's
+  resource-economics audience. ERE retained as Plan B. Paper 2 reserved
+  for JAERE/ERE 2027–2028.
+- **Title** changed to "Differential Climate Impacts on Fishing Effort
+  in Chilean Small Pelagic Fisheries" (11 words; MRE limit is 6–12).
+- **Abstract** rewritten to 140 words (MRE limit is 150). Closes with a
+  policy implication on cross-sector quota transferability rules.
+- **Running head** added via `fancyhdr`: "Asymmetric Climate Impacts on
+  Fishing Effort" (45 chars). Headrule `0.4pt`, small-caps small font.
+- **Author affiliation** now in `\thanks{}` footnote on the first page
+  (associate professor + Department of Economics + Universidad de
+  Concepción + mailing address Victoria 471 + email). Hyperlink markup
+  removed because pandoc loads `hyperref` after `header-includes`, so
+  `\href{}` was undefined at the point `\thanks` is processed; the email
+  is autolinked by pandoc's `autolink_bare_uris` instead. The `\affil{}`
+  short form retains "Universidad de Concepción".
+- **Keywords** (7, alphabetical): Bayesian state-space model;
+  Bioeconomic projection; Chilean small pelagic fishery; Climate change;
+  Fishing effort; Fleet heterogeneity; Quota allocation. **JEL Codes:**
+  Q22, Q54, Q57, Q58. Both blocks rendered below the abstract via new
+  `\keywords{}` and `\jelcodes{}` commands defined in
+  `header-includes`.
+- **Introduction** rewritten in the MRE house style: 5 paragraphs, ~700
+  words (was ~1,100 across 4 paragraphs). Structure: (i) policy hook on
+  quota-allocation regimes calibrated under stationary climate as
+  unscripted reallocation under fleet-asymmetric shocks; (ii) Chilean
+  SPF setting with LMCA institutional detail; (iii) structural
+  identification strategy (Cowles framing, two channels, CMIP6 ensemble);
+  (iv) headline results (asymmetry 11:1, jurel n.i., 97–100% within);
+  (v) roadmap. All citations preserved.
+- Legacy hardcoded keywords block immediately above `# Introduction`
+  removed (had 6 non-MRE keywords carried over from an earlier draft).
+- Front matter YAML: `\fancyhead`, `\affil`, `\newcommand`, and other
+  lines containing `:`, `[`, or `]` are now wrapped in double quotes
+  with escaped backslashes to satisfy the YAML scanner (which had been
+  parsing the email's `:` as a mapping separator).
+
+### Changed — slides for ICES/PICES Small Pelagic Symposium (La Paz, 8 May 2026)
+
+- `slides/slides_PICES.Rmd` updated to reflect the day's results:
+  - "A negative binomial model" slide: NB equation now shows `α_y^g`
+    year FE term; right panel rewritten as "Two channels to projections"
+    (indirect via `ρ^SST, ρ^CHL → B → H^alloc`; direct via vessel CDF).
+  - "What drives fisher participation" footnote: notes year-FE absorbs
+    estallido + COVID and that `β_w^ART` halves with FE.
+  - "Comparative statics — fleet asymmetry": table updated with
+    marginal *and* conditional columns; ART −8.1%/−10.2% and
+    −2.1%/−2.7%, IND −0.7%/−1.1% and −0.7%/−0.8%; Pr(portfolio loss).
+    Asymmetry ~11:1 marg, ~3.4:1 cond.
+  - **New slide** "Two channels: direct vs indirect" with a HTML
+    decomposition table for end-century SSP5-8.5 (indirect ≈ −9.0pp +
+    direct ≈ −1.2pp ART vs −1.0pp + −0.1pp IND).
+  - "Appendix D — Why is jack mackerel n.i.?": restructured as the
+    triple-evidence package (spatial-domain robustness, dual-source
+    biomass, OROP-PS coherence).
+  - "Appendix H — variance decomposition": 96% → **97–100% within**
+    post-direct-channel.
+  - Takeaways: ~9:1 → marginal **11:1**, conditional **3.4:1**, with
+    explicit mention of both channels.
+
+### Open econometric questions (documented; not changed)
+
+- **Vessel fixed effects.** Considered and rejected: collinear with
+  the vessel-time-invariant covariates (`log_bodega`, `TIPO_EMB`),
+  breaks identification of `β_w` (which is largely cross-vessel × year
+  in the artisanal panel), and would force an extreme reduction in
+  effective sample for IND (N = 319 vessel-years across 40 vessels).
+  See `project_open_questions_2026_04_30.md`.
+- **Northern biomass in the likelihood for paper 1.** Considered and
+  rejected. Including `B_jurel_norte` as a second observation in the
+  state-space increases sample for the jurel CS state but does *not*
+  change identification (Appendix E.4 confirms `σ_post/σ_prior` stays
+  near 1). Reserved for paper 2's range-wide game-theoretic extension.
+
 ## 2026-04-29 PM tarde (paper1: SERNAPESCA v3 official catch series + IFOP panel sanity)
 
 ### Changed — catch series upgraded to SERNAPESCA v3 (all-gear official 2000-2024)
