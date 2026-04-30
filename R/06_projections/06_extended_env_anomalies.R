@@ -61,9 +61,14 @@ APP_E_NC_CHL <- file.path(dirdata, "raw", "climate_extended",
                           "paper1_CHL_monthly_1998_2024_extended.nc")
 
 APP_E_DOMAINS <- list(
-  centro_sur_eez = list(lat = c(-42, -32), lon = c(-75, -70)),
-  offshore_ext   = list(lat = c(-41, -32), lon = c(-85, -65)),
-  se_pacific     = list(lat = c(-45, -20), lon = c(-90, -65))
+  centro_sur_eez  = list(lat = c(-42, -32), lon = c(-75, -70)),
+  offshore_ext    = list(lat = c(-41, -32), lon = c(-85, -65)),
+  se_pacific      = list(lat = c(-45, -20), lon = c(-90, -65)),
+  # Dominio Norte chileno EEZ (agregado 2026-04-30 PM tarde para item #10
+  # dual jurel state-space). Coincide con la zona de cruceros RECLAS Norte
+  # que generan la serie acustica jurel_norte (Caldera-Coquimbo + Arica-
+  # Antofagasta). bbox aprox: III a XV regiones, lat -30 a -18, lon -75 a -65.
+  norte_chile_eez = list(lat = c(-30, -18), lon = c(-75, -65))
 )
 
 APP_E_OUT_DIR <- "data/bio_params"

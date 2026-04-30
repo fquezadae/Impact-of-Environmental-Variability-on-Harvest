@@ -257,21 +257,118 @@ the qualitative magnitude of all six identified shifters. Jack mackerel
 ratios coincide to within Monte Carlo noise across the two pipelines,
 as expected of a non-identified parameter.
 
+## Dual-source extension: Centro-Sur and Northern Chilean acoustic series {#sec:appendix-spatial-dual}
+
+The spatial robustness test of Sections \ref{sec:appendix-spatial-spec}
+and \ref{sec:appendix-spatial-results} varies the geographic extent of
+the environmental covariate while preserving a single biomass series
+(the Centro-Sur acoustic record). A complementary test instead
+preserves a single environmental specification per region and adds a
+second biomass series from the Northern Chilean hydroacoustic record
+(RECLAS Norte, IFOP, $14$ observations $2010$--$2024$ excluding $2022$).
+This extension exploits the high empirical correlation between the
+Centro-Sur and Northern Chilean acoustic series over the seven
+overlapping years with positive observations in both ($2010$--$2012$,
+$2017$, $2020$--$2021$, $2023$): Pearson $r = 0.82$ on the raw scale
+and $r = 0.88$ on the log scale, consistent with the two series
+indexing partially overlapping ventures of a single biological
+range-wide stock.
+
+We extend the state-space of Eq. \eqref{eq:law-of-motion} with a
+second jack mackerel state $B^{N}_{t}$ that evolves under
+Schaefer dynamics with its own carrying capacity $K^{N}$, base
+productivity $r_{\text{jurel}}^{0,N}$, and process noise
+$\sigma^{N}_{\text{proc}}$, and which is forced by an environmental
+series aggregated over a Northern Chilean EEZ domain
+$\mathcal{D}_4 = \{\text{lat} \in [-30^{\circ}, -18^{\circ}],\;
+\text{lon} \in [-75^{\circ}, -65^{\circ}]\}$. The climate shifters
+$(\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})$ are
+constrained to be common across the two states, the empirical
+identification assumption being that the climate elasticity of the
+biological stock is uniform across its Chilean range while the
+realised forcings differ by domain. Catch in the Northern state is
+set to the IFOP-SERNAPESCA aggregate landings of jack mackerel from
+regions XV (Arica-Parinacota), I (Tarapacá), II (Antofagasta), III
+(Atacama) and IV (Coquimbo), which match the bounding box of
+$\mathcal{D}_4$. The Centro-Sur priors for the Centro-Sur state are
+identical to the main specification; priors for the Northern state's
+biological parameters are calibrated to the median of the Northern
+acoustic series with the same coefficients of variation as in the
+Centro-Sur specification.
+
+The cosine-weighted spatial means of SST and CHL over $\mathcal{D}_4$
+correlate with the Centro-Sur EEZ ($\mathcal{D}_1$) at
+$r = 0.67$ for SST and $r = 0.46$ for log-CHL across the $2000$--$2024$
+window---substantially below the biomass correlation reported above and
+than the SST/CHL correlations among $\mathcal{D}_1$, $\mathcal{D}_2$
+and $\mathcal{D}_3$ in Section \ref{sec:appendix-spatial-domains}. The
+two regional surface-forcing regimes are therefore modestly distinct,
+which the model accommodates by allowing a separate environmental
+input per state while constraining the elasticity to be common.
+
+Under this extension the posterior-to-prior standard deviation ratio
+for the jack mackerel shifters falls to $0.94$ for $\rho^{SST}$ and
+$0.99$ for $\rho^{CHL}$, a marginal reduction relative to the
+$0.998$--$1.014$ range of the spatial robustness refits of Table
+\ref{tab:appE-sigma}, and well above the $0.7$ threshold below
+which the posterior could be said to depart materially from the
+prior. The eight HMC chains converge with no divergent transitions
+and treedepth-satisfactory transitions; rank-normalised split $\hat{R}$
+is below $1.01$ for the climate shifters, although a marginally
+elevated $\hat{R} = 1.01$ for $\sigma^{N}_{\text{proc}}$ and a
+sample-wide $E$-BFMI of $0.26$ (below the nominal threshold of
+$0.30$) indicate that the Northern state has limited identifying
+information beyond the prior, consistent with the modest sample size
+of the Northern series ($N = 14$) and the shifter non-identification
+itself. The biological parameters of the Northern state recover
+plausible posterior means---$r^{0,N}_{\text{jurel}} = 0.42$ and
+$K^{N}_{\text{jurel}} = 7{,}300$~kt---well within the Centro-Sur
+posterior support, providing weak independent corroboration of the
+range-wide stock structure assumption.
+
+A separate exploratory attempt to incorporate the SPRFMO regional
+assessment series for jack mackerel (OROP-PS, available 1970--2024
+covering Chile, Peru and Ecuador together with the adjacent
+high-seas area) under the same common-elasticity constraint produced
+incompatible likelihood signals between the SPRFMO aggregate and the
+Centro-Sur series, with multimodal posterior support and
+unsatisfactory chain mixing. This is consistent with the broader
+geographic span of the OROP-PS assessment encompassing biological
+sub-populations whose dynamics are not co-determined by Chilean
+coastal forcing; we therefore retain the dual-source extension at
+the Chilean spatial scale and report the OROP-PS attempt only as a
+methodological note in the Discussion.
+
 ## Implication for the main claim
 
 The main-text claim that the climate sensitivity of jack mackerel
-cannot be resolved from the available 2000--2024 Centro-Sur biomass
-record is robust to the spatial scale of environmental aggregation.
-Within the resolution provided by the available hydroacoustic
-assessments and the regional surface-ocean reanalyses, neither a
-narrow EEZ aggregation, nor an offshore-extended band, nor the full
-SPRFMO-relevant Southeast Pacific aggregation succeeds in updating the
-shifter posterior away from the prior. The non-identification result
-therefore should not be read as a finding that local Centro-Sur
-forcings are inadequate; it should be read as a finding that the
-available data on the resource as managed are uninformative about the
-species' climate sensitivity at the spatial scales we can observe.
+cannot be resolved from the available $2000$--$2024$ Centro-Sur
+biomass record is robust across three complementary tests of
+spatial scale and sample structure. First, the spatial robustness
+refit of Sections \ref{sec:appendix-spatial-spec} and
+\ref{sec:appendix-spatial-results} varies the environmental
+aggregation across $\mathcal{D}_1$, $\mathcal{D}_2$, and
+$\mathcal{D}_3$ while holding the biomass record fixed: the
+posterior-to-prior ratios remain in $0.998$--$1.014$ across all
+three domains. Second, the dual-source extension of Section
+\ref{sec:appendix-spatial-dual} adds a second biomass series from
+the Northern Chilean acoustic record under a common climate
+elasticity, exploiting the $0.88$ log-scale correlation between
+the two Chilean series: the ratios fall only to $0.94$--$0.99$,
+remaining well above the threshold for material identification.
+Third, an attempt to incorporate the SPRFMO regional assessment
+series fails on coherence grounds, indicating that the broader
+geographic aggregate is not integrable with the Centro-Sur record
+under a single shifter. The convergence of these three tests
+indicates a genuinely flat shifter for jack mackerel within the
+Centro-Sur biological domain, not an artefact of insufficient
+spatial extent, insufficient sample size, or poor source aggregation.
+
 For policy purposes this distinction matters: closing the
-identification gap will require either a longer biomass record or a
-direct biological measurement of the relevant scale, not a different
-choice of spatial aggregation within the existing record.
+identification gap will require either a longer biomass record or
+a direct biological measurement of the relevant scale, not a
+different choice of spatial aggregation or biomass source within
+the existing record. The natural extension is the range-wide
+SPRFMO-scale analysis with explicit cross-stock spillover and
+spatially-resolved environmental forcing, which we leave to future
+work.

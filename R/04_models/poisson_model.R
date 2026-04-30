@@ -324,14 +324,36 @@ cog_vessel <- cog_vessel %>%
 cat("Vessels by regulatory zone:\n")
 cog_vessel %>% count(reg_zone) %>% print()
 
+# days_closed_vy proxy zonal constante (2026-04-30 PM tarde, decision final):
+# Mantengo proxy 151 V_VIII / 182 IX_XIV como variable de referencia institucional.
+# Cronologia regulatoria (verificada con D.Ex. 115/1998 + sus modificaciones +
+# D.Ex. 530/2016 + D.Ex. 137/2021 + D.Ex. 05/2024 obtenidos del Diario Oficial):
+#   - D.Ex. 115/1998 (V-X, 21-jul a 31-ago) modificado por 1661/2009 (V-XIV,
+#     21-ago a 21-oct ~62 dias), 705/2010 (2011: 8-ago a 21-oct), 796/2012
+#     (2012: 8-ago a 21-oct), 747/2013 (2013: publicacion 30-jul a 21-oct
+#     ~84 dias), 598/2015 (2015: V-VIII desde publicacion, IX-XIV dinamico).
+#   - D.Ex. 530/2016 (deroga 115 en jul 2016): periodo referencial 6-jul a
+#     31-oct con periodo fijo 3-ago a 4-oct + ventanas dinamicas IGS/PHA.
+#   - D.Ex. 137/2021 modifica 530-2016 con criterios decisionales semanales.
+#   - D.Ex. 05/2024 deroga 530-2016.
+# Construir una variable dia-a-dia 2013-2024 requiere reconciliar (1) los dias
+# nominales del decreto vigente vs (2) los dias efectivos de aplicacion (que
+# desde 2019 se reportan en SUBPESCA Indicadores Biologicos pero que pre-2019
+# no fueron publicados regularmente). Esa reconciliacion + verificar si el
+# scrape SUBPESCA cubre solo veda reproductiva o tambien reclutamiento/extras
+# es trabajo de paper futuro. Para JAERE submission inicial, la proxy zonal
+# 151/182 funciona como REFERENCIA INSTITUCIONAL del techo nominal del regimen
+# y captura el differential estructural V_VIII vs IX_XIV (diff ~31 dias) que
+# es lo que identifica beta_closures con year FE. Documentar como caveat 5to
+# de Discussion seccion 5 con la cronologia regulatoria explicita.
 veda_by_zone <- expand_grid(
   year     = 2013:2024,
   reg_zone = c("V_VIII", "IX_XIV")
 ) %>%
   mutate(
     days_closed_vy = case_when(
-      reg_zone == "V_VIII" ~ 151L,   # Aug-Oct (92) + Jan-Feb (59)
-      reg_zone == "IX_XIV" ~ 182L    # Jul-Oct (123) + Jan-Feb (59)
+      reg_zone == "V_VIII" ~ 151L,
+      reg_zone == "IX_XIV" ~ 182L
     )
   )
 
