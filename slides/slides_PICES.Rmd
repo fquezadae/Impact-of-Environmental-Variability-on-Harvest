@@ -37,23 +37,22 @@ xaringanExtra::use_logo("https://fquezadae.github.io/Slides-Econometria/figs/dep
 
 
 .pull-left[
-- Small pelagic stocks fluctuate sharply &mdash; biology, prices, regulation, weather all move year-to-year.
-- Standard projection tools assume **constant fishing rates or full quota uptake** &mdash; the choice is assumed away.
-- But fishers **choose**: whether to participate, which species to target, how many trips to take.
-- These choices are **mediated** by quotas, portfolio composition, and operating constraints.
+- Small pelagic stocks fluctuate sharply with climate variability.
+
+- **Standard projection tools assume constant fishing rates or full quota uptake** &mdash; the human decision is assumed away.
+
+- But fishers **choose**: which species to target, how many trips, how much to land.
 ]
+
 .pull-right[
 <img src="../figs/catch_potential.jpeg" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto;">
 
 <span style="font-size:0.55em; display:block; text-align:right; margin-top:4px;">
 **Source:** Cheung et al. (2010)
 </span>
-
 ]
 
-
-
-.tldr[**My approach:** treat fisher participation as a *count process* &mdash; estimate it separately by fleet, then propagate to comparative statics.]
+.tldr[**Project goal:** propagate climate-driven biomass shifts into *fisher-side* responses &mdash; participation today (Paper 1), **optimal harvest decisions** in the full structural model (Paper 2).]
 
 
 ???
@@ -73,7 +72,7 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 
 - **Negative binomial** trip equation, estimated separately by fleet.
 - Bayesian state-space stock dynamics with structural climate shifters (in appendix).
-- Comparative statics under counterfactual scenarios.
+- Comparative statics under future climate scenarios.
 ]
 ]
 
@@ -84,7 +83,7 @@ Recordar que uno apreta C para clonar, P para Presenter View, H para tener un ma
 
 - Translog **cost** function (trip-level, by fleet).
 - **Inverse demand** (IAIDS, 3SLS).
-- **Dynamic vessel optimization** $\Rightarrow$ optimal $T_g, h_{g\tau}$ under counterfactual shocks.
+- **Dynamic vessel optimization** $\Rightarrow$ optimal $T_g, h_{g\tau}$ under different climate scenarios.
 - Welfare, prices, **species substitution**.
 
 ]
@@ -133,7 +132,7 @@ class: inverse, center, middle
 - IND: offshore purse-seiners.
 - ART: port-anchored, RAE binds spatially.
 
-$\Rightarrow$ Same shock, **different choice sets**.
+$\Rightarrow$ Same shock, **different choices**.
 ]
 
 ???
@@ -373,8 +372,6 @@ class: inverse, center, middle
   - RAE redesign (multi-zone permits).
   - State-contingent TACs.
 ]
-
-<span class="small-note">Full equations in appendix.</span>
 
 ???
 
