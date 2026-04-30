@@ -184,7 +184,7 @@ class: inverse, center, middle
 .pull-left[
 ## Specification, by fleet $g$ (ART, IND)
 
-$$T_{vy}^g \sim \text{NB}\!\left(\exp(U_{vy}'\beta_g),\,\theta_g\right)$$
+$$T_{vy}^g \sim \text{NB}\!\left(\exp(U_{vy}'\beta_g + \alpha_y^g),\,\theta_g\right)$$
 
 with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 
@@ -192,19 +192,21 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 - $H^{alloc}_{vy}$: vessel-level quota allocation.
 - $Z_v$: hold capacity, vessel type.
 - $O_{vy}$: bad-weather days, closures.
+- $\alpha_y^g$: **year FE** (absorbs 2019&ndash;22 shocks).
 - Vessel-clustered robust SEs.
 ]
 
 .pull-right[
-## Why NB, why by fleet?
+## Why NB, year FE, by fleet?
 
 - Overdispersion $\sigma^2/\mu$: **22.4** (ART), **4.9** (IND). Poisson rejected at $p < 0.001$.
 - Two fleets, two technologies, two choice sets &mdash; no pooling.
+- Year FE: $\beta_w^{ART}$ halves vs no-FE spec ($-0.0018 \to -0.0008$) &mdash; estallido + COVID were contaminating $\beta_w$.
 
+## Two channels to projections
 
-## Biomass affects **quota allocation**  
-
-Quota allocated vary across **vessels** $\times$ **years** (sector and regional TAC moves conditional on biomass; vessel share fixed). Reduced-form mapping.
+- **Indirect**: structural shifters $\rho^{SST}_i, \rho^{CHL}_i \to B_{i,t} \to H^{alloc}_{vy}$.
+- **Direct**: vessel-specific $\Delta$bad-weather days from CMIP6 winds, evaluated at $\beta_w^g$.
 ]
 
 ???
@@ -272,7 +274,7 @@ Quota allocated vary across **vessels** $\times$ **years** (sector and regional 
 </tbody>
 </table>
 
-<span class="small-note">Negative binomial, vessel-clustered robust SEs. Sign and significance shown. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable).</span>
+<span class="small-note">Negative binomial **with year FE** (absorbs estallido + COVID), vessel-clustered robust SEs. Sign and significance shown. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable). $\beta_w^{ART}$ halves once year FE is in &mdash; aggregate-shock contamination, not climate.</span>
 
 .tldr[Two fleets, **completely different participation models**.]
 
@@ -285,58 +287,98 @@ Quota allocated vary across **vessels** $\times$ **years** (sector and regional 
 
 # Comparative statics &mdash; the fleet asymmetry
 
-<table style="width:100%; font-size:0.85em; border-collapse:collapse; margin:8px 0;">
+<table style="width:100%; font-size:0.78em; border-collapse:collapse; margin:8px 0;">
 <thead>
 <tr style="background-color:#eaeaea; border-bottom:2px solid #113b63;">
-<th style="text-align:left; padding:6px 10px; width:18%;">Fleet</th>
-<th style="text-align:left; padding:6px 10px; width:38%;">Counterfactual</th>
-<th style="text-align:right; padding:6px 10px; width:22%;">$\%\Delta T$ (marginal)</th>
-<th style="text-align:right; padding:6px 10px; width:22%;">$\Pr(\text{portfolio loss} > 50\%)$</th>
+<th style="text-align:left; padding:6px 10px; width:16%;">Fleet</th>
+<th style="text-align:left; padding:6px 10px; width:30%;">Counterfactual</th>
+<th style="text-align:right; padding:6px 10px; width:18%;">$\%\Delta T$ marginal</th>
+<th style="text-align:right; padding:6px 10px; width:18%;">$\%\Delta T$ conditional</th>
+<th style="text-align:right; padding:6px 10px; width:18%;">$\Pr(\text{portfolio loss} > 50\%)$</th>
 </tr>
 </thead>
 <tbody>
 <tr style="background-color:#fff7e6;">
 <td style="padding:6px 10px;" rowspan="2"><b>Artisanal</b></td>
 <td style="padding:6px 10px;">mid-century, moderate (SSP2-4.5)</td>
-<td style="text-align:right; padding:6px 10px;"><b>&minus;8.6%</b></td>
+<td style="text-align:right; padding:6px 10px;"><b>&minus;8.1%</b></td>
+<td style="text-align:right; padding:6px 10px;">&minus;2.1%</td>
 <td style="text-align:right; padding:6px 10px;"><b>0.95</b></td>
 </tr>
 <tr style="background-color:#fff7e6; border-bottom:1px solid #d8d8d8;">
 <td style="padding:6px 10px;">end-century, severe (SSP5-8.5)</td>
-<td style="text-align:right; padding:6px 10px;"><b>&minus;9.5%</b></td>
+<td style="text-align:right; padding:6px 10px;"><b>&minus;10.2%</b></td>
+<td style="text-align:right; padding:6px 10px;">&minus;2.7%</td>
 <td style="text-align:right; padding:6px 10px;"><b>0.99</b></td>
 </tr>
 <tr>
 <td style="padding:6px 10px;" rowspan="2"><b>Industrial</b></td>
 <td style="padding:6px 10px;">mid-century, moderate (SSP2-4.5)</td>
-<td style="text-align:right; padding:6px 10px;">&minus;0.9%</td>
+<td style="text-align:right; padding:6px 10px;">&minus;0.7%</td>
+<td style="text-align:right; padding:6px 10px;">&minus;0.7%</td>
 <td style="text-align:right; padding:6px 10px;">0.12</td>
 </tr>
 <tr style="border-bottom:2px solid #113b63;">
 <td style="padding:6px 10px;">end-century, severe (SSP5-8.5)</td>
-<td style="text-align:right; padding:6px 10px;">&minus;0.9%</td>
+<td style="text-align:right; padding:6px 10px;">&minus;1.1%</td>
+<td style="text-align:right; padding:6px 10px;">&minus;0.8%</td>
 <td style="text-align:right; padding:6px 10px;">0.12</td>
 </tr>
 </tbody>
 </table>
 
 <span class="small-note">
-$\%\Delta T$: change in annual trips vs baseline; *marginal* over all posterior draws. Cross-median across a 6-model CMIP6 ensemble.
+$\%\Delta T$: change in annual trips vs baseline. **Marginal** averages over all posterior draws (incl. portfolio-collapse paths $\to$ floor effect). **Conditional** restricts to draws with $f^H_v > 0.5$. Cross-median across a 6-model CMIP6 ensemble. NB with year FE.
 </span>
 
 .pull-left[
-- ART: ~9&times; larger contraction than IND; near-certain portfolio loss.
-- *Conditional* on no collapse: &minus;2% ART vs &minus;1% IND.
+- Marginal asymmetry **~11:1** ART:IND; conditional **~3.4:1**.
+- ART portfolio collapse near-certain by SSP5-8.5 end.
 ]
 
 .pull-right[
-- $\Rightarrow$ Asymmetry runs through **probability of portfolio collapse**; quota cross-sector limits lock it in.
+- $\Rightarrow$ Asymmetry runs through **probability of portfolio collapse** $\times$ **direct weather** ($\beta_w^{ART} < 0$, $\beta_w^{IND} = 0$); quota cross-sector limits lock it in.
 - IND's protection rests on jack mackerel (long-run shifter **n.i.**).
 ]
 
 ???
 
-- Si recuerdan una sola tabla: esta. Asimetr&iacute;a 9:1 ART:IND no es preferencias &mdash; es estructura institucional.
+- Si recuerdan una sola tabla: esta. Asimetria 11:1 marginal, 3.4:1 condicional &mdash; institucional, no preferencias.
+- Marginal-conditional gap = floor effect (sard SSP585 end). Direct channel suma ~1pp ART, 0pp IND.
+
+---
+
+# Direct vs indirect channel &mdash; how does climate hit effort?
+
+.pull-left[
+## Two channels, decomposed
+
+**Indirect** (biomass $\to$ allocation):
+$$\Delta SST, \Delta \log CHL \xrightarrow{\rho^{SST}_i,\rho^{CHL}_i} B_{i,t}^{\star} \to H^{alloc}_{vy}$$
+
+**Direct** (weather $\to$ trips):
+$$\Delta \text{wind} \xrightarrow{\text{vessel CDF}} \Delta \text{bw-days}_{vy} \xrightarrow{\beta_w^g} T_{vy}$$
+]
+
+.pull-right[
+## Channel split, end-century SSP5-8.5
+
+| Fleet | Indirect | Direct | Total |
+|---|---:|---:|---:|
+| **Artisanal** | $\approx -9.0$ pp | $\approx -1.2$ pp | $-10.2\%$ |
+| **Industrial** | $\approx -1.0$ pp | $\approx -0.1$ pp | $-1.1\%$ |
+
+<span class="small-note">Approximate channel decomposition; built by zeroing one channel at a time and re-running the comparative statics. Direct-channel asymmetry follows from $\beta_w^{ART} = -0.0008^{***}$, $\beta_w^{IND} \approx 0$ (year-FE NB).</span>
+]
+
+<div style="height: 6px;"></div>
+
+.tldr[Indirect (biomass) carries **most** of the asymmetry; direct (weather) reinforces it where vessels are exposed (ART). Both channels point the same direction &mdash; floor effect in sardine dominates the marginal $\%\Delta T$.]
+
+???
+
+- Slide nueva post-knit 30-abr 2026: separa los dos canales prometidos en paper sec 3.4.
+- $\beta_w^{IND}$ no significativo: IND insulado por capacidad/eslora.
 
 ---
 
@@ -385,7 +427,7 @@ class: inverse, center, middle
 .tight[
 1. **Paper 1**: fleet-specific NB model of annual trips reveals **two completely different participation technologies** in the same fishery.
 
-2. **Paper 1**: under counterfactual shocks, the ART:IND participation asymmetry is **~9:1**, running through the **probability of portfolio collapse**; quota cross-sector limits lock it in.
+2. **Paper 1**: under counterfactual shocks, the marginal ART:IND participation asymmetry is **~11:1** (conditional **~3.4:1**), running through (i) the **probability of portfolio collapse** in the indirect biomass channel and (ii) **direct weather** exposure ($\beta_w^{ART} < 0$, $\beta_w^{IND} \approx 0$); quota cross-sector limits lock it in.
 
 3. **Paper 2**: closes the loop &mdash; **input demand, inverse demand, vessel &times; social-planner joint optimization** &mdash; to deliver welfare counterfactuals: equilibrium prices, species substitution &amp; optimal quota allocation, and policy reforms.]
 
@@ -492,12 +534,14 @@ knitr::include_graphics("../figs/t4b/t4b_full_rho_shifters.png")
 
 ---
 
-# Appendix D &middot; Why is jack mackerel n.i.?
+# Appendix D &middot; Why is jack mackerel n.i.? (triple evidence)
 
 .tight[
-- Posteriors track priors across alternative spatial windows and biomass series.
+**(i) Spatial-domain robustness.** Re-fits over 3 alternative coastal domains (D1/D2/D3): $\sigma_{post}/\sigma_{prior}$ for $\rho^{SST}_{jurel}$ stays in [0.998, 1.014] &mdash; data adds no information regardless of domain. Anchoveta and sardine remain stable (CV $< 0.03$) across the same exercise.
 
-- The CS biomass signal carries little information about climate shifters &mdash; pre-2002 acoustic gap, censored 2012/2015 observations, transboundary SPRFMO-scale dynamics.
+**(ii) Dual-source biomass.** Augmenting the CS state-space with the IFOP Northern Chile acoustic series (2010&ndash;24, $r_{CS,N}^{log} = 0.88$) does not break non-identification: $\sigma_{post}/\sigma_{prior} \in \{0.94, 0.99\}$ for $(\rho^{SST}, \rho^{CHL})$. The bottleneck is **structural**, not sample size.
+
+**(iii) OROP-PS coherence.** SPRFMO transzonal index correlates with CS at $r = 0.11$ over $N = 17$ overlapping years. CS is decoupled from the basin-scale signal &mdash; range-wide forcing cannot pin it down either.
 
 - Reduced-form linear stress tests on growth increments do **not** close the hindcast under SST/CHL forcing alone, consistent with structural non-identification.
 
@@ -543,8 +587,8 @@ knitr::include_graphics("../figs/t4b/appendix_g_trips_variance_decomposition.png
 ```
 
 .tight[
-- **Within-model** (posterior + vessel heterogeneity) dominates: **96%** for ART SSP2-4.5 mid, saturating at **100%** under SSP5-8.5 end. IND: **98%** &rarr; **100%**.
-- **Between-model** (CMIP6 ensemble): at most **4%**, often $\approx 0$.
+- **Within-model** (posterior + vessel heterogeneity) dominates: **97%&ndash;100%** across all SSP $\times$ period $\times$ fleet cells (re-computed after the direct weather channel was added).
+- **Between-model** (CMIP6 ensemble): at most **3%**, often $\approx 0$.
 - The narrow cross-IQR in Table 5 is *not* climate-model consensus &mdash; it is a **floor effect**: once $f^H_v \to 0$, $\%\Delta T \to \exp(-\beta_g H^{alloc}_v)$ &mdash; a fleet-mechanical quantity, not a climate magnitude.
 ]
 
