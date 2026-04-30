@@ -197,16 +197,15 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 ]
 
 .pull-right[
-## Why NB, year FE, by fleet?
+## Why NB by fleet?
 
 - Overdispersion $\sigma^2/\mu$: **22.4** (ART), **4.9** (IND). Poisson rejected at $p < 0.001$.
 - Two fleets, two technologies, two choice sets &mdash; no pooling.
-- Year FE: $\beta_w^{ART}$ halves vs no-FE spec ($-0.0018 \to -0.0008$) &mdash; estallido + COVID were contaminating $\beta_w$.
 
 ## Two channels to projections
 
 - **Indirect**: structural shifters $\rho^{SST}_i, \rho^{CHL}_i \to B_{i,t} \to H^{alloc}_{vy}$.
-- **Direct**: vessel-specific $\Delta$bad-weather days from CMIP6 winds, evaluated at $\beta_w^g$.
+- **Direct**: vessel-specific $\Delta$bad-weather days from CMIP6 winds.
 ]
 
 ???
@@ -274,7 +273,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 </tbody>
 </table>
 
-<span class="small-note">Negative binomial **with year FE** (absorbs estallido + COVID), vessel-clustered robust SEs. Sign and significance shown. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable). $\beta_w^{ART}$ halves once year FE is in &mdash; aggregate-shock contamination, not climate.</span>
+<span class="small-note">Negative binomial **with year FE**, vessel-clustered robust SEs. Sign and significance shown. <sup>***</sup> $p < 0.01$. <sup style="color:#c4830a;">&dagger;</sup> zone-FE collinear (not causally interpretable).</span>
 
 .tldr[Two fleets, **completely different participation models**.]
 
@@ -287,7 +286,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 
 # Comparative statics &mdash; the fleet asymmetry
 
-<table style="width:100%; font-size:0.78em; border-collapse:collapse; margin:8px 0;">
+<table style="width:100%; font-size:0.68em; border-collapse:collapse; margin:8px 0;">
 <thead>
 <tr style="background-color:#eaeaea; border-bottom:2px solid #113b63;">
 <th style="text-align:left; padding:6px 10px; width:16%;">Fleet</th>
@@ -328,7 +327,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 </table>
 
 <span class="small-note">
-$\%\Delta T$: change in annual trips vs baseline. **Marginal** averages over all posterior draws (incl. portfolio-collapse paths $\to$ floor effect). **Conditional** restricts to draws with $f^H_v > 0.5$. Cross-median across a 6-model CMIP6 ensemble. NB with year FE.
+$\%\Delta T$: change in annual trips vs baseline. **Marginal** averages over all posterior draws. **Conditional** restricts to draws with $f^H_v > 0.5$. Cross-median across a 6-model CMIP6 ensemble. NB with year FE.
 </span>
 
 .pull-left[
@@ -348,32 +347,51 @@ $\%\Delta T$: change in annual trips vs baseline. **Marginal** averages over all
 
 ---
 
-# Direct vs indirect channel &mdash; how does climate hit effort?
+# Two channels: direct vs indirect
 
 .pull-left[
-## Two channels, decomposed
+## Decomposition
 
 **Indirect** (biomass $\to$ allocation):
-$$\Delta SST, \Delta \log CHL \xrightarrow{\rho^{SST}_i,\rho^{CHL}_i} B_{i,t}^{\star} \to H^{alloc}_{vy}$$
+$$\Delta SST,\, \Delta \log CHL \xrightarrow{\rho^{SST}_i,\,\rho^{CHL}_i} B_{i,t}^{\star} \to H^{alloc}_{vy}$$
 
 **Direct** (weather $\to$ trips):
 $$\Delta \text{wind} \xrightarrow{\text{vessel CDF}} \Delta \text{bw-days}_{vy} \xrightarrow{\beta_w^g} T_{vy}$$
 ]
 
 .pull-right[
-## Channel split, end-century SSP5-8.5
+## End-century SSP5-8.5
 
-| Fleet | Indirect | Direct | Total |
-|---|---:|---:|---:|
-| **Artisanal** | $\approx -9.0$ pp | $\approx -1.2$ pp | $-10.2\%$ |
-| **Industrial** | $\approx -1.0$ pp | $\approx -0.1$ pp | $-1.1\%$ |
+<table style="width:100%; font-size:0.82em; border-collapse:collapse; margin-top:6px;">
+<thead>
+<tr style="background-color:#eaeaea; border-bottom:2px solid #113b63;">
+<th style="text-align:left; padding:5px 6px; width:30%;">Fleet</th>
+<th style="text-align:right; padding:5px 6px; width:23%;">Indirect</th>
+<th style="text-align:right; padding:5px 6px; width:23%;">Direct</th>
+<th style="text-align:right; padding:5px 6px; width:24%;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color:#fff7e6; border-bottom:1px solid #d8d8d8;">
+<td style="padding:5px 6px;"><b>Artisanal</b></td>
+<td style="text-align:right; padding:5px 6px;">&minus;9.0&nbsp;pp</td>
+<td style="text-align:right; padding:5px 6px;">&minus;1.2&nbsp;pp</td>
+<td style="text-align:right; padding:5px 6px;"><b>&minus;10.2%</b></td>
+</tr>
+<tr style="border-bottom:2px solid #113b63;">
+<td style="padding:5px 6px;"><b>Industrial</b></td>
+<td style="text-align:right; padding:5px 6px;">&minus;1.0&nbsp;pp</td>
+<td style="text-align:right; padding:5px 6px;">&minus;0.1&nbsp;pp</td>
+<td style="text-align:right; padding:5px 6px;"><b>&minus;1.1%</b></td>
+</tr>
+</tbody>
+</table>
 
-<span class="small-note">Approximate channel decomposition; built by zeroing one channel at a time and re-running the comparative statics. Direct-channel asymmetry follows from $\beta_w^{ART} = -0.0008^{***}$, $\beta_w^{IND} \approx 0$ (year-FE NB).</span>
 ]
 
-<div style="height: 6px;"></div>
+<div style="height: 4px;"></div>
 
-.tldr[Indirect (biomass) carries **most** of the asymmetry; direct (weather) reinforces it where vessels are exposed (ART). Both channels point the same direction &mdash; floor effect in sardine dominates the marginal $\%\Delta T$.]
+.tldr[Indirect (biomass) carries **most** of the asymmetry; direct (weather) reinforces it where vessels are exposed (ART). Both channels point the same way.]
 
 ???
 

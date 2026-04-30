@@ -33,11 +33,11 @@ header-includes:
   - \fancyhf{}
   - "\\setlength{\\headheight}{14pt}"
   - "\\addtolength{\\topmargin}{-2pt}"
-  - "\\fancyhead[L]{Asymmetric Climate Impacts on Fishing Effort}"
-  - "\\fancyhead[R]{\\thepage}"
-  - "\\renewcommand{\\headrulewidth}{0pt}"
-  - "\\author{Felipe J. Quezada-Escalona}"
-  - "\\affil{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: felipequezada@udec.cl. \\vspace{-48pt}}"
+  - "\\fancyhead[L]{\\small\\scshape Asymmetric Climate Impacts on Fishing Effort}"
+  - "\\fancyhead[R]{\\small\\thepage}"
+  - "\\renewcommand{\\headrulewidth}{0.4pt}"
+  - "\\author{Felipe J. Quezada-Escalona\\thanks{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: \\href{mailto:felipequezada@udec.cl}{felipequezada@udec.cl}.}}"
+  - "\\affil{Universidad de Concepci\\'on \\vspace{-48pt}}"
   - "\\newcommand{\\keywords}[1]{\\par\\noindent\\textbf{Keywords:} #1}"
   - "\\newcommand{\\jelcodes}[1]{\\par\\noindent\\textbf{JEL Codes:} #1}"
 editor_options:
@@ -165,8 +165,6 @@ fix_stargazer_notes <- function(tex) {
 }
 
 ```
-
-\noindent\textbf{Keywords:} climate change; small pelagic fisheries; Bayesian state-space; quota allocation; multi-species; distributional effects.
 
 # Introduction
 
@@ -467,6 +465,14 @@ pois_art <- glm(formula(nb_art), family = poisson, data = df_art)
 lr_ind <- as.numeric(2 * (logLik(nb_ind) - logLik(pois_ind)))
 lr_art <- as.numeric(2 * (logLik(nb_art) - logLik(pois_art)))
 
+# ---- McFadden's pseudo-R^2 (NB log-likelihood vs intercept-only NB) ----
+# McFadden's pseudo-R^2 = 1 - logLik(full) / logLik(null). It is the standard
+# goodness-of-fit measure for count models; OLS R^2 is not defined for NB.
+nb_ind_null <- MASS::glm.nb(T_vy ~ 1, data = df_ind)
+nb_art_null <- MASS::glm.nb(T_vy ~ 1, data = df_art)
+mcfadden_ind <- 1 - as.numeric(logLik(nb_ind)) / as.numeric(logLik(nb_ind_null))
+mcfadden_art <- 1 - as.numeric(logLik(nb_art)) / as.numeric(logLik(nb_art_null))
+
 # ---- Sensitivity comparison: betas with/without year FE ----
 sens_ind <- data.frame(
   variable = c("H_alloc_vy", "days_bad_weather", "days_closed_vy",
@@ -540,7 +546,10 @@ tex_nb <- capture.output(
     ),
     omit = "factor\\(year\\)",
     add.lines = list(
-      c("Year fixed effects", "Yes", "Yes")
+      c("Year fixed effects", "Yes", "Yes"),
+      c("McFadden's pseudo-$R^2$",
+        sprintf("%.3f", mcfadden_ind),
+        sprintf("%.3f", mcfadden_art))
     ),
     se = list(se_ind, se_art),
     digits = 3,
