@@ -118,10 +118,24 @@
 \fancyhead[L]{\small\scshape Asymmetric Climate Impacts on Fishing Effort}
 \fancyhead[R]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\author{Felipe J. Quezada-Escalona\thanks{Associate Professor, Department of Economics, Universidad de Concepci\'on. Mailing address: Victoria 471, Concepci\'on, Chile. Email: \href{mailto:felipequezada@udec.cl}{felipequezada@udec.cl}.}}
+\author{Felipe J. Quezada-Escalona\thanks{Associate Professor, Department of Economics, Universidad de Concepci\'on. Mailing address: Victoria 471, Concepci\'on, Chile. Email: felipequezada@udec.cl.}}
 \affil{Universidad de Concepci\'on \vspace{-48pt}}
 \newcommand{\keywords}[1]{\par\noindent\textbf{Keywords:} #1}
 \newcommand{\jelcodes}[1]{\par\noindent\textbf{JEL Codes:} #1}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -557,7 +571,7 @@ Table \ref{tab:poisson_results} reports the negative binomial estimates separate
   Constant & 21.860$^{***}$ (2.151) & $-$64.144$^{***}$ (3.232) \\ 
  \hline \\[-1.8ex] 
 Year fixed effects & Yes & Yes \\ 
-McFadden's pseudo-$R^2$ & 0.042 & 0.104 \\ 
+Pseudo-$R^2$ (Cragg-Uhler) & 0.282 & 0.611 \\ 
 Observations & 319 & 4,201 \\ 
 \hline 
 \hline \\[-1.8ex] 

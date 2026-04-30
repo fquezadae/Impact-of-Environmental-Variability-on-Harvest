@@ -36,7 +36,7 @@ header-includes:
   - "\\fancyhead[L]{\\small\\scshape Asymmetric Climate Impacts on Fishing Effort}"
   - "\\fancyhead[R]{\\small\\thepage}"
   - "\\renewcommand{\\headrulewidth}{0.4pt}"
-  - "\\author{Felipe J. Quezada-Escalona\\thanks{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: \\href{mailto:felipequezada@udec.cl}{felipequezada@udec.cl}.}}"
+  - "\\author{Felipe J. Quezada-Escalona\\thanks{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: felipequezada@udec.cl.}}"
   - "\\affil{Universidad de Concepci\\'on \\vspace{-48pt}}"
   - "\\newcommand{\\keywords}[1]{\\par\\noindent\\textbf{Keywords:} #1}"
   - "\\newcommand{\\jelcodes}[1]{\\par\\noindent\\textbf{JEL Codes:} #1}"
@@ -465,13 +465,42 @@ pois_art <- glm(formula(nb_art), family = poisson, data = df_art)
 lr_ind <- as.numeric(2 * (logLik(nb_ind) - logLik(pois_ind)))
 lr_art <- as.numeric(2 * (logLik(nb_art) - logLik(pois_art)))
 
-# ---- McFadden's pseudo-R^2 (NB log-likelihood vs intercept-only NB) ----
-# McFadden's pseudo-R^2 = 1 - logLik(full) / logLik(null). It is the standard
-# goodness-of-fit measure for count models; OLS R^2 is not defined for NB.
+# ---- Pseudo-R^2 metrics (NB models) ----
+# Three standard pseudo-R^2 are reported in the literature for count models.
+# We report Cragg-Uhler (a.k.a. Nagelkerke) because it is bounded on [0,1]
+# and has the most OLS-like interpretation; McFadden is also computed for
+# robustness but not displayed.
 nb_ind_null <- MASS::glm.nb(T_vy ~ 1, data = df_ind)
 nb_art_null <- MASS::glm.nb(T_vy ~ 1, data = df_art)
-mcfadden_ind <- 1 - as.numeric(logLik(nb_ind)) / as.numeric(logLik(nb_ind_null))
-mcfadden_art <- 1 - as.numeric(logLik(nb_art)) / as.numeric(logLik(nb_art_null))
+
+n_ind <- nobs(nb_ind)
+n_art <- nobs(nb_art)
+ll_full_ind <- as.numeric(logLik(nb_ind))
+ll_null_ind <- as.numeric(logLik(nb_ind_null))
+ll_full_art <- as.numeric(logLik(nb_art))
+ll_null_art <- as.numeric(logLik(nb_art_null))
+
+# McFadden (kept for diagnostic logging)
+mcfadden_ind <- 1 - ll_full_ind / ll_null_ind
+mcfadden_art <- 1 - ll_full_art / ll_null_art
+
+# Cragg-Uhler / Nagelkerke pseudo-R^2:
+#   R2_CU = [1 - (L0/L1)^(2/N)] / [1 - L0^(2/N)]
+cu_ind <- (1 - exp(-2 * (ll_full_ind - ll_null_ind) / n_ind)) /
+          (1 - exp( 2 * ll_null_ind / n_ind))
+cu_art <- (1 - exp(-2 * (ll_full_art - ll_null_art) / n_art)) /
+          (1 - exp( 2 * ll_null_art / n_art))
+
+# Deviance pseudo-R^2 (kept for diagnostic logging)
+dev_r2_ind <- 1 - nb_ind$deviance / nb_ind$null.deviance
+dev_r2_art <- 1 - nb_art$deviance / nb_art$null.deviance
+
+message(sprintf(
+  "Pseudo-R^2 IND: McFadden=%.3f, Cragg-Uhler=%.3f, Deviance=%.3f",
+  mcfadden_ind, cu_ind, dev_r2_ind))
+message(sprintf(
+  "Pseudo-R^2 ART: McFadden=%.3f, Cragg-Uhler=%.3f, Deviance=%.3f",
+  mcfadden_art, cu_art, dev_r2_art))
 
 # ---- Sensitivity comparison: betas with/without year FE ----
 sens_ind <- data.frame(
@@ -547,9 +576,9 @@ tex_nb <- capture.output(
     omit = "factor\\(year\\)",
     add.lines = list(
       c("Year fixed effects", "Yes", "Yes"),
-      c("McFadden's pseudo-$R^2$",
-        sprintf("%.3f", mcfadden_ind),
-        sprintf("%.3f", mcfadden_art))
+      c("Pseudo-$R^2$ (Cragg-Uhler)",
+        sprintf("%.3f", cu_ind),
+        sprintf("%.3f", cu_art))
     ),
     se = list(se_ind, se_art),
     digits = 3,
