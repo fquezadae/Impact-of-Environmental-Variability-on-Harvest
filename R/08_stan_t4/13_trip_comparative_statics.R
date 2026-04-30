@@ -412,31 +412,63 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
   df_ind <- poisson_df %>% dplyr::filter(TIPO_FLOTA == "IND")
   df_art <- poisson_df %>% dplyr::filter(TIPO_FLOTA == "ART")
 
+  # Spec primary 2026-04-30: year FE para absorber shocks aggregados (estallido
+  # 2019 + COVID 2020-2022). beta_H y beta_weather quedan identificados de
+  # variacion within-year cross-vessel (la fuente exogena para la proyeccion).
   f <- T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
-    TIPO_EMB
+    TIPO_EMB + factor(year)
 
   nb_ind <- MASS::glm.nb(f, data = df_ind)
   nb_art <- MASS::glm.nb(f, data = df_art)
+
+  # Sensitivity sin year FE (spec legacy)
+  f_noFE <- T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB
+  nb_ind_noFE <- MASS::glm.nb(f_noFE, data = df_ind)
+  nb_art_noFE <- MASS::glm.nb(f_noFE, data = df_art)
 
   beta_H_ind  <- as.numeric(coef(nb_ind)["H_alloc_vy"])
   beta_H_art  <- as.numeric(coef(nb_art)["H_alloc_vy"])
   beta_W_ind  <- as.numeric(coef(nb_ind)["days_bad_weather"])
   beta_W_art  <- as.numeric(coef(nb_art)["days_bad_weather"])
 
-  cat("[T7] NB reestimado (in-script):\n")
+  beta_H_ind_noFE <- as.numeric(coef(nb_ind_noFE)["H_alloc_vy"])
+  beta_H_art_noFE <- as.numeric(coef(nb_art_noFE)["H_alloc_vy"])
+  beta_W_ind_noFE <- as.numeric(coef(nb_ind_noFE)["days_bad_weather"])
+  beta_W_art_noFE <- as.numeric(coef(nb_art_noFE)["days_bad_weather"])
+
+  cat("[T7] NB reestimado (in-script, primary = with year FE):\n")
   cat("    IND: beta_H(H_alloc_vy)    =", sprintf("%.6f", beta_H_ind),
       "(N =", nrow(df_ind), ")\n")
   cat("    IND: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_ind), "\n")
   cat("    ART: beta_H(H_alloc_vy)    =", sprintf("%.6f", beta_H_art),
       "(N =", nrow(df_art), ")\n")
-  cat("    ART: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_art), "\n\n")
+  cat("    ART: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_art), "\n")
+  cat("[T7] Sensitivity vs no-FE (legacy spec):\n")
+  cat(sprintf("    IND: beta_H FE=%.6f  noFE=%.6f  ratio=%.2f\n",
+              beta_H_ind, beta_H_ind_noFE,
+              beta_H_ind / beta_H_ind_noFE))
+  cat(sprintf("    IND: beta_w FE=%.6f  noFE=%.6f  ratio=%.2f\n",
+              beta_W_ind, beta_W_ind_noFE,
+              beta_W_ind / beta_W_ind_noFE))
+  cat(sprintf("    ART: beta_H FE=%.6f  noFE=%.6f  ratio=%.2f\n",
+              beta_H_art, beta_H_art_noFE,
+              beta_H_art / beta_H_art_noFE))
+  cat(sprintf("    ART: beta_w FE=%.6f  noFE=%.6f  ratio=%.2f\n\n",
+              beta_W_art, beta_W_art_noFE,
+              beta_W_art / beta_W_art_noFE))
 
   list(
-    beta_H       = c(ART = beta_H_art,  IND = beta_H_ind),
-    beta_weather = c(ART = beta_W_art,  IND = beta_W_ind),
-    fits         = list(art = nb_art, ind = nb_ind)
+    beta_H            = c(ART = beta_H_art,  IND = beta_H_ind),
+    beta_weather      = c(ART = beta_W_art,  IND = beta_W_ind),
+    beta_H_noFE       = c(ART = beta_H_art_noFE, IND = beta_H_ind_noFE),
+    beta_weather_noFE = c(ART = beta_W_art_noFE, IND = beta_W_ind_noFE),
+    fits              = list(art = nb_art, ind = nb_ind,
+                              art_noFE = nb_art_noFE, ind_noFE = nb_ind_noFE)
   )
 }
 
