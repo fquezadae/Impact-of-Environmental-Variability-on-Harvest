@@ -169,8 +169,8 @@ within-model.
 
 The means reported in Table \ref{tab:appG-decomp} are systematically
 more negative than the medians reported in Table \ref{tab:trip_compstat}
-of the main results section---for example, $-17.8\%$ for the artisanal
-fleet under SSP5-8.5 end-of-century in this appendix versus $-9.5\%$ in
+of the main results section---for example, $-17.5\%$ for the artisanal
+fleet under SSP5-8.5 end-of-century in this appendix versus $-10.2\%$ in
 Table \ref{tab:trip_compstat}. This is the same left-skew mechanism
 documented in Appendix \ref{appendix-ensemble} for the underlying
 productivity response: posterior draws and vessels in which the
