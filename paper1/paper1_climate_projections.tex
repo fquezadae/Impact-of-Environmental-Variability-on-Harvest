@@ -112,6 +112,20 @@
 \usepackage{threeparttable}
 \author{Felipe J. Quezada-Escalona}
 \affil{Departamento de Economía \\ Universidad de Concepción \vspace{-48pt}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -564,7 +578,7 @@ The two fleets differ markedly in their price responsiveness. For the industrial
 
 Hold capacity is not significant for the industrial fleet, where vessels are relatively homogeneous in scale, but is positive and significant for the artisanal fleet. Among artisanal vessels, larger hold capacity is associated with more annual trips, consistent with larger vessels being more commercially active and better able to sustain operations across varying conditions.
 
-The environmental and regulatory variables show distinct patterns across fleets. For the artisanal fleet, adverse weather days carry a negative and statistically distinguishable coefficient, indicating that, controlling for year-specific aggregate conditions, vessels operating in grids with more days of wind speeds above 8 m/s undertake fewer fishing trips. For the industrial fleet, adverse weather is not significant, consistent with larger vessels being better equipped to operate under rough conditions. Biological closure days are strongly negative for the industrial fleet, representing the largest effect in the model, consistent with the industrial fleet's dependence on access during open seasons. For the artisanal fleet, the positive coefficient on closure days reflects the current limitation that this variable varies only across regulatory zones (151 days for regions V--VIII versus 182 days for regions IX--XIV) and therefore captures locational differences in fishing activity rather than the causal effect of closures.\footnote{Once year-specific closure dates from annual SUBPESCA resolutions are incorporated, providing within-zone temporal variation, this coefficient is expected to become negative.}
+The environmental and regulatory variables show distinct patterns across fleets. For the artisanal fleet, adverse weather days carry a negative and statistically distinguishable coefficient, indicating that, controlling for year-specific aggregate conditions, vessels operating in grids with more days of wind speeds above 8 m/s undertake fewer fishing trips. For the industrial fleet, adverse weather is not significant, consistent with larger vessels being better equipped to operate under rough conditions. Biological closure days are strongly negative for the industrial fleet, representing the largest effect in the model, consistent with the industrial fleet's dependence on access during open seasons. For the artisanal fleet, the positive coefficient on closure days does not admit a causal interpretation: under the year-fixed-effects specification, \(\beta_{\text{closure}}\) is identified solely from the cross-zone differential between regions V-VIII (151 days) and IX-XIV (182 days) of the proxy variable described in Appendix \ref{appendix-stress} and discussed at length in the regulatory-history caveat of Section \ref{sec:discussion}. The positive sign therefore reflects locational heterogeneity in artisanal fishing intensity between the two regulatory zones (the southern zone IX-XIV contains both more nominal closure days and more concentrated artisanal effort per vessel, and the cross-sectional comparison cannot disentangle the two), not the causal effect of closures on trips. Constructing a year-by-year closure variable with within-zone temporal variation that would identify the causal effect requires reconciling the nominal regulatory ceilings of the D.Ex. 115/1998 and 530/2016 chain with the actual realised closure days reported in the SUBPESCA Indicadores Biológicos portal from 2019 onwards, a non-trivial data-engineering task discussed in Section \ref{sec:discussion} and reserved for follow-up work.
 
 Vessel type dummies capture residual heterogeneity in fleet composition. Among artisanal vessels, larger vessel categories (L, BRV) are associated with substantially fewer trips relative to the baseline, reflecting differences in trip duration and operational patterns across vessel classes.
 
