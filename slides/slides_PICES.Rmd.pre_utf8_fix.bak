@@ -626,7 +626,7 @@ $\Rightarrow$ **5 converging tests** of the null (vs. 3 pre-ENSO).
 .pull-right[
 ## Prior-propagation projection
 
-Factor on $r^{*}_{\text{jur}}$ under SSP5-8.5 end-of-century, combining 16k posterior draws with the 6-GCM ensemble of $\Delta$ENSO Ni&ntilde;o 3.4 ($+3.65 \pm 0.88$&deg;C):
+Factor on $r^{*}_{\text{jur}}$ under SSP5-8.5 end-of-century, combining 16k posterior draws with the 6-GCM ensemble of $\Delta$ENSO Niño 3.4 ($+3.65 \pm 0.88$&deg;C):
 
 - 90\% predictive interval: $[\mathbf{0.05},\,\mathbf{19.5}]$.
 - Median: $0.93$. log-factor SD: $1.83$.
@@ -636,7 +636,7 @@ $\Rightarrow$ envelope spans **3 orders of magnitude** $\Rightarrow$ not informa
 
 <div style="height: 8px;"></div>
 
-.tldr[<b style="color:#c4830a;">&rarr;</b> Climate effects on jurel operate on *margins* (location, behaviour, range) &mdash; **not** on annual productivity elasticity at this aggregation.]
+.tldr[<b style="color:#c4830a;">&rarr;</b> Climate effects on jurel operate on *margins* (location, behaviour, range) &mdash; **not** on annual productivity elasticity at this aggregation. (Pe&ntilde;a-Torres et al., 2017, Arcos et al., 2001).]
 
 ---
 

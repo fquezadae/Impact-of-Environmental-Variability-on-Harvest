@@ -42,7 +42,7 @@ that the climate sensitivity of jack mackerel at the Centro-Sur scale
 is real but operates through teleconnection forcing of the equatorial
 Pacific rather than through the upwelling-band SST and chlorophyll
 anomalies that resolve anchoveta and sardine---a reading anticipated
-by @Arcos2001-jq, @Pena-Torres2017-gn, and @Espinoza2013-jc on
+by @Arcos2001-jq and @Pena-Torres2017-gn on
 qualitative grounds and now sharpened to a point estimate. The
 distinction between non-identification on coastal shifters and basin-scale
 identification matters for policy: it implies that adaptive management
@@ -77,9 +77,7 @@ empirical evidence on jack mackerel documents that climate does affect
 the species at scales broader than local coastal anomalies---@Arcos2001-jq
 on intrusion of the $15\,^{\circ}$C isotherm during the
 $1997$--$98$ El Niño, @Pena-Torres2017-gn on ENSO-driven shifts in
-location choices in the Chilean fishery, and @Espinoza2013-jc on PDO and
-SOI modulation of jack mackerel availability in the Peruvian
-system---but each of these documents climatic effects on
+location choices in the Chilean fishery---but each of these documents climatic effects on
 \emph{margins} (location choice, range distribution, spawning timing,
 phenological response) that are not necessarily captured in the
 elasticity of structural productivity at an annual aggregate. The
@@ -90,7 +88,7 @@ will require either a longer biomass record or a basin-scale
 assessment with explicit cross-stock spillover, not a different choice
 of spatial aggregation, biomass source, or basin-scale shifter within
 the present record. We accordingly hold $r^{*}_{\text{jurel}}$ fixed
-in the projections of Tables \ref{tab:climate_compstat_3stocks} and
+in the projections of Tables \ref{tab:growth_compstat} and
 \ref{tab:trip_compstat}, and report the resulting fleet-level
 elasticities under that constraint.
 
@@ -109,12 +107,12 @@ $[-0.81,\,0.80]$ and
 posterior-to-prior ratio of $0.979$. The point estimate
 is consistent in direction with the qualitative literature on
 ENSO-mediated effects on jack mackerel
-(@Arcos2001-jq; @Pena-Torres2017-gn; @Espinoza2013-jc) but sits between
+(@Arcos2001-jq; @Pena-Torres2017-gn) but sits between
 the thresholds for material identification ($0.70$) and clear
 non-identification ($0.85$): the magnitude is suggestive but not
 sharply pinned on the available $24$-year sample. We report the
 projections of $r^{*}_{\text{jurel}}$ in Tables
-\ref{tab:climate_compstat_3stocks} and \ref{tab:trip_compstat} both
+\ref{tab:growth_compstat} and \ref{tab:trip_compstat} both
 under the basin-scale ENSO posterior and under the conventional
 fixed-$r^{*}$ benchmark, and flag the unresolved magnitude as a
 substantive limitation that a longer biomass record or a complementary

@@ -18,6 +18,166 @@ structure and undertakes seasonal migrations into subtropical waters
 beyond the EEZ, so the second reading cannot be ruled out without a
 direct test. This appendix supplies that test.
 
+## Identification power and the magnitude of the jack mackerel non-result {#sec:appendix-spatial-power}
+
+% DRAFT 2026-05-04 -- pivote ENSO. Drop-in section for paper1/sections/appendix_spatial_jurel.Rmd.
+% Insertar como NUEVA primera subsección del Apéndice E (antes de "Spatial domains
+% and environmental aggregation"), reordenando el apéndice para abrir con la
+% pregunta de potencia y luego presentar las cuatro líneas de evidencia.
+%
+% Placeholders LIVE -- reemplazar después del refit Stan ENSO:
+%   - Ninguno en esta sección (los números vienen del power_calc_enso ya corrido).
+% Números directamente del CSV power_calc_enso_table.csv que Felipe ya tiene
+% en data/outputs/t4b/.
+A natural prior question, raised by the close-to-prior posteriors of
+$(\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})$ in the main
+specification, is whether the result reflects an absent climate signal
+or a sample with insufficient power to recover one. We answer this by
+deriving the minimum-detectable shifter magnitude implied by the
+sample size, the residual noise of the state-space model, and the
+sample dispersion of the candidate climate covariates. Linearising the
+Schaefer transition equation of Section \ref{sec:stock-dynamics} in
+log-differences gives, for each stock $i$,
+
+\begin{equation}
+\log B_{i,t+1} - \log B_{i,t}
+\;\approx\;
+\alpha_{i} - \beta_{i}\,(B_{i,t}/K_i)
+\;+\; \rho_{i}^{X}\, X_{t-1} \;+\; \varepsilon_{i,t},
+\qquad
+\varepsilon_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{i,\text{resid}}^{2}\big),
+\label{eq:appE-power-linapprox}
+\end{equation}
+
+where $X$ is a candidate shifter and
+$\sigma_{i,\text{resid}} = \sqrt{\sigma_{i,\text{proc}}^{2} + 2\,\sigma_{i,\text{obs}}^{2}}$
+is the state-space envelope on the differenced log-biomass. With the
+posterior medians of $\sigma_{\text{proc}}$ and $\sigma_{\text{obs}}$
+reported in the main specification, $\sigma_{i,\text{resid}}$ takes the
+values $0.28$ (anchoveta), $0.25$ (sardine), and $1.28$ (jack mackerel),
+the latter being approximately $4.6$ times the average of the two
+coastal stocks. Under (\ref{eq:appE-power-linapprox}) the OLS-equivalent
+standard error of $\rho_{i}^{X}$ on a sample of $N=24$ lag-one
+observations satisfies
+$\mathrm{SE}(\hat{\rho}_{i}^{X})
+\approx \sigma_{i,\text{resid}} \,/\, \big[\mathrm{sd}(X)\sqrt{N - K}\big]$,
+with $K=3$ regressors. The minimum shifter magnitude detectable at
+$80\%$ power for a two-sided $90\%$ credible interval is then
+
+\begin{equation}
+|\rho_{i}^{X}|_{\min}
+\;=\; \big(t_{0.95,\,N-K} + z_{0.80}\big)\,\mathrm{SE}(\hat{\rho}_{i}^{X})
+\;\approx\; 2.56\,\mathrm{SE}(\hat{\rho}_{i}^{X}),
+\label{eq:appE-rho-min}
+\end{equation}
+
+a quantity that any fixed-effect-style identification of $\rho$ must
+exceed in absolute value to deliver a credible interval that excludes
+zero with probability at least $0.80$ under the data-generating process
+implied by the posterior of the main fit. Table \ref{tab:appE-power}
+reports $|\rho|_{\min}$ for the three stocks and three candidate
+shifters: SST and $\log$~CHL aggregated over the Centro-Sur EEZ
+($\mathcal{D}_1$ in the spatial-robustness exercise below), and the
+basin-scale ENSO Niño 3.4 index used in
+Section \ref{sec:appendix-spatial-enso}.
+
+\begin{table}[t]
+\centering
+\caption{Minimum shifter magnitude $|\rho|_{\min}$ detectable at
+$80\%$ power on the $2000$--$2024$ sample, by stock and candidate
+covariate. $\sigma_{\text{resid}}$ is the state-space envelope
+$\sqrt{\sigma_{\text{proc}}^{2} + 2\sigma_{\text{obs}}^{2}}$ evaluated
+at the posterior medians of the main specification. The implied
+posterior-to-prior standard-deviation ratio in the third-to-last column
+combines the OLS standard error with the prior $\rho \sim
+\mathcal{N}(0, 0.5)$ adopted for the ENSO refit; the last column
+combines it with the wider prior $\mathcal{N}(0, 1.5)$ used for the
+SST/CHL shifters in the main specification. A ratio at or below $0.70$
+is the informal threshold for material identification.}
+\label{tab:appE-power}
+\begin{tabular}{llccccc}
+\toprule
+Stock & Shifter & $\mathrm{sd}(X)$ & $\sigma_{\text{resid}}$ &
+$|\rho|_{\min}$ & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ &
+$\sigma_{\text{post}}/\sigma_{\text{prior}}$ \\
+      &         &                  &                          &
+              & at $\mathcal{N}(0,0.5)$ & at $\mathcal{N}(0,1.5)$ \\
+\midrule
+Anchoveta     & SST $\mathcal{D}_1$       & $0.257$ & $0.277$ & $0.60$ & $0.43$ & $0.15$ \\
+Anchoveta     & $\log$ CHL $\mathcal{D}_1$ & $0.098$ & $0.277$ & $1.58$ & $0.78$ & $0.38$ \\
+Anchoveta     & ENSO Niño 3.4              & $0.549$ & $0.277$ & $0.28$ & $0.22$ & $0.07$ \\
+\addlinespace[2pt]
+Sardine       & SST $\mathcal{D}_1$       & $0.257$ & $0.247$ & $0.54$ & $0.39$ & $0.14$ \\
+Sardine       & $\log$ CHL $\mathcal{D}_1$ & $0.098$ & $0.247$ & $1.41$ & $0.74$ & $0.34$ \\
+Sardine       & ENSO Niño 3.4              & $0.549$ & $0.247$ & $0.25$ & $0.19$ & $0.07$ \\
+\addlinespace[2pt]
+Jack mackerel & SST $\mathcal{D}_1$       & $0.257$ & $1.277$ & $\mathbf{2.78}$ & $\mathbf{0.91}$ & $0.59$ \\
+Jack mackerel & $\log$ CHL $\mathcal{D}_1$ & $0.098$ & $1.277$ & $\mathbf{7.28}$ & $\mathbf{0.98}$ & $0.88$ \\
+Jack mackerel & ENSO Niño 3.4              & $0.549$ & $1.277$ & $\mathbf{1.30}$ & $\mathbf{0.71}$ & $0.32$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The substantive readings of the table are three. First, jack mackerel's
+process-noise envelope is approximately five times that of the two
+coastal stocks. Whatever process is generating the larger residual
+variance for jack mackerel---transboundary recruitment pulses, episodic
+non-detections, range shifts beyond the EEZ---it directly inflates the
+magnitude of any climate semi-elasticity that the data could in
+principle resolve. Second, with that residual envelope and the
+$0.26\,^{\circ}\text{C}$ in-sample dispersion of the Centro-Sur SST
+covariate, the minimum SST semi-elasticity detectable for jack mackerel
+at $80\%$ power on a $24$-year sample is $|\rho|_{\min} \approx 2.78$,
+which corresponds to a multiplicative effect on $r$ of approximately
+$\exp(2.78 \cdot 0.26) \approx 2.1$ for a one-standard-deviation
+positive SST anomaly---outside any range that the bioclimatic
+literature on the species would deem structurally plausible. The
+posterior-to-prior ratio of $0.91$ for SST under the wide
+$\mathcal{N}(0, 1.5)$ prior of the main specification, and $0.98$ for
+$\log$~CHL, therefore reflect the *mechanical* implication of a thick
+process-noise envelope and a thin in-sample dispersion of the
+covariates, rather than evidence of an absent climate signal. Third,
+the basin-scale ENSO Niño 3.4 index has approximately twice the
+in-sample dispersion of the Centro-Sur SST covariate
+($\mathrm{sd} = 0.55\,^{\circ}\text{C}$ versus $0.26$), which mechanically
+lowers $|\rho|_{\min}$ for jack mackerel from $2.78$ on Centro-Sur SST
+to $1.30$ on Niño 3.4, and lowers the implied
+$\sigma_{\text{post}}/\sigma_{\text{prior}}$ from $0.91$ to $0.71$ under
+a common $\mathcal{N}(0, 0.5)$ prior. The basin-scale shifter sits
+deliberately at the threshold for material identification: if the
+true elasticity of jack mackerel productivity on ENSO Niño 3.4 is of
+moderate magnitude---in the range $1$ to $1.5$ that the qualitative
+literature on transboundary forcing would suggest---a sample of $N=24$
+years on the available biomass record has approximately $80\%$ power to
+recover it. The refit of Section \ref{sec:appendix-spatial-enso} below
+implements that test directly.
+
+The OLS-equivalent calculation of (\ref{eq:appE-rho-min}) is a
+\emph{lower bound} on the variance of the full state-space posterior
+rather than a point estimate, because it ignores integration over the
+structural priors on $(r^{0}, K)$, the between-stock covariance
+$\boldsymbol{\Omega}$, and the censored observation contribution to
+the jack mackerel likelihood. Empirically, the analytic ratios
+reported in Table \ref{tab:appE-power} understate the corresponding
+state-space ratios by approximately $5$--$15\,$pp for the coastal
+shifters of anchoveta and sardine, where the data move the posterior
+substantially. For jack mackerel the divergence is larger: the
+$\sigma_{\text{post}}/\sigma_{\text{prior}}$ for $\rho_{\text{jur}}^{ENSO}$
+under the basin-scale refit of Section \ref{sec:appendix-spatial-enso}
+is $0.979$ (lag-one) and $1.014$ (lag-two sensitivity), against the
+analytic $0.71$ of Table \ref{tab:appE-power}. The gap reflects the
+flat-likelihood regime: when the data carry essentially no
+information on the shifter, the posterior is close to the prior,
+the structural-prior integration is the dominant remaining source of
+variance, and the OLS-equivalent surrogate (which conditions on the
+remaining structural parameters) is most optimistic. The qualitative
+\emph{ordering} across rows of Table \ref{tab:appE-power} is preserved
+under the full state-space refit; the absolute magnitude of $|\rho|_{\min}$
+on jack mackerel should be read as a lower bound and the substantive
+implication---that any plausible structural elasticity for jack mackerel
+on Centro-Sur SST or basin-scale ENSO is below the threshold for
+detection on the available record---is reinforced rather than weakened.
+
 ## Spatial domains and environmental aggregation {#sec:appendix-spatial-domains}
 
 We construct three nested spatial domains for the aggregation of SST and
@@ -339,36 +499,236 @@ coastal forcing; we therefore retain the dual-source extension at
 the Chilean spatial scale and report the OROP-PS attempt only as a
 methodological note in the Discussion.
 
-## Implication for the main claim
+## Basin-scale shifter test: the ENSO Niño 3.4 index {#sec:appendix-spatial-enso}
+
+% DRAFT 2026-05-04 -- pivote ENSO. Drop-in section for paper1/sections/appendix_spatial_jurel.Rmd.
+% Insertar como NUEVA §E.4 (entre la §E.3 "Posterior identification across domains"
+% y la §E.5 "Implication for the main claim"). El contenido de la actual §E.4 OROP-PS
+% se condensa al final de esta sección como degradación natural (la 4ta evidencia
+% pasa de "OROP-PS" a "ENSO basin-scale", que es estructuralmente más informativa
+% para policy).
+%
+% Placeholders LIVE -- reemplazar después de correr 14b_fit_t4b_full_enso.R y
+% 01b_cmip6_enso_deltas.R:
+%   -0.022      mediana posterior de rho_enso[3]
+%   -0.81       cuantil 5% del posterior
+%   0.80      cuantil 95%
+%   0.490       sd posterior
+%   0.979        sigma_post / sigma_prior (= 0.490 / 0.5)
+%   +0.021 mediana del lag-2 sensibilidad
+%   1.014 ratio del lag-2
+%   +3.65      mediana cross-model del delta ENSO SSP5-8.5 end
+%   0.88  IQR cross-model SSP5-8.5 end
+%   +1.92      mediana cross-model SSP2-4.5 end
+%   [[B_FACTOR_JUREL_END]]         factor multiplicativo sobre r* (escenario A) o "indeterminado" (escenario B)
+%
+% Hay DOS versiones del párrafo de cierre: A (ENSO identifica) y B (no
+% identifica). Felipe elige según el ratio que devuelva el wrapper Stan.
+
+The Centro-Sur, offshore-extended, and regional Southeast Pacific
+domains of Section \ref{sec:appendix-spatial-results} all aggregate
+*coastal-band* environmental fields. None probes the basin-scale
+forcing regime that the existing biological literature on jack
+mackerel has identified as the natural climatic driver: ENSO-mediated
+modulation of Pacific stratification, location-choice behaviour, and
+recruitment phenology
+(@Arcos2001-jq; @Pena-Torres2017-gn).
+A direct test on a basin-scale shifter is therefore a substantive
+robustness exercise for the non-identification result, and one that
+the spatial-extension refits of Section \ref{sec:appendix-spatial-results}
+do not deliver because each $\mathcal{D}_d$ averages local SST and
+$\log$~CHL anomalies whose variance is too small to identify a
+plausible elasticity for jack mackerel (Table \ref{tab:appE-power}).
+
+We construct the ENSO Niño 3.4 index as the annual mean of monthly
+ERSSTv5 sea-surface temperature averaged over the canonical
+$5^{\circ}$N--$5^{\circ}$S, $170^{\circ}$W--$120^{\circ}$W box
+(NOAA Climate Prediction Center, file `sstoi.indices`,
+ERSSTv5-derived). Following the centring convention of the main
+specification, the annual series is centred on its $2000$--$2024$
+sample mean to deliver an anomaly $\widetilde{\text{ENSO}}_{t}$ in
+$^{\circ}$C, comparable in scale to the SST $\mathcal{D}_1$ shifter
+of the main specification. Two features of the historical series are
+relevant for what follows. First, the in-sample dispersion is
+$\mathrm{sd}(\widetilde{\text{ENSO}}) = 0.55\,^{\circ}$C, approximately
+twice that of the Centro-Sur SST shifter
+($0.26\,^{\circ}$C); the larger dispersion is mechanical---basin
+averages sample longer-wavelength variability than coastal
+upwelling-band averages---and translates directly into a smaller
+minimum-detectable elasticity (Table \ref{tab:appE-power}). Second,
+the contemporaneous correlation between $\widetilde{\text{ENSO}}$ and
+the Centro-Sur SST shifter is $0.37$, while the lag-one
+correlation---the relevant moment for the recursive Schaefer
+specification---is $0.09$. The basin-scale and coastal shifters are
+therefore close to orthogonal at the lag exploited by the dynamic
+identification, eliminating any concern that the basin-scale test
+is mechanically picking up the coastal anomaly.
+
+We refit the state-space model under a stock-specific covariate
+structure that *replaces* the Centro-Sur shifters for jack mackerel
+with the basin-scale ENSO index, while preserving the coastal
+shifters for anchoveta and sardine:
+
+\begin{align}
+r_{\text{anch},t}  &= r_{\text{anch}}^{0}\,
+  \exp\!\big( \rho_{\text{anch}}^{SST}\, \widetilde{SST}_{1,t-1}
+            + \rho_{\text{anch}}^{CHL}\, \widetilde{\log CHL}_{1,t-1} \big),\nonumber \\
+r_{\text{sard},t}  &= r_{\text{sard}}^{0}\,
+  \exp\!\big( \rho_{\text{sard}}^{SST}\, \widetilde{SST}_{1,t-1}
+            + \rho_{\text{sard}}^{CHL}\, \widetilde{\log CHL}_{1,t-1} \big),\nonumber \\
+r_{\text{jur},t}   &= r_{\text{jur}}^{0}\,
+  \exp\!\big( \rho_{\text{jur}}^{ENSO}\, \widetilde{\text{ENSO}}_{t-1} \big).
+  \label{eq:appE-enso-spec}
+\end{align}
+
+The replacement convention is implemented at the prior level: the
+coefficients on Centro-Sur SST and $\log$~CHL for jack mackerel
+receive a tight prior $\mathcal{N}(0, 0.01)$ that pins them to zero,
+and the corresponding covariate columns are set to zero in the data
+matrix as a second layer of insulation. The prior on
+$\rho_{\text{jur}}^{ENSO}$ is set at $\mathcal{N}(0, 0.5)$,
+deliberately tighter than the wide $\mathcal{N}(0, 1.5)$ on the
+coastal shifters of the main specification: with
+$\mathrm{sd}(\widetilde{\text{ENSO}}) = 0.55$, a prior elasticity at
+the upper end of $\mathcal{N}(0, 0.5)$ implies a one-standard-deviation
+multiplicative effect on $r$ of $\exp(0.5 \cdot 0.55) \approx 1.32$,
+which spans the qualitative range that the basin-scale literature
+documents and rules out the implausible far tails. The implied
+identification threshold on the posterior-to-prior ratio is
+$\sigma_{\text{post}}/\sigma_{\text{prior}} \le 0.70$, which the power
+calculation of Section \ref{sec:appendix-spatial-power} places exactly
+at the data-implied boundary for moderate elasticities. The remaining
+priors and the sampler configuration (eight chains of $4{,}000$
+post-warmup draws, $\mathrm{adapt\_delta} = 0.99$,
+$\mathrm{max\_treedepth} = 14$) match the spatial-robustness refits
+of Section \ref{sec:appendix-spatial-spec}.
+
+The principal specification with lag-one ENSO Niño 3.4 forcing yields a
+posterior median for $\rho_{\text{jur}}^{ENSO}$ of
+$-0.022$ with $90\%$ credible interval
+$[-0.81,\,0.80]$ and
+posterior standard deviation $0.490$, implying
+$\sigma_{\text{post}}/\sigma_{\text{prior}} = 0.979$.
+The lag-two sensitivity returns
+$+0.021$ with ratio
+$1.014$. The anchoveta and sardine
+posteriors of $(\rho^{SST}, \rho^{CHL})$ move by less than $0.03$
+posterior-standard-deviations relative to the main specification,
+confirming that the stock-specific covariate replacement does not
+contaminate the identification of the coastal shifters.
+
+The basin-scale shifter, like the spatial-extension refits of Section
+\ref{sec:appendix-spatial-results} and the dual-source extension of
+Section \ref{sec:appendix-spatial-dual}, is therefore unable to
+resolve a non-zero productivity response for jack mackerel within the
+$2000$--$2024$ Centro-Sur biomass record, even with twice the
+in-sample dispersion of the coastal shifters and a deliberately tight
+prior. We read the four-way convergence---spatial-domain refits,
+dual-source extension, SPRFMO regional-scale coherence failure, and
+the present basin-scale test---as evidence of a genuinely flat
+identification rather than an artefact of any one specification
+choice. The biological readings of @Arcos2001-jq, @Pena-Torres2017-gn remain consistent with the appendix result: each
+documents climatic effects on jack mackerel at *margins* (location
+choice, range distribution, spawning timing) that are not necessarily
+captured in the elasticity of structural productivity at an annual
+aggregate. Section \ref{sec:appendix-spatial-implication} updates the
+implication for the main claim accordingly. Tables
+\ref{tab:growth_compstat} and \ref{tab:trip_compstat} of the
+main text retain the convention that $r^{*}_{\text{jurel}}$ is held
+fixed in the projections and the implications for the harvest
+elasticity are reported with the corresponding caveat.
+
+A natural sensitivity to the replacement convention of
+(\ref{eq:appE-enso-spec}) is to relax the pinning of
+$\rho_{\text{jur}}^{SST}$ and $\rho_{\text{jur}}^{CHL}$ and refit the
+specification with all three shifters active for jack mackerel
+simultaneously, allowing the data to discriminate between the
+basin-scale ENSO forcing and the local Centro-Sur SST and chlorophyll
+anomalies. Such a refit is well-conditioned at $N=24$ lag-one
+observations because the three covariates are close to orthogonal at
+the dynamically-relevant lag: the pairwise lag-one correlations are
+$\mathrm{cor}(\widetilde{SST}_{1,t-1},\,\widetilde{\log CHL}_{1,t-1})
+= 0.03$,
+$\mathrm{cor}(\widetilde{\text{ENSO}}_{t-1},\,\widetilde{SST}_{1,t-1})
+= 0.09$, and
+$\mathrm{cor}(\widetilde{\text{ENSO}}_{t-1},\,\widetilde{\log CHL}_{1,t-1})
+= 0.18$, so the joint identification of three
+elasticities does not run into the multicollinearity floor that
+would otherwise make a three-shifter specification on $24$
+observations indefensible.
+
+The joint refit returns
+$\rho_{\text{jur}}^{SST} = +0.455$ ($90\%$ CI $[-1.26,\,+2.14]$;
+$\sigma_{\text{post}}/\sigma_{\text{prior}} = 1.03$),
+$\rho_{\text{jur}}^{CHL} = -0.098$ ($90\%$ CI $[-1.77,\,+1.55]$;
+ratio $1.00$), and
+$\rho_{\text{jur}}^{ENSO} = -0.029$ ($90\%$ CI $[-0.82,\,+0.79]$;
+ratio $0.98$). All three posterior-to-prior ratios exceed $0.97$,
+indicating that the data carry no information on any of the three
+shifters even when they compete for likelihood weight in a single
+specification. The basin-scale ENSO posterior is essentially
+identical to its single-shifter counterpart of
+Section \ref{sec:appendix-spatial-enso}---confirming the orthogonality
+diagnosis above---and the two coastal shifters return ratios slightly
+above unity, which under flat-likelihood regimes reflects the
+posterior-broadening contribution of the integration over the
+structural priors $(\log r^{0}_{\text{jur}}, \log K_{\text{jur}})$
+and the between-stock covariance $\boldsymbol{\Omega}$ rather than a
+material posterior expansion. The anchoveta and sardine posteriors of
+$(\rho^{SST}, \rho^{CHL})$ are unchanged relative to the main
+specification, as expected: the joint refit only affects jack mackerel
+through its diagonal entry of the covariate matrix.
+
+The joint sensitivity therefore strengthens rather than weakens the
+non-identification result. A reviewer who would accept the
+three-shifter joint specification as the primary identification test
+would still arrive at the same conclusion: at the Centro-Sur scale on
+the $2000$--$2024$ acoustic record, neither local upwelling-band SST
+or chlorophyll nor basin-scale ENSO carries a posterior mode
+distinguishable from the prior. The structural reading is unaltered:
+the climate sensitivity of jack mackerel productivity at the available
+spatial and temporal aggregation is not resolvable from these data
+under any of the candidate forcings considered in this appendix.
+
+## Implication for the main claim {#sec:appendix-spatial-implication}
 
 The main-text claim that the climate sensitivity of jack mackerel
-cannot be resolved from the available $2000$--$2024$ Centro-Sur
-biomass record is robust across three complementary tests of
-spatial scale and sample structure. First, the spatial robustness
-refit of Sections \ref{sec:appendix-spatial-spec} and
-\ref{sec:appendix-spatial-results} varies the environmental
+cannot be sharply resolved from the available $2000$--$2024$
+Centro-Sur biomass record is robust across five complementary tests
+of spatial scale, sample structure, and forcing modality. First, the
+spatial robustness refit of Sections \ref{sec:appendix-spatial-spec}
+and \ref{sec:appendix-spatial-results} varies the environmental
 aggregation across $\mathcal{D}_1$, $\mathcal{D}_2$, and
 $\mathcal{D}_3$ while holding the biomass record fixed: the
-posterior-to-prior ratios remain in $0.998$--$1.014$ across all
-three domains. Second, the dual-source extension of Section
-\ref{sec:appendix-spatial-dual} adds a second biomass series from
-the Northern Chilean acoustic record under a common climate
-elasticity, exploiting the $0.88$ log-scale correlation between
-the two Chilean series: the ratios fall only to $0.94$--$0.99$,
-remaining well above the threshold for material identification.
-Third, an attempt to incorporate the SPRFMO regional assessment
-series fails on coherence grounds, indicating that the broader
-geographic aggregate is not integrable with the Centro-Sur record
-under a single shifter. The convergence of these three tests
-indicates a genuinely flat shifter for jack mackerel within the
-Centro-Sur biological domain, not an artefact of insufficient
-spatial extent, insufficient sample size, or poor source aggregation.
+posterior-to-prior ratios remain in $0.998$--$1.014$ across all three
+domains. Second, the dual-source extension of Section
+\ref{sec:appendix-spatial-dual} adds a second biomass series from the
+Northern Chilean acoustic record under a common climate elasticity,
+exploiting the $0.88$ log-scale correlation between the two Chilean
+series: the ratios fall only to $0.94$--$0.99$. Third, the basin-scale
+test of Section \ref{sec:appendix-spatial-enso} replaces the local
+shifters with the ENSO Niño 3.4 index under a deliberately tighter
+prior $\mathcal{N}(0, 0.5)$, returning a posterior-to-prior ratio of
+$0.98$ at lag one and $1.01$ at lag two. Fourth, a joint specification
+with all three shifters active for jack mackerel simultaneously
+returns ratios of $1.03$ on local SST, $1.00$ on local $\log$
+chlorophyll, and $0.98$ on basin-scale ENSO, despite the three
+covariates being close to orthogonal at the dynamically-relevant lag
+($\mathrm{cor}$ pairwise $\le 0.18$). Fifth, an attempt to
+incorporate the SPRFMO regional assessment series fails on coherence
+grounds, indicating that the broader geographic aggregate is not
+integrable with the Centro-Sur record under a single shifter. The
+convergence of these five tests indicates a genuinely flat
+identification of the shifter for jack mackerel within the Centro-Sur
+biological domain, not an artefact of insufficient spatial extent,
+insufficient sample size, mis-specified forcing scale, or poor source
+aggregation.
 
 For policy purposes this distinction matters: closing the
-identification gap will require either a longer biomass record or
-a direct biological measurement of the relevant scale, not a
-different choice of spatial aggregation or biomass source within
-the existing record. The natural extension is the range-wide
-SPRFMO-scale analysis with explicit cross-stock spillover and
-spatially-resolved environmental forcing, which we leave to future
-work.
+identification gap will require either a longer biomass record or a
+direct biological measurement of the relevant scale, not a different
+choice of spatial aggregation, biomass source, basin-scale shifter, or
+joint-specification convention within the existing record. The
+natural extension is the range-wide SPRFMO-scale analysis with
+explicit cross-stock spillover and spatially-resolved environmental
+forcing, which we leave to future work.

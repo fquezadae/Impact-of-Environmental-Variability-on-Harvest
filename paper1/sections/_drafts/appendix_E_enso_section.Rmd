@@ -33,7 +33,7 @@ forcing regime that the existing biological literature on jack
 mackerel has identified as the natural climatic driver: ENSO-mediated
 modulation of Pacific stratification, location-choice behaviour, and
 recruitment phenology
-(@Arcos2001-jq; @Pena-Torres2017-gn; @Espinoza2013-jc).
+(@Arcos2001-jq; @Pena-Torres2017-gn).
 A direct test on a basin-scale shifter is therefore a substantive
 robustness exercise for the non-identification result, and one that
 the spatial-extension refits of Section \ref{sec:appendix-spatial-results}
@@ -142,7 +142,7 @@ factor on $r^{*}$ under the SSP$5$-$8.5$ end-of-century CMIP6 ensemble
 delta of $+3.65\,^{\circ}$C
 (cross-model IQR $0.88$) is
 $[[\mathrm{B\_FACTOR\_JUREL\_END}]]$, which we propagate into the
-revised Tables \ref{tab:climate_compstat_3stocks} and
+revised Tables \ref{tab:growth_compstat} and
 \ref{tab:trip_compstat} of the main text. Section
 \ref{sec:appendix-spatial-implication} below revises the structural
 reading of the appendix to reflect the four converging tests:
@@ -163,14 +163,13 @@ prior. We read the four-way convergence---spatial-domain refits,
 dual-source extension, SPRFMO regional-scale coherence failure, and
 the present basin-scale test---as evidence of a genuinely flat
 identification rather than an artefact of any one specification
-choice. The biological readings of @Arcos2001-jq, @Pena-Torres2017-gn,
-and @Espinoza2013-jc remain consistent with the appendix result: each
+choice. The biological readings of @Arcos2001-jq, @Pena-Torres2017-gn remain consistent with the appendix result: each
 documents climatic effects on jack mackerel at *margins* (location
 choice, range distribution, spawning timing) that are not necessarily
 captured in the elasticity of structural productivity at an annual
 aggregate. Section \ref{sec:appendix-spatial-implication} updates the
 implication for the main claim accordingly. Tables
-\ref{tab:climate_compstat_3stocks} and \ref{tab:trip_compstat} of the
+\ref{tab:growth_compstat} and \ref{tab:trip_compstat} of the
 main text retain the convention that $r^{*}_{\text{jurel}}$ is held
 fixed in the projections and the implications for the harvest
 elasticity are reported with the corresponding caveat.
