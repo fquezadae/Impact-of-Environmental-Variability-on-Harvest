@@ -122,6 +122,20 @@
 \affil{Universidad de Concepci\'on \vspace{-48pt}}
 \newcommand{\keywords}[1]{\par\noindent\textbf{Keywords:} #1}
 \newcommand{\jelcodes}[1]{\par\noindent\textbf{JEL Codes:} #1}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -385,7 +399,7 @@ $\rho^{ENSO}$ & Jurel CS & $\mathcal{N}(0.0, 0.5)$ & -0.02 & {}[-0.81, 0.80] & 0
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Shifters are the semi-elasticities of the intrinsic growth rate $r_i$ with respect to SST anomalies (in °C), log-CHL anomalies, and the basin-scale ENSO Niño 3.4 index, respectively. The ENSO row reports the lag-1 refit of Appendix ref{sec:appendix-spatial-enso}, in which jack mackerel productivity is forced by the basin-scale index in place of local coastal shifters; anchoveta and sardine are not refit and inherit their main-specification posteriors. Priors on coastal shifters are adopted from the stock-specific stress-test results reported in Appendix A; the ENSO prior $mathcal{N}(0, 0.5)$ is deliberately tighter (see Appendix ref{sec:appendix-spatial-enso}). The posterior-to-prior standard-deviation ratio measures prior-to-posterior updating: values near one indicate the data carry little information, whereas values well below one indicate identification from the likelihood. All R-hat <= 1.01.
+\item Shifters are the semi-elasticities of the intrinsic growth rate $r_i$ with respect to SST anomalies (in °C), log-CHL anomalies, and the basin-scale ENSO Niño 3.4 index, respectively. The ENSO row reports the lag-1 refit of Appendix \ref{sec:appendix-spatial-enso}, in which jack mackerel productivity is forced by the basin-scale index in place of local coastal shifters; anchoveta and sardine are not refit and inherit their main-specification posteriors. Priors on coastal shifters are adopted from the stock-specific stress-test results reported in Appendix A; the ENSO prior $\mathcal{N}(0, 0.5)$ is deliberately tighter (see Appendix \ref{sec:appendix-spatial-enso}). The posterior-to-prior standard-deviation ratio measures prior-to-posterior updating: values near one indicate the data carry little information, whereas values well below one indicate identification from the likelihood. All R-hat <= 1.01.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -1407,15 +1421,6 @@ direct test. This appendix supplies that test.
 
 \subsection{Identification power and the magnitude of the jack mackerel non-result}\label{sec:appendix-spatial-power}
 
-\% DRAFT 2026-05-04 -- pivote ENSO. Drop-in section for paper1/sections/appendix\_spatial\_jurel.Rmd.
-\% Insertar como NUEVA primera subsección del Apéndice E (antes de ``Spatial domains
-\% and environmental aggregation''), reordenando el apéndice para abrir con la
-\% pregunta de potencia y luego presentar las cuatro líneas de evidencia.
-\%
-\% Placeholders LIVE -- reemplazar después del refit Stan ENSO:
-\% - Ninguno en esta sección (los números vienen del power\_calc\_enso ya corrido).
-\% Números directamente del CSV power\_calc\_enso\_table.csv que Felipe ya tiene
-\% en data/outputs/t4b/.
 A natural prior question, raised by the close-to-prior posteriors of
 \((\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})\) in the main
 specification, is whether the result reflects an absent climate signal
@@ -1855,30 +1860,6 @@ the Chilean spatial scale and report the OROP-PS attempt only as a
 methodological note in the Discussion.
 
 \subsection{Basin-scale shifter test: the ENSO Niño 3.4 index}\label{sec:appendix-spatial-enso}
-
-\% DRAFT 2026-05-04 -- pivote ENSO. Drop-in section for paper1/sections/appendix\_spatial\_jurel.Rmd.
-\% Insertar como NUEVA §E.4 (entre la §E.3 ``Posterior identification across domains''
-\% y la §E.5 ``Implication for the main claim''). El contenido de la actual §E.4 OROP-PS
-\% se condensa al final de esta sección como degradación natural (la 4ta evidencia
-\% pasa de ``OROP-PS'' a ``ENSO basin-scale'', que es estructuralmente más informativa
-\% para policy).
-\%
-\% Placeholders LIVE -- reemplazar después de correr 14b\_fit\_t4b\_full\_enso.R y
-\% 01b\_cmip6\_enso\_deltas.R:
-\% -0.022 mediana posterior de rho\_enso{[}3{]}
-\% -0.81 cuantil 5\% del posterior
-\% 0.80 cuantil 95\%
-\% 0.490 sd posterior
-\% 0.979 sigma\_post / sigma\_prior (= 0.490 / 0.5)
-\% +0.021 mediana del lag-2 sensibilidad
-\% 1.014 ratio del lag-2
-\% +3.65 mediana cross-model del delta ENSO SSP5-8.5 end
-\% 0.88 IQR cross-model SSP5-8.5 end
-\% +1.92 mediana cross-model SSP2-4.5 end
-\% {[}{[}B\_FACTOR\_JUREL\_END{]}{]} factor multiplicativo sobre r* (escenario A) o ``indeterminado'' (escenario B)
-\%
-\% Hay DOS versiones del párrafo de cierre: A (ENSO identifica) y B (no
-\% identifica). Felipe elige según el ratio que devuelva el wrapper Stan.
 
 The Centro-Sur, offshore-extended, and regional Southeast Pacific
 domains of Section \ref{sec:appendix-spatial-results} all aggregate

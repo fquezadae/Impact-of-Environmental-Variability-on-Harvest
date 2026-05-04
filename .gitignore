@@ -48,3 +48,12 @@ tree.txt
 # --- Temporary / scratch ---
 *.tmp
 ~$*
+
+# --- Stray log files at root (ESGF / Pangeo download passes, etc.) ---
+/esgf_log*.txt
+/ssp*_log.txt
+/*_log.txt
+
+# --- Pre-fix backups generated during edits ---
+*.bak
+*.pre_*.bak
