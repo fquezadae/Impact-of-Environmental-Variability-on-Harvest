@@ -204,7 +204,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 
 ## Two channels to projections
 
-- **Indirect**: structural shifters $\rho^{SST}_i, \rho^{CHL}_i \to B_{i,t} \to H^{alloc}_{vy}$.
+- **Indirect**: structural shifters $\rho^{SST}_i, \rho^{CHL}_i \to B_{i,t} \to H^{alloc}_{vy}$. *Jurel: testing $\rho_{ENSO}$ over Ni&ntilde;o 3.4 instead* (App. D-bis).
 - **Direct**: vessel-specific $\Delta$bad-weather days from CMIP6 winds.
 ]
 
@@ -319,7 +319,7 @@ with $U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]$:
 </tr>
 <tr style="border-bottom:2px solid #113b63;">
 <td style="padding:6px 10px;">end-century, severe (SSP5-8.5)</td>
-<td style="text-align:right; padding:6px 10px;">&minus;1.1%</td>
+<td style="text-align:right; padding:6px 10px;">&minus;0.9%</td>
 <td style="text-align:right; padding:6px 10px;">&minus;0.8%</td>
 <td style="text-align:right; padding:6px 10px;">0.12</td>
 </tr>
@@ -333,11 +333,11 @@ $\%\Delta T$: change in annual trips vs baseline. **Marginal** averages over all
 .pull-left[
 - Marginal asymmetry **~11:1** ART:IND; conditional **~3.4:1**.
 - ART portfolio collapse near-certain by SSP5-8.5 end.
+- $\Rightarrow$ Asymmetry runs through **probability of portfolio collapse** $\times$ **direct weather** ($\beta_w^{ART} < 0$, $\beta_w^{IND} = 0$); quota cross-sector limits lock it in.
 ]
 
 .pull-right[
-- $\Rightarrow$ Asymmetry runs through **probability of portfolio collapse** $\times$ **direct weather** ($\beta_w^{ART} < 0$, $\beta_w^{IND} = 0$); quota cross-sector limits lock it in.
-- IND's protection rests on jack mackerel (long-run shifter **n.i.**).
+- IND's protection rests on jack mackerel (long-run *local* shifter **n.i.**; ENSO test in progress, App. D-bis).
 ]
 
 ???
@@ -354,6 +354,8 @@ $\%\Delta T$: change in annual trips vs baseline. **Marginal** averages over all
 
 **Indirect** (biomass $\to$ allocation):
 $$\Delta SST,\, \Delta \log CHL \xrightarrow{\rho^{SST}_i,\,\rho^{CHL}_i} B_{i,t}^{\star} \to H^{alloc}_{vy}$$
+
+<span class="small-note">*Jurel: extension to $\rho_{ENSO}$ over Ni&ntilde;o 3.4 in progress (App. D-bis).*</span>
 
 **Direct** (weather $\to$ trips):
 $$\Delta \text{wind} \xrightarrow{\text{vessel CDF}} \Delta \text{bw-days}_{vy} \xrightarrow{\beta_w^g} T_{vy}$$
@@ -380,9 +382,9 @@ $$\Delta \text{wind} \xrightarrow{\text{vessel CDF}} \Delta \text{bw-days}_{vy} 
 </tr>
 <tr style="border-bottom:2px solid #113b63;">
 <td style="padding:5px 6px;"><b>Industrial</b></td>
-<td style="text-align:right; padding:5px 6px;">&minus;1.0&nbsp;pp</td>
+<td style="text-align:right; padding:5px 6px;">&minus;0.8&nbsp;pp</td>
 <td style="text-align:right; padding:5px 6px;">&minus;0.1&nbsp;pp</td>
-<td style="text-align:right; padding:5px 6px;"><b>&minus;1.1%</b></td>
+<td style="text-align:right; padding:5px 6px;"><b>&minus;0.9%</b></td>
 </tr>
 </tbody>
 </table>
@@ -507,6 +509,8 @@ $$B_{i,t+1} = B_{i,t} + r_{i,t}B_{i,t}\!\left(1 - \tfrac{B_{i,t}}{K_i}\right) - 
 
 with $r_{i,t} = r_i^{0}\exp(\rho_i^{SST}\Delta SST_{t-1} + \rho_i^{CHL}\Delta \log CHL_{t-1})$.
 
+<span class="small-note">*Stock-specific extension in progress: jurel forced by $\rho_{ENSO}$ over Ni&ntilde;o 3.4 instead of local $(SST_{D1}, \log CHL_{D1})$ &mdash; see App. D-bis.*</span>
+
 **Observation** (log-normal):
 $\log B_{i,t}^{obs} = \log B_{i,t} + u_{i,t}$.
 
@@ -534,7 +538,7 @@ Three nested specs: **ind**, **omega**, **full**.
 knitr::include_graphics("../figs/t4b/t4b_full_rho_shifters.png")
 ```
 
-<span class="small-note">Posterior densities of $\rho^{SST}$ and $\rho^{CHL}$, full multi-species specification. Anchoveta and common sardine: priors dominated by data. Jack mackerel: posteriors track priors $\to$ **n.i.** and reported as such throughout.</span>
+<span class="small-note">Posterior densities of $\rho^{SST}$ and $\rho^{CHL}$, full multi-species specification. Anchoveta and common sardine: priors dominated by data. Jack mackerel: posteriors track priors $\to$ **n.i.** at the *local* coastal scale &mdash; **basin-scale ENSO shifter being tested next** (App. D-bis).</span>
 
 ---
 
@@ -548,23 +552,86 @@ knitr::include_graphics("../figs/t4b/t4b_full_rho_shifters.png")
 | | SSP5-8.5, end-century | **&minus;100%** | [&minus;100%, &minus;99%] | 1.00 |
 | Jack mackerel | all scenarios | n.i. | n.i. | n.i. |
 
-<span class="small-note">Cross-median across CMIP6 ensemble of 6 GCMs (CESM2, CNRM-ESM2-1, GFDL-ESM4, IPSL-CM6A-LR, MPI-ESM1-2-HR, UKESM1-0-LL); 90% CI is the within-posterior credible interval averaged across models.</span>
+<span class="small-note">Cross-median across CMIP6 ensemble of 6 GCMs (CESM2, CNRM-ESM2-1, GFDL-ESM4, IPSL-CM6A-LR, MPI-ESM1-2-HR, UKESM1-0-LL); 90% CI is the within-posterior credible interval averaged across models. *Jurel: local $(SST_{D1}, \log CHL_{D1})$ shifter n.i. &mdash; basin-scale ENSO refit in progress (App. D-bis).*</span>
 
 ---
 
-# Appendix D &middot; Why is jack mackerel n.i.? (triple evidence)
+# Appendix D &middot; Jack mackerel  
+## non-identification &ne; no climate effect
 
-.tight[
-**(i) Spatial-domain robustness.** Re-fits over 3 alternative coastal domains (D1/D2/D3): $\sigma_{post}/\sigma_{prior}$ for $\rho^{SST}_{jurel}$ stays in [0.998, 1.014] &mdash; data adds no information regardless of domain. Anchoveta and sardine remain stable (CV $< 0.03$) across the same exercise.
+**Two readings to keep separate:**
 
-**(ii) Dual-source biomass.** Augmenting the CS state-space with the IFOP Northern Chile acoustic series (2010&ndash;24, $r_{CS,N}^{log} = 0.88$) does not break non-identification: $\sigma_{post}/\sigma_{prior} \in \{0.94, 0.99\}$ for $(\rho^{SST}, \rho^{CHL})$. The bottleneck is **structural**, not sample size.
+- **Non-identification at the CS scale** &mdash; what the structural fit reports. With $N = 16$ informative obs and $\hat\sigma_{SST,D1} \approx 0.26^{\circ}\text{C}$, only large *local* elasticities would be detectable.
 
-**(iii) OROP-PS coherence.** SPRFMO transzonal index correlates with CS at $r = 0.11$ over $N = 17$ overlapping years. CS is decoupled from the basin-scale signal &mdash; range-wide forcing cannot pin it down either.
+- **Climate insensitivity of jack mackerel** &mdash; *not* what the result implies. Pe&ntilde;a-Torres et al. (2017) (ENSO &amp; location choices) and Arcos et al. (2001) (SPRFMO-scale dynamics) document that climate *does* affect this stock at scales beyond local Chilean coastal anomalies.
 
-- Reduced-form linear stress tests on growth increments do **not** close the hindcast under SST/CHL forcing alone, consistent with structural non-identification.
+---
 
-- **Implication:** climate-driven projection for jack mackerel CS must come from a **transboundary, game-theoretic** model (cf. Session S9, bullet 2), not a CS-only structural fit.
+# Appendix D &middot; Jack mackerel  
+## non-identification &ne; no climate effect
+
+**Three convergent tests of the *local* null** (CS scale, coastal forcing):
+
+**(i) Spatial-domain robustness.** Re-fits over 3 nested coastal domains: $\sigma_{post}/\sigma_{prior}$ for $\rho^{SST}_{jurel}$ stays in [0.998, 1.014]. Anch &amp; sard stable (CV $< 0.03$).
+
+**(ii) Dual-source biomass.** Augment with IFOP Northern Chile acoustic series (2010&ndash;24, $r_{log} = 0.88$): $\sigma_{post}/\sigma_{prior} \in \{0.94, 0.99\}$. Bottleneck is **structural**, not $N$.
+
+**(iii) OROP-PS coherence.** SPRFMO transzonal index correlates with CS at $r = 0.11$ over $N = 17$ &mdash; range-wide forcing cannot pin it down either.
+
+$\Rightarrow$ The *local* null is robust. Natural reading: **relevant climatic drivers operate at scales beyond CS coastal forcing** &mdash; consistent with a transboundary species. Tested next on the obvious candidate.
+
+
+---
+
+# Appendix D-bis &mdash; ENSO as basin-scale shifter (spec)
+
+.pull-left[
+## Hypothesis
+
+Jurel CS responds to **ENSO via teleconnections**, not local CS coastal anomalies.
+
+- Anch / sard: unchanged.
+- **Jurel:** replace $(SST_{D1}, \log CHL_{D1})$ by single shifter $\rho_{ENSO}$ over Ni&ntilde;o 3.4.
+- Lags $t-1$ (main), $t-2$ (sensitivity).
 ]
+
+.pull-right[
+## Pipeline
+
+- Historical Ni&ntilde;o 3.4: OISST / ERSST.
+- CMIP6: 6-GCM ensemble re-extracted over Ni&ntilde;o 3.4.
+- Same Stan architecture as App. E (stock-specific shifters).
+- Prior: $\rho_{ENSO} \sim \mathcal{N}(0, 0.5)$ &mdash; $1\sigma_{ENSO}$ shock $\Rightarrow \le 65\%$ change in $r$.
+]
+
+.tldr[Status: data extraction in progress; Stan refit by mid-May.]
+
+---
+
+# Appendix D-ter &mdash; ENSO: asymmetric bet on the result
+
+.pull-left[
+## Scenario A &mdash; identifies
+
+$\sigma_{post}/\sigma_{prior} \le 0.7$:
+
+- Null becomes **basin-scale identification**.
+- Asymmetry **11:1 recomputed** with structural base for *all 3* stocks.
+- Direct test of Pe&ntilde;a-Torres 2017 / Arcos 2001 mechanism.
+]
+
+.pull-right[
+## Scenario B &mdash; not identified
+
+$\sigma_{post}/\sigma_{prior} \approx 1$:
+
+- Null moves from 3 to **4 converging lines of evidence**.
+- Climate effects on jurel operate on *margins* (location, behavior), not local productivity.
+]
+
+<div style="height: 12px;"></div>
+
+.tldr[<b style="color:#c4830a;">&rarr;</b> Either scenario improves the paper.]
 
 ---
 
@@ -622,3 +689,4 @@ knitr::include_graphics("../figs/t4b/appendix_g_trips_variance_decomposition.png
 ]
 
 .tldr[**Caveat &mdash; IFOP panel coverage** covers the **purse-seine artisanal** subset; non-PS gears (lampara, lines) excluded.]
+                                                                                                                                                                        
