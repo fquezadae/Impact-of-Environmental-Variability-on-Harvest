@@ -47,14 +47,28 @@ response (Appendix F) and the fleet-level trip response (Appendix G).
 1. The climate semi-elasticities are sharply *identified* for the two
    coastal-upwelling stocks (anchoveta and sardina común) and
    structurally *non-identified* for jack mackerel. Non-identification
-   is documented with a triple-evidence package (Appendix E):
-   (i) spatial-domain robustness across three alternative coastal
-   windows, (ii) dual-source state-space augmenting the Centro-Sur with
-   the Northern Chilean acoustic series (CS↔Norte log-correlation
-   0.88), and (iii) coherence with the SPRFMO transzonal index
-   (CS↔SPRFMO *r* = 0.11). Across all three lines `σ_post/σ_prior`
-   stays close to one for the jurel shifters. Treated as `n.i.` in all
-   manuscript tables and figures.
+   is documented with a **five-line evidence package** (Appendix E):
+   (i) an identification-power calculation showing the
+   minimum-detectable elasticity at 80% power on the available
+   N = 24 sample is ~5× larger for jurel than for the coastal stocks,
+   driven by a process-noise envelope ~5× wider; (ii) spatial-domain
+   robustness across three alternative coastal windows; (iii)
+   dual-source state-space augmenting the Centro-Sur with the Northern
+   Chilean acoustic series (CS↔Norte log-correlation 0.88); (iv) a
+   basin-scale refit replacing local SST/CHL with the ENSO Niño 3.4
+   index (`σ_post/σ_prior = 0.98` at lag 1, `1.01` at lag 2); and
+   (v) a joint-shifter sensitivity with all three covariates active for
+   jurel (ratios 1.03 / 1.00 / 0.98). Across all five lines
+   `σ_post/σ_prior` stays at or above 0.94 for the jurel shifters,
+   ruling out spatial aggregation, sample size, basin-scale forcing
+   modality, and joint-specification convention as alternative
+   explanations. A prior-propagation envelope on `r*_jurel` under
+   SSP5-8.5 end-of-century spans approximately three orders of
+   magnitude on the productivity factor, confirming that any structural
+   projection under the unidentified shifter would be non-informative
+   for policy. Jack mackerel is therefore treated as `n.i.` in all
+   manuscript tables and figures with `factor_B_jurel = 1` in the
+   projections.
 
 2. The two coastal stocks face sharp long-run productivity declines
    under every CMIP6 model considered (cross-model median −51% to
@@ -111,6 +125,8 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 ├── R/                                  # Shared R code pipeline
 │   ├── 00_config/config.R              # Paths, libraries, constants
 │   ├── 00_run_all.R                    # Master pipeline
+│   ├── 01_data/                        # Raw data ingestion
+│   │   └── extract_oisst_nino34.R              # NOAA-CPC sstoi.indices → annual ENSO Niño 3.4 (App E)
 │   ├── 01_data_cleaning/               # Raw data -> clean .rds
 │   ├── 02_env_processing/              # NetCDF -> daily env grids
 │   ├── 03_env_spatial/                 # Spatial operations
@@ -118,10 +134,12 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │   ├── 05_students/                    # Student-led modules (Paper 2)
 │   ├── 06_projections/                 # CMIP6 ensemble pipeline + Copernicus extended
 │   │   ├── 01_cmip6_deltas.R                 # 6-model ensemble deltas (units-aware chlos)
+│   │   ├── 01b_cmip6_enso_deltas.R           # ENSO Niño 3.4 deltas (App E.6)
 │   │   ├── 00_sanity_check_cmip6.R           # Single-model sanity (legacy)
 │   │   ├── 00b_sanity_check_ensemble.R       # Ensemble sanity (post-fix asserts)
 │   │   ├── 06_extended_env_anomalies.R       # Copernicus extended anomalies for App E
-│   │   ├── download_cmip6_ensemble.py        # Pangeo + ESGF fallback downloader
+│   │   ├── download_cmip6_ensemble.py        # Pangeo + ESGF fallback downloader (costero)
+│   │   ├── download_cmip6_nino34.py          # Pangeo downloader for Niño 3.4 box (App E.6)
 │   │   ├── download_copernicus_paper1_extended.py
 │   │   ├── 02_project_and_predict.R          # Legacy V1 (deprecated)
 │   │   ├── 03_project_biomass.R              # Legacy V1 (deprecated)
@@ -138,9 +156,13 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │       ├── 12_growth_comparative_statics.R            # T5: r_eff under 6-model CMIP6 ensemble
 │       ├── 13_trip_comparative_statics.R              # T7: Schaefer SS + NB → fleet trip response
 │       ├── 14_refit_t4b_full_appendix_e.R             # T4b refit on alternative spatial domains
+│       ├── 14b_fit_t4b_full_enso.R                    # T4b refit with basin-scale ENSO replacement (App E.6)
+│       ├── 14c_fit_t4b_full_enso_joint.R              # T4b refit with all 3 shifters active for jurel (App E.6 sensitivity)
 │       ├── 15_appendix_e_sigma_ratios.R               # σ_post/σ_prior across domains (App E)
 │       ├── 16_appendix_f_variance_decomposition.R     # Var decomp for growth (App F)
-│       └── 17_appendix_g_trips_variance_decomposition.R  # Var decomp for trips (App G)
+│       ├── 17_appendix_g_trips_variance_decomposition.R  # Var decomp for trips (App G)
+│       ├── 18_power_calculation_enso.R                # Identification power for SST/CHL/ENSO (App E.1)
+│       └── 19_project_jurel_enso_prior_propagation.R  # Prior-propagation envelope for r*_jurel (App E.6)
 │
 ├── data/                               # Processed data (.rds)
 │   ├── bio_params/                     # Official assessments (IFOP / SPRFMO)
@@ -175,7 +197,8 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 | Banco Central de Chile | FOB fishmeal price, IPC |
 | CNE | Diesel prices by region |
 | Copernicus Marine Service | SST (GLORYS12), chlorophyll-a (Ocean Colour L4 multi-sensor), wind (ERA5) |
-| CMIP6 six-model ensemble | Projected SST, chlorophyll-a, and surface winds under SSP2-4.5 and SSP5-8.5: IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR (downloaded via Pangeo + ESGF fallback) |
+| NOAA-CPC `sstoi.indices` (ERSSTv5) | ENSO Niño 3.4 monthly index for the basin-scale shifter test of Appendix E.6 |
+| CMIP6 six-model ensemble | Projected SST, chlorophyll-a, surface winds, and Niño 3.4 SST under SSP2-4.5 and SSP5-8.5: IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR (downloaded via Pangeo + ESGF fallback; Niño 3.4 box on a separate parallel pull) |
 
 Raw data are not redistributed; see `data/README.md` for access instructions.
 
@@ -224,6 +247,36 @@ options(t5.run_main = FALSE, appf.run_main = TRUE)
 source("R/08_stan_t4/16_appendix_f_variance_decomposition.R")
 options(t6.run_main = FALSE, appg.run_main = TRUE)
 source("R/08_stan_t4/17_appendix_g_trips_variance_decomposition.R")
+```
+
+For the basin-scale ENSO pipeline of Appendix E.6 (also one-shot;
+outputs cached in `data/bio_params/`, `data/cmip6/`, and
+`data/outputs/t4b/`):
+
+```r
+# 1. Historical ENSO Niño 3.4 from NOAA-CPC ERSSTv5
+source("R/01_data/extract_oisst_nino34.R")
+
+# 2. CMIP6 Niño 3.4 deltas (after running download_cmip6_nino34.py)
+source("R/06_projections/01b_cmip6_enso_deltas.R")
+
+# 3. Identification power calculation (Apéndice E.1 table)
+options(power.run_main = TRUE)
+source("R/08_stan_t4/18_power_calculation_enso.R")
+
+# 4. T4b refit with basin-scale ENSO (replacement convention, lag 1)
+options(t4b.enso.run_main = TRUE, t4b.enso.lag = 1L)
+source("R/08_stan_t4/14b_fit_t4b_full_enso.R")
+# Lag 2 sensitivity
+options(t4b.enso.run_main = TRUE, t4b.enso.lag = 2L)
+source("R/08_stan_t4/14b_fit_t4b_full_enso.R")
+
+# 5. T4b refit with three shifters active for jurel (joint sensitivity)
+options(t4b.enso.joint.run_main = TRUE, t4b.enso.joint.lag = 1L)
+source("R/08_stan_t4/14c_fit_t4b_full_enso_joint.R")
+
+# 6. Prior-propagation envelope for r*_jurel under SSP scenarios
+source("R/08_stan_t4/19_project_jurel_enso_prior_propagation.R")
 ```
 
 ## Funding

@@ -2,6 +2,273 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-05-04 (paper1: ENSO basin-scale pivot, 5 converging tests of jack mackerel null, prior-propagation envelope)
+
+This entry consolidates a single-day push that absorbs the ENSO basin-scale
+extension into paper 1 as a fourth–fifth line of evidence on the jack mackerel
+non-identification result. The pivot was triggered by colleague feedback on
+the prior version, where the null on `(ρ^SST_jurel, ρ^CHL_jurel)` was defended
+on three lines of evidence (spatial-domain robustness, dual-source biomass,
+SPRFMO regional-aggregate coherence). The colleague noted that the null was
+defensible econometrically but not as "climate has no effect on jack mackerel"
+for policy, given the existing biological literature on basin-scale ENSO
+forcing of the species. This pivot tests that hypothesis directly.
+
+Outcome: the basin-scale null is confirmed under three additional independent
+specifications (lag-1 ENSO, lag-2 ENSO, joint SST+CHL+ENSO), bringing the
+total evidence on jack mackerel non-identification to **five converging
+tests** at the Centro-Sur scale. The fixed-`r*_jurel` convention of the main
+projections is therefore retained, now justified by a power-calc that prints
+the minimum detectable elasticity as Appendix E.1, and supplemented by a
+prior-propagation envelope showing the 90% predictive interval of the
+productivity factor spans approximately three orders of magnitude under
+SSP5-8.5 end-of-century — a Bayesian admission of irreducible uncertainty
+under the unidentified shifter, not a structural projection.
+
+All bullets refer to paper 1 unless stated otherwise.
+
+### Added — ENSO Niño 3.4 historical index extraction
+
+- New script: `R/01_data/extract_oisst_nino34.R` (~190 lines).
+  Downloads NOAA-CPC `sstoi.indices` (ERSSTv5 monthly SST over Niño 3.4 box
+  5°N–5°S × 170°W–120°W), aggregates to annual, centres on 2000–2024 sample
+  mean (matching the `SST_D1`/`logCHL_D1` centring convention of the main
+  fit). Output: `data/bio_params/enso_nino34_annual_2000_2024.csv` with
+  columns `year, n_months, nino34_sst, nino34_anom_cpc, ENSO_c`. Sanity
+  checks against published anomaly series and against `SST_D1` correlation
+  (lag-1 = 0.09, ruling out collinearity with the coastal shifter).
+- In-sample dispersion: `sd(ENSO_c) = 0.549°C`, approximately 2.1× the
+  Centro-Sur SST shifter (`sd(SST_D1_c) = 0.257°C`), which mechanically
+  lowers the minimum-detectable elasticity for jack mackerel by ~half.
+  Top El Niño years 2015 / 2023 / 2019 / 2002 / 2024 and top La Niña
+  2000 / 2022 / 2011 / 2008 / 2021 cuadran con la cronología histórica.
+
+### Added — Identification power calculation as Apéndice E.1
+
+- New script: `R/08_stan_t4/18_power_calculation_enso.R` (~270 lines).
+  Computes the minimum-detectable shifter magnitude `|ρ_min|` at 80% power,
+  α = 0.10, on N = 24 lag-one observations, via OLS-equivalent linearisation
+  of the Schaefer transition equation in log-differences. Reads `σ_proc`,
+  `σ_obs` from the existing T4b-full posterior; covariate sd's from
+  `env_extended_3domains_2000_2024.csv` and `enso_nino34_annual_2000_2024.csv`.
+  Output: `data/outputs/t4b/power_calc_enso_table.csv` with three stocks ×
+  three shifters (SST_D1, logCHL_D1, ENSO).
+- Headline numbers for jack mackerel: `σ_resid = 1.28` (≈ 5× the average of
+  anch and sard), `|ρ_min|_jurel_SST_D1 = 2.78` (out of any defensible
+  bioclimatic range), `|ρ_min|_jurel_ENSO = 1.30` (detectable if the true
+  elasticity is moderate). The basin-scale shifter sits deliberately at the
+  threshold for material identification under prior `N(0, 0.5)`:
+  `σ_post/σ_prior_analytic ≈ 0.71`. Monte-Carlo cross-check (M = 400) confirms
+  the analytic ratios within 5pp on coastal cells.
+- New section in the appendix: §E.1 "Identification power and the magnitude
+  of the jack mackerel non-result" (≈160 lines), reorders the appendix to
+  open with the power question before presenting the four spatial / sample /
+  forcing tests of the null. Caveat documented: the analytic ratio is a
+  *lower bound* on the empirical state-space ratio (jack mackerel ENSO
+  diverges from `0.71` analytic to `0.98` empirical, reflecting the
+  flat-likelihood regime in which the structural-prior integration dominates
+  the marginal posterior).
+
+### Added — CMIP6 ensemble download and delta computation for Niño 3.4
+
+- New Python script: `R/06_projections/download_cmip6_nino34.py` (~250 lines).
+  Sister of `download_cmip6_ensemble.py`, restricted to `tos` over the
+  Niño 3.4 box; six-model ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2,
+  CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR), historical + ssp245 + ssp585,
+  output to a separate directory `D:/GitHub/climate_projections/CMIP6_NINO34/`
+  with `_nino34` filename suffix to avoid clobbering the costero downloads.
+  Eighteen netCDF files generated, ~30–100 MB total.
+- New R script: `R/06_projections/01b_cmip6_enso_deltas.R` (~210 lines).
+  Sources the costero delta script with `cmip6.deltas.run_main = FALSE` to
+  re-use its grid-detection and time-aggregation utilities, then overrides
+  bbox / dir / filename for ENSO. Output: `data/cmip6/enso_deltas_ensemble.csv`
+  (24 rows: 6 models × 2 SSPs × 2 windows). SSP5-8.5 end-of-century delta:
+  +3.65 ± 0.88°C (cross-model SD), corresponding to 6.6 historical
+  standard deviations on the centred Niño 3.4 series — large extrapolation,
+  flagged in the appendix.
+
+### Added — Stan model and R wrapper for ENSO refit (replacement convention)
+
+- New Stan program: `paper1/stan/t4b_state_space_full_stockenv_enso.stan`
+  (~230 lines). Branch of `t4b_state_space_full_stockenv.stan` adding
+  `vector[T] ENSO_c` data and `vector[S] rho_enso` parameter with
+  stock-specific prior. Dynamics:
+  `r_t[s] = r_base[s] * exp(rho_sst[s]*SST_c[t-1,s] + rho_chl[s]*logCHL_c[t-1,s] + rho_enso[s]*ENSO_c[t-1])`.
+  Backward-compatible: if `rho_enso ~ N(0, 0.01)` and `ENSO_c = 0`, this
+  model is mathematically equivalent to the stockenv original.
+- New R wrapper: `R/08_stan_t4/14b_fit_t4b_full_enso.R` (~265 lines).
+  Implements the **replacement convention**: jack mackerel productivity is
+  forced by the basin-scale ENSO index in place of (not in addition to) local
+  SST and log-CHL. Mechanism: prior `rho_sst[3] ~ N(0, 0.01)` and
+  `rho_chl[3] ~ N(0, 0.01)` pin the coastal shifters to zero for jurel; the
+  corresponding covariate columns are also set to zero in the data matrix as
+  a second layer of insulation. Anch/sard inherit unchanged. Prior
+  `rho_enso[3] ~ N(0, 0.5)`, deliberately tighter than the wide
+  `N(0, 1.5)` of the main specification on coastal shifters.
+- Two fits executed (cmdstanr, 8 chains × 4000 post-warmup draws,
+  adapt_delta = 0.99, max_treedepth = 14):
+  - **Lag-1 (principal):** `rho_enso[3] = -0.022`, 90% CI `[-0.81, +0.80]`,
+    `σ_post/σ_prior = 0.979`. All sampler diagnostics clean.
+  - **Lag-2 (sensitivity):** `rho_enso[3] = +0.021`, 90% CI `[-0.79, +0.87]`,
+    `σ_post/σ_prior = 1.014`. Sign-flip relative to lag-1 is within 1σ of
+    the posterior — pure noise, zero directional information in the data.
+
+### Added — JOINT specification sensitivity (three shifters active for jurel)
+
+- New R wrapper: `R/08_stan_t4/14c_fit_t4b_full_enso_joint.R` (~225 lines).
+  Sister of `14b` with the replacement convention relaxed: jack mackerel
+  receives all three shifters simultaneously (`rho_sst[3] ~ N(0, 1.0)`,
+  `rho_chl[3] ~ N(0, 1.0)`, `rho_enso[3] ~ N(0, 0.5)`), with `SST_c[,3]` and
+  `logCHL_c[,3]` taking the actual `D_1` series rather than zero. Anch/sard
+  posteriors of `(ρ^SST, ρ^CHL)` are by construction unchanged.
+  Justification: pairwise lag-1 correlations between the three covariates
+  are ≤ 0.18, so the three-shifter specification on N = 24 observations is
+  not multicollinear.
+- Result: all three jurel ratios > 0.85 simultaneously
+  (`rho_sst[3]: 1.030`, `rho_chl[3]: 1.005`, `rho_enso[3]: 0.978`).
+  The basin-scale posterior under JOINT is essentially identical to its
+  single-shifter counterpart (median `-0.029` vs `-0.022`; sd `0.489` vs
+  `0.490`), confirming the orthogonality of the three covariates at the
+  dynamically-relevant lag.
+
+### Added — Prior-propagation envelope for projected `r*_jurel`
+
+- New R script: `R/08_stan_t4/19_project_jurel_enso_prior_propagation.R`
+  (~245 lines). Combines the 16k posterior draws of `rho_enso[3]` from the
+  lag-1 fit with the six-model CMIP6 ensemble of `Δ ENSO_Niño 3.4` and
+  reports the pooled 90% predictive interval of the multiplicative factor
+  on `r*_jurel` for the four SSP × window cells. Outputs:
+  - `data/outputs/t4b/jurel_enso_prior_envelope.csv` (global envelope per cell)
+  - `data/outputs/t4b/jurel_enso_prior_envelope_by_model.csv` (per-model breakdown)
+- Headline result: under SSP5-8.5 end-of-century the 90% predictive
+  interval of `r*_jur,proj / r*_jur,hist` is `[0.05, 19.5]`, spanning
+  approximately three orders of magnitude. Under SSP2-4.5 mid-century it is
+  `[0.45, 2.17]`. The amplitude rather than the central location is the
+  substantive output: under the unidentified shifter, the prior-propagation
+  envelope is non-informative for policy. This is the formal Bayesian
+  justification for retaining `factor_B_jurel = 1` as the spec principal in
+  Tables 4 and 5 of the main text.
+
+### Added — Apéndice E reorganization with seven sub-sections
+
+- The appendix now reads (in order): §E intro → §E.1 power → §E.2 spatial
+  domains → §E.3 refit specification → §E.4 posterior identification across
+  domains → §E.5 dual-source extension + condensed OROP-PS note → §E.6
+  basin-scale ENSO test (with JOINT sensitivity drop-in paragraph) → §E.7
+  implication for the main claim (rewritten with five converging tests).
+- New labels added: `sec:appendix-spatial-power`, `sec:appendix-spatial-enso`,
+  `sec:appendix-spatial-implication`. All seven labels resolve under
+  bookdown.
+
+### Modified — §4.1 results body and §5 discussion paragraph
+
+- §4.1 (`paper1/sections/results_identification.Rmd`) — the closing
+  robustness paragraph (≈line 180) is rewritten from three to **five
+  complementary tests**, each reported with concrete posterior-to-prior
+  ratios and pointing forward to the corresponding appendix subsection.
+- §5 (`paper1/paper1_climate_projections.Rmd`, line 839) — the discussion
+  paragraph on jack mackerel non-identification is rewritten under the
+  Versión B+JOINT template (five tests); concludes with a sentence reporting
+  the prior-propagation envelope `[0.05, 19.5]` under SSP5-8.5 end-of-century
+  and justifying the fixed-`r*` convention. Citations: only Arcos et al.
+  (2001) and Peña-Torres et al. (2017), both verified in `bibliography.bib`.
+
+### Modified — Table 1 (rho-posteriors) reads ENSO summary
+
+- Chunk `rho-posterior-table` in `results_identification.Rmd` now joins the
+  T4b-full main posterior summary with the lag-1 ENSO summary
+  (`t4b_full_enso_lag1_summary.csv`). Falls back gracefully to the main-only
+  table if the ENSO summary is not on disk. Adds a seventh row for
+  `rho_enso[3]` with prior `N(0, 0.5)`, posterior median `-0.02`, 90% CI
+  `[-0.81, 0.80]`, σ_post/σ_prior `0.98`. Caption footnote rewritten to
+  document that the ENSO row comes from the basin-scale refit of
+  Appendix E.6 with jack mackerel forced by the basin-scale index in place
+  of local coastal shifters.
+
+### Modified — Figure 3 (forest plot) gains ENSO entry for jurel
+
+- Function `plot_rho_forest()` in `R/08_stan_t4/09_ppc_t4b_full.R` now
+  accepts an optional `fit_enso` argument; when supplied, extracts
+  `rho_enso[3]` and overlays it as a third colour (steelblue) in the Jurel
+  CS row of the forest plot. The main orchestrator loads the ENSO fit
+  object if `data/outputs/t4b/t4b_full_enso_lag1_fit.rds` is on disk, with
+  graceful fallback otherwise. The figure path
+  `figs/t4b/t4b_full_rho_shifters.png` is unchanged, so existing
+  `\includegraphics` references in the appendix continue to resolve.
+
+### Fixed — phantom citation `Espinoza2013-jc` removed
+
+- During drafting Claude inserted a citation `@Espinoza2013-jc` to a
+  non-existent bib entry, attributed to "PDO/SOI modulation of jack
+  mackerel availability in the Peruvian system". The phantom was detected
+  by cross-checking against `bibliography.bib` (where only
+  `Espinoza-Morriberon2022-tk` exists, on a distinct topic). Removed
+  globally from 6 files: `paper1_climate_projections.Rmd`,
+  `appendix_spatial_jurel.Rmd`, the four drafts under
+  `paper1/sections/_drafts/`, and one mention in `slides/slides_PICES.Rmd`.
+  The text now reads with two verified citations (Arcos 2001, Peña-Torres
+  2017), which carry the basin-scale claim without dilution.
+
+### Fixed — phantom table label `tab:climate_compstat_3stocks`
+
+- The drafts referenced `\ref{tab:climate_compstat_3stocks}` for the
+  growth-comparative-statics table, but the actual label in
+  `paper1_climate_projections.Rmd` (line 718) is `tab:growth_compstat`.
+  Detected by LaTeX warning "Reference … undefined on input line 2004"
+  in the first re-knit. Replaced globally in 5 files (paper main + appendix
+  + three drafts), 7 occurrences total.
+
+### Fixed — Apéndice E LaTeX-style comments rendering as text in the PDF
+
+- The drafts under `paper1/sections/_drafts/` carried a header block of
+  ~30 lines of LaTeX-style comments (`% =====`, `% Placeholders LIVE...`)
+  intended as developer metadata. When pasted into `appendix_spatial_jurel.Rmd`
+  and processed by Pandoc — which does *not* honour `%` as a comment in
+  Rmd context — these rendered as literal text in the PDF. All 32 such
+  lines were removed from the appendix without affecting any cross-ref
+  label. The drafts retain their headers as standalone files for future
+  re-use.
+
+### Fixed — backslash escape in Table 1 caption footnote
+
+- The footnote of the rebuilt `rho-posterior-table` chunk used `\\ref{...}`
+  (two backslashes in source), which after R-string interpretation passed
+  `\ref{...}` to Pandoc, which then ate the leading backslash as a Markdown
+  escape, producing literal `refsec:appendix-spatial-enso` in the PDF
+  output. Promoted to four backslashes in source (`\\\\ref`), which
+  survives the R-string → Pandoc → LaTeX pipeline and produces correct
+  `\ref{...}` commands in the final `.tex`.
+
+### Slides — PICES presentation for 2026-05-08
+
+- `slides/slides_PICES.Rmd`: the appendices D, D-bis ("ENSO basin-scale
+  shifter spec") and D-ter ("ENSO: result of the asymmetric bet") were
+  updated with the executed numbers. Eight body mentions of "ENSO test
+  in progress" were rewritten to point at the executed Apéndice D-ter.
+  D-ter rewritten from an abstract two-scenario sketch to a concrete
+  result slide reporting all three ratios (lag-1 0.979, lag-2 1.014,
+  joint 0.978) and the prior-propagation envelope `[0.05, 19.5]` under
+  SSP5-8.5 end. Cosmetic MathJax fixes: `\widetilde{\text{ENSO}}` →
+  `\Delta`-ENSO Niño 3.4; `\star` → `*`; `\,^{\circ}$C` → `&deg;C`.
+
+### Memory — patterns persisted to avoid recurrence
+
+- `feedback_edit_tool_crlf_truncation.md` — Edit tool truncates silently
+  on CRLF + lines > 3000 chars; use `python rb/wb` for the Rmd of paper 1.
+- `project_paper1_enso_pivot.md` — pivot decision and four operational
+  choices (OISST source, prior `N(0, 0.5)`, Apéndice E.4 layout, parallel
+  CMIP6 download bbox).
+- `project_paper1_enso_extract_and_power_2026_05_04.md` — extract OISST
+  and power calc execution log.
+- `project_paper1_enso_lag1_executed_2026_05_04.md` — lag-1 + lag-2
+  results, prior propagation envelope numbers, JOINT specification
+  results, drafts inventory.
+- `project_bibliography_hygiene.md` — extended with two new patterns:
+  phantom citations (`Espinoza2013-jc` joins `Cerda2001`, `Aufhammer2018`)
+  and phantom table labels (`tab:climate_compstat_3stocks`). Generalisation:
+  before pasting prose with `\ref{...}` or `@citekey`, grep against the
+  `.bib` and against the union of Rmd files for the target.
+
 ## 2026-04-30 (paper1: direct weather channel, year FE, dual-jurel, MRE front matter & intro pivot)
 
 This entry consolidates a single-day push that closes the manuscript for the
