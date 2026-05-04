@@ -30,26 +30,9 @@ standard deviation ratio, which measures how much the data refine each
 parameter relative to the prior.
 
 ```{r rho-posterior-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-# Main fit: rho_sst, rho_chl per stock (6 rows)
-smry_main <- read.csv("data/outputs/t4b/t4b_full_summary.csv",
-                      stringsAsFactors = FALSE)
+smry <- read.csv("data/outputs/t4b/t4b_full_summary.csv", stringsAsFactors = FALSE)
 
-# ENSO refit (Appendix E): rho_enso[3] for jurel only.
-# Fall back gracefully if the ENSO summary has not been generated yet.
-enso_csv <- "data/outputs/t4b/t4b_full_enso_lag1_summary.csv"
-if (file.exists(enso_csv)) {
-  smry_enso <- read.csv(enso_csv, stringsAsFactors = FALSE) %>%
-    dplyr::filter(variable == "rho_enso[3]")
-  smry <- dplyr::bind_rows(
-    smry_main,
-    smry_enso[, intersect(names(smry_main), names(smry_enso))]
-  )
-} else {
-  smry <- smry_main
-}
-
-# Priors: main fit uses N(0, 1.0) on rho_sst/chl per stock; ENSO uses tighter N(0, 0.5).
-# (See R/08_stan_t4/08_fit_t4b_full.R for main, 14b_fit_t4b_full_enso.R for ENSO.)
+# Priors del stress test T3-bis (ver 08_fit_t4b_full.R)
 prior_tbl <- tibble::tribble(
   ~variable,      ~prior_mean, ~prior_sd,
   "rho_sst[1]",   -2.3,         1.0,
@@ -57,17 +40,14 @@ prior_tbl <- tibble::tribble(
   "rho_sst[3]",    0.0,         1.0,
   "rho_chl[1]",   -2.3,         1.0,
   "rho_chl[2]",    2.1,         1.0,
-  "rho_chl[3]",    0.0,         1.0,
-  "rho_enso[3]",   0.0,         0.5
+  "rho_chl[3]",    0.0,         1.0
 )
 
-stock_map   <- c(`1` = "Anchoveta CS", `2` = "Sardina comun CS", `3` = "Jurel CS")
-shifter_map <- c(rho_sst  = "$\\rho^{SST}$",
-                 rho_chl  = "$\\rho^{CHL}$",
-                 rho_enso = "$\\rho^{ENSO}$")
+stock_map <- c(`1` = "Anchoveta CS", `2` = "Sardina comun CS", `3` = "Jurel CS")
+shifter_map <- c(rho_sst = "$\\rho^{SST}$", rho_chl = "$\\rho^{CHL}$")
 
 rho_tbl <- smry %>%
-  dplyr::filter(grepl("^rho_(sst|chl|enso)\\[[1-3]\\]$", variable)) %>%
+  dplyr::filter(grepl("^rho_(sst|chl)\\[[1-3]\\]$", variable)) %>%
   dplyr::left_join(prior_tbl, by = "variable") %>%
   dplyr::mutate(
     shifter_key = sub("^(rho_[a-z]+)\\[[0-9]+\\]$", "\\1", variable),
@@ -75,13 +55,13 @@ rho_tbl <- smry %>%
     Shifter     = shifter_map[shifter_key],
     Stock       = stock_map[stock_key],
     `Prior $\\mathcal{N}(\\mu, \\sigma)$` = sprintf("$\\mathcal{N}(%.1f, %.1f)$",
-                                                    prior_mean, prior_sd),
-    `Posterior mean`     = sprintf("%.2f", mean),
+                                                   prior_mean, prior_sd),
+    `Posterior mean`  = sprintf("%.2f", mean),
     `Posterior 90\\% CI` = sprintf("[%.2f, %.2f]", q5, q95),
     `$\\sigma_{\\text{post}}/\\sigma_{\\text{prior}}$` = sprintf("%.2f", sd / prior_sd),
     `$\\hat{R}$`                                       = sprintf("%.3f", rhat)
   ) %>%
-  dplyr::arrange(factor(shifter_key, levels = c("rho_sst", "rho_chl", "rho_enso")),
+  dplyr::arrange(factor(shifter_key, levels = c("rho_sst", "rho_chl")),
                  as.integer(stock_key)) %>%
   dplyr::select(Shifter, Stock,
                 `Prior $\\mathcal{N}(\\mu, \\sigma)$`,
@@ -95,18 +75,12 @@ kable(rho_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
   kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
   footnote(general = paste(
       "Shifters are the semi-elasticities of the intrinsic growth rate $r_i$",
-      "with respect to SST anomalies (in \u00b0C), log-CHL anomalies, and the",
-      "basin-scale ENSO Ni\u00f1o 3.4 index, respectively. The ENSO row reports",
-      "the lag-1 refit of Appendix \\ref{sec:appendix-spatial-enso}, in which",
-      "jack mackerel productivity is forced by the basin-scale index in place of",
-      "local coastal shifters; anchoveta and sardine are not refit and inherit",
-      "their main-specification posteriors. Priors on coastal shifters are adopted",
-      "from the stock-specific stress-test results reported in Appendix A; the",
-      "ENSO prior $\\mathcal{N}(0, 0.5)$ is deliberately tighter (see",
-      "Appendix \\ref{sec:appendix-spatial-enso}). The posterior-to-prior",
-      "standard-deviation ratio measures prior-to-posterior updating: values near",
-      "one indicate the data carry little information, whereas values well below",
-      "one indicate identification from the likelihood. All R-hat <= 1.01."),
+      "with respect to SST anomalies (in \u00b0C) and log-CHL anomalies, respectively.",
+      "Priors are adopted from the stock-specific stress-test results reported in Appendix A.",
+      "The posterior-to-prior standard deviation ratio measures the amount of prior-to-posterior",
+      "updating: values near one indicate the data carry little information about the parameter,",
+      "whereas values well below one indicate identification from the likelihood.",
+      "All R-hat <= 1.01."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 ```
 
@@ -177,7 +151,7 @@ climate signal where a reduced-form benchmark would have produced an
 artefactually precise but structurally meaningless coefficient, which
 would then propagate into climate projections as if it were information.
 
-The non-identification result for jack mackerel is robust to the choice of spatial domain, biomass record, and forcing modality. Appendix \ref{appendix-spatial} reports five complementary tests of this null. First, refits of the full specification under three nested coastal domains (Centro-Sur EEZ, offshore-extended, regional Southeast Pacific) leave the posterior-to-prior standard-deviation ratio of $(\rho^{SST}_{\text{jurel}}, \rho^{CHL}_{\text{jurel}})$ in $0.998$--$1.014$. Second, augmenting the biomass record with a Northern Chilean acoustic series under a common elasticity moves the ratio only to $0.94$--$0.99$, ruling out a sample-size explanation. Third, replacing the local shifters with the basin-scale ENSO Niño 3.4 index---the climatic driver identified by the qualitative literature on this transboundary species (@Arcos2001-jq; @Pena-Torres2017-gn)---returns a posterior-to-prior ratio of $0.98$ at lag one and $1.01$ at lag two (Table \ref{tab:rho-posteriors}, ENSO row), even though the in-sample dispersion of the basin-scale shifter is approximately twice that of the coastal counterpart and the prior is deliberately tighter (Appendix \ref{sec:appendix-spatial-power}). Fourth, a joint specification with all three shifters active for jack mackerel simultaneously returns ratios near unity for all three coefficients ($1.03$ on local SST, $1.00$ on local $\log$ CHL, $0.98$ on basin-scale ENSO), a sensibility check that addresses the standard referee question. Fifth, an attempt to incorporate the SPRFMO regional assessment series fails on coherence grounds, indicating the broader geographic aggregate is not integrable with the Centro-Sur record under a single shifter. The convergence of these five tests rules out the conjecture that the non-identification is an artefact of spatial aggregation, sample size, mis-specified forcing scale, or joint-specification convention; the relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins of behaviour, location, and phenology that are not captured in the elasticity of structural productivity at the annual aggregation considered here, consistent with its transboundary SPRFMO management.
+The non-identification result for jack mackerel is robust to the choice of spatial domain over which the environmental anomalies are constructed. Appendix \ref{appendix-spatial} reports refits of the full state-space specification using SST and log-CHL averaged over two alternative dominios --- an offshore-extended band (32°S--41°S, to 85°W) and a Southeast Pacific regional domain (20°S--45°S, to 90°W) --- and confirms that the posterior-to-prior standard-deviation ratio of $(\rho^{SST}_{\text{jurel}}, \rho^{CHL}_{\text{jurel}})$ remains close to unity under all spatial aggregations considered. This supports the interpretation that the relevant climate forcing for the Centro-Sur jack mackerel stock operates at a scale not captured by Chilean coastal anomalies, consistent with its transboundary SPRFMO management.
 
 Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
 forest plot.
