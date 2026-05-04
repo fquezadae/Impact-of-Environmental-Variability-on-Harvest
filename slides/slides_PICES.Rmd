@@ -676,12 +676,6 @@ knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png")
 knitr::include_graphics("../figs/t4b/appendix_g_trips_variance_decomposition.png")
 ```
 
-.tight[
-- **Within-model** (posterior + vessel heterogeneity) dominates: **97%&ndash;100%** across all SSP $\times$ period $\times$ fleet cells (re-computed after the direct weather channel was added).
-- **Between-model** (CMIP6 ensemble): at most **3%**, often $\approx 0$.
-- The narrow cross-IQR in Table 5 is *not* climate-model consensus &mdash; it is a **floor effect**: once $f^H_v \to 0$, $\%\Delta T \to \exp(-\beta_g H^{alloc}_v)$ &mdash; a fleet-mechanical quantity, not a climate magnitude.
-]
-
 ---
 
 # Appendix I &middot; Paper 2 &mdash; data inputs
