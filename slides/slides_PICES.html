@@ -678,7 +678,7 @@ with `\(U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]\)`:
 
 ## Two channels to projections
 
-- **Indirect**: structural shifters `\(\rho^{SST}_i, \rho^{CHL}_i \to B_{i,t} \to H^{alloc}_{vy}\)`. *Jurel: testing `\(\rho_{ENSO}\)` over Ni&amp;ntilde;o 3.4 instead* (App. D-bis).
+- **Indirect**: structural shifters `\(\rho^{SST}_i, \rho^{CHL}_i \to B_{i,t} \to H^{alloc}_{vy}\)`. *Jurel: `\(\rho_{ENSO}\)` over Ni&amp;ntilde;o 3.4 **also not identified** (App. D-ter).*
 - **Direct**: vessel-specific `\(\Delta\)`bad-weather days from CMIP6 winds.
 ]
 
@@ -811,7 +811,7 @@ with `\(U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]\)`:
 ]
 
 .pull-right[
-- IND&#39;s protection rests on jack mackerel (long-run *local* shifter **n.i.**; ENSO test in progress, App. D-bis).
+- IND&#39;s protection rests on jack mackerel (long-run shifter **n.i.** at both local and basin scales &amp;mdash; App. D-ter).
 ]
 
 ???
@@ -829,7 +829,7 @@ with `\(U_{vy} = \big[\,p_{sy},\; H^{alloc}_{vy},\; Z_v,\; O_{vy}\,\big]\)`:
 **Indirect** (biomass `\(\to\)` allocation):
 `$$\Delta SST,\, \Delta \log CHL \xrightarrow{\rho^{SST}_i,\,\rho^{CHL}_i} B_{i,t}^{\star} \to H^{alloc}_{vy}$$`
 
-&lt;span class=&quot;small-note&quot;&gt;*Jurel: extension to `\(\rho_{ENSO}\)` over Ni&amp;ntilde;o 3.4 in progress (App. D-bis).*&lt;/span&gt;
+&lt;span class=&quot;small-note&quot;&gt;*Jurel: `\(\rho_{ENSO}\)` over Ni&amp;ntilde;o 3.4 also not identified (App. D-ter).*&lt;/span&gt;
 
 **Direct** (weather `\(\to\)` trips):
 `$$\Delta \text{wind} \xrightarrow{\text{vessel CDF}} \Delta \text{bw-days}_{vy} \xrightarrow{\beta_w^g} T_{vy}$$`
@@ -984,7 +984,7 @@ class: inverse, center, middle
 
 with `\(r_{i,t} = r_i^{0}\exp(\rho_i^{SST}\Delta SST_{t-1} + \rho_i^{CHL}\Delta \log CHL_{t-1})\)`.
 
-&lt;span class=&quot;small-note&quot;&gt;*Stock-specific extension in progress: jurel forced by `\(\rho_{ENSO}\)` over Ni&amp;ntilde;o 3.4 instead of local `\((SST_{D1}, \log CHL_{D1})\)` &amp;mdash; see App. D-bis.*&lt;/span&gt;
+&lt;span class=&quot;small-note&quot;&gt;*Stock-specific extension executed: jurel forced by `\(\rho_{ENSO}\)` over Ni&amp;ntilde;o 3.4 also not identified (`\(\sigma_{post}/\sigma_{prior} = 0.98\)`, lag 1) &amp;mdash; see App. D-ter.*&lt;/span&gt;
 
 **Observation** (log-normal):
 `\(\log B_{i,t}^{obs} = \log B_{i,t} + u_{i,t}\)`.
@@ -1025,7 +1025,7 @@ Three nested specs: **ind**, **omega**, **full**.
 | | SSP5-8.5, end-century | **&amp;minus;100%** | [&amp;minus;100%, &amp;minus;99%] | 1.00 |
 | Jack mackerel | all scenarios | n.i. | n.i. | n.i. |
 
-&lt;span class=&quot;small-note&quot;&gt;Cross-median across CMIP6 ensemble of 6 GCMs (CESM2, CNRM-ESM2-1, GFDL-ESM4, IPSL-CM6A-LR, MPI-ESM1-2-HR, UKESM1-0-LL); 90% CI is the within-posterior credible interval averaged across models. *Jurel: local `\((SST_{D1}, \log CHL_{D1})\)` shifter n.i. &amp;mdash; basin-scale ENSO refit in progress (App. D-bis).*&lt;/span&gt;
+&lt;span class=&quot;small-note&quot;&gt;Cross-median across CMIP6 ensemble of 6 GCMs (CESM2, CNRM-ESM2-1, GFDL-ESM4, IPSL-CM6A-LR, MPI-ESM1-2-HR, UKESM1-0-LL); 90% CI is the within-posterior credible interval averaged across models. *Jurel: local `\((SST_{D1}, \log CHL_{D1})\)` shifter and basin-scale ENSO both n.i. (App. D-ter).*&lt;/span&gt;
 
 ---
 
@@ -1051,7 +1051,7 @@ Three nested specs: **ind**, **omega**, **full**.
 
 **(iii) OROP-PS coherence.** SPRFMO transzonal index correlates with CS at `\(r = 0.11\)` over `\(N = 17\)` &amp;mdash; range-wide forcing cannot pin it down either.
 
-`\(\Rightarrow\)` The *local* null is robust. Natural reading: **relevant climatic drivers operate at scales beyond CS coastal forcing** &amp;mdash; consistent with a transboundary species. Tested next on the obvious candidate.
+`\(\Rightarrow\)` The *local* null is robust. Natural reading: **relevant climatic drivers operate at scales beyond CS coastal forcing** &amp;mdash; consistent with a transboundary species. Tested on the obvious basin-scale candidate next (App. D-bis/ter).
 
 
 ---
@@ -1077,34 +1077,38 @@ Jurel CS responds to **ENSO via teleconnections**, not local CS coastal anomalie
 - Prior: `\(\rho_{ENSO} \sim \mathcal{N}(0, 0.5)\)` &amp;mdash; `\(1\sigma_{ENSO}\)` shock `\(\Rightarrow \le 65\%\)` change in `\(r\)`.
 ]
 
-.tldr[Status: data extraction in progress; Stan refit by mid-May.]
+.tldr[Status: **executed** &amp;mdash; lag 1, lag 2, joint sensitivity. All converging on null. Result in App. D-ter.]
 
 ---
 
-# Appendix D-ter &amp;mdash; ENSO: asymmetric bet on the result
+# Appendix D-ter &amp;mdash; ENSO: result of the asymmetric bet
 
 .pull-left[
-## Scenario A &amp;mdash; identifies
+## Scenario B materialised &amp;mdash; null reinforced
 
-`\(\sigma_{post}/\sigma_{prior} \le 0.7\)`:
+Posterior `\(\sigma/\)`prior `\(\sigma\)` for `\(\rho_{ENSO,jurel}\)` at `\(\mathcal{N}(0,0.5)\)`:
 
-- Null becomes **basin-scale identification**.
-- Asymmetry **11:1 recomputed** with structural base for *all 3* stocks.
-- Direct test of Pe&amp;ntilde;a-Torres 2017 / Arcos 2001 mechanism.
+- **Lag 1**: `\(\rho = -0.022\)`, 90\% CI `\([-0.81, +0.80]\)`, ratio `\(= \mathbf{0.979}\)`.
+- **Lag 2**: `\(\rho = +0.021\)`, 90\% CI `\([-0.79, +0.87]\)`, ratio `\(= \mathbf{1.014}\)`.
+- **Joint** (`\(SST_{D1} + \log CHL_{D1} + ENSO\)` active): all three ratios `\(\in \{0.98, 1.00, 1.03\}\)`.
+
+`\(\Rightarrow\)` **5 converging tests** of the null (vs. 3 pre-ENSO).
 ]
 
 .pull-right[
-## Scenario B &amp;mdash; not identified
+## Prior-propagation projection
 
-`\(\sigma_{post}/\sigma_{prior} \approx 1\)`:
+Factor on `\(r^{\star}_{jurel}\)` under SSP5-8.5 end-of-century, combining 16k posterior draws with 6-GCM ensemble of `\(\Delta\widetilde{\text{ENSO}}\)` (`\(+3.65 \pm 0.88\,^{\circ}\)`C):
 
-- Null moves from 3 to **4 converging lines of evidence**.
-- Climate effects on jurel operate on *margins* (location, behavior), not local productivity.
+- 90\% predictive interval: `\([\mathbf{0.05},\,\mathbf{19.5}]\)`.
+- Median: `\(0.93\)`. log-factor SD: `\(1.83\)`.
+
+`\(\Rightarrow\)` envelope spans **3 orders of magnitude** `\(\Rightarrow\)` not informative for policy `\(\Rightarrow\)` `\(r^{\star}_{jurel}\)` held fixed in Tab. of fleet response.
 ]
 
-&lt;div style=&quot;height: 12px;&quot;&gt;&lt;/div&gt;
+&lt;div style=&quot;height: 8px;&quot;&gt;&lt;/div&gt;
 
-.tldr[&lt;b style=&quot;color:#c4830a;&quot;&gt;&amp;rarr;&lt;/b&gt; Either scenario improves the paper.]
+.tldr[&lt;b style=&quot;color:#c4830a;&quot;&gt;&amp;rarr;&lt;/b&gt; Climate effects on jurel operate on *margins* (location, behaviour, range) &amp;mdash; **not** on annual productivity elasticity at this aggregation. @Pe&amp;ntilde;a-Torres 2017, @Arcos 2001, @Espinoza 2013.]
 
 ---
 
