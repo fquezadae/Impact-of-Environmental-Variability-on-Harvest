@@ -7,10 +7,18 @@
 .title-slide {
   background-color: var(--udec-blue) !important;
   color: white !important;
-  background-image: url(https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png);
-  background-position: 7.5% 10%;
-  background-size: 200px;
-  background-repeat: no-repeat;
+  background-image:
+    url(https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png),
+    url(../figs/incar2_blanco.png);
+  background-position:
+    7.5% 6%,
+    32% 0%;
+  background-size:
+    200px,
+    auto 110px;
+  background-repeat:
+    no-repeat,
+    no-repeat;
 }
 
 .title-slide h1,

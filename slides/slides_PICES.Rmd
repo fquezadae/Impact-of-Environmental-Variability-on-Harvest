@@ -2,7 +2,7 @@
 title: "The Impact of Environmental Variability on Fishers' Harvest Decisions in Chile"
 subtitle: "A multi-species structural approach"
 author: "Felipe J. Quezada-Escalona"
-date: "ICES/PICES Small Pelagic Symposium &mdash; La Paz, M&eacute;xico, May 8, 2026"
+date: "ICES/PICES Small Pelagic Symposium &mdash; La Paz, M&eacute;xico, May 8, 2026<br><br><span style='font-size:0.65em; color:lightgray;'>Funded by ANID-Chile, FONDECYT Iniciaci&oacute;n N&deg; 11250223.</span>"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -477,7 +477,8 @@ class: inverse, center, middle
 [felipequezada.com](https://felipequezada.com)
 
 
-<img src="https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png" width="250">
+<img src="https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png" width="220" style="vertical-align:middle; margin-right:30px;">
+<img src="../figs/incar2_blanco.png" style="height:140px; vertical-align:middle;">
 
 
 <span style="font-size:0.75em; color:lightgray;">
