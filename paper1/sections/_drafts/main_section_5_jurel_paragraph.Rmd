@@ -1,0 +1,185 @@
+% =============================================================================
+% DRAFT 2026-05-04 -- pivote ENSO. REPLACEMENT TEXT for paper1_climate_projections.Rmd
+% line ~839 (Discussion paragraph on jack mackerel non-identification).
+%
+% Tres versiones paralelas (A/B/C) según el ratio sigma_post/sigma_prior del
+% rho_enso[3] del refit Stan. Felipe pega solo la versión que aplique.
+%
+% Placeholders LIVE -- iguales a los de appendix_E_enso_section.Rmd:
+%   -0.022    -0.81    0.80
+%   0.979      0.490
+%
+% También hay una propuesta de UPDATE para appendix_spatial_jurel.Rmd §E.5
+% "Implication for the main claim" al final de este archivo (line 374 actual).
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+% UBICACION: paper1/paper1_climate_projections.Rmd, line ~839
+% Reemplaza el párrafo que actualmente comienza con
+% "The fact that the jack mackerel shifter is not identified at the Centro-Sur
+%  scale is itself a substantive result rather than a nuisance, but its policy
+%  reading depends on a careful distinction between non-identification and
+%  no climate effect."
+% =============================================================================
+
+%%%% VERSION A -- ENSO IDENTIFICA (ratio <= 0.7) %%%%
+
+\noindent\textit{[Versión A -- usar si el ratio del lag-1 principal $\le 0.70$:]}
+The non-identification of jack mackerel productivity in response to
+local Centro-Sur SST and chlorophyll anomalies (Section
+\ref{identification}) admits a basin-scale resolution. Appendix
+\ref{appendix-spatial} reports a refit of the state-space
+specification in which jack mackerel productivity is forced by the
+ENSO Niño 3.4 index in place of the Centro-Sur coastal shifters.
+The basin-scale elasticity is identified at
+$\rho_{\text{jur}}^{ENSO} = -0.022$ with
+$90\%$ credible interval
+$[-0.81,\,0.80]$ and
+posterior-to-prior standard-deviation ratio of
+$0.979$, comfortably inside the threshold for
+material identification. The reading consistent with this result is
+that the climate sensitivity of jack mackerel at the Centro-Sur scale
+is real but operates through teleconnection forcing of the equatorial
+Pacific rather than through the upwelling-band SST and chlorophyll
+anomalies that resolve anchoveta and sardine---a reading anticipated
+by @Arcos2001-jq, @Pena-Torres2017-gn, and @Espinoza2013-jc on
+qualitative grounds and now sharpened to a point estimate. The
+distinction between non-identification on coastal shifters and basin-scale
+identification matters for policy: it implies that adaptive management
+for jack mackerel under climate change must respond to ENSO indicators
+rather than to local oceanographic monitoring, and it relocates the
+relevant spatial unit of intervention from the EEZ to the regional
+SPRFMO management framework.
+
+%%%% VERSION B -- ENSO NO IDENTIFICA (ratio > 0.85) %%%%
+
+\noindent\textit{[Versión B -- usar si el ratio del lag-1 principal $> 0.85$:]}
+The non-identification of $(\rho_{\text{jur}}^{SST},
+\rho_{\text{jur}}^{CHL})$ at the Centro-Sur scale is itself a
+substantive result rather than a nuisance, but its policy reading
+depends on a careful distinction between \emph{non-identification} and
+\emph{no climate effect}. The two are conflated only by reduced-form
+specifications that force a coefficient onto every regressor regardless
+of identification. Appendix \ref{appendix-spatial} reports four
+converging tests of this distinction, all consistent with the absence
+of an identifiable shifter for jack mackerel within the
+$2000$--$2024$ Centro-Sur biomass record: (i) varying the spatial
+aggregation of the coastal shifters across three nested domains
+$\mathcal{D}_1 \subset \mathcal{D}_2 \subset \mathcal{D}_3$ leaves the
+posterior-to-prior ratios in $0.998$--$1.014$; (ii) augmenting the
+biomass record with a Northern Chilean acoustic series under a common
+elasticity moves the ratio only to $0.94$--$0.99$; (iii) replacing the
+coastal shifters with the basin-scale ENSO Niño 3.4 index returns a
+ratio of $0.979$, also above the threshold for
+material identification; and (iv) an attempt to incorporate the
+SPRFMO regional assessment series fails on coherence grounds. Existing
+empirical evidence on jack mackerel documents that climate does affect
+the species at scales broader than local coastal anomalies---@Arcos2001-jq
+on intrusion of the $15\,^{\circ}$C isotherm during the
+$1997$--$98$ El Niño, @Pena-Torres2017-gn on ENSO-driven shifts in
+location choices in the Chilean fishery, and @Espinoza2013-jc on PDO and
+SOI modulation of jack mackerel availability in the Peruvian
+system---but each of these documents climatic effects on
+\emph{margins} (location choice, range distribution, spawning timing,
+phenological response) that are not necessarily captured in the
+elasticity of structural productivity at an annual aggregate. The
+convergence of four independent tests on this null at the Centro-Sur
+scale points to a structural rather than aggregation-driven
+limitation of the available record: closing the identification gap
+will require either a longer biomass record or a basin-scale
+assessment with explicit cross-stock spillover, not a different choice
+of spatial aggregation, biomass source, or basin-scale shifter within
+the present record. We accordingly hold $r^{*}_{\text{jurel}}$ fixed
+in the projections of Tables \ref{tab:climate_compstat_3stocks} and
+\ref{tab:trip_compstat}, and report the resulting fleet-level
+elasticities under that constraint.
+
+%%%% VERSION C -- MARGINAL (0.70 < ratio <= 0.85) %%%%
+
+\noindent\textit{[Versión C -- usar si el ratio del lag-1 cae en
+$(0.70, 0.85]$, identificación marginal:]}
+The non-identification of jack mackerel productivity on local Centro-Sur
+shifters (Section \ref{identification}) admits a basin-scale test that
+returns partial movement of the posterior. Appendix
+\ref{appendix-spatial} reports a state-space refit in which jack
+mackerel productivity is forced by the ENSO Niño 3.4 index, returning
+$\rho_{\text{jur}}^{ENSO} = -0.022$ with $90\%$
+credible interval
+$[-0.81,\,0.80]$ and
+posterior-to-prior ratio of $0.979$. The point estimate
+is consistent in direction with the qualitative literature on
+ENSO-mediated effects on jack mackerel
+(@Arcos2001-jq; @Pena-Torres2017-gn; @Espinoza2013-jc) but sits between
+the thresholds for material identification ($0.70$) and clear
+non-identification ($0.85$): the magnitude is suggestive but not
+sharply pinned on the available $24$-year sample. We report the
+projections of $r^{*}_{\text{jurel}}$ in Tables
+\ref{tab:climate_compstat_3stocks} and \ref{tab:trip_compstat} both
+under the basin-scale ENSO posterior and under the conventional
+fixed-$r^{*}$ benchmark, and flag the unresolved magnitude as a
+substantive limitation that a longer biomass record or a complementary
+basin-scale assessment would need to close.
+
+
+% =============================================================================
+% UBICACION: paper1/sections/appendix_spatial_jurel.Rmd, §E.5 "Implication for
+% the main claim" (line 342). Replacement text para integrar la 4ta evidencia.
+% =============================================================================
+
+% Reemplaza el párrafo en line 344-365 que comienza con
+% "The main-text claim that the climate sensitivity of jack mackerel
+%  cannot be resolved from the available 2000-2024 Centro-Sur biomass record
+%  is robust across three complementary tests of spatial scale and sample
+%  structure."
+
+%%%% VERSION B/C (NULO o MARGINAL) %%%%
+
+The main-text claim that the climate sensitivity of jack mackerel
+cannot be sharply resolved from the available $2000$--$2024$
+Centro-Sur biomass record is robust across four complementary tests of
+spatial scale, sample structure, and forcing modality. First, the
+spatial robustness refit of Sections \ref{sec:appendix-spatial-spec}
+and \ref{sec:appendix-spatial-results} varies the environmental
+aggregation across $\mathcal{D}_1$, $\mathcal{D}_2$, and
+$\mathcal{D}_3$ while holding the biomass record fixed: the
+posterior-to-prior ratios remain in $0.998$--$1.014$ across all three
+domains. Second, the dual-source extension of Section
+\ref{sec:appendix-spatial-dual} adds a second biomass series from the
+Northern Chilean acoustic record under a common climate elasticity,
+exploiting the $0.88$ log-scale correlation between the two Chilean
+series: the ratios fall only to $0.94$--$0.99$. Third, the basin-scale
+test of Section \ref{sec:appendix-spatial-enso} replaces the local
+shifters with the ENSO Niño 3.4 index under a deliberately tighter
+prior $\mathcal{N}(0, 0.5)$, returning a posterior-to-prior ratio of
+$0.979$. Fourth, an attempt to incorporate the
+SPRFMO regional assessment series fails on coherence grounds,
+indicating that the broader geographic aggregate is not integrable
+with the Centro-Sur record under a single shifter. The convergence of
+these four tests indicates a genuinely flat identification of the
+shifter for jack mackerel within the Centro-Sur biological domain,
+not an artefact of insufficient spatial extent, insufficient sample
+size, mis-specified forcing scale, or poor source aggregation.
+
+%%%% VERSION A (ENSO IDENTIFICA) %%%%
+
+\noindent\textit{[Versión A -- alternativa si ENSO identifica.]}
+The main-text non-identification of jack mackerel productivity on
+local Centro-Sur shifters admits a basin-scale resolution. Three
+spatial-extension tests rule out the conjecture that simply enlarging
+the spatial aggregation would suffice: under $\mathcal{D}_1$,
+$\mathcal{D}_2$, and $\mathcal{D}_3$ the posterior-to-prior ratios
+remain in $0.998$--$1.014$, and the dual-source extension adding the
+Northern Chilean acoustic record reduces them only to $0.94$--$0.99$.
+The basin-scale test of Section \ref{sec:appendix-spatial-enso},
+however, replaces the local SST and chlorophyll shifters with the ENSO
+Niño 3.4 index and identifies the elasticity at
+$-0.022$ with posterior-to-prior ratio
+$0.979$. The diagnostic reading of the appendix is
+therefore that jack mackerel productivity at the Centro-Sur scale
+\emph{is} climatically coupled, but the relevant spatial scale of the
+forcing is the equatorial Pacific rather than the local upwelling
+band---a result anticipated by the qualitative biological literature
+and now embedded in the structural projections of Section
+\ref{projections}. The auxiliary attempt to incorporate the SPRFMO
+regional assessment series fails on coherence grounds and is reported
+only as a methodological note in the Discussion.

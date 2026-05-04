@@ -1,0 +1,64 @@
+% =============================================================================
+% DRAFT 2026-05-04 PM. JOINT sensitivity drop-in for §E.4 (basin-scale ENSO).
+%
+% Insertar al final de §E.4 (after the Versión B closing paragraph), antes
+% del condensed OROP-PS note. Sirve como sensibilidad estandar del referee:
+% "y si dejan los tres shifters libres a la vez para jurel?"
+%
+% Numeros LIVE del fit lag-1 14c_fit_t4b_full_enso_joint.R (2026-05-04 PM):
+%   rho_sst[3]:  median +0.455, 90% CI [-1.26, +2.14], ratio 1.030
+%   rho_chl[3]:  median -0.098, 90% CI [-1.77, +1.55], ratio 1.005
+%   rho_enso[3]: median -0.029, 90% CI [-0.82, +0.79], ratio 0.978
+% =============================================================================
+
+A natural sensitivity to the replacement convention of
+(\ref{eq:appE-enso-spec}) is to relax the pinning of
+$\rho_{\text{jur}}^{SST}$ and $\rho_{\text{jur}}^{CHL}$ and refit the
+specification with all three shifters active for jack mackerel
+simultaneously, allowing the data to discriminate between the
+basin-scale ENSO forcing and the local Centro-Sur SST and chlorophyll
+anomalies. Such a refit is well-conditioned at $N=24$ lag-one
+observations because the three covariates are close to orthogonal at
+the dynamically-relevant lag: the pairwise lag-one correlations are
+$\mathrm{cor}(\widetilde{SST}_{1,t-1},\,\widetilde{\log CHL}_{1,t-1})
+= 0.03$,
+$\mathrm{cor}(\widetilde{\text{ENSO}}_{t-1},\,\widetilde{SST}_{1,t-1})
+= 0.09$, and
+$\mathrm{cor}(\widetilde{\text{ENSO}}_{t-1},\,\widetilde{\log CHL}_{1,t-1})
+= 0.18$, so the joint identification of three
+elasticities does not run into the multicollinearity floor that
+would otherwise make a three-shifter specification on $24$
+observations indefensible.
+
+The joint refit returns
+$\rho_{\text{jur}}^{SST} = +0.455$ ($90\%$ CI $[-1.26,\,+2.14]$;
+$\sigma_{\text{post}}/\sigma_{\text{prior}} = 1.03$),
+$\rho_{\text{jur}}^{CHL} = -0.098$ ($90\%$ CI $[-1.77,\,+1.55]$;
+ratio $1.00$), and
+$\rho_{\text{jur}}^{ENSO} = -0.029$ ($90\%$ CI $[-0.82,\,+0.79]$;
+ratio $0.98$). All three posterior-to-prior ratios exceed $0.97$,
+indicating that the data carry no information on any of the three
+shifters even when they compete for likelihood weight in a single
+specification. The basin-scale ENSO posterior is essentially
+identical to its single-shifter counterpart of
+Section \ref{sec:appendix-spatial-enso}---confirming the orthogonality
+diagnosis above---and the two coastal shifters return ratios slightly
+above unity, which under flat-likelihood regimes reflects the
+posterior-broadening contribution of the integration over the
+structural priors $(\log r^{0}_{\text{jur}}, \log K_{\text{jur}})$
+and the between-stock covariance $\boldsymbol{\Omega}$ rather than a
+material posterior expansion. The anchoveta and sardine posteriors of
+$(\rho^{SST}, \rho^{CHL})$ are unchanged relative to the main
+specification, as expected: the joint refit only affects jack mackerel
+through its diagonal entry of the covariate matrix.
+
+The joint sensitivity therefore strengthens rather than weakens the
+non-identification result. A reviewer who would accept the
+three-shifter joint specification as the primary identification test
+would still arrive at the same conclusion: at the Centro-Sur scale on
+the $2000$--$2024$ acoustic record, neither local upwelling-band SST
+or chlorophyll nor basin-scale ENSO carries a posterior mode
+distinguishable from the prior. The structural reading is unaltered:
+the climate sensitivity of jack mackerel productivity at the available
+spatial and temporal aggregation is not resolvable from these data
+under any of the candidate forcings considered in this appendix.

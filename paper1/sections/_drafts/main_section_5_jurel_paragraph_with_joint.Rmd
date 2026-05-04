@@ -1,0 +1,51 @@
+% =============================================================================
+% DRAFT 2026-05-04 PM. Variante del párrafo §5 main que menciona el JOINT como
+% 5ta evidencia. Reemplaza la Versión B del main_section_5_jurel_paragraph.Rmd
+% si Felipe quiere que el §5 cite explícitamente el sensibilidad joint.
+% Si no, queda con "four converging tests" del draft original.
+% =============================================================================
+
+%%%% VERSION B+ (con JOINT mencionado) -- 5 evidencias en lugar de 4 %%%%
+
+The non-identification of $(\rho_{\text{jur}}^{SST},
+\rho_{\text{jur}}^{CHL})$ at the Centro-Sur scale is itself a
+substantive result rather than a nuisance, but its policy reading
+depends on a careful distinction between \emph{non-identification} and
+\emph{no climate effect}. The two are conflated only by reduced-form
+specifications that force a coefficient onto every regressor regardless
+of identification. Appendix \ref{appendix-spatial} reports five
+converging tests of this distinction, all consistent with the absence
+of an identifiable shifter for jack mackerel within the
+$2000$--$2024$ Centro-Sur biomass record: (i) varying the spatial
+aggregation of the coastal shifters across three nested domains
+$\mathcal{D}_1 \subset \mathcal{D}_2 \subset \mathcal{D}_3$ leaves the
+posterior-to-prior ratios in $0.998$--$1.014$; (ii) augmenting the
+biomass record with a Northern Chilean acoustic series under a common
+elasticity moves the ratio only to $0.94$--$0.99$; (iii) replacing the
+coastal shifters with the basin-scale ENSO Niño 3.4 index returns a
+ratio of $0.98$ at lag one and $1.01$ at lag two; (iv) a joint
+specification with all three shifters active for jack mackerel
+simultaneously returns ratios of $1.03$ on local SST, $1.00$ on local
+$\log$ chlorophyll, and $0.98$ on basin-scale ENSO; and (v) an
+attempt to incorporate the SPRFMO regional assessment series fails on
+coherence grounds. Existing empirical evidence on jack mackerel
+documents that climate does affect the species at scales broader than
+local coastal anomalies---@Arcos2001-jq on intrusion of the
+$15\,^{\circ}$C isotherm during the $1997$--$98$ El Niño,
+@Pena-Torres2017-gn on ENSO-driven shifts in location choices in the
+Chilean fishery, and @Espinoza2013-jc on PDO and SOI modulation of
+jack mackerel availability in the Peruvian system---but each of these
+documents climatic effects on \emph{margins} (location choice, range
+distribution, spawning timing, phenological response) that are not
+necessarily captured in the elasticity of structural productivity at
+an annual aggregate. The convergence of five independent tests on this
+null at the Centro-Sur scale points to a structural rather than
+aggregation-driven limitation of the available record: closing the
+identification gap will require either a longer biomass record or a
+basin-scale assessment with explicit cross-stock spillover, not a
+different choice of spatial aggregation, biomass source, basin-scale
+shifter, or joint-specification convention within the present record.
+We accordingly hold $r^{*}_{\text{jurel}}$ fixed in the projections of
+Tables \ref{tab:climate_compstat_3stocks} and \ref{tab:trip_compstat},
+and report the resulting fleet-level elasticities under that
+constraint.
