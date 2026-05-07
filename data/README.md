@@ -1,0 +1,87 @@
+# Data — Access Instructions
+
+Processed series used by the manuscript pipeline are tracked in this
+directory (mostly small `.csv`, `.rds`, and `.qs` files). Raw bulk
+extracts and third-party reports are **not redistributed** to respect
+copyright and confidentiality agreements with the data providers; this
+README documents how to obtain them.
+
+## Layout
+
+```
+data/
+├── bio_params/        Stock assessments, environmental anomalies, ENSO,
+│   │                  catch series, hindcast QA outputs.
+│   ├── refs/          (gitignored) Local cache of third-party PDFs and
+│   │                  bulk extracts. See § "Reference documents" below.
+│   └── qa/            QA plots for the bio-params pipeline.
+├── cmip6/             CMIP6 ensemble deltas (processed; small .csv/.rds).
+├── ports/             Port coordinates.
+├── precios/           Fishmeal / process prices (Banco Central, IFOP).
+├── projections/       Stan + comparative-statics projection outputs.
+├── outputs/           (gitignored) Misc large outputs.
+├── trips/             (gitignored) Vessel-level trip aggregates.
+├── biomass/           (gitignored) Cleaned biomass series in .rds.
+├── env/               (gitignored) Daily environmental grids (.rds, .nc).
+├── harvest/           (gitignored) Cleaned harvest data.
+└── logbooks/          (gitignored) IFOP logbook extracts (vessel-level).
+```
+
+Folders marked `gitignored` are populated by running the pipeline
+locally from raw inputs (see § "Sources" below). They contain
+vessel-level information that is **confidential** under the IFOP data
+sharing agreement and cannot be republished.
+
+## Sources and how to access raw inputs
+
+| Variable / Series | Provider | Access |
+|---|---|---|
+| Landings 2000–2024 (all gears) | SERNAPESCA | Transparency request (Ley 20.285). Original request `AH010T0006857` filed 24/04/2025; SERNAPESCA reply via official letter `DN-02040/2025` (05/05/2025). Re-request at <https://www.sernapesca.cl/transparencia/>. |
+| IFOP logbooks (vessel-level haul, catch, effort) | IFOP | Confidential — request through a formal data-sharing agreement with IFOP (Departamento de Evaluación de Pesquerías). Contact: <https://www.ifop.cl/>. |
+| IFOP annual stock assessments and acoustic biomass series | IFOP | Public technical reports (Convenio IFOP-SUBPESCA): <https://www.ifop.cl/biblioteca/>. |
+| SPRFMO jack mackerel assessment | SPRFMO | Public reports + JJM source code: <https://www.sprfmo.int/> and <https://github.com/SPRFMO/jjm>. |
+| SUBPESCA — TAC resolutions, vedas calendar | SUBPESCA | Public: <https://www.subpesca.cl/portal/>. |
+| Fishmeal FOB price, IPC | Banco Central de Chile | Public statistics database: <https://si3.bcentral.cl/>. |
+| Diesel prices by region | Comisión Nacional de Energía (CNE) | Public: <https://www.cne.cl/>. |
+| SST (GLORYS12), CHL (Ocean Colour L4), wind (ERA5) | Copernicus Marine Service | Free account at <https://marine.copernicus.eu/>. Pipeline: `R/02_env_processing/load_*.R`, `R/06_projections/download_copernicus_paper1_extended.py`. |
+| ENSO Niño 3.4 (ERSSTv5 monthly) | NOAA-CPC | Free, no account: <https://www.cpc.ncep.noaa.gov/data/indices/sstoi.indices>. Pipeline: `R/01_data/extract_oisst_nino34.R`. |
+| CMIP6 six-model ensemble (SST, CHL, wind, Niño 3.4) | Pangeo / ESGF | Pangeo cloud catalog (no account) with ESGF fallback (free account at <https://esgf.llnl.gov/>). Pipeline: `R/06_projections/download_cmip6_ensemble.py` and `download_cmip6_nino34.py`. |
+
+## Reference documents (third-party PDFs)
+
+The technical reports cited in the manuscript bibliography are kept
+locally in `data/bio_params/refs/` but are **not committed** (see
+`.gitignore`). Each can be downloaded from the issuing institution:
+
+| Local filename | Institution | Where to find it |
+|---|---|---|
+| `ifop_evaluacion_directa_2026.pdf` | IFOP | <https://www.ifop.cl/biblioteca/> |
+| `ifop_evaluacion_stock_2024.pdf` | IFOP | <https://www.ifop.cl/biblioteca/> |
+| `ifop_informe_2025.pdf` | IFOP | <https://www.ifop.cl/biblioteca/> |
+| `ifop_anchoveta_*.pdf`, `ifop_sardinacomun_*.pdf`, `ifop_jurel_*.pdf` | IFOP | <https://www.ifop.cl/biblioteca/> |
+| `sprfmo_sc13_2025.pdf` | SPRFMO | <https://www.sprfmo.int/meetings/scientific-committee/> |
+| `subpesca_cctpp_2025.pdf` | SUBPESCA — CCT-PP | <https://www.subpesca.cl/portal/> |
+| `subpesca_vedas/*.pdf` | SUBPESCA | <https://www.subpesca.cl/portal/> (Decretos exentos) |
+| `imarpe_ifop_taller_xv_anchoveta_perusur_chilenorte_2017.pdf` | IMARPE / IFOP | <http://www.imarpe.gob.pe/imarpe/> |
+| `aliaga_gomez_neira_2001_*.pdf` | Cerda et al. (academic) | Library of journal of issue. |
+| `sernapesca_v3/ah010t0006857.pdf` | SERNAPESCA | Original Ley 20.285 reply letter — re-request via transparency portal. |
+
+A full bibliographic listing is in `bibliography.bib` at the
+repository root.
+
+## Reproducibility note
+
+The pipeline is designed to run end-to-end from the raw inputs above.
+Any series committed to `data/` can be regenerated by the
+corresponding script under `R/01_data/`, `R/01_data_cleaning/`, or
+`R/02_env_processing/` once the raw inputs are placed in the expected
+local paths configured in `R/00_config/config.R`.
+
+## Contact
+
+If you need help locating any reference or replicating any step of
+the pipeline, contact:
+
+Felipe Quezada-Escalona
+Departamento de Economía, Universidad de Concepción
+<felipequezada@udec.cl>
