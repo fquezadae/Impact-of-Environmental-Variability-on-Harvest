@@ -22,8 +22,15 @@
 
 # --- Third-party reports (copyright; not redistributed) ---
 # Source documents from IFOP, SPRFMO, SUBPESCA, SERNAPESCA, etc.
-# Tracked locally only; see data/bio_params/refs/README.md for download URLs.
+# Tracked locally only; see data/README.md for download URLs.
 /data/bio_params/refs/**/*.pdf
+
+# --- Raw bulk extracts (large; not redistributed) ---
+# SERNAPESCA Ley 20.285 transparency response (AH010T0006857) — re-request
+# from SERNAPESCA or rebuild from the processed CSV in data/bio_params/.
+/data/bio_params/sernapesca_bd_desembarque_raw.csv
+# Deprecated IFOP cerco-only landings extract (replaced by SERNAPESCA v3).
+/data/bio_params/refs/deep_search/*.xlsx
 
 # --- Compilation outputs (reproducible from source) ---
 output/
