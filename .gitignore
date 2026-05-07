@@ -20,6 +20,11 @@
 /data/outputs/
 *.nc
 
+# --- Third-party reports (copyright; not redistributed) ---
+# Source documents from IFOP, SPRFMO, SUBPESCA, SERNAPESCA, etc.
+# Tracked locally only; see data/bio_params/refs/README.md for download URLs.
+/data/bio_params/refs/**/*.pdf
+
 # --- Compilation outputs (reproducible from source) ---
 output/
 _main.Rmd
