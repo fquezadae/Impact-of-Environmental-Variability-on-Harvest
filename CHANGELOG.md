@@ -2,7 +2,149 @@
 
 Notable changes to the project, in reverse chronological order.
 
-## 2026-05-04 (paper1: ENSO basin-scale pivot, 5 converging tests of jack mackerel null, prior-propagation envelope)
+## 2026-05-08 (paper2: Version C diagnostic resolution, NB spec audit, planned refactor)
+
+This entry consolidates a session that started from a review of
+`paper1/version_C_spec.md` (paper 2's bioeconomic spec) and ended with three
+durable findings for the NB trip equation. Paper 1 is **not affected** by the
+decisions of this session — the changes either apply to paper 2 (Version C)
+or are documented as planned future refactors.
+
+### Resolved — Version C diagnostic executed; drop from NB regression
+
+- New script: `R/04_models/regime_diagnostic.R` (~250 lines).
+  Classifies each (year, species, sector) cell into `quota_binding`,
+  `biology_binding`, or `ambiguous` per the criterion in
+  `paper1/version_C_spec.md` §4 (`util ≥ 0.85 & biom_rate < 0.4` →
+  quota; `util < 0.85 & biom_rate ≥ 0.3` → biology). Aggregates regional
+  TAC into sectoral cap before computing util, per remark 2 of §3.2.
+  Inputs: `official_biomass_series.csv` (anchoveta/sardina), acoustic
+  series (jurel_cs), `catch_annual_paper1_by_sector.csv`,
+  `catch_jurel_cs_by_sector.csv`, `tac_art.rds`, `tac_ind.rds`.
+  Outputs: `data/outputs/regime_diagnostic_{cell,summary,decision,u_bar_empirical}.csv|.txt`.
+- Headline (2012–2024 window, 56 cells): `quota_binding 57.1%`,
+  `ambiguous 41.1%`, `biology_binding 1.8%`. Per the §4.1 decision rule
+  this places the analysis in the `< 5%` bracket — **adopt Version A pure
+  (Kasperski direct), drop Version C as an estimation extension** of the
+  NB trip equation.
+- Two qualifications recorded in `paper1/version_C_spec.md` §4 preamble:
+  (a) sectoral TAC starts in 2012, so the diagnostic does not cover the
+  pre-2012 episodes (anchoveta-collapsed pre-2018, jurel late-2000s
+  crash) on which the §4.1 expectations were calibrated; (b) the
+  `min(Q, u_bar*B)` operator remains relevant for the *forward simulator*
+  in §6 under SSP5-8.5 climate scenarios where biomass may collapse,
+  so the operator is preserved for paper 2's planner module.
+
+### Added — `R/07_structural_bio/08_build_jurel_cs_catch.R`: sectoral split
+
+- `build_jurel_cs_by_sector_annual()` and `write_jurel_cs_by_sector_csv()`:
+  same V-X+Los Ríos region filter as `build_jurel_cs_annual` but groups
+  by `tipo_agente` to produce `data/bio_params/catch_jurel_cs_by_sector.csv`
+  (48 rows, 24 years × {Industrial, Artesanal}). Required input for the
+  diagnostic to compute jurel sectoral H/B at the same geographic scale
+  as the acoustic biomass series.
+- `default_sernapesca_raw_path()`: resolves the SERNAPESCA raw via
+  `dirdata` (set in `R/00_config/config.R`), pointing to
+  `dirdata/SERNAPESCA/bd_desembarque.csv` rather than a hard-coded
+  in-repo path. Encoding fixed (`"latin-1"` → `"latin1"`).
+
+### Added — `R/00_config/config.R`: U_BAR constants
+
+- `U_BAR <- c(anchoveta = 0.35, sardina_comun = 0.25, jurel = 0.32)`.
+  Calibrated 2026-05-08 to the empirical p95 of H/B over quota-binding
+  cells from `regime_diagnostic_u_bar_empirical.csv`, with a small upward
+  margin. The Schaefer F_MSY = r/2 derivation (anchoveta 0.30, sardina
+  0.45, jurel 0.18) was rejected because the diagnostic showed factor-of-2
+  inconsistency for sardina (over) and jurel (under).
+- Used by future paper 2 forward simulator (`R/05_optimization/forward_sim_versionC.R`,
+  not yet implemented) in the constraint
+  `H_opp_{vy,s} = omega_{vs} * min(Q_{sy}, u_bar_s * B_{sy})`.
+
+### Discovered — NB spec audit, two gaps vs Kasperski (2015) Eq. 17
+
+The audit was triggered while scoping the Version C extension of the NB
+regression. The relevant trip equation in production is at
+`R/08_stan_t4/13_trip_comparative_statics.R:418-421`:
+
+```r
+T_vy ~ log_bodega + H_alloc_vy +
+  price_jurel + price_sardina + price_anchov +
+  days_bad_weather + days_closed_vy +
+  TIPO_EMB + factor(year)
+```
+
+Two deviations from Kasperski's specification surfaced:
+
+1. **`H_alloc_vy` is scalar, aggregated across species.** Kasperski's
+   regressor vector has a species-specific opportunity term
+   $h_{vy,s} = \omega_{vs} \bar{Q}_{sy}$ with separate $\beta_h^s$ per
+   species. The current paper 1 NB sums across species before estimation,
+   so it identifies a single $\beta_H$ per fleet. Source: `R/01_data_cleaning/tac_processing.R:206-241`
+   already aggregates regional and zonal TACs into a vessel-level scalar
+   `halloc_official.rds`.
+
+2. **Prices are aggregated to year-only.** Source: `R/04_models/poisson_model.R:198-256`
+   reads the IFOP regional price file (`2025.04.21.pelagicos_proceso-precios.mp.2012-2024.xlsx`,
+   sheet `PRECIO`) which has a regional column `RG ∈ {5, 6, 7, 8, 9, 10, 14, 16}`,
+   filters to centro-sur but then collapses with `group_by(year, NM_RECURSO)`
+   (line 199, comment "Annual average (simple mean across plants × months)").
+   The merge into `poisson_dt.rds` is by `year` only (line 596). Since
+   year FE is in the trip equation, the three price coefficients are
+   collinear with the FE and the $\beta_p^s$ are aliased.
+   The author's comment at `13_trip_comparative_statics.R:415-417` already
+   documents that only $\beta_H$ and $\beta_{weather}$ are extracted
+   downstream, treating the prices as nominal controls — but the spec
+   gap remains: the prices column in the data is observable at
+   `(year, region)` resolution and the pipeline currently throws away the
+   regional dimension.
+
+### Planned — paper 2 NB refactor (path B, ~1.5–2 weeks)
+
+Documented in this changelog so it survives session boundaries. To be
+executed as part of the paper 2 build, not before paper 1 JAERE
+submission.
+
+1. `R/04_models/poisson_model.R`: rewrite price construction to keep
+   `(year, region, species) → price`. Merge into `poisson_dt.rds` by
+   `(year, vessel_region)` using `puerto_modal` (already exists in
+   `R/01_data_cleaning/tac_processing.R`).
+2. `R/01_data_cleaning/tac_processing.R:206-241`: keep `COD_ESPECIE` in
+   the grouping; add `H_alloc_jurel`, `H_alloc_sardina_comun`,
+   `H_alloc_anchoveta` columns alongside the legacy `H_alloc_vy` (kept
+   for backward compatibility).
+3. `R/08_stan_t4/13_trip_comparative_statics.R:418`: switch formula
+   from scalar `H_alloc_vy` to species-specific
+   `H_alloc_jurel + H_alloc_sardina_comun + H_alloc_anchoveta`. Year FE
+   stays.
+4. `R/08_stan_t4/13_trip_comparative_statics.R:434+ and factor_trips
+   computation (line 482+)`: change `beta_H` from scalar to species-
+   specific vector. Update `factor_trips` calculation to sum
+   $\sum_s \beta_h^s \Delta H_{alloc,s}$ instead of
+   $\beta_H \Delta H_{alloc}$.
+5. Re-run Apéndice G variance decomposition (`17_appendix_g_trips_variance_decomposition.R`).
+6. Update §3 (specification) and §4.4 (comparative statics) of
+   `paper1_climate_projections.Rmd` if and only if the refactor changes
+   paper 1 numbers materially. If paper 1 has already been submitted by
+   the time the refactor lands, the Kasperski-aligned specification
+   becomes the paper 2 spec only and a brief defensive paragraph in
+   paper 1 §3 acknowledges the simplification ("for parsimony given
+   N=23 per species we report β_H aggregated; the species-specific
+   decomposition is reported in companion paper 2").
+
+### Updated — `paper1/version_C_spec.md`
+
+- Repository path corrections (`D:/...Variability...` → `C:/GitHub/Impact of Environment on Harvest`).
+- §4 pseudocode: `Q_legal` summed across regions (`sum(TAC_region)`)
+  rather than `TAC[1]`; `biomass[1]` → `unique(biomass)[1]`.
+- §6: discount factor symbol $\rho \to \delta$ to avoid collision with
+  climate-shifter coefficients.
+- §9 step 3: clarification that `R/04_models/poisson_model.R` retains
+  its name despite being a Negative Binomial estimator (filename
+  legacy).
+- §4 preamble: 2026-05-08 diagnostic execution recorded with the two
+  qualifications above.
+
+
 
 This entry consolidates a single-day push that absorbs the ENSO basin-scale
 extension into paper 1 as a fourth–fifth line of evidence on the jack mackerel
