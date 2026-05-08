@@ -133,22 +133,56 @@ harvest_sector_pelagics <- read_csv(
   ) %>%
   filter(!is.na(sector))
 
-# Jurel CS sector split (institutional 90/10 IND/ART, paper1 YAML).
-JUREL_CS_IND_SHARE <- 0.90
-JUREL_CS_ART_SHARE <- 0.10
-harvest_sector_jurel <- read_csv(
-  "data/bio_params/catch_jurel_cs.csv",
-  show_col_types = FALSE
-) %>%
-  filter(stock_id == "jurel_cs") %>%
-  transmute(species = "jurel",
-            year    = as.integer(year),
-            catch_t) %>%
-  tidyr::crossing(sector = c("IND", "ART")) %>%
-  mutate(H_realized_t = catch_t * if_else(sector == "IND",
-                                           JUREL_CS_IND_SHARE,
-                                           JUREL_CS_ART_SHARE)) %>%
-  select(species, year, sector, H_realized_t)
+# Jurel CS sector split: prefer the SERNAPESCA-derived sectoral series
+# (data/bio_params/catch_jurel_cs_by_sector.csv, written by
+# R/07_structural_bio/08_build_jurel_cs_catch.R::write_jurel_cs_by_sector_csv).
+# That file aggregates SERNAPESCA bd_desembarque restricted to V-X+Los Ríos
+# and grouped by tipo_agente, so the geographic scale matches the acoustic
+# biomass series exactly. If the file is missing (build hasn't been run on
+# this machine) fall back to the institutional 90/10 IND/ART split from the
+# YAML, with a clear warning.
+
+jurel_sec_csv <- "data/bio_params/catch_jurel_cs_by_sector.csv"
+
+if (file.exists(jurel_sec_csv)) {
+  harvest_sector_jurel <- read_csv(jurel_sec_csv, show_col_types = FALSE) %>%
+    filter(stock_id == "jurel_cs") %>%
+    transmute(
+      species = "jurel",
+      year    = as.integer(year),
+      sector  = case_when(
+        sector == "Artesanal"  ~ "ART",
+        sector == "Industrial" ~ "IND",
+        TRUE                    ~ NA_character_
+      ),
+      H_realized_t = catch_t
+    ) %>%
+    filter(!is.na(sector))
+  cat("\n[INFO] jurel_cs sectoral catch from SERNAPESCA bd_desembarque (",
+      jurel_sec_csv, ")\n", sep = "")
+} else {
+  warning(
+    "catch_jurel_cs_by_sector.csv not found. ",
+    "Run R/07_structural_bio/08_build_jurel_cs_catch.R::write_jurel_cs_by_sector_csv() ",
+    "with options(structural_bio.run_main = TRUE) to generate it. ",
+    "Falling back to the institutional 90/10 IND/ART split."
+  )
+  JUREL_CS_IND_SHARE <- 0.90
+  JUREL_CS_ART_SHARE <- 0.10
+  harvest_sector_jurel <- read_csv(
+    "data/bio_params/catch_jurel_cs.csv",
+    show_col_types = FALSE
+  ) %>%
+    filter(stock_id == "jurel_cs") %>%
+    transmute(species = "jurel",
+              year    = as.integer(year),
+              catch_t) %>%
+    tidyr::crossing(sector = c("IND", "ART")) %>%
+    mutate(H_realized_t = catch_t * if_else(sector == "IND",
+                                             JUREL_CS_IND_SHARE,
+                                             JUREL_CS_ART_SHARE)) %>%
+    select(species, year, sector, H_realized_t)
+}
 
 harvest_sector <- bind_rows(harvest_sector_pelagics, harvest_sector_jurel)
 

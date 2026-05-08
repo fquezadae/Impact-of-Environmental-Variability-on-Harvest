@@ -46,27 +46,31 @@ standardize_species <- function(x) {
 #     H_opp_{vy,s} = omega_{vs} * min( Q_{sy}, u_bar_s * B_{sy} )
 # of the trip equation (see paper1/version_C_spec.md §3.2).
 #
-# Primary route: Schaefer F_MSY = r/2 with r priors from IFOP/SPRFMO
-# assessments documented in data/bio_params/official_assessments.yaml
-# (priors_primarias_verificadas_2026_04_22):
-#     anchoveta_cs   r = 0.6  -> u_bar = 0.30
-#     sardina_cs     r = 0.9  -> u_bar = 0.45
-#     jurel_cs       r = 0.35 -> u_bar = 0.18
+# CALIBRATION ROUTE (revised 2026-05-08 after running regime_diagnostic.R)
+# ---------------------------------------------------------------------------
+# The diagnostic showed the Schaefer F_MSY = r/2 derivation was inconsistent
+# with the data for sardina (over by 2x) and jurel (under by 1.4x). Adopted
+# values below are the empirical p95 of H/B over the diagnostic window
+# (2012-2024, quota-binding cells in data/outputs/regime_diagnostic_u_bar_empirical.csv)
+# with a small upward margin so realised exploitation rates do not exceed
+# u_bar in normal operations.
 #
-# The diagnostic in R/04_models/regime_diagnostic.R also reports the
-# direct-empirical p95 of H/B over quota-binding observations as a
-# fallback calibration. Sensitivity ±20% reported as robustness
-# (paper1/version_C_spec.md §5).
+#   species         p95 H/B   max H/B   adopted   margin
+#   anchoveta       0.318     0.321     0.35      ~10%
+#   sardina_comun   0.209     0.228     0.25      ~20%
+#   jurel           0.261     0.310     0.32      ~3% (binding cell at edge)
 #
-# IMPORTANT: these are placeholder defaults for the diagnostic. Validate
-# against the empirical p95 before using in the NB regression or the
-# planner; if the diagnostic flags inconsistency (e.g. lots of years
-# with H/B > u_bar), revisit before downstream estimation.
+# These should be re-checked against the Stan-fit posterior of B_{s,y} once
+# the forward simulator (paper 2) consumes them — the empirical p95 above
+# uses the official assessment biomass as B_{s,y}, which is what the bio
+# model targets in observation.
+#
+# Sensitivity ±20% reported as robustness (paper1/version_C_spec.md §5).
 U_BAR <- c(
-  anchoveta     = 0.30,   # F_MSY ~ r/2 with r = 0.6 (IFOP V-X 2024)
-  sardina_comun = 0.45,   # F_MSY ~ r/2 with r = 0.9 (IFOP V-X 2022)
-  jurel         = 0.18    # F_MSY ~ r/2 with r = 0.35 (SPRFMO + IFOP nacional 2023)
+  anchoveta     = 0.35,   # empirical p95 = 0.32 (regime_diagnostic 2026-05-08)
+  sardina_comun = 0.25,   # empirical p95 = 0.21
+  jurel         = 0.32    # empirical p95 = 0.26
 )
-U_BAR_SOURCE <- "Schaefer F_MSY = r/2 from official_assessments.yaml priors_primarias_verificadas_2026_04_22; cross-check vs p95 of H/B in regime_diagnostic.R."
+U_BAR_SOURCE <- "Empirical p95 of H/B over 2012-2024 quota-binding cells (data/outputs/regime_diagnostic_u_bar_empirical.csv) with a small upward margin. Schaefer F_MSY = r/2 derivation rejected after diagnostic showed factor-of-2 inconsistency for sardina and jurel."
 
 cat("Config loaded. dirdata =", dirdata, "\n")
