@@ -279,6 +279,65 @@ source("R/08_stan_t4/14c_fit_t4b_full_enso_joint.R")
 source("R/08_stan_t4/19_project_jurel_enso_prior_propagation.R")
 ```
 
+## Specification audit — known gaps and planned refactors
+
+Recorded 2026-05-08, after a session that closed the Version C diagnostic
+and audited the NB trip equation. See `CHANGELOG.md` 2026-05-08 entry for
+the full record and `paper1/version_C_spec.md` for paper 2's bioeconomic
+spec.
+
+### Paper 1 — accepted simplifications, defensive notes
+
+The trip equation in `R/08_stan_t4/13_trip_comparative_statics.R:418-421`
+has two known deviations from Kasperski (2015) Eq. 17:
+
+- **`H_alloc_vy` is scalar** (aggregated across species) rather than
+  species-specific $h_{vy,s} = \omega_{vs}\bar{Q}_{sy}$ with separate
+  $\beta_h^s$. The aggregation defaults from `data/trips/halloc_official.rds`
+  via `R/01_data_cleaning/tac_processing.R:206-241`.
+- **Prices are merged to the panel by `year` only** (not `(year, region)`)
+  even though the IFOP raw price file
+  (`2025.04.21.pelagicos_proceso-precios.mp.2012-2024.xlsx`, sheet `PRECIO`)
+  carries a regional column `RG ∈ {5, 6, 7, 8, 9, 10, 14, 16}`. The
+  collapse occurs at `R/04_models/poisson_model.R:198-256` (`group_by(year, NM_RECURSO)`,
+  comment "Annual average (simple mean across plants × months)"). Combined
+  with the year FE that the trip equation includes, the three
+  `price_*` coefficients are aliased into the year FE; only $\beta_H$ and
+  $\beta_{weather}$ are extracted downstream. Prices serve as nominal
+  controls in this specification.
+
+For paper 1's MRE submission these are documented as deliberate simplifications
+("for parsimony given N=23 per species per year"). They do **not** affect
+the manuscript's headline parameters.
+
+### Paper 2 — planned NB refactor
+
+The paper 2 build requires species-specific $\beta_h^s$ (to evaluate
+species-by-species effort response in the planner equilibrium) and
+identified $\beta_p^s$ (to close the inverse demand system). The planned
+refactor (path B, ~1.5–2 weeks) is:
+
+1. Preserve regional dimension when constructing `prices_wide` in
+   `R/04_models/poisson_model.R`; merge to the trip panel by
+   `(year, vessel_region)` using `puerto_modal`.
+2. Disaggregate `H_alloc_vy` into `H_alloc_jurel`, `H_alloc_sardina_comun`,
+   `H_alloc_anchoveta` in `R/01_data_cleaning/tac_processing.R`.
+3. Update the trip equation formula in
+   `R/08_stan_t4/13_trip_comparative_statics.R:418` and the downstream
+   `factor_trips` computation that currently treats $\beta_H$ as scalar.
+4. Add the `min(Q, u_bar*B)` operator only in the *forward simulator*
+   under SSP5-8.5 collapse scenarios, not in the NB estimation
+   (closed by the `<5%` Version C diagnostic, see `paper1/version_C_spec.md` §4).
+
+### Version C $\bar{u}_s$ — empirical calibration
+
+`R/00_config/config.R::U_BAR` is now calibrated to the empirical p95 of
+H/B over quota-binding cells (`anchoveta = 0.35`, `sardina_comun = 0.25`,
+`jurel = 0.32`). The Schaefer $F_{MSY}=r/2$ derivation was rejected after
+the 2026-05-08 diagnostic flagged factor-of-two inconsistency for sardina
+and jurel. Sensitivity ±20% reported as robustness in
+`paper1/version_C_spec.md` §5.
+
 ## Funding
 
 This work is funded by **ANID--FONDECYT Iniciación** (Chile).
