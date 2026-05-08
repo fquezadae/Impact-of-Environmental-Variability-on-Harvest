@@ -70,6 +70,15 @@ Quadratic restricted cost function with conditional input demands; structure alr
 
 ## 4. Empirical diagnostic of the historical binding regime
 
+> **Diagnostic executed 2026-05-08.** Run of `R/04_models/regime_diagnostic.R` over the only window for which sectoral TAC is available (2012–2024) returned 1.8% biology-binding, 57.1% quota-binding, 41.1% ambiguous across 56 cells. Per the decision rule in §4.1 this places the analysis in the "< 5%" bracket — *Adopt Version A pure (Kasperski direct) for the NB regression, drop Version C as an estimation extension*. Two qualifications follow:
+>
+> 1. **Window caveat.** Sectoral TAC data starts in 2012, so the diagnostic does not cover the historical episodes the §4.1 expectations were calibrated on (anchoveta-collapsed pre-2018 — most of which is pre-2012, jurel late-2000s crash). Within 2012–2024 the regulator set conservative TAC and the legal cap was the active constraint in essentially all cells. Extending the diagnostic backwards would require pre-2012 sectoral TAC, currently not in the repo.
+> 2. **Forward-simulation use case is preserved.** The "drop Version C" decision applies only to the NB *estimation* in §3.2. The $\min(\bar{Q}_{sy}, \bar{u}_s B_{sy})$ operator remains relevant for the *forward simulator* in §6 under SSP5-8.5 climate scenarios where biomass is projected to collapse and biology may bind in years that are out of the historical sample. Implementation in `R/05_optimization/forward_sim_versionC.R` should retain the operator regardless of the §4.1 bracket.
+>
+> The $\bar{u}_s$ values in `R/00_config/config.R::U_BAR` were re-calibrated 2026-05-08 from the Schaefer $F_{MSY}=r/2$ derivation (rejected because of factor-of-two inconsistency for sardina and jurel) to the empirical p95 of H/B over the diagnostic window plus a small upward margin: anchoveta 0.35, sardina_comun 0.25, jurel 0.32.
+
+
+
 Required preliminary step. Compute the regime classification for each (species, year, sector) cell:
 
 ```r
