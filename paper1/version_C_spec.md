@@ -4,7 +4,7 @@
 
 **Author:** Felipe J. Quezada-Escalona, Universidad de Concepción
 
-**Repository:** `D:/GitHub/Impact-of-Environmental-Variability-on-Harvest`
+**Repository:** `C:/GitHub/Impact of Environment on Harvest`
 
 ---
 
@@ -76,12 +76,17 @@ Required preliminary step. Compute the regime classification for each (species, 
 # pseudocode — to be implemented in R/04_models/regime_diagnostic.R
 library(dplyr)
 
+# Regional TAC is allocated by region (V, VIII, IX, XIV, X for ART;
+# V-IX and XIV-X for IND), per Section 3.2 remark 2. Aggregate to the
+# (year, species, sector) level by summing across regions before
+# computing utilisation, so Q_legal is the full sectoral cap that is
+# comparable to realised harvest at the sector level.
 regime_diag <- harvest_data |>
   group_by(year, species, sector) |>
   summarise(
     H_realized = sum(harvest),
-    Q_legal    = TAC[1],
-    B_year     = biomass[1],
+    Q_legal    = sum(TAC_region, na.rm = TRUE),  # Σ_r Q̄_{syr}
+    B_year     = unique(biomass)[1],             # biomass is sector-invariant
     util       = H_realized / Q_legal,
     biom_rate  = H_realized / B_year,
     .groups    = "drop"
@@ -137,7 +142,9 @@ Prefer external calibration when available; otherwise use direct calibration as 
 
 Programme:
 
-$$\max_{\{\bar{Q}_{sy}\}_{s,y}}\;\sum_{y=1}^{Y}\rho^{y-1}\!\left[\sum_s P_s(\mathbf{H}_y,P^{FOB}_y)H_{sy}-\sum_v C_v(h_{vy},T_{vy}\mid\mathbf{Z}_v,\mathbf{O}_{vy})\right]$$
+$$\max_{\{\bar{Q}_{sy}\}_{s,y}}\;\sum_{y=1}^{Y}\delta^{y-1}\!\left[\sum_s P_s(\mathbf{H}_y,P^{FOB}_y)H_{sy}-\sum_v C_v(h_{vy},T_{vy}\mid\mathbf{Z}_v,\mathbf{O}_{vy})\right]$$
+
+(Discount factor denoted $\delta$ to avoid notational collision with the climate-shifter coefficients $\rho_i^{SST}, \rho_i^{CHL}$ in Section 3.1.)
 
 subject to:
 
@@ -182,7 +189,7 @@ Version C nests Version A: in the limit $\bar{u}_s\to\infty$ (biomass never bind
 |---|---|---|---|
 | 1 | Empirical diagnostic of historical binding regime | 1–2 days | `R/04_models/regime_diagnostic.R` + diagnostic table |
 | 2 | Calibrate $\bar{u}_s$ from external assessments and binding-only subsample | 1 day | constants in `R/00_config/config.R` |
-| 3 | Re-estimate NB by fleet with species-specific $\beta_h^s, \beta_p^s, \beta_q^s$ and $H^{opp}_{vy,s}$ regressor | 1–2 days | updated `R/04_models/poisson_model.R` |
+| 3 | Re-estimate NB by fleet with species-specific $\beta_h^s, \beta_p^s, \beta_q^s$ and $H^{opp}_{vy,s}$ regressor | 1–2 days | updated `R/04_models/poisson_model.R` (filename retained for continuity; estimator is Negative Binomial via `MASS::glm.nb`, not Poisson) |
 | 4 | Forward-simulation loop with endogenous binding via $\min$ operator | 2–3 days | `R/05_optimization/forward_sim_versionC.R` |
 | 5 | Social planner optimization wrapper and CMIP6 ensemble loop | 2–3 days | `R/05_optimization/planner_solve.R` |
 | 6 | Comparison panels Version A vs C across 4 climate scenarios | 1–2 days | manuscript tables and figures |
@@ -202,4 +209,4 @@ Total: approximately 1.5 weeks of dedicated work, conditional on (i) cost module
 
 ---
 
-*Document prepared for delegation via Cowork. All mathematical conventions match the current Paper 1 manuscript at `D:/GitHub/Impact-of-Environmental-Variability-on-Harvest/manuscript.Rmd`.*
+*Document prepared for delegation via Cowork. All mathematical conventions match the current Paper 1 manuscript at `C:/GitHub/Impact of Environment on Harvest/manuscript.Rmd`.*
