@@ -39,7 +39,7 @@ standardize_species <- function(x) {
 }
 
 # -----------------------------------------------------------------------------
-# Maximum exploitation rate u_bar_s — Version C (paper 2)
+# Maximum exploitation rate u_bar_s -- Version C (paper 2)
 # -----------------------------------------------------------------------------
 # u_bar_s is the upper bound on annual harvest fraction H/B that biology
 # allows; it appears in the feasibility constraint
@@ -61,7 +61,7 @@ standardize_species <- function(x) {
 #   jurel           0.261     0.310     0.32      ~3% (binding cell at edge)
 #
 # These should be re-checked against the Stan-fit posterior of B_{s,y} once
-# the forward simulator (paper 2) consumes them — the empirical p95 above
+# the forward simulator (paper 2) consumes them -- the empirical p95 above
 # uses the official assessment biomass as B_{s,y}, which is what the bio
 # model targets in observation.
 #

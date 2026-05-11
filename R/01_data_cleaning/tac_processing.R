@@ -203,11 +203,19 @@ shares_art_reg %>%
   summarise(sum_omega = round(sum(omega_reg), 4), .groups = "drop") %>%
   print(n = 25)
 
-halloc_art <- shares_art_reg %>%
+halloc_art_vys <- shares_art_reg %>%
   left_join(tac_art %>% select(year, COD_ESPECIE, region_code, TAC_art),
             by = c("COD_ESPECIE", "art_region" = "region_code"),
             relationship = "many-to-many") %>%
-  mutate(H_alloc_vys = omega_reg * TAC_art) %>%
+  mutate(H_alloc_vys = omega_reg * TAC_art)
+
+# 6a-i: by species (Kasperski-aligned, 2026-05-11 refactor)
+halloc_art_by_sp <- halloc_art_vys %>%
+  group_by(COD_BARCO, year, COD_ESPECIE) %>%
+  summarise(H_alloc_vys = sum(H_alloc_vys, na.rm = TRUE), .groups = "drop")
+
+# 6a-ii: legacy aggregated (backward-compat)
+halloc_art <- halloc_art_vys %>%
   group_by(COD_BARCO, year) %>%
   summarise(H_alloc_vy = sum(H_alloc_vys, na.rm = TRUE), .groups = "drop")
 
@@ -228,17 +236,59 @@ shares_ind_zone <- harvest_ind %>%
   ungroup() %>%
   select(COD_BARCO, ind_zone, COD_ESPECIE, omega_zone)
 
-halloc_ind <- shares_ind_zone %>%
+halloc_ind_vys <- shares_ind_zone %>%
   left_join(tac_ind %>% select(year, COD_ESPECIE, zone, TAC_ind),
             by = c("COD_ESPECIE", "ind_zone" = "zone"),
             relationship = "many-to-many") %>%
-  mutate(H_alloc_vys = omega_zone * TAC_ind) %>%
+  mutate(H_alloc_vys = omega_zone * TAC_ind)
+
+# 6b-i: by species (Kasperski-aligned, 2026-05-11 refactor)
+halloc_ind_by_sp <- halloc_ind_vys %>%
+  group_by(COD_BARCO, year, COD_ESPECIE) %>%
+  summarise(H_alloc_vys = sum(H_alloc_vys, na.rm = TRUE), .groups = "drop")
+
+# 6b-ii: legacy aggregated (backward-compat)
+halloc_ind <- halloc_ind_vys %>%
   group_by(COD_BARCO, year) %>%
   summarise(H_alloc_vy = sum(H_alloc_vys, na.rm = TRUE), .groups = "drop")
 
 
 # --- 6c. COMBINE ---
 halloc <- bind_rows(halloc_art, halloc_ind)
+
+# 6c-i: by-species pivoted wide (Kasperski-aligned, 2026-05-11 refactor)
+# Columns: H_alloc_anchoveta, H_alloc_sardina_comun, H_alloc_jurel.
+# Vessels not in TAC universe for a given species default to 0 (no allocation).
+halloc_by_sp <- bind_rows(halloc_art_by_sp, halloc_ind_by_sp) %>%
+  mutate(species = case_when(
+    COD_ESPECIE == 114L ~ "anchoveta",
+    COD_ESPECIE == 33L  ~ "sardina_comun",
+    COD_ESPECIE == 26L  ~ "jurel",
+    TRUE                ~ NA_character_
+  )) %>%
+  filter(!is.na(species)) %>%
+  select(COD_BARCO, year, species, H_alloc_vys) %>%
+  tidyr::pivot_wider(
+    names_from   = species,
+    values_from  = H_alloc_vys,
+    names_prefix = "H_alloc_",
+    values_fill  = 0
+  )
+
+# Sanity: legacy halloc vs sum of species-specific should be exact up to rounding.
+sanity_join <- halloc %>%
+  left_join(halloc_by_sp, by = c("COD_BARCO", "year")) %>%
+  mutate(
+    across(starts_with("H_alloc_"), ~ tidyr::replace_na(., 0)),
+    H_alloc_sum  = H_alloc_anchoveta + H_alloc_sardina_comun + H_alloc_jurel,
+    abs_diff     = abs(H_alloc_vy - H_alloc_sum),
+    rel_diff_pct = 100 * abs_diff / pmax(H_alloc_vy, 1e-6)
+  )
+cat("\n=== Sanity: legacy H_alloc_vy vs sum of species-specific ===\n")
+cat("  max abs_diff:    ", round(max(sanity_join$abs_diff, na.rm = TRUE), 4), "\n")
+cat("  max rel_diff_pct:", round(max(sanity_join$rel_diff_pct, na.rm = TRUE), 4), "\n")
+cat("  cells with rel_diff > 0.01%:", sum(sanity_join$rel_diff_pct > 0.01, na.rm = TRUE), "\n")
+rm(sanity_join)
 
 cat("\n=== H_alloc_vy (official TAC, regional/zonal) ===\n")
 halloc %>%
@@ -258,8 +308,10 @@ halloc %>%
 # =========================================================================
 
 dir.create("data/trips", showWarnings = FALSE, recursive = TRUE)
-saveRDS(tac_art,  file = "data/trips/tac_art.rds")
-saveRDS(tac_ind,  file = "data/trips/tac_ind.rds")
-saveRDS(halloc,   file = "data/trips/halloc_official.rds")
-cat("\n Saved: tac_art.rds, tac_ind.rds, halloc_official.rds\n")
+saveRDS(tac_art,       file = "data/trips/tac_art.rds")
+saveRDS(tac_ind,       file = "data/trips/tac_ind.rds")
+saveRDS(halloc,        file = "data/trips/halloc_official.rds")
+saveRDS(halloc_by_sp,  file = "data/trips/halloc_official_by_species.rds")
+cat("\n Saved: tac_art.rds, tac_ind.rds, halloc_official.rds, halloc_official_by_species.rds\n")
 cat("  Replace 'halloc' in poisson_model.R merge with this halloc.\n")
+cat("  New file halloc_official_by_species.rds carries 3 species cols for the Kasperski-aligned NB refactor.\n")

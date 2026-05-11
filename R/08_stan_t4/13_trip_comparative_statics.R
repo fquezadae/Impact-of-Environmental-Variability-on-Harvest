@@ -375,9 +375,15 @@ t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
     omega_jur  = H_jur  / H_tot
   )]
 
+  # 2026-05-11 Kasperski refactor: keep TIPO_EMB and species-specific
+  # H_alloc_hist alongside the legacy scalar.
   v_halloc <- pdt[!is.na(H_alloc_vy),
-                  .(H_alloc_hist = median(H_alloc_vy),
-                    n_years      = .N),
+                  .(H_alloc_hist           = median(H_alloc_vy),
+                    H_alloc_anch_hist      = median(H_alloc_anchoveta,     na.rm = TRUE),
+                    H_alloc_sard_hist      = median(H_alloc_sardina_comun, na.rm = TRUE),
+                    H_alloc_jur_hist       = median(H_alloc_jurel,         na.rm = TRUE),
+                    n_years                = .N,
+                    TIPO_EMB               = data.table::first(TIPO_EMB)),
                   by = COD_BARCO]
 
   vtab <- merge(v_catch, v_halloc, by = "COD_BARCO", all.x = TRUE)
@@ -403,72 +409,105 @@ t6_build_vessel_table <- function(poisson_rds = T6_POISSON_RDS) {
 }
 
 # -----------------------------------------------------------------------------
-# Paso 5 -- Re-estimar NB para beta_H_ind y beta_H_art (sin cambios)
+# Paso 5 -- Kasperski-aligned NB betas (2026-05-11 refactor)
 # -----------------------------------------------------------------------------
+# Loads the PRIMARY fits saved by poisson_model.R sec 14:
+#   nb_ind_primary.rds: NB with 3 H_alloc_s + 3 prices + year FE
+#   nb_art_primary.rds: NB with 3 H_alloc_s + 3 prices + year FE
+#                       + H_alloc_anchoveta x TIPO_EMB interaction
+#
+# Returns nested betas per fleet:
+#   beta_h_anch[fleet, TIPO_EMB]   - matrix-like, IND scalar, ART by TIPO_EMB
+#   beta_h_sard[fleet]             - scalar per fleet
+#   beta_h_jur[fleet]              - scalar per fleet
+#   beta_weather[fleet]            - scalar per fleet
+#
+# Legacy fits also loaded for sensitivity comparison.
+
+T6_PRIMARY_IND_RDS <- "data/outputs/nb_kasperski/nb_ind_primary.rds"
+T6_PRIMARY_ART_RDS <- "data/outputs/nb_kasperski/nb_art_primary.rds"
+T6_LEGACY_IND_RDS  <- "data/outputs/nb_kasperski/nb_ind_legacy_fe.rds"
+T6_LEGACY_ART_RDS  <- "data/outputs/nb_kasperski/nb_art_legacy_fe.rds"
+
+# TIPO_EMB categories with N >= 50 vessel-years in ART: BM, LM, UNK.
+# Smaller categories (BR n=12, BRV n=3, L n=6) have unidentified
+# interactions and are excluded from aggregate factor_trips with caveat
+# in the manuscript (their effort+quota share is <0.1% of ART).
+T6_TIPO_EMB_KEEP_ART <- c("BM", "LM", "UNK")
 
 t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
-  poisson_df <- readRDS(poisson_rds)
+  if (!file.exists(T6_PRIMARY_IND_RDS) || !file.exists(T6_PRIMARY_ART_RDS)) {
+    stop(sprintf(
+      "Primary fits not found at %s / %s. Run R/04_models/poisson_model.R first.",
+      T6_PRIMARY_IND_RDS, T6_PRIMARY_ART_RDS))
+  }
 
-  df_ind <- poisson_df %>% dplyr::filter(TIPO_FLOTA == "IND")
-  df_art <- poisson_df %>% dplyr::filter(TIPO_FLOTA == "ART")
+  nb_ind <- readRDS(T6_PRIMARY_IND_RDS)
+  nb_art <- readRDS(T6_PRIMARY_ART_RDS)
+  nb_ind_leg <- readRDS(T6_LEGACY_IND_RDS)
+  nb_art_leg <- readRDS(T6_LEGACY_ART_RDS)
 
-  # Spec primary 2026-04-30: year FE para absorber shocks aggregados (estallido
-  # 2019 + COVID 2020-2022). beta_H y beta_weather quedan identificados de
-  # variacion within-year cross-vessel (la fuente exogena para la proyeccion).
-  f <- T_vy ~ log_bodega + H_alloc_vy +
-    price_jurel + price_sardina + price_anchov +
-    days_bad_weather + days_closed_vy +
-    TIPO_EMB + factor(year)
+  cf_ind <- coef(nb_ind)
+  cf_art <- coef(nb_art)
 
-  nb_ind <- MASS::glm.nb(f, data = df_ind)
-  nb_art <- MASS::glm.nb(f, data = df_art)
+  # IND: scalar beta_h^s per species + scalar beta_weather
+  beta_h_anch_ind <- as.numeric(cf_ind["H_alloc_anchoveta"])
+  beta_h_sard_ind <- as.numeric(cf_ind["H_alloc_sardina_comun"])
+  beta_h_jur_ind  <- as.numeric(cf_ind["H_alloc_jurel"])
+  beta_W_ind      <- as.numeric(cf_ind["days_bad_weather"])
 
-  # Sensitivity sin year FE (spec legacy)
-  f_noFE <- T_vy ~ log_bodega + H_alloc_vy +
-    price_jurel + price_sardina + price_anchov +
-    days_bad_weather + days_closed_vy +
-    TIPO_EMB
-  nb_ind_noFE <- MASS::glm.nb(f_noFE, data = df_ind)
-  nb_art_noFE <- MASS::glm.nb(f_noFE, data = df_art)
+  # ART: beta_h_anch interacts with TIPO_EMB. Base = TIPO_EMB at reference
+  # level (alphabetical: BM). Marginal beta for each TIPO_EMB is base +
+  # interaction term. Keep only TIPO_EMB categories with N>=50.
+  base_anch_art <- as.numeric(cf_art["H_alloc_anchoveta"])
+  inter_names   <- grep("^H_alloc_anchoveta:TIPO_EMB", names(cf_art), value = TRUE)
+  beta_h_anch_art_by_emb <- c(BM = base_anch_art)
+  for (nm in inter_names) {
+    em <- sub("H_alloc_anchoveta:TIPO_EMB", "", nm)
+    beta_h_anch_art_by_emb[em] <- base_anch_art + as.numeric(cf_art[nm])
+  }
+  # Drop unidentified small-N categories from the lookup (caveat below).
+  beta_h_anch_art_by_emb <- beta_h_anch_art_by_emb[
+    names(beta_h_anch_art_by_emb) %in% T6_TIPO_EMB_KEEP_ART
+  ]
 
-  beta_H_ind  <- as.numeric(coef(nb_ind)["H_alloc_vy"])
-  beta_H_art  <- as.numeric(coef(nb_art)["H_alloc_vy"])
-  beta_W_ind  <- as.numeric(coef(nb_ind)["days_bad_weather"])
-  beta_W_art  <- as.numeric(coef(nb_art)["days_bad_weather"])
+  beta_h_sard_art <- as.numeric(cf_art["H_alloc_sardina_comun"])
+  beta_h_jur_art  <- as.numeric(cf_art["H_alloc_jurel"])
+  beta_W_art      <- as.numeric(cf_art["days_bad_weather"])
 
-  beta_H_ind_noFE <- as.numeric(coef(nb_ind_noFE)["H_alloc_vy"])
-  beta_H_art_noFE <- as.numeric(coef(nb_art_noFE)["H_alloc_vy"])
-  beta_W_ind_noFE <- as.numeric(coef(nb_ind_noFE)["days_bad_weather"])
-  beta_W_art_noFE <- as.numeric(coef(nb_art_noFE)["days_bad_weather"])
+  # Legacy (scalar H_alloc) for sensitivity in the appendix
+  cf_ind_leg <- coef(nb_ind_leg)
+  cf_art_leg <- coef(nb_art_leg)
+  beta_H_ind_leg <- as.numeric(cf_ind_leg["H_alloc_vy"])
+  beta_H_art_leg <- as.numeric(cf_art_leg["H_alloc_vy"])
+  beta_W_ind_leg <- as.numeric(cf_ind_leg["days_bad_weather"])
+  beta_W_art_leg <- as.numeric(cf_art_leg["days_bad_weather"])
 
-  cat("[T7] NB reestimado (in-script, primary = with year FE):\n")
-  cat("    IND: beta_H(H_alloc_vy)    =", sprintf("%.6f", beta_H_ind),
-      "(N =", nrow(df_ind), ")\n")
-  cat("    IND: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_ind), "\n")
-  cat("    ART: beta_H(H_alloc_vy)    =", sprintf("%.6f", beta_H_art),
-      "(N =", nrow(df_art), ")\n")
-  cat("    ART: beta_weather(d_bad)   =", sprintf("%.6f", beta_W_art), "\n")
-  cat("[T7] Sensitivity vs no-FE (legacy spec):\n")
-  cat(sprintf("    IND: beta_H FE=%.6f  noFE=%.6f  ratio=%.2f\n",
-              beta_H_ind, beta_H_ind_noFE,
-              beta_H_ind / beta_H_ind_noFE))
-  cat(sprintf("    IND: beta_w FE=%.6f  noFE=%.6f  ratio=%.2f\n",
-              beta_W_ind, beta_W_ind_noFE,
-              beta_W_ind / beta_W_ind_noFE))
-  cat(sprintf("    ART: beta_H FE=%.6f  noFE=%.6f  ratio=%.2f\n",
-              beta_H_art, beta_H_art_noFE,
-              beta_H_art / beta_H_art_noFE))
-  cat(sprintf("    ART: beta_w FE=%.6f  noFE=%.6f  ratio=%.2f\n\n",
-              beta_W_art, beta_W_art_noFE,
-              beta_W_art / beta_W_art_noFE))
+  cat("[T7] PRIMARY Kasperski-aligned betas loaded (year FE in all fits):\n")
+  cat(sprintf("    IND: beta_h_anch=%.6f  beta_h_sard=%.6f  beta_h_jur=%.6f\n",
+              beta_h_anch_ind, beta_h_sard_ind, beta_h_jur_ind))
+  cat(sprintf("    IND: beta_weather=%.6f\n", beta_W_ind))
+  cat(sprintf("    ART (TIPO_EMB-dependent for anchoveta):\n"))
+  for (em in names(beta_h_anch_art_by_emb)) {
+    cat(sprintf("       beta_h_anch[%s]=%.6f\n", em, beta_h_anch_art_by_emb[em]))
+  }
+  cat(sprintf("    ART: beta_h_sard=%.6f  beta_h_jur=%.6f  beta_weather=%.6f\n\n",
+              beta_h_sard_art, beta_h_jur_art, beta_W_art))
+  cat("[T7] Legacy (scalar) for appendix sensitivity:\n")
+  cat(sprintf("    IND: beta_H=%.6f  beta_w=%.6f\n", beta_H_ind_leg, beta_W_ind_leg))
+  cat(sprintf("    ART: beta_H=%.6f  beta_w=%.6f\n\n", beta_H_art_leg, beta_W_art_leg))
 
   list(
-    beta_H            = c(ART = beta_H_art,  IND = beta_H_ind),
-    beta_weather      = c(ART = beta_W_art,  IND = beta_W_ind),
-    beta_H_noFE       = c(ART = beta_H_art_noFE, IND = beta_H_ind_noFE),
-    beta_weather_noFE = c(ART = beta_W_art_noFE, IND = beta_W_ind_noFE),
+    # PRIMARY (Kasperski-aligned)
+    beta_h_anch       = list(IND = beta_h_anch_ind, ART_by_emb = beta_h_anch_art_by_emb),
+    beta_h_sard       = c(ART = beta_h_sard_art, IND = beta_h_sard_ind),
+    beta_h_jur        = c(ART = beta_h_jur_art,  IND = beta_h_jur_ind),
+    beta_weather      = c(ART = beta_W_art,      IND = beta_W_ind),
+    # LEGACY (scalar H_alloc) for appendix sensitivity
+    beta_H_legacy     = c(ART = beta_H_art_leg, IND = beta_H_ind_leg),
+    beta_w_legacy     = c(ART = beta_W_art_leg, IND = beta_W_ind_leg),
     fits              = list(art = nb_art, ind = nb_ind,
-                              art_noFE = nb_art_noFE, ind_noFE = nb_ind_noFE)
+                              art_legacy = nb_art_leg, ind_legacy = nb_ind_leg)
   )
 }
 
@@ -479,8 +518,7 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
 # x window) ~ 16K x 22 = 352K filas. Multiplied por ~hundreds de vessels =
 # ~50-100M rows totales (manageable como rbindlist por vessel).
 
-t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H,
-                                     beta_weather = NULL,
+t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_pack,
                                      vessel_delta_dbw = NULL) {
 
   fb_wide <- as.data.table(factor_B_dt)[
@@ -498,20 +536,25 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H,
 
   vt <- as.data.table(vessel_tab)
 
-  # Direct weather channel (vessel-specific Deltadays_bw). Si beta_weather o
-  # vessel_delta_dbw es NULL, se usa direct_term=0 -> retrocompatible con la
-  # version solo-indirect.
-  use_direct <- !is.null(beta_weather) && !is.null(vessel_delta_dbw)
+  # 2026-05-11 refactor: filter ART vessels to TIPO_EMB with N>=50 in fit.
+  # Excluded BR/BRV/L: <0.1% of effort/quota in ART, documented caveat.
+  before_n <- nrow(vt)
+  vt <- vt[!(TIPO_FLOTA == "ART" & !(TIPO_EMB %in% T6_TIPO_EMB_KEEP_ART))]
+  after_n <- nrow(vt)
+  if (after_n < before_n) {
+    cat(sprintf("[T7] Dropped %d ART vessels with TIPO_EMB outside {BM, LM, UNK}\n",
+                before_n - after_n))
+  }
+
+  # Direct weather channel (vessel-specific Deltadays_bw)
+  use_direct <- !is.null(beta_pack$beta_weather) && !is.null(vessel_delta_dbw)
   if (use_direct) {
     vd <- as.data.table(vessel_delta_dbw)[
       , .(COD_BARCO, model, scenario, window, delta_days_bw)
     ]
-    # Key string para alinear via named-vector lookup contra fb_wide. match()
-    # implicito en `[]` con names. Mas robusto que merge() porque no depende
-    # del orden de retorno; directly indexed.
     fb_key <- paste(fb_wide$model, fb_wide$scenario, fb_wide$window, sep = "|")
     cat(sprintf("[T7] Direct weather channel ON: beta_weather ART=%.5f, IND=%.5f\n",
-                beta_weather[["ART"]], beta_weather[["IND"]]))
+                beta_pack$beta_weather[["ART"]], beta_pack$beta_weather[["IND"]]))
   } else {
     cat("[T7] Direct weather channel OFF (legacy mode, indirect only)\n")
   }
@@ -522,36 +565,55 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H,
       formatC(nrow(vt) * nrow(fb_wide), format = "d", big.mark = ","), "\n")
   t0 <- Sys.time()
 
+  # Extract beta lookups (PRIMARY = Kasperski-aligned)
+  beta_h_sard_v <- beta_pack$beta_h_sard
+  beta_h_jur_v  <- beta_pack$beta_h_jur
+  beta_w_v      <- if (use_direct) beta_pack$beta_weather else NULL
+
   chunks <- vector("list", nrow(vt))
   for (i in seq_len(nrow(vt))) {
     v       <- vt[i]
-    beta    <- beta_H[[as.character(v$TIPO_FLOTA)]]
-    beta_w  <- if (use_direct) beta_weather[[as.character(v$TIPO_FLOTA)]] else 0
+    fleet   <- as.character(v$TIPO_FLOTA)
 
+    # beta_h_anch lookup: scalar for IND, TIPO_EMB-dependent for ART
+    if (fleet == "IND") {
+      beta_h_anch_v <- beta_pack$beta_h_anch$IND
+    } else {  # ART
+      emb <- as.character(v$TIPO_EMB)
+      beta_h_anch_v <- beta_pack$beta_h_anch$ART_by_emb[emb]
+      if (is.na(beta_h_anch_v)) {
+        # Should not happen post-filter; safety belt.
+        next
+      }
+    }
+
+    # factor_H (legacy diagnostic, used in survive threshold)
     factor_H <- v$omega_anch * fb_wide$fB_anch +
                 v$omega_sard * fb_wide$fB_sard +
                 v$omega_jur  * fb_wide$fB_jur
 
+    # PRIMARY indirect term: sum_s beta_h^s * H_alloc_s_hist * (fB_s - 1)
+    indirect_term <- beta_h_anch_v * v$H_alloc_anch_hist * (fb_wide$fB_anch - 1) +
+                     beta_h_sard_v[[fleet]] * v$H_alloc_sard_hist * (fb_wide$fB_sard - 1) +
+                     beta_h_jur_v[[fleet]]  * v$H_alloc_jur_hist  * (fb_wide$fB_jur  - 1)
+
     if (use_direct) {
-      # Vessel-specific Deltadays_bw via named-vector lookup. vd_v tiene ~22 rows
-      # (1 per (model, scenario, window)); fb_key tiene ~350K rows. El lookup
-      # fb_key contra el named-vector preserva orden de fb_wide row-by-row.
       vd_v <- vd[COD_BARCO == v$COD_BARCO]
       delta_lookup <- setNames(
         vd_v$delta_days_bw,
         paste(vd_v$model, vd_v$scenario, vd_v$window, sep = "|")
       )
       delta_days_bw <- unname(delta_lookup[fb_key])
-      # Si vessel no matchea o algun (m,s,w) falta (no deberia; safety belt).
       delta_days_bw[is.na(delta_days_bw)] <- 0
 
-      indirect_term <- beta * v$H_alloc_hist * (factor_H - 1)
-      direct_term   <- beta_w * delta_days_bw
-      factor_trips  <- exp(indirect_term + direct_term)
+      beta_w <- beta_w_v[[fleet]]
+      direct_term  <- beta_w * delta_days_bw
+      factor_trips <- exp(indirect_term + direct_term)
 
       chunks[[i]] <- data.table(
         COD_BARCO        = v$COD_BARCO,
         TIPO_FLOTA       = v$TIPO_FLOTA,
+        TIPO_EMB         = v$TIPO_EMB,
         .draw            = fb_wide$.draw,
         model            = fb_wide$model,
         scenario         = fb_wide$scenario,
@@ -562,11 +624,11 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_H,
         factor_trips     = factor_trips
       )
     } else {
-      factor_trips <- exp(beta * v$H_alloc_hist * (factor_H - 1))
-
+      factor_trips <- exp(indirect_term)
       chunks[[i]] <- data.table(
         COD_BARCO        = v$COD_BARCO,
         TIPO_FLOTA       = v$TIPO_FLOTA,
+        TIPO_EMB         = v$TIPO_EMB,
         .draw            = fb_wide$.draw,
         model            = fb_wide$model,
         scenario         = fb_wide$scenario,
@@ -685,15 +747,25 @@ t6_summarise_trips_cross <- function(within_summ) {
 # Paso 7c -- Sanity unit-test: factor_H = 1 -> factor_trips = 1.0 exacto
 # -----------------------------------------------------------------------------
 
-t6_sanity_unit_test <- function(vessel_tab, beta_H) {
+t6_sanity_unit_test <- function(vessel_tab, beta_pack) {
   vt <- as.data.table(vessel_tab)
-  test_factor_H <- 1.0
-  test_factor_trips <- exp(
-    beta_H["IND"] * vt[TIPO_FLOTA == "IND", median(H_alloc_hist)] *
-    (test_factor_H - 1)
-  )
+  # PRIMARY spec: indirect_term = sum_s beta_h^s * H_alloc_s_hist * (fB_s - 1).
+  # When all fB_s = 1 (no climate change), every term is zero -> factor_trips = 1.
+  # Build a median-IND vessel and check.
+  vh_med_ind <- vt[TIPO_FLOTA == "IND",
+                   .(H_anch = median(H_alloc_anch_hist, na.rm = TRUE),
+                     H_sard = median(H_alloc_sard_hist, na.rm = TRUE),
+                     H_jur  = median(H_alloc_jur_hist,  na.rm = TRUE))]
+  beta_h_anch_ind <- beta_pack$beta_h_anch$IND
+  beta_h_sard_ind <- beta_pack$beta_h_sard[["IND"]]
+  beta_h_jur_ind  <- beta_pack$beta_h_jur[["IND"]]
+  # factor_B = 1 for all species
+  test_indirect <- beta_h_anch_ind * vh_med_ind$H_anch * 0 +
+                   beta_h_sard_ind * vh_med_ind$H_sard * 0 +
+                   beta_h_jur_ind  * vh_med_ind$H_jur  * 0
+  test_factor_trips <- exp(test_indirect)
   ok <- abs(test_factor_trips - 1) < 1e-10
-  cat(sprintf("[T7] Sanity unit-test factor_H=1 -> factor_trips_indirect = %.6f  %s\n",
+  cat(sprintf("[T7] Sanity unit-test factor_B_s=1 -> factor_trips_indirect = %.6f  %s\n",
               test_factor_trips, if (ok) "OK" else "FAIL"))
   cat("    (testea SOLO el canal indirect. factor_trips total incluye ademas\n",
       "     beta_weather*Deltadays_bw del direct channel; con Deltawind=0 ese termino\n",
@@ -854,21 +926,20 @@ t6_run <- function() {
                                  non_id            = non_identified)])
   cat("\n")
 
-  # Vessel table + NB beta_H y beta_weather
+  # Vessel table + Kasperski-aligned NB betas (loaded from primary fits)
   vtab   <- t6_build_vessel_table()
   nbres  <- t6_fit_nb()
 
   # Sanity unit-test sobre el termino indirect (no climate -> factor_trips=1)
-  t6_sanity_unit_test(vtab, nbres$beta_H)
+  t6_sanity_unit_test(vtab, nbres)
 
-  # Deltadays_bw vessel-specific (direct weather channel, via wc helper). Cacheado
-  # en data/cmip6/delta_days_bw_vessel.rds; force=TRUE para recomputar tras
-  # cambios en deltas_ensemble o en el panel COG.
+  # Deltadays_bw vessel-specific (direct weather channel, via wc helper).
   vdbw <- wc_compute_vessel_delta_days_bw(use_cache = TRUE, force = FALSE)
 
   # factor_H[d,v,m,c] y factor_trips[d,v,m,c] con AMBOS canales
-  ft     <- t6_compute_factor_trips(fB, vtab, nbres$beta_H,
-                                     beta_weather    = nbres$beta_weather,
+  # Pasa el beta_pack completo (PRIMARY Kasperski-aligned): 3 H_alloc_s per
+  # fleet, with TIPO_EMB interaction on anchoveta in ART.
+  ft     <- t6_compute_factor_trips(fB, vtab, nbres,
                                      vessel_delta_dbw = vdbw)
 
   # Resumenes within / cross
@@ -893,13 +964,72 @@ t6_run <- function() {
                                                 100 * (factor_trips_cond_cross_q75 - 1))),
                     fH_med     = round(factor_H_cross_med, 3))])
   cat("\n")
-  cat("    Leyenda: trips_marg = cross-model med [IQR cross-model].\n",
-      "             Pr_loss    = cross-model med [IQR cross-model] de Pr(factor_H<0.5).\n",
-      "             trips_cond = cross-model med [IQR cross-model] de mediana within-model\n",
-      "                          restringida a draws con factor_H >= 0.5.\n\n")
 
   # Escribir tablas
   t6_write_tables(trips_c, trips_w, ext_c, ext_w)
+
+  # -------------------------------------------------------------------------
+  # 2026-05-11 refactor: ART within-fleet decomposition by TIPO_EMB.
+  # New table for paper sec 4.4 (within-ART heterogeneity by vessel type).
+  # -------------------------------------------------------------------------
+  ft_art_emb <- ft[TIPO_FLOTA == "ART"]
+  ft_art_emb[, survive := factor_H >= T6_LOSS_THRESHOLD]
+  trips_w_emb <- ft_art_emb[, .(
+    n_obs                 = .N,
+    n_survive             = sum(survive),
+    factor_trips_marg_med = median(factor_trips),
+    factor_trips_marg_q05 = quantile(factor_trips, 0.05),
+    factor_trips_marg_q95 = quantile(factor_trips, 0.95),
+    pr_portfolio_loss     = mean(!survive),
+    factor_trips_cond_med = if (sum(survive) > 0)
+                              median(factor_trips[survive]) else NA_real_,
+    factor_H_med          = median(factor_H),
+    pr_decline            = mean(factor_trips < 1)
+  ), by = .(TIPO_EMB, model, scenario, window)]
+  trips_c_emb <- trips_w_emb[, .(
+    n_models                       = .N,
+    factor_trips_marg_cross_med    = median(factor_trips_marg_med),
+    factor_trips_marg_cross_q25    = quantile(factor_trips_marg_med, 0.25),
+    factor_trips_marg_cross_q75    = quantile(factor_trips_marg_med, 0.75),
+    factor_trips_marg_within_q05   = median(factor_trips_marg_q05),
+    factor_trips_marg_within_q95   = median(factor_trips_marg_q95),
+    pr_portfolio_loss_cross_med    = median(pr_portfolio_loss),
+    factor_trips_cond_cross_med    = median(factor_trips_cond_med, na.rm = TRUE),
+    factor_H_cross_med             = median(factor_H_med)
+  ), by = .(TIPO_EMB, scenario, window)]
+  trips_c_emb[, scenario_key   := paste(scenario, window, sep = "_")]
+  trips_c_emb[, scenario_label := T6_SCENARIO_LABEL[scenario_key]]
+  trips_c_emb[, ssp_ord_emb := factor(scenario, levels = T6_SSPS)]
+  trips_c_emb[, win_ord_emb := factor(window,   levels = T6_WINDOWS)]
+  setorder(trips_c_emb, TIPO_EMB, ssp_ord_emb, win_ord_emb)
+  trips_c_emb[, c("ssp_ord_emb", "win_ord_emb") := NULL]
+
+  fmt_pct  <- function(x) ifelse(is.na(x), "--", sprintf("%+.1f%%", 100 * (x - 1)))
+  fmt_band <- function(lo, hi) ifelse(is.na(lo) | is.na(hi), "--",
+                                       sprintf("[%+.1f%%, %+.1f%%]",
+                                               100 * (lo - 1), 100 * (hi - 1)))
+  trips_emb_fmt <- trips_c_emb[, .(
+    TIPO_EMB                              = TIPO_EMB,
+    Scenario                              = scenario_label,
+    n_models                              = n_models,
+    `%Delta trips marg cross med`         = fmt_pct(factor_trips_marg_cross_med),
+    `%Delta trips marg cross IQR`         = fmt_band(factor_trips_marg_cross_q25,
+                                                      factor_trips_marg_cross_q75),
+    `Pr loss cross med`                   = sprintf("%.2f", pr_portfolio_loss_cross_med),
+    `%Delta trips cond cross med`         = ifelse(is.na(factor_trips_cond_cross_med),
+                                                     "collapse-dom.",
+                                                     fmt_pct(factor_trips_cond_cross_med)),
+    `factor_H cross med`                  = sprintf("%.3f", factor_H_cross_med)
+  )]
+
+  path_emb     <- file.path(dirname(T6_TABLE_OUT), "trip_comparative_statics_by_tipo_emb.csv")
+  path_emb_raw <- file.path(dirname(T6_TABLE_OUT), "trip_comparative_statics_by_tipo_emb_raw.csv")
+  write.csv(trips_emb_fmt, path_emb,     row.names = FALSE)
+  write.csv(trips_c_emb,   path_emb_raw, row.names = FALSE)
+  cat("[T7] Wrote within-ART by TIPO_EMB:\n    ", path_emb, "\n    ", path_emb_raw, "\n\n")
+  cat("[T7] Within-ART by TIPO_EMB headline (SSP5-8.5 end-of-century):\n")
+  print(trips_emb_fmt[Scenario == "SSP5-8.5, 2081-2100"])
+  cat("\n")
 
   invisible(list(
     scenarios          = scen,
@@ -912,7 +1042,9 @@ t6_run <- function() {
     nb                 = nbres,
     factor_trips       = ft,
     trips_within       = trips_w,
-    trips_cross        = trips_c
+    trips_cross        = trips_c,
+    trips_within_emb   = trips_w_emb,
+    trips_cross_emb    = trips_c_emb
   ))
 }
 

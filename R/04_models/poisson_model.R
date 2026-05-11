@@ -21,14 +21,14 @@
 #   [x] Trips T_vy             : logbooks
 #   [x] Vessel chars Z_v       : logbooks
 #   [x] Harvest shares omega_vs: logbooks
-#   [x] H_alloc_vy             : shares × proxy
+#   [x] H_alloc_vy             : shares x proxy
 #   [x] Ex-vessel prices       : IFOP survey (PRECIO), deflated approx IPC
 #   [x] COG per vessel         : catch-weighted centroid from hauls
 #   [x] days_bad_weather_vy    : wind > 10 m/s at nearest grid to COG
-#   [x] days_closed_vy         : SUBPESCA veda calendar × COG reg zone
+#   [x] days_closed_vy         : SUBPESCA veda calendar x COG reg zone
 #   [X] Diesel price           : CNE
 #   [X] Official TAC_sy        : SUBPESCA 
-#   [ ] Year-varying vedas     : SUBPESCA resolutions — PENDING
+#   [ ] Year-varying vedas     : SUBPESCA resolutions -- PENDING
 
 rm(list = ls())
 gc()
@@ -38,6 +38,12 @@ library(dplyr)
 library(tidyr)
 library(lubridate)
 library(stringr)
+
+# 2026-05-11: shadow `select` to dplyr's version in case MASS is attached
+# from a previous session (MASS::select has a different signature and
+# breaks dplyr-style select(year, NM_RECURSO, ...) calls below).
+select <- dplyr::select
+filter <- dplyr::filter
 
 
 # ---- Directory setup ----
@@ -97,7 +103,7 @@ cat("Trips: ", nrow(trips_vy), " vessel-years,",
 
 
 # =========================================================================
-# 3. VESSEL CHARACTERISTICS (Z_v) — time-invariant
+# 3. VESSEL CHARACTERISTICS (Z_v) -- time-invariant
 # =========================================================================
 
 Mode <- function(x) {
@@ -120,7 +126,7 @@ vessel_chars <- log_spf %>%
     .groups = "drop"
   ) %>%
   mutate(TIPO_EMB = replace_na(TIPO_EMB, "UNK")) %>%
-  # Impute missing bodega: TIPO_EMB median → TIPO_FLOTA median
+  # Impute missing bodega: TIPO_EMB median -> TIPO_FLOTA median
   group_by(TIPO_EMB) %>%
   mutate(CAPACIDAD_BODEGA = if_else(is.na(CAPACIDAD_BODEGA),
                                     median(CAPACIDAD_BODEGA, na.rm = TRUE),
@@ -150,20 +156,26 @@ harvest_vy_wide <- harvest_vys %>%
 
 
 # =========================================================================
-# 5. ALLOCATED HARVEST: H_alloc_vy = omega_reg × TAC_region (official)
+# 5. ALLOCATED HARVEST: H_alloc_vy = omega_reg x TAC_region (official)
 # =========================================================================
 # Source: SERNAPESCA/SUBPESCA cuotas efectivas 2012-2024
-# Artisanal: regional TAC × vessel share within region
-# Industrial: zonal TAC × vessel share within zone
+# Artisanal: regional TAC x vessel share within region
+# Industrial: zonal TAC x vessel share within zone
 # Processed in tac_processing.R
 
 halloc <- readRDS("data/trips/halloc_official.rds")
 cat("H_alloc_vy: official TAC (regional/zonal).\n")
 cat("  Vessel-years:", nrow(halloc), "\n")
 
+# 2026-05-11 (Kasperski-aligned refactor): species-specific H_alloc.
+# Cols: H_alloc_anchoveta, H_alloc_sardina_comun, H_alloc_jurel.
+halloc_by_sp <- readRDS("data/trips/halloc_official_by_species.rds")
+cat("H_alloc by species: ", nrow(halloc_by_sp), "vessel-years\n")
+cat("  Species columns:", paste(setdiff(names(halloc_by_sp), c("COD_BARCO", "year")), collapse = ", "), "\n")
+
 
 # =========================================================================
-# 6. EX-VESSEL PRICES — deflated to real pesos (base 2018)
+# 6. EX-VESSEL PRICES -- deflated to real pesos (base 2018)
 # =========================================================================
 # Source: IFOP manufacturing survey, PRECIO sheet
 # TIPO_MP = 1: fresh resource (ex-vessel price)
@@ -191,13 +203,39 @@ prices_cs <- prices_raw %>%
     (NM_RECURSO == "ANCHOVETA"     & MES %in% peak_months[["ANCHOVETA"]])     |
     (NM_RECURSO == "JUREL"         & MES %in% peak_months[["JUREL"]])
   ) %>%
-  rename(year = ANIO, price_nominal = PRECIO)
+  rename(year = ANIO, price_nominal = PRECIO) %>%
+  # 2026-05-11: collapse XVI->VIII to match TAC/diesel conventions
+  mutate(port_region_eff = if_else(RG == 16L, 8L, as.integer(RG)))
 
 rm(prices_raw)
 
-# Annual average (simple mean across plants × months)
+# 2026-05-11: outlier filter for anchoveta 2015 (a handful of plant-month
+# records report PRECIO ~1,094,720 nominal pesos/ton -- 10x the modal value
+# of ~100,000 in adjacent years. Almost certainly a unit-of-account error
+# in the IFOP raw. Filter all single-plant records > 500,000 nominal pesos
+# pre-aggregation; this drops the bad cells without affecting any other
+# (year, region, species) cell where the modal value is much lower.
+n_outliers <- sum(prices_cs$price_nominal > 500000, na.rm = TRUE)
+cat("\nOutlier filter (price_nominal > 500,000 CLP/ton): dropping",
+    n_outliers, "of", nrow(prices_cs), "records (",
+    sprintf("%.2f", 100 * n_outliers / nrow(prices_cs)), "% )\n")
+prices_cs <- prices_cs %>% filter(price_nominal <= 500000)
+
+# Annual average -- NATIONAL (legacy, used as fallback when regional missing)
 prices_sy_nominal <- prices_cs %>%
   group_by(year, NM_RECURSO) %>%
+  summarise(price_nominal = mean(price_nominal, na.rm = TRUE),
+            n_obs = n(), .groups = "drop")
+
+# 2026-05-11: REGIONAL annual average (year, port_region_eff, species).
+# Kasperski-aligned refactor: NB regression will merge regional prices by
+# (year, vessel_port_region). For ART, this provides cross-region variation
+# for identification of beta_p^s. For IND, all 319 vessel-years sit in
+# RG=8 in the current panel, so the regional price effectively collapses
+# to the year-only series -- beta_p^s remain aliased to the year FE for
+# IND, documented as a nominal-control specification in sec 3.
+prices_syr_nominal <- prices_cs %>%
+  group_by(year, port_region_eff, NM_RECURSO) %>%
   summarise(price_nominal = mean(price_nominal, na.rm = TRUE),
             n_obs = n(), .groups = "drop")
 
@@ -249,23 +287,43 @@ prices_wide <- prices_sy_nominal %>%
   mutate(price_real = price_nominal * (base_ipc / ipc)) %>%
   select(year, NM_RECURSO, price_real) %>%
   pivot_wider(names_from = NM_RECURSO, values_from = price_real) %>%
-  rename(price_jurel = JUREL, price_sardina = `SARDINA COMUN`,
-         price_anchov = ANCHOVETA) %>%
+  rename(price_jurel_nat = JUREL, price_sardina_nat = `SARDINA COMUN`,
+         price_anchov_nat = ANCHOVETA) %>%
   mutate(year = as.integer(year)) %>%
   # Rescale from pesos/ton to thousands of pesos/ton for numerical stability
   mutate(across(starts_with("price_"), ~ . / 1000))
 
-cat("Prices: deflated to", base_year, "pesos, rescaled to 1000s pesos/ton (official IPC).\n")
-cat("  Jurel coverage:", sum(!is.na(prices_wide$price_jurel)), "of",
+cat("Prices (national): deflated to", base_year, "pesos, rescaled to 1000s pesos/ton.\n")
+cat("  Jurel coverage:", sum(!is.na(prices_wide$price_jurel_nat)), "of",
     nrow(prices_wide), "years\n")
 
-rm(prices_cs, prices_sy_nominal)
+# 2026-05-11: REGIONAL price panel (year x port_region_eff x species).
+# Used as the primary merge in sec 11; falls back to prices_wide (national)
+# when the (year, region, species) cell has no IFOP observation.
+prices_syr_wide <- prices_syr_nominal %>%
+  left_join(ipc_annual, by = "year") %>%
+  mutate(price_real = price_nominal * (base_ipc / ipc)) %>%
+  select(year, port_region_eff, NM_RECURSO, price_real) %>%
+  pivot_wider(names_from = NM_RECURSO, values_from = price_real) %>%
+  rename(price_jurel_reg = JUREL, price_sardina_reg = `SARDINA COMUN`,
+         price_anchov_reg = ANCHOVETA) %>%
+  mutate(year = as.integer(year),
+         port_region_eff = as.integer(port_region_eff)) %>%
+  mutate(across(starts_with("price_"), ~ . / 1000))
+
+cat("\nPrices (regional, year x port_region_eff): rows =", nrow(prices_syr_wide), "\n")
+cat("  Distinct (year, region) cells with each price observed:\n")
+prices_syr_wide %>%
+  summarise(across(starts_with("price_"), ~ sum(!is.na(.)))) %>%
+  print()
+
+rm(prices_cs, prices_sy_nominal, prices_syr_nominal)
 
 
 # =========================================================================
 # 7. COG: CENTER OF GRAVITY PER VESSEL
 # =========================================================================
-# Catch-weighted centroid over full sample — time-invariant.
+# Catch-weighted centroid over full sample -- time-invariant.
 # sd_lat diagnostic flags vessels with unstable fishing locations.
 
 log_spf <- log_spf %>%
@@ -300,19 +358,19 @@ cog_vessel <- log_spf %>%
   )
 
 cat("COG vessels:", nrow(cog_vessel), "\n")
-cat("Stable (sd_lat ≤ 0.5° or single haul):", sum(cog_vessel$cog_stable), "\n")
+cat("Stable (sd_lat <= 0.5° or single haul):", sum(cog_vessel$cog_stable), "\n")
 summary(cog_vessel$sd_lat)
 cog_vessel %>% count(reg_zone)
 
 
 # =========================================================================
-# 8. COG → REGULATORY ZONE → days_closed_vy
+# 8. COG -> REGULATORY ZONE -> days_closed_vy
 # =========================================================================
 # Source: SUBPESCA "Vedas en Chile" (articles-100030_documento_.pdf)
 # Anchoveta + sardina común: biological closures by zone
 # Jack mackerel: open year-round (no biological closures)
 #
-# V-VIII  (lat ≥ -38.4°): Aug-Oct (92d) + Jan-Feb (59d) = 151d
+# V-VIII  (lat >= -38.4°): Aug-Oct (92d) + Jan-Feb (59d) = 151d
 # IX-XIV  (lat < -38.4°): Jul-Oct (123d) + Jan-Feb (59d) = 182d
 #
 # NOTE: These are fixed calendar periods. Replace with exact dates
@@ -359,10 +417,10 @@ veda_by_zone <- expand_grid(
 
 
 # =========================================================================
-# 9. COG → days_bad_weather_vy
+# 9. COG -> days_bad_weather_vy
 # =========================================================================
 # Wind speed > 10 m/s at nearest grid point to vessel COG.
-# Threshold ≈ Beaufort 5-6, difficult conditions for purse seine.
+# Threshold ~ Beaufort 5-6, difficult conditions for purse seine.
 
 env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
 
@@ -423,7 +481,7 @@ veda_by_zone <- expand_grid(
 
 
 # =========================================================================
-# 10. DIESEL — CNE (precio nominal $/litro, por región → vessel-year, real)
+# 10. DIESEL -- CNE (precio nominal $/litro, por región -> vessel-year, real)
 # =========================================================================
 # Serie: Precios observados a público, promedio nominal por región ($/litro)
 # Fuente: CNE (ex-SERNAC hasta 2012)
@@ -465,11 +523,11 @@ month_map <- c(
   "septiembre" = 9, "octubre" = 10, "noviembre" = 11, "diciembre" = 12
 )
 
-# Helper: parse Chilean price format "1.050,5" → 1050.5
+# Helper: parse Chilean price format "1.050,5" -> 1050.5
 parse_clp <- function(x) {
   x <- str_trim(x)
   x <- str_replace_all(x, "\\.", "")   # remove thousands separator
-  x <- str_replace(x, ",", ".")        # decimal comma → point
+  x <- str_replace(x, ",", ".")        # decimal comma -> point
   as.numeric(x)
 }
 
@@ -513,7 +571,7 @@ diesel_region_year <- diesel_long %>%
   mutate(diesel_real = diesel_nominal * (base_ipc / ipc)) %>%
   select(year, region_code, diesel_real)
 
-# Complete: ensure all region × year combinations exist
+# Complete: ensure all region x year combinations exist
 diesel_region_year <- diesel_region_year %>%
   complete(year = 2012:2024, region_code, fill = list(diesel_real = NA))
 
@@ -588,18 +646,50 @@ cat("Mean real price:", round(mean(diesel_vy$diesel_real, na.rm = TRUE), 3), "(1
 # 11. MERGE ALL COMPONENTS
 # =========================================================================
 
+# 2026-05-11: vessel -> port_region_eff (mirror diesel_region with XVI->VIII).
+# Used to merge regional prices.
+port_region_vessel <- puerto_modal %>%
+  mutate(port_region_eff = if_else(diesel_region == 16L, 8L, as.integer(diesel_region))) %>%
+  select(COD_BARCO, port_region_eff)
+
 poisson_df <- trips_vy %>%
-  left_join(vessel_chars,     by = "COD_BARCO") %>%
-  left_join(harvest_vy_wide,  by = c("COD_BARCO", "year")) %>%
-  left_join(halloc,           by = c("COD_BARCO", "year")) %>%
-  left_join(diesel_vy, by = c("COD_BARCO", "year")) %>%
-  left_join(prices_wide,      by = "year") %>%
+  left_join(vessel_chars,                  by = "COD_BARCO") %>%
+  left_join(harvest_vy_wide,               by = c("COD_BARCO", "year")) %>%
+  left_join(halloc,                        by = c("COD_BARCO", "year")) %>%
+  # 2026-05-11: species-specific H_alloc for Kasperski-aligned NB
+  left_join(halloc_by_sp,                  by = c("COD_BARCO", "year")) %>%
+  left_join(diesel_vy,                     by = c("COD_BARCO", "year")) %>%
+  left_join(port_region_vessel,            by = "COD_BARCO") %>%
+  # 2026-05-11: REGIONAL prices merge by (year, port_region_eff)
+  left_join(prices_syr_wide,               by = c("year", "port_region_eff")) %>%
+  # National prices as fallback (same year, all regions)
+  left_join(prices_wide,                   by = "year") %>%
   left_join(cog_vessel %>% select(COD_BARCO, cog_lat, cog_lon, reg_zone, cog_stable),
             by = "COD_BARCO") %>%
-  left_join(days_bad_weather_vy, by = c("COD_BARCO", "year")) %>%
-  left_join(veda_by_zone,        by = c("year", "reg_zone")) %>%
+  left_join(days_bad_weather_vy,           by = c("COD_BARCO", "year")) %>%
+  left_join(veda_by_zone,                  by = c("year", "reg_zone")) %>%
   mutate(across(starts_with("H_"), ~replace_na(., 0))) %>%
+  # Fallback to national prices when regional cell is missing.
+  # Final columns: price_anchov / price_sardina / price_jurel (no suffix)
+  mutate(
+    price_anchov  = coalesce(price_anchov_reg,  price_anchov_nat),
+    price_sardina = coalesce(price_sardina_reg, price_sardina_nat),
+    price_jurel   = coalesce(price_jurel_reg,   price_jurel_nat),
+    # Flag rows that used the fallback (for downstream reporting)
+    price_anchov_fallback  = is.na(price_anchov_reg)  & !is.na(price_anchov_nat),
+    price_sardina_fallback = is.na(price_sardina_reg) & !is.na(price_sardina_nat),
+    price_jurel_fallback   = is.na(price_jurel_reg)   & !is.na(price_jurel_nat)
+  ) %>%
   filter(year >= 2013)
+
+cat("\nRegional price coverage (% of rows with REGIONAL price, no fallback):\n")
+poisson_df %>%
+  summarise(
+    anchov  = round(100 * mean(!price_anchov_fallback  & !is.na(price_anchov)),  1),
+    sardina = round(100 * mean(!price_sardina_fallback & !is.na(price_sardina)), 1),
+    jurel   = round(100 * mean(!price_jurel_fallback   & !is.na(price_jurel)),   1)
+  ) %>%
+  print()
 
 cat("\n====== FINAL DATASET ======\n")
 cat("Vessel-years:", nrow(poisson_df), "\n")
@@ -612,14 +702,15 @@ poisson_df %>%
 cat("\nVariable availability (% non-missing):\n")
 poisson_df %>%
   summarise(across(
-    c(T_vy, log_bodega, H_alloc_vy,
+    c(T_vy, log_bodega,
+      H_alloc_vy, H_alloc_anchoveta, H_alloc_sardina_comun, H_alloc_jurel,
       price_jurel, price_sardina, price_anchov,
       diesel_real,
       days_bad_weather, days_closed_vy),
     ~round(100 * mean(!is.na(.)), 1)
   )) %>%
   pivot_longer(everything(), names_to = "var", values_to = "pct") %>%
-  print()
+  print(n = 20)
 
 # Overdispersion diagnostic
 cat("\nOverdispersion (var/mean ratio of T_vy):\n")
@@ -634,7 +725,7 @@ poisson_df %>%
 # Save
 dir.create("data/trips", showWarnings = FALSE, recursive = TRUE)
 saveRDS(poisson_df, file = "data/trips/poisson_dt.rds")
-cat("\n✓ Saved: data/trips/poisson_dt.rds\n")
+cat("\n[OK] Saved: data/trips/poisson_dt.rds\n")
 
 
 saveRDS(maestro_puertos, file = "data/trips/maestro_puertos.rds")
@@ -805,3 +896,235 @@ for (wt in c(8, 10, 12)) {
 }
 
 
+# =========================================================================
+# 13. KASPERSKI-ALIGNED SPEC: 3 H_alloc per species + 3 regional prices
+#     (2026-05-11 refactor; year FE absorbs annual trajectory)
+# =========================================================================
+# Smoke test: estimate the new spec alongside the legacy spec so the
+# difference in betas is visible. The full T7 pipeline (posterior
+# propagation, ensemble compstat) is updated in
+# R/08_stan_t4/13_trip_comparative_statics.R (P4 proper).
+
+cat("\n\n=========================================================\n")
+cat("  SEC 13: Kasperski-aligned NB (3 H_alloc_s + 3 p_s + year FE)\n")
+cat("=========================================================\n")
+
+# Quick VIF on the 6 main regressors (per fleet, before fit)
+vif_quick <- function(df, fleet) {
+  X <- df %>% filter(TIPO_FLOTA == fleet) %>%
+    dplyr::select(H_alloc_anchoveta, H_alloc_sardina_comun, H_alloc_jurel,
+                  price_anchov, price_sardina, price_jurel) %>%
+    as.matrix()
+  ok <- complete.cases(X); X <- X[ok, ]
+  vifs <- sapply(seq_len(ncol(X)), function(j) {
+    Y <- X[, j]; Xr <- cbind(1, X[, -j, drop = FALSE])
+    fit <- .lm.fit(Xr, Y)
+    r2 <- 1 - sum(fit$residuals^2) / sum((Y - mean(Y))^2)
+    if (r2 >= 1) Inf else 1 / (1 - r2)
+  })
+  names(vifs) <- colnames(X)
+  vifs
+}
+cat("\nVIFs (6 main regressors, before fit):\n")
+cat("  ART:\n"); print(round(vif_quick(poisson_df, "ART"), 2))
+cat("  IND:\n"); print(round(vif_quick(poisson_df, "IND"), 2))
+
+# Fit Kasperski-aligned spec, per fleet, with year FE
+nb_ind_kasperski <- glm.nb(
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta + H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_ind
+)
+
+nb_art_kasperski <- glm.nb(
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta + H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_art
+)
+
+# Cluster SEs by vessel
+se_ind_k <- coeftest(nb_ind_kasperski,
+                     vcov = vcovCL(nb_ind_kasperski, cluster = df_ind$COD_BARCO))
+se_art_k <- coeftest(nb_art_kasperski,
+                     vcov = vcovCL(nb_art_kasperski, cluster = df_art$COD_BARCO))
+
+# Print main coefs (excluding factor(year) rows for readability)
+print_main <- function(ct) {
+  rows <- grep("factor\\(year\\)", rownames(ct), invert = TRUE)
+  print(ct[rows, , drop = FALSE])
+}
+
+cat("\n====== INDUSTRIAL (Kasperski-aligned, year FE) ======\n")
+print_main(se_ind_k)
+cat("\n====== ARTISANAL (Kasperski-aligned, year FE) ======\n")
+print_main(se_art_k)
+
+# Legacy fits with year FE for apples-to-apples AIC comparison
+nb_ind_legacy_fe <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_ind
+)
+nb_art_legacy_fe <- glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_art
+)
+
+cat("\n--- AIC comparison (lower = better; year FE in all) ---\n")
+cat("  IND legacy (scalar H_alloc):    ", round(AIC(nb_ind_legacy_fe), 1), "\n")
+cat("  IND Kasperski (3 H_alloc + 3 p):", round(AIC(nb_ind_kasperski),  1), "\n")
+cat("  Delta IND (Kasperski - legacy): ", round(AIC(nb_ind_kasperski) - AIC(nb_ind_legacy_fe), 1),
+    " (negative = Kasperski preferred)\n")
+cat("  ART legacy (scalar H_alloc):    ", round(AIC(nb_art_legacy_fe), 1), "\n")
+cat("  ART Kasperski (3 H_alloc + 3 p):", round(AIC(nb_art_kasperski),  1), "\n")
+cat("  Delta ART (Kasperski - legacy): ", round(AIC(nb_art_kasperski) - AIC(nb_art_legacy_fe), 1),
+    " (negative = Kasperski preferred)\n")
+
+# Beta_h^s table (main output of the refactor)
+cat("\n--- beta_h^s (cluster-robust SE) ---\n")
+beta_h_tab <- function(ct, fleet) {
+  coefs <- c("H_alloc_anchoveta", "H_alloc_sardina_comun", "H_alloc_jurel")
+  rows <- ct[coefs, , drop = FALSE]
+  stars <- ifelse(rows[, 4] < 0.01, "**",
+                  ifelse(rows[, 4] < 0.05, "*",
+                         ifelse(rows[, 4] < 0.10, ".", "")))
+  data.frame(
+    fleet   = fleet,
+    species = sub("H_alloc_", "", coefs),
+    beta    = signif(rows[, 1], 4),
+    se      = signif(rows[, 2], 3),
+    z       = round(rows[, 3], 2),
+    p       = format.pval(rows[, 4], digits = 2),
+    sig     = stars,
+    row.names = NULL
+  )
+}
+print(rbind(beta_h_tab(se_ind_k, "IND"),
+            beta_h_tab(se_art_k, "ART")))
+
+# Save fits for downstream P4 (full pipeline in 13_trip_comparative_statics.R)
+dir.create("data/outputs/nb_kasperski", showWarnings = FALSE, recursive = TRUE)
+saveRDS(nb_ind_kasperski, "data/outputs/nb_kasperski/nb_ind_kasperski.rds")
+saveRDS(nb_art_kasperski, "data/outputs/nb_kasperski/nb_art_kasperski.rds")
+saveRDS(nb_ind_legacy_fe, "data/outputs/nb_kasperski/nb_ind_legacy_fe.rds")
+saveRDS(nb_art_legacy_fe, "data/outputs/nb_kasperski/nb_art_legacy_fe.rds")
+cat("\n[OK] Kasperski-aligned fits saved to data/outputs/nb_kasperski/\n")
+
+
+# =========================================================================
+# 14. PRIMARY SPEC (2026-05-11 -- camino A refinado)
+#     IND: Kasperski-aligned with year FE
+#     ART: Kasperski-aligned with year FE + H_alloc_anch x TIPO_EMB
+#
+# Decided after diagnostics in diag_kasperski_signflip.R:
+#   * D1 (no FE): confirms price_sardina IND sign-flip is FE-driven
+#     noise amplified by IND geographic concentration in RG=8.
+#   * D2 (anch x TIPO_EMB in ART): Simpson paradox confirmed.
+#     BM artisanal vessels: beta_h^anch > 0 (Kasperski classical).
+#     LM (77% of ART): neutral. Aggregating gives spurious negative.
+#     ART AIC improves by -121.5 with the interaction.
+#   * D3 (regional-only): coalesce regional->national is fine;
+#     dropping 20% of ART rows introduces selection bias.
+# =========================================================================
+
+cat("\n=========================================================\n")
+cat("  SEC 14: Primary Kasperski-aligned NB spec\n")
+cat("    IND: 3 H_alloc + 3 prices + year FE\n")
+cat("    ART: 3 H_alloc + 3 prices + year FE + anch x TIPO_EMB\n")
+cat("=========================================================\n")
+
+nb_ind_primary <- nb_ind_kasperski  # fitted in SEC 13
+
+nb_art_primary <- glm.nb(
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta * TIPO_EMB +
+    H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
+    days_bad_weather + days_closed_vy +
+    factor(year),
+  data = df_art
+)
+
+se_ind_p <- coeftest(nb_ind_primary,
+                     vcov = vcovCL(nb_ind_primary, cluster = df_ind$COD_BARCO))
+se_art_p <- coeftest(nb_art_primary,
+                     vcov = vcovCL(nb_art_primary, cluster = df_art$COD_BARCO))
+
+print_main_p <- function(ct, label) {
+  cat("\n----- ", label, " -----\n", sep = "")
+  keep <- !grepl("factor.year.", rownames(ct))
+  print(ct[keep, , drop = FALSE])
+}
+print_main_p(se_ind_p, "IND PRIMARY (Kasperski + year FE)")
+print_main_p(se_art_p, "ART PRIMARY (Kasperski + year FE + anch x TIPO_EMB)")
+
+# Marginal beta_h^anch by TIPO_EMB in ART, with delta-method SE
+cat("\n--- ART: marginal beta_h^anch by TIPO_EMB (delta-method SE) ---\n")
+vc_art <- vcovCL(nb_art_primary, cluster = df_art$COD_BARCO)
+emb_levels <- sort(unique(df_art$TIPO_EMB))
+ref_emb <- emb_levels[1]
+cat("  Reference TIPO_EMB:", ref_emb, "\n")
+cf <- coef(nb_art_primary)
+base_anch <- cf["H_alloc_anchoveta"]
+v_base    <- vc_art["H_alloc_anchoveta", "H_alloc_anchoveta"]
+
+res_marg <- data.frame(
+  TIPO_EMB    = ref_emb,
+  n_vessel_yr = sum(df_art$TIPO_EMB == ref_emb),
+  beta_anch   = signif(base_anch, 4),
+  se          = signif(sqrt(v_base), 3),
+  stringsAsFactors = FALSE
+)
+res_marg$z <- round(res_marg$beta_anch / res_marg$se, 2)
+res_marg$p <- 2 * pnorm(-abs(res_marg$z))
+
+for (em in setdiff(emb_levels, ref_emb)) {
+  irow <- paste0("H_alloc_anchoveta:TIPO_EMB", em)
+  if (irow %in% rownames(vc_art)) {
+    eff <- base_anch + cf[irow]
+    v   <- v_base + vc_art[irow, irow] + 2 * vc_art["H_alloc_anchoveta", irow]
+    se  <- sqrt(v)
+    z   <- eff / se
+    res_marg <- rbind(res_marg, data.frame(
+      TIPO_EMB    = em,
+      n_vessel_yr = sum(df_art$TIPO_EMB == em),
+      beta_anch   = signif(eff, 4),
+      se          = signif(se, 3),
+      z           = round(z, 2),
+      p           = 2 * pnorm(-abs(z)),
+      stringsAsFactors = FALSE
+    ))
+  }
+}
+print(res_marg)
+
+cat("\n--- ART: filtered to TIPO_EMB with N >= 50 (substantive) ---\n")
+res_marg_sig <- res_marg[res_marg$n_vessel_yr >= 50, ]
+print(res_marg_sig)
+
+cat("\n--- AIC comparison (year FE in all) ---\n")
+cat("  IND primary (Kasperski):                   ", round(AIC(nb_ind_primary),   1), "\n")
+cat("  IND legacy (scalar H_alloc):               ", round(AIC(nb_ind_legacy_fe), 1), "\n")
+cat("  Delta IND primary - legacy:                ", round(AIC(nb_ind_primary) - AIC(nb_ind_legacy_fe), 1), "\n")
+cat("  ART primary (Kasperski + anch x TIPO_EMB): ", round(AIC(nb_art_primary),   1), "\n")
+cat("  ART Kasperski no interact:                 ", round(AIC(nb_art_kasperski), 1), "\n")
+cat("  ART legacy (scalar H_alloc):               ", round(AIC(nb_art_legacy_fe), 1), "\n")
+cat("  Delta ART primary - legacy:                ", round(AIC(nb_art_primary) - AIC(nb_art_legacy_fe), 1), "\n")
+
+saveRDS(nb_ind_primary,  "data/outputs/nb_kasperski/nb_ind_primary.rds")
+saveRDS(nb_art_primary,  "data/outputs/nb_kasperski/nb_art_primary.rds")
+write.csv(res_marg,     "data/outputs/nb_kasperski/beta_h_anch_marginal_by_tipo_emb.csv", row.names = FALSE)
+write.csv(res_marg_sig, "data/outputs/nb_kasperski/beta_h_anch_marginal_by_tipo_emb_N50.csv", row.names = FALSE)
+
+cat("\n[OK] PRIMARY fits saved.\n")
