@@ -415,34 +415,37 @@ df_art <- poisson_df %>% filter(TIPO_FLOTA == "ART")
 
 ```{r est_poisson, message=FALSE, warning=FALSE, include=FALSE}
 
-# ---- Negative Binomial estimation (PRIMARY: with year FE) ----
-# Year FE absorbs aggregate shocks (estallido social 2019, COVID 2020--2022)
-# that contaminate the cross-year identification of the structural betas.
-# beta_H and beta_weather are now identified from within-year cross-vessel
-# variation, which is the relevant margin for the Schaefer/NB projection.
+# ---- Negative Binomial estimation: Kasperski-aligned PRIMARY (2026-05-11)
+# IND: 3 species-specific H_alloc + 3 species-specific prices + year FE.
+# ART: same plus interaction H_alloc_anchoveta x TIPO_EMB (Simpson-paradox
+# motivated; see Sec 4.4 within-ART decomposition table).
+# Year FE absorbs aggregate shocks (estallido social 2019, COVID 2020--2022).
 
 nb_ind <- MASS::glm.nb(
-  T_vy ~ log_bodega + H_alloc_vy +
-    price_jurel + price_sardina + price_anchov +
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta + H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
     days_bad_weather + days_closed_vy +
     TIPO_EMB + factor(year),
   data = df_ind
 )
 
 nb_art <- MASS::glm.nb(
-  T_vy ~ log_bodega + H_alloc_vy +
-    price_jurel + price_sardina + price_anchov +
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta * TIPO_EMB +
+    H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
     days_bad_weather + days_closed_vy +
-    TIPO_EMB + factor(year),
+    factor(year),
   data = df_art
 )
 
-# ---- Sensitivity: NB without year FE (legacy spec) ----
+# ---- Sensitivity: legacy spec (scalar H_alloc_vy) ----
 nb_ind_noFE <- MASS::glm.nb(
   T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
-    TIPO_EMB,
+    TIPO_EMB + factor(year),
   data = df_ind
 )
 
@@ -450,7 +453,7 @@ nb_art_noFE <- MASS::glm.nb(
   T_vy ~ log_bodega + H_alloc_vy +
     price_jurel + price_sardina + price_anchov +
     days_bad_weather + days_closed_vy +
-    TIPO_EMB,
+    TIPO_EMB + factor(year),
   data = df_art
 )
 
@@ -562,10 +565,12 @@ tex_nb <- capture.output(
     dep.var.labels.include = FALSE,
     covariate.labels = c(
       "Hold capacity (log m$^3$)",
-      "Allocated harvest ($H^{alloc}_{vy}$, tons)",
-      "Price jack mackerel (1000s \\$/ton)",
-      "Price sardine (1000s \\$/ton)",
+      "Allocated harvest anchoveta ($H^{alloc}_{vy,anch}$, tons)",
+      "Allocated harvest sardine ($H^{alloc}_{vy,sard}$, tons)",
+      "Allocated harvest jack mackerel ($H^{alloc}_{vy,jur}$, tons)",
       "Price anchoveta (1000s \\$/ton)",
+      "Price sardine (1000s \\$/ton)",
+      "Price jack mackerel (1000s \\$/ton)",
       "Bad weather days",
       "Veda days",
       "Vessel type (UNK)",
@@ -573,9 +578,34 @@ tex_nb <- capture.output(
       "Vessel type (BRV)",
       "Vessel type (L)",
       "Vessel type (LM)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (BR)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (BRV)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (L)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (LM)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (UNK)",
       "Constant"
     ),
     omit = "factor\\(year\\)",
+    order = c("^log_bodega$",
+              "^H_alloc_anchoveta$",
+              "^H_alloc_sardina_comun$",
+              "^H_alloc_jurel$",
+              "^price_anchov$",
+              "^price_sardina$",
+              "^price_jurel$",
+              "^days_bad_weather$",
+              "^days_closed_vy$",
+              "^TIPO_EMBUNK$",
+              "^TIPO_EMBBR$",
+              "^TIPO_EMBBRV$",
+              "^TIPO_EMBL$",
+              "^TIPO_EMBLM$",
+              "^H_alloc_anchoveta:TIPO_EMBBR$",
+              "^H_alloc_anchoveta:TIPO_EMBBRV$",
+              "^H_alloc_anchoveta:TIPO_EMBL$",
+              "^H_alloc_anchoveta:TIPO_EMBLM$",
+              "^H_alloc_anchoveta:TIPO_EMBUNK$",
+              "^\\(Intercept\\)$"),
     add.lines = list(
       c("Year fixed effects", "Yes", "Yes"),
       c("Pseudo-$R^2$ (Cragg-Uhler)",
@@ -590,8 +620,8 @@ tex_nb <- capture.output(
     font.size = "footnotesize",
     notes = c(
       "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
-      "Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.",
-      "Allocated harvest = historical vessel share $\\times$ lagged aggregate harvest.",
+      "Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton, merged at $(year, vessel,region)$ resolution with fallback to year-level national mean when the regional cell is missing.",
+      "Allocated harvest is species-specific: $H^{alloc}_{vy,s} = \\omega^{hist}_{vs} \\bar{Q}_{sy}^{r(v)}$ following Kasperski (2015) Eq. 17. The artisanal regression interacts $H^{alloc}_{vy,anchoveta}$ with TIPO\\_EMB; TIPO\\_EMB categories with $N<50$ vessel-years (BR, BRV, L) are retained in the fit for completeness but excluded from the aggregate factor\\_trips projections.",
       "Year fixed effects absorb aggregate shocks (estallido social 2019, COVID 2020--2022).",
       paste0("LR test NB vs Poisson: Industrial $\\chi^2$ = ",
              round(lr_ind, 1), "; Artisanal $\\chi^2$ = ",
@@ -605,7 +635,7 @@ cat(fix_stargazer_notes(tex_nb), sep = "\n")
 
 ```
 
-The coefficient on allocated harvest is positive and highly significant in both fleets, confirming that vessels with larger quota allocations undertake more trips per year. This variable provides the key linkage between the trip equation and the simulation framework: changes in regional TACs translate into vessel-level effort adjustments through the quota-share mechanism.
+The coefficients on species-specific allocated harvest reveal the heterogeneity in fleet response that the legacy scalar specification masked. For the industrial fleet, the sardine coefficient is positive and highly significant ($p < 0.001$); the anchoveta coefficient is negative but not statistically distinguishable from zero; and the jack mackerel coefficient is positive and marginally significant ($p \approx 0.05$). For the artisanal fleet, sardine remains the dominant identified channel ($\hat{\beta}_h^{\,\mathrm{sard}} = 6.65\times 10^{-4}$, $p < 0.001$). The anchoveta response is heterogeneous across vessel types: in the reference category BM (bote motor, 8\% of the panel) the coefficient is large and positive ($\hat{\beta}_h^{\,\mathrm{anch,BM}} = +0.0164$, $p < 0.001$), consistent with the classical Kasperski (2015) interpretation that more quota implies more trips; in LM (lancha motor, 77\% of the panel) the coefficient collapses to near zero through the interaction term and ceases to be economically meaningful, indicating that the dominant artisanal segment is structurally driven by sardine rather than anchoveta. The legacy specification, which constrains the artisanal anchoveta response to a single scalar, recovers a small negative coefficient that is a weighted average of these two regimes biased toward zero by the LM weight; an information criterion comparison favours the interacted specification by $\Delta\mathrm{AIC} = -167.9$. These coefficients provide the linkage between the trip equation and the comparative-statics projections of Section \ref{projections}: changes in regional TACs translate into vessel-level effort adjustments through the species-specific quota-share mechanism, with the artisanal response decomposed by vessel type.
 
 The two fleets differ markedly in price responsiveness. For the industrial fleet, the jack mackerel price is positive and significant ($p < 0.01$), consistent with this fleet's primary orientation toward jack mackerel. Sardine and anchoveta prices have no detectable effect on industrial effort, reflecting the limited participation of industrial vessels in the sardine--anchoveta fishery. For the artisanal fleet, the sardine price is positive and significant ($p < 0.01$), consistent with sardine being the dominant target species for artisanal vessels in the Centro-Sur region. The anchoveta-price coefficient is negative and significant; this counterintuitive sign likely reflects simultaneity: years of low anchoveta availability generate both higher prices (through the inverse-demand channel) and fewer trips (through reduced catch opportunities), producing a negative reduced-form correlation. As noted above, the purpose of this equation is not causal identification but rather to provide an empirically grounded mapping for the simulation, in which prices are determined endogenously by the inverse-demand module.
 

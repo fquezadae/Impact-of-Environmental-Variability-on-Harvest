@@ -545,22 +545,29 @@ Table \ref{tab:poisson_results} reports the negative binomial estimates separate
  & Industrial & Artisanal \\ 
 \\[-1.8ex] & (1) & (2)\\ 
 \hline \\[-1.8ex] 
- Hold capacity (log m$^3$) & 0.005 (0.192) & 0.218$^{***}$ (0.052) \\ 
-  Allocated harvest ($H^{alloc}_{vy}$, tons) & 0.00003$^{***}$ (0.00001) & 0.0005$^{***}$ (0.00003) \\ 
-  Price jack mackerel (1000s \$/ton) & 0.007$^{***}$ (0.003) & 0.006$^{***}$ (0.002) \\ 
-  Price sardine (1000s \$/ton) & $-$0.013$^{***}$ (0.003) & 0.003$^{**}$ (0.002) \\ 
-  Price anchoveta (1000s \$/ton) & $-$0.007$^{*}$ (0.004) & 0.013$^{***}$ (0.003) \\ 
-  Bad weather days & $-$0.0001 (0.001) & $-$0.001$^{**}$ (0.0005) \\ 
-  Veda days & $-$0.081$^{***}$ (0.004) & 0.015$^{***}$ (0.002) \\ 
-  Vessel type (UNK) &  & $-$0.475$^{***}$ (0.106) \\ 
-  Vessel type (BR) &  & $-$1.022$^{***}$ (0.159) \\ 
-  Vessel type (BRV) &  & $-$2.410$^{***}$ (0.296) \\ 
-  Vessel type (L) &  & $-$0.070 (0.136) \\ 
-  Vessel type (LM) & $-$1.318$^{***}$ (0.167) & 0.171 (0.132) \\ 
-  Constant & 16.765$^{***}$ (2.251) & $-$3.879$^{***}$ (0.538) \\ 
+ Hold capacity (log m$^3$) & 0.097 (0.221) & 0.132$^{***}$ (0.046) \\ 
+  Allocated harvest anchoveta ($H^{alloc}_{vy,anch}$, tons) & $-$0.0003 (0.0002) & 0.016$^{***}$ (0.003) \\ 
+  Allocated harvest sardine ($H^{alloc}_{vy,sard}$, tons) & 0.0001$^{***}$ (0.00003) & 0.001$^{***}$ (0.00004) \\ 
+  Allocated harvest jack mackerel ($H^{alloc}_{vy,jur}$, tons) & 0.00002$^{*}$ (0.00001) & 0.001 (0.001) \\ 
+  Price anchoveta (1000s \$/ton) & $-$0.004 (0.004) & 0.011$^{***}$ (0.003) \\ 
+  Price sardine (1000s \$/ton) & $-$0.016$^{***}$ (0.003) & 0.003$^{**}$ (0.002) \\ 
+  Price jack mackerel (1000s \$/ton) & 0.008$^{***}$ (0.003) & 0.007$^{***}$ (0.002) \\ 
+  Bad weather days & $-$0.0003 (0.001) & $-$0.001 (0.0005) \\ 
+  Veda days & $-$0.079$^{***}$ (0.005) & 0.013$^{***}$ (0.002) \\ 
+  Vessel type (UNK) & $-$1.450$^{***}$ (0.163) & 0.160 (0.099) \\ 
+  Vessel type (BR) &  & $-$0.329$^{***}$ (0.079) \\ 
+  Vessel type (BRV) &  & $-$0.774$^{***}$ (0.079) \\ 
+  Vessel type (L) &  & $-$2.212$^{***}$ (0.377) \\ 
+  Vessel type (LM) &  & 0.289$^{***}$ (0.098) \\ 
+  $H^{alloc}_{vy,anch} \times$ TIPO\_EMB (BR) &  & $-$0.021$^{***}$ (0.008) \\ 
+  $H^{alloc}_{vy,anch} \times$ TIPO\_EMB (BRV) &  & $-$66.546$^{***}$ (13.119) \\ 
+  $H^{alloc}_{vy,anch} \times$ TIPO\_EMB (L) &  & 501.903 (501.942) \\ 
+  $H^{alloc}_{vy,anch} \times$ TIPO\_EMB (LM) &  & $-$0.017$^{***}$ (0.003) \\ 
+  $H^{alloc}_{vy,anch} \times$ TIPO\_EMB (UNK) &  & $-$0.013$^{***}$ (0.003) \\ 
+  Constant & 15.763$^{***}$ (2.605) & $-$3.697$^{***}$ (0.519) \\ 
  \hline \\[-1.8ex] 
 Year fixed effects & Yes & Yes \\ 
-Pseudo-$R^2$ (Cragg-Uhler) & 0.282 & 0.615 \\ 
+Pseudo-$R^2$ (Cragg-Uhler) & 0.302 & 0.631 \\ 
 Observations & 319 & 4,201 \\ 
 \hline 
 \hline \\[-1.8ex] 
@@ -568,15 +575,15 @@ Observations & 319 & 4,201 \\
 \begin{tablenotes}[flushleft]
 \footnotesize
 \item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.
-\item Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.
-\item Allocated harvest = historical vessel share $\times$ lagged aggregate harvest.
+\item Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton, merged at $(year, vessel,region)$ resolution with fallback to year-level national mean when the regional cell is missing.
+\item Allocated harvest is species-specific: $H^{alloc}_{vy,s} = \omega^{hist}_{vs} \bar{Q}_{sy}^{r(v)}$ following Kasperski (2015) Eq. 17. The artisanal regression interacts $H^{alloc}_{vy,anchoveta}$ with TIPO\_EMB; TIPO\_EMB categories with $N<50$ vessel-years (BR, BRV, L) are retained in the fit for completeness but excluded from the aggregate factor\_trips projections.
 \item Year fixed effects absorb aggregate shocks (estallido social 2019, COVID 2020--2022).
-\item LR test NB vs Poisson: Industrial $\chi^2$ = 420; Artisanal $\chi^2$ = 39735.9 (both $p < 0.001$).
+\item LR test NB vs Poisson: Industrial $\chi^2$ = 397.6; Artisanal $\chi^2$ = 37046.9 (both $p < 0.001$).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-The coefficient on allocated harvest is positive and highly significant in both fleets, confirming that vessels with larger quota allocations undertake more trips per year. This variable provides the key linkage between the trip equation and the simulation framework: changes in regional TACs translate into vessel-level effort adjustments through the quota-share mechanism.
+The coefficients on species-specific allocated harvest reveal the heterogeneity in fleet response that the legacy scalar specification masked. For the industrial fleet, the sardine coefficient is positive and highly significant (\(p < 0.001\)); the anchoveta coefficient is negative but not statistically distinguishable from zero; and the jack mackerel coefficient is positive and marginally significant (\(p \approx 0.05\)). For the artisanal fleet, sardine remains the dominant identified channel (\(\hat{\beta}_h^{\,\mathrm{sard}} = 6.65\times 10^{-4}\), \(p < 0.001\)). The anchoveta response is heterogeneous across vessel types: in the reference category BM (bote motor, 8\% of the panel) the coefficient is large and positive (\(\hat{\beta}_h^{\,\mathrm{anch,BM}} = +0.0164\), \(p < 0.001\)), consistent with the classical Kasperski (2015) interpretation that more quota implies more trips; in LM (lancha motor, 77\% of the panel) the coefficient collapses to near zero through the interaction term and ceases to be economically meaningful, indicating that the dominant artisanal segment is structurally driven by sardine rather than anchoveta. The legacy specification, which constrains the artisanal anchoveta response to a single scalar, recovers a small negative coefficient that is a weighted average of these two regimes biased toward zero by the LM weight; an information criterion comparison favours the interacted specification by \(\Delta\mathrm{AIC} = -167.9\). These coefficients provide the linkage between the trip equation and the comparative-statics projections of Section \ref{projections}: changes in regional TACs translate into vessel-level effort adjustments through the species-specific quota-share mechanism, with the artisanal response decomposed by vessel type.
 
 The two fleets differ markedly in price responsiveness. For the industrial fleet, the jack mackerel price is positive and significant (\(p < 0.01\)), consistent with this fleet's primary orientation toward jack mackerel. Sardine and anchoveta prices have no detectable effect on industrial effort, reflecting the limited participation of industrial vessels in the sardine--anchoveta fishery. For the artisanal fleet, the sardine price is positive and significant (\(p < 0.01\)), consistent with sardine being the dominant target species for artisanal vessels in the Centro-Sur region. The anchoveta-price coefficient is negative and significant; this counterintuitive sign likely reflects simultaneity: years of low anchoveta availability generate both higher prices (through the inverse-demand channel) and fewer trips (through reduced catch opportunities), producing a negative reduced-form correlation. As noted above, the purpose of this equation is not causal identification but rather to provide an empirically grounded mapping for the simulation, in which prices are determined endogenously by the inverse-demand module.
 
