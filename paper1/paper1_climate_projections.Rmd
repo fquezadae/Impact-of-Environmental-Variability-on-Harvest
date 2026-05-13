@@ -233,34 +233,35 @@ against) and dispersion in the Bayesian posterior of the structural
 parameters (uncertainty about the elasticities themselves)
 
 We obtain three sets of results. First, the projected fleet-level effort
-response is sharply asymmetric: the artisanal fleet contracts by
-13.2--15.0% across CMIP6 scenarios, while the industrial fleet contracts
-by only 0.8--1.0%, a ratio of roughly fifteen to one. This asymmetry
-arises from the interaction between each fleet's species-portfolio
-exposure to climate forcing and the limited cross-sector transferability
-of the prevailing sector-level allocation. The mechanism is consistent
-with the broader portfolio literature on income diversification and risk
-in fisheries [@Kasperski2013-jz; @Cline2017-dp] and with evidence that
-institutional access constraints limit the realized benefits of
-diversification [@Oken2021-of]. Because fisher adaptation responses are
-themselves heterogeneous and context-dependent [@Zhang2011-wv;
-@Jardine2020-um], the policy reading is clear: the design of
-cross-sector transferability rules is a first-order margin for
-attenuating disproportionate fleet-level impacts. Second, the long-run
-change in intrinsic productivity is large and negative for anchoveta and
-sardine---the two coastal upwelling stocks targeted disproportionately
-by the artisanal fleet---with floor effects for sardine under SSP5-8.5
-end-of-century. Third, the climate shifters are sharply identified for
-these two stocks but not for jack mackerel, the species that anchors the
-industrial fleet's portfolio. We document the jack mackerel null with a
-triple-evidence package (spatial-domain robustness, dual-source biomass,
-and OROP-PS coherence) and treat it consistently throughout. A
-within-versus-between variance decomposition (Appendix
-\ref{appendix-trips-ensemble}) shows that 97--100% of the projected
-dispersion in fleet-level effort change is within-posterior rather than
-across CMIP6 models, so the asymmetry conclusion is robust to the
-climate-model uncertainty that dominates analogous projections at the
-stock-productivity level.
+response to climate change is sharply asymmetric: the artisanal fleet
+contracts by 13.2--15.0% across CMIP6 scenarios, while the industrial
+fleet contracts by only 0.8--1.0% --- a ratio of roughly fifteen to one.
+Two compounding forces drive this asymmetry: each fleet is exposed to
+climate-driven productivity changes through a different species
+portfolio, and the fixed industrial--artisanal quota split prevents
+reallocation across the sector boundary when relative productivities
+shift. The mechanism is consistent with the broader portfolio literature
+on income diversification and risk in fisheries [@Kasperski2013-jz;
+@Cline2017-dp] and with evidence that institutional access constraints
+limit the realized benefits of diversification [@Oken2021-of]. Because
+fisher adaptation responses are themselves heterogeneous and
+context-dependent [@Zhang2011-wv; @Jardine2020-um], the policy reading
+is clear: the design of cross-sector transferability rules is a
+first-order margin for attenuating disproportionate fleet-level impacts.
+Second, the long-run change in intrinsic productivity is large and
+negative for anchoveta and sardine---the two coastal upwelling stocks
+targeted disproportionately by the artisanal fleet---with floor effects
+for sardine under SSP5-8.5 end-of-century. Third, the climate shifters
+are sharply identified for these two stocks but not for jack mackerel,
+the species that anchors the industrial fleet's portfolio. We document
+the jack mackerel null with a triple-evidence package (spatial-domain
+robustness, dual-source biomass, and OROP-PS coherence) and treat it
+consistently throughout. A within-versus-between variance decomposition
+(Appendix \ref{appendix-trips-ensemble}) shows that 97--100% of the
+projected dispersion in fleet-level effort change is within-posterior
+rather than across CMIP6 models, so the asymmetry conclusion is robust
+to the climate-model uncertainty that dominates analogous projections at
+the stock-productivity level.
 
 The remainder of the paper is organized as follows. Section
 \ref{the-small-pelagic-fishery-in-chile} describes the institutional and
