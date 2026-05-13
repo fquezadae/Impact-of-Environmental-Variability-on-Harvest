@@ -69,3 +69,4 @@ tree.txt
 # --- Pre-fix backups generated during edits ---
 *.bak
 *.pre_*.bak
+.positai
