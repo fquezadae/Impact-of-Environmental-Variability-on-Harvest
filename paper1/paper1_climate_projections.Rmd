@@ -938,4 +938,8 @@ The source code for this project is available at \url{https://github.com/fquezad
 ```{r appendix-spatial, child='paper1/sections/appendix_spatial_jurel.Rmd'}
 ```
 
-```{r appendix-variance, child='paper
+```{r appendix-variance, child='paper1/sections/appendix_variance_decomposition.Rmd'}
+```
+
+```{r appendix-trips-variance, child='paper1/sections/appendix_g_trips_variance_decomposition.Rmd'}
+```

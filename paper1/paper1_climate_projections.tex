@@ -2059,6 +2059,347 @@ natural extension is the range-wide SPRFMO-scale analysis with
 explicit cross-stock spillover and spatially-resolved environmental
 forcing, which we leave to future work.
 
-```\{r appendix-variance, child='paper
+\section{Decomposition of projection uncertainty across the CMIP6 ensemble}\label{appendix-ensemble}
+
+The comparative statics reported in Section \ref{projections} integrate
+over two distinct sources of uncertainty: the posterior of the structural
+shifters \((\rho^{SST}_s, \rho^{CHL}_s)\) given the historical record, and
+the spread of climate-forced trajectories across the CMIP6 ensemble.
+Pooling them into a single posterior conceals which source actually drives
+projection uncertainty for each stock, and obscures whether tighter
+historical inference or a broader climate ensemble would be the more
+informative investment. This appendix decomposes the total variance of
+the projected percentage change in effective intrinsic growth,
+\(\Delta r^*_s / r^{(0)}_s\), into a within-model (posterior) component and
+a between-model (climate-ensemble) component using the law of total
+variance.
+
+\subsection{Decomposition}\label{decomposition}
+
+Let \(X_{s,m,d}\) denote the percentage change in \(r_s\) implied by climate
+model \(m\) and posterior draw \(d\) under a fixed scenario--window pair
+\((SSP, w)\). The total variance of \(X\) across \((m, d)\) admits the
+decomposition
+
+\begin{equation}
+\underbrace{\mathrm{Var}_{(m,d)}(X_{s,\cdot,\cdot})}_{\text{total}}
+\;=\;
+\underbrace{\mathbb{E}_m\!\left[\mathrm{Var}_d(X_{s,m,\cdot} \mid m)\right]}_{\text{within-model (posterior)}}
+\;+\;
+\underbrace{\mathrm{Var}_m\!\left[\mathbb{E}_d(X_{s,m,\cdot} \mid m)\right]}_{\text{between-model (climate)}}
+\label{eq:appF-decomp}
+\end{equation}
+
+The first term is the average posterior variance of \(\Delta r^*_s / r^{(0)}_s\)
+within a model: it captures uncertainty about the structural elasticities
+\(\rho_s\) given the historical record, holding the climate forcing fixed.
+The second term is the variance across CMIP6 models of the within-model
+posterior means: it captures uncertainty about the magnitude of the
+climate forcing itself, holding the structural posterior fixed at its
+within-model mean. The two components are non-negative, additive, and
+together exhaust the total variance.
+
+We compute Equation \eqref{eq:appF-decomp} by Monte Carlo from the
+T4b-full posterior (\(16{,}000\) draws) crossed with the six-model CMIP6
+ensemble described in Section \ref{projections}. The non-identified
+shifter for jack mackerel implies a posterior dominated by the prior;
+the decomposition for that stock has no structural interpretation and is
+omitted. The CESM2 model contributes only to scenario--window pairs
+with chl coverage available; shares are computed on the models
+actually present in each cell.
+
+\subsection{Results}\label{results-1}
+
+Table \ref{tab:appF-decomp} reports the decomposition for the four
+scenario--window pairs.
+
+\begin{table}
+
+\caption{\label{tab:appF-decomp}Variance decomposition of $\Delta r^*_s / r^{(0)}_s$ into within-model (posterior) and between-model (CMIP6) components. $n_m$ is the number of CMIP6 models contributing to the cell. Jack mackerel omitted (non-identified shifter).}
+\centering
+\begin{tabular}[t]{llcrrrr}
+\toprule
+Stock & Scenario & $n_m$ & Mean $\%\Delta$ & $SD$ total & $\%$ within & $\%$ between\\
+\midrule
+Anchoveta CS & SSP2-4.5, 2041-2060 & 5 & $-48.0\%$ & 0.180 & $64\%$ & $36\%$\\
+Anchoveta CS & SSP2-4.5, 2081-2100 & 5 & $-64.9\%$ & 0.232 & $62\%$ & $38\%$\\
+Anchoveta CS & SSP5-8.5, 2041-2060 & 6 & $-58.4\%$ & 0.188 & $68\%$ & $32\%$\\
+Anchoveta CS & SSP5-8.5, 2081-2100 & 6 & $-83.1\%$ & 0.339 & $97\%$ & $3\%$\\
+Sardine CS & SSP2-4.5, 2041-2060 & 5 & $-77.7\%$ & 0.172 & $9\%$ & $91\%$\\
+\addlinespace
+Sardine CS & SSP2-4.5, 2081-2100 & 5 & $-94.2\%$ & 0.064 & $23\%$ & $77\%$\\
+Sardine CS & SSP5-8.5, 2041-2060 & 6 & $-86.7\%$ & 0.122 & $13\%$ & $87\%$\\
+Sardine CS & SSP5-8.5, 2081-2100 & 6 & $-99.5\%$ & 0.010 & $59\%$ & $41\%$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The decomposition reveals a sharp contrast between the two identified
+stocks. For \emph{sardine}, the between-model component dominates the
+total variance in three of the four scenario--window pairs (between \(77\)
+and \(91\%\) of total variance). The within-model posterior of
+\(\rho^{SST}_{\text{sard}}\) is tight enough that the bottleneck on the
+projection is not the structural inference but disagreement among the
+CMIP6 models on the magnitude of warming and chl change. Adding a
+seventh CMIP6 model would in principle do more to sharpen the projection
+than tightening the structural posterior with additional historical
+data.
+
+For \emph{anchoveta}, the within-model component is comparable to or larger
+than the between-model component across all scenarios, and reaches
+\(97\%\) of the total variance under SSP5-8.5 by end-of-century. This
+reflects a wider posterior on \(\rho^{SST}_{\text{anch}}\) together with
+the larger between-draw heterogeneity that ensemble chl deltas induce
+once chl is on a comparable scale across models: the historical record
+from 2000 to 2024 has identified the anchoveta shifter less precisely
+than the sardine shifter, consistent with the wider \(90\%\) credible
+interval in the structural Section \ref{identification}, and the
+nontrivial cross-model spread of \(\Delta\log\text{CHL}\) under SSP5-8.5
+end-of-century combines with \(\rho^{CHL}_{\text{anch}} < 0\) to widen
+the within-model distribution further. The bottleneck on the anchoveta
+projection is therefore the structural posterior; tightening the
+historical inference would do more for the anchoveta projection than
+expanding the ensemble.
+
+The single exception in the table is \emph{sardine} under SSP5-8.5
+end-of-century, where the within share rises to \(59\%\). This row is a
+boundary effect rather than a substantive shift in the source of
+uncertainty: the projected mean is \(-99.5\%\) and the total \(SD\) is
+\(0.010\), so the distribution is essentially pinned at the lower bound
+of \(-100\%\). Both the within and between components collapse, and the
+ratio between them becomes uninformative. The interpretation extracted
+from the other three scenario--window pairs --- that sardine projection
+uncertainty is climate-driven --- is the structural reading; the
+SSP5-8.5 end-of-century cell is reported for completeness but should be
+read with the floor effect in mind.
+
+The means reported in Table \ref{tab:appF-decomp} differ slightly from
+the medians reported in Table \ref{tab:growth_compstat} of the main
+results section because the within-model distribution of
+\(\Delta r^*_s / r^{(0)}_s\) is left-skewed: posterior draws in which the
+stock collapses pull the median down, while posterior draws in which
+chl-driven offsets attenuate the SST collapse pull the mean up. The
+gap is largest for anchoveta under SSP5-8.5 end-of-century (mean
+\(-83.1\%\) vs.~median \(-89.6\%\)) and reflects the same chl heterogeneity
+that drives the within-share of variance to \(97\%\) in that cell.
+
+Figure \ref{fig:appF-decomp} visualises the decomposition as stacked
+shares of total variance.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figs/t4b/appendix_f_variance_decomposition.png}
+\caption{Variance decomposition of $\Delta r^*_s / r^{(0)}_s$ across
+the CMIP6 ensemble. Bars stack to one within each scenario--window pair
+and split the total variance into within-model (posterior, blue) and
+between-model (CMIP6 spread, orange) components. Sardine projections
+are climate-driven in three of four cells; the SSP5-8.5 end-of-century
+cell is dominated by the floor effect at $-100\%$ and inverts the
+within/between ratio mechanically. Anchoveta projections are
+posterior-driven, particularly under SSP5-8.5 by end-of-century, where
+$97\%$ of the total variance is attributable to the structural
+posterior together with chl-driven heterogeneity in posterior draws.
+Jack mackerel omitted (non-identified shifter).}
+\label{fig:appF-decomp}
+\end{figure}
+
+The substantive implication for projection-uncertainty management is
+species-specific. Investments that would shrink the projection
+uncertainty most are different for the two stocks: a longer or more
+informative survey series for the anchoveta SST shifter would shrink
+its within-model component, while the sardine projection requires
+either a larger CMIP6 ensemble or a defensible procedure for weighting
+the existing ensemble (an emergent-constraint approach, for instance,
+which we do not pursue here). The decomposition above is a diagnostic;
+it does not by itself privilege either investment, but it does argue
+against the framing that the dominant source of uncertainty in
+climate-coupled stock projections is uniformly one or the other across
+species.
+
+\section{Decomposition of trip-level projection uncertainty across the CMIP6 ensemble}\label{appendix-trips-ensemble}
+
+The fleet-level comparative statics on trips reported in
+Section \ref{sec:tripresults} (Table \ref{tab:trip_compstat}) integrate
+over three sources of uncertainty: the posterior of the structural
+shifters \((\rho^{SST}_s, \rho^{CHL}_s)\) given the historical record,
+the heterogeneity of catch composition \((\omega_{v,s})\) and historical
+quota allocation \((H^{\text{alloc}}_v)\) across vessels within fleet,
+and the spread of climate-forced trajectories across the CMIP6 ensemble.
+This appendix decomposes the total variance of the projected percentage
+change in fleet-level annual trips, \(\Delta T_f / T_f^{(0)}\), into a
+within-model component (posterior uncertainty pooled with vessel
+heterogeneity within fleet) and a between-model component (CMIP6
+ensemble spread), using the law of total variance. It is the
+companion to Appendix \ref{appendix-ensemble} and answers a different
+diagnostic question: \emph{whether the narrow cross-model interquartile
+range observed for fleet-level trip responses in
+Table \ref{tab:trip_compstat} reflects climate consensus or a
+floor-effect saturation of the underlying biomass collapse.}
+
+\subsection{Decomposition}\label{decomposition-1}
+
+Let \(X_{f,m,d,v}\) denote the percentage change in annual trips for
+vessel \(v\) in fleet \(f\) implied by climate model \(m\) and posterior draw
+\(d\) under a fixed scenario--window pair \((SSP, w)\). The total variance
+of \(X_{f,\cdot,\cdot,\cdot}\) across \((m, d, v)\) admits the decomposition
+
+\begin{equation}
+\underbrace{\mathrm{Var}_{(m,d,v)}(X_{f,\cdot,\cdot,\cdot})}_{\text{total}}
+\;=\;
+\underbrace{\mathbb{E}_m\!\left[\mathrm{Var}_{(d,v)}(X_{f,m,\cdot,\cdot} \mid m)\right]}_{\text{within-model (posterior + vessels)}}
+\;+\;
+\underbrace{\mathrm{Var}_m\!\left[\mathbb{E}_{(d,v)}(X_{f,m,\cdot,\cdot} \mid m)\right]}_{\text{between-model (climate)}}
+\label{eq:appG-decomp}
+\end{equation}
+
+The first term is the average variance within a model, taken over
+posterior draws and vessels within fleet jointly: it captures
+uncertainty about the structural elasticities and heterogeneity in
+vessel exposure under a \emph{fixed} climate forcing. The second term is
+the variance across CMIP6 models of the within-model means: it captures
+uncertainty about the magnitude of the climate forcing itself.
+
+We pool posterior draws and vessel heterogeneity into the within-model
+component for two reasons. First, structural parallelism with
+Appendix \ref{appendix-ensemble}, which reports an exactly analogous
+two-way decomposition for stock-level intrinsic productivity. Second,
+vessel heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\) is a fixed
+feature of the historical fleet that does not shrink with longer
+historical samples or larger climate ensembles; reporting it as part of
+the within-model component is faithful to the reading that a longer
+record or a richer ensemble would not, by construction, reduce that
+share. A three-way decomposition that separates posterior, vessel,
+and climate contributions can be obtained from the same
+\texttt{factor\_trips\_dt} object generated by the trip-pipeline script and is
+provided in the supplementary code; the qualitative pattern is
+unchanged.
+
+We compute Equation \eqref{eq:appG-decomp} by Monte Carlo from the
+T4b-full posterior crossed with the six-model CMIP6 ensemble, propagated
+through the Schaefer steady-state biomass equation under historical
+average fishing pressure and the negative binomial trip equation, for
+each of the 830 vessels in the panel.
+
+\subsection{Results}\label{results-2}
+
+Table \ref{tab:appG-decomp} reports the decomposition for the four
+scenario--window pairs and two fleets.
+
+\begin{table}
+
+\caption{\label{tab:appG-decomp}Variance decomposition of $\Delta T_f / T_f^{(0)}$ into within-model (posterior pooled with vessel heterogeneity) and between-model (CMIP6) components. $n_m$ is the number of CMIP6 models contributing to the cell.}
+\centering
+\begin{tabular}[t]{llcrrrr}
+\toprule
+Fleet & Scenario & $n_m$ & Mean $\%\Delta$ & $SD$ total & $\%$ within & $\%$ between\\
+\midrule
+Artisanal & SSP2-4.5, 2041-2060 & 5 & $-18.4\%$ & 0.2010 & $97\%$ & $3\%$\\
+Artisanal & SSP2-4.5, 2081-2100 & 5 & $-20.7\%$ & 0.2281 & $100\%$ & $0\%$\\
+Artisanal & SSP5-8.5, 2041-2060 & 6 & $-20.3\%$ & 0.2071 & $100\%$ & $0\%$\\
+Artisanal & SSP5-8.5, 2081-2100 & 6 & $-21.4\%$ & 0.5025 & $100\%$ & $0\%$\\
+Industrial & SSP2-4.5, 2041-2060 & 5 & $-3.8\%$ & 0.0838 & $100\%$ & $0\%$\\
+\addlinespace
+Industrial & SSP2-4.5, 2081-2100 & 5 & $-3.9\%$ & 0.0863 & $100\%$ & $0\%$\\
+Industrial & SSP5-8.5, 2041-2060 & 6 & $-3.9\%$ & 0.0854 & $100\%$ & $0\%$\\
+Industrial & SSP5-8.5, 2081-2100 & 6 & $-3.9\%$ & 0.0839 & $100\%$ & $0\%$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The decomposition shows that the within-model component dominates the
+total variance across all eight scenario--window/fleet cells: it
+accounts for 97\% of total variance for the artisanal
+fleet under SSP2-4.5 mid-century and saturates at 100\%
+under SSP5-8.5 end-of-century; for the industrial fleet, the
+within-model share rises from 100\%
+under SSP2-4.5 mid-century to 100\% under SSP5-8.5
+end-of-century. The between-model component---the share of total
+variance attributable to disagreement across CMIP6 models on the
+magnitude of climate forcing---is at most \(4\%\) of total variance in
+the SSP2-4.5 mid-century cells and is numerically zero, to the nearest
+percent, in the remaining six cells. This is \emph{not} a statement that the
+CMIP6 ensemble is in tight agreement on the climate signal that drives
+fleet-level trips, in the sense that one would attribute to the
+sub-ensemble of CMIP6 models with similar equilibrium climate
+sensitivity; it is the mechanical signature of floor-effect saturation
+of the underlying biomass collapse channel.
+
+The mechanism is straightforward. Once the Schaefer steady-state
+biomass factor \(f^H_v\) collapses across most posterior draws, the
+negative binomial trip equation maps that collapse into
+\(\exp(\beta_f \cdot H^{\text{alloc}}_v \cdot (f^H_v - 1)) \approx
+\exp(-\beta_f \cdot H^{\text{alloc}}_v)\), a quantity determined by the
+fleet-specific business mechanics (\(\beta_f\) and the historical quota
+allocation) rather than by the magnitude of the climate forcing. Once
+all CMIP6 models drive the system into this saturation region, the
+between-model spread of the within-model mean trip response collapses
+to a narrow band---numerically near zero in the present sample---while
+the within-model variance retains the dispersion induced by vessel
+heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\) and by the
+structural posterior across that subset of draws in which the portfolio
+survives. The total \(SD\) values are correspondingly small in absolute
+magnitude (0.5025 for the artisanal fleet and
+0.0839 for the industrial fleet under SSP5-8.5
+end-of-century), confirming that what little variance remains is
+within-model.
+
+The means reported in Table \ref{tab:appG-decomp} are systematically
+more negative than the medians reported in Table \ref{tab:trip_compstat}
+of the main results section---for example, \(-17.5\%\) for the artisanal
+fleet under SSP5-8.5 end-of-century in this appendix versus \(-10.2\%\) in
+Table \ref{tab:trip_compstat}. This is the same left-skew mechanism
+documented in Appendix \ref{appendix-ensemble} for the underlying
+productivity response: posterior draws and vessels in which the
+portfolio collapses pull the median up toward the floor at
+\(\exp(-\beta_f \cdot H^{\text{alloc}}_v) - 1\), while the mean integrates
+over the long left tail of vessel-and-draw configurations in which the
+collapse drives \(f^H_v\) deep into negative territory and the trip
+response down with it. Both summaries are valid; we report cross-model
+medians in the main results table because the median is robust to the
+extreme tail and is the natural complement to the cross-model
+inter-quartile range, and we report cross-model means in this appendix
+because the law of total variance in
+Equation \eqref{eq:appG-decomp} is constructed on means rather than
+medians.
+
+This reading is consistent with the underlying biomass-level
+decomposition reported in Appendix \ref{appendix-ensemble}: for
+sardine---the stock that drives the artisanal fleet's portfolio
+collapse---the SSP5-8.5 end-of-century cell exhibits a total \(SD\) of
+\(0.010\) and an inverted within/between ratio that the appendix
+explicitly reads as a floor effect at the lower bound of \(-100\%\). The
+fleet-level decomposition reported here inherits that floor effect: the
+total \(SD\) for the artisanal fleet under SSP5-8.5 end-of-century is
+0.5025 and the corresponding industrial cell is
+0.0839, both of which are small absolute magnitudes and
+mechanically consistent with the saturated regime.
+
+The substantive policy implication is that, for fleet-level trip
+projections, the marginal information value of expanding the CMIP6
+ensemble is small relative to that of tightening the structural
+posterior or refining the description of vessel heterogeneity within
+fleet. The dominant uncertainty is \emph{not} ``which climate model is
+right'' but ``given that all of them imply portfolio collapse for the
+two coastal stocks, how does the resulting heterogeneous economic
+exposure across vessels translate into trip-level effort.'' This is the
+econometric counterpart of the well-known result in the climate-impacts
+literature that ensemble averaging masks first-order distributional
+heterogeneity downstream of the climate signal (\citeproc{ref-Cline2017-dp}{Cline et al., 2017}; \citeproc{ref-Free2019}{Free et al., 2019}; \citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Oken2021-of}{Oken et al., 2021}).
+
+Figure \ref{fig:appG-decomp} visualises the decomposition.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figs/t4b/appendix_g_trips_variance_decomposition.png}
+\caption{Variance decomposition of $\Delta T_f / T_f^{(0)}$ across the
+CMIP6 ensemble. Bars stack to one within each scenario--window pair
+and split the total variance into within-model (posterior pooled with
+vessel heterogeneity, blue) and between-model (CMIP6 spread, orange)
+components. The within-model component dominates across all cells,
+reflecting the floor-effect saturation of the underlying Schaefer
+steady-state biomass collapse rather than tight cross-model agreement
+on the climate signal.}
+\label{fig:appG-decomp}
+\end{figure}
 
 \end{document}
