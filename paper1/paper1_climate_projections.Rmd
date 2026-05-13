@@ -178,17 +178,17 @@ magnitude and asymmetry of fleet-level effort responses under credible
 climate scenarios---a quantity the empirical literature has yet to
 deliver for most major multi-species fisheries.
 
-We provide that quantity for the Chilean small pelagic fishery (SPF),
-the largest fishery in the country at nearly 94% of total Chilean
-landings in 2019 [@SUBPESCA2020]. The SPF is dominated by three
-species---anchoveta (\emph{Engraulis ringens}), sardine
+We provide that quantity for the Chilean small pelagic fishery (SPF) ---
+anchoveta (\emph{Engraulis ringens}), sardine
 (\emph{Strangomera bentincki}), and jack mackerel
-(\emph{Trachurus murphyi})---that share habitat and are coupled through
-trophic and market linkages [@Alheit2004; @Arancibia2019-FIPA]. It is
-managed through a sector-specific quota architecture: a fixed
-industrial-versus-artisanal allocation splits the Total Allowable Catch
-between the two segments, while within-sector distribution operates
-through Transferable Fishing Licenses
+(\emph{Trachurus murphyi}) --- which jointly account for approximately
+86% of fish landed by the industrial and artisanal sectors in 2019
+[@SUBPESCA2020]. The three species share habitat and are coupled through
+trophic and market linkages [@Alheit2004; @Arancibia2019-FIPA;
+@dresdner2013]. It is managed through a sector-specific quota
+architecture: a fixed industrial-versus-artisanal allocation splits the
+Total Allowable Catch between the two segments, while within-sector
+distribution operates through Transferable Fishing Licenses
 (\emph{Licencias Transables de Pesca}, LTP) for the industrial fleet and
 the \emph{Régimen Artesanal de Extracción} (RAE) for the artisanal
 fleet, with limited cross-sector transferability. Because the two
@@ -209,27 +209,28 @@ projected climate scenarios.[^1]
     Niño--Southern Oscillation (ENSO) affects location choices in the
     jack mackerel fishery.
 
-Our bioeconomic framework couples a Bayesian state-space model of
-multi-species stock dynamics to a vessel-level negative binomial trip
-equation. The stock dynamics model, calibrated on official IFOP and
-SPRFMO assessments for 2000--2024, identifies a vector of climate
-shifters that modulate the intrinsic growth rate of each stock. The
-shifters are interpretable as semi-elasticities of stock productivity
-with respect to sea-surface temperature and log-chlorophyll-a anomalies,
-and---because they enter the law of motion as coefficients on exogenous
-climate forcings---are transportable to climate regimes outside the
-2000--2024 estimation envelope. The trip equation, estimated separately
-for the industrial and artisanal fleets with year fixed effects that
-absorb aggregate non-climate shocks (notably the 2019--2020 social and
-pandemic disruptions), maps prices, allocated harvest, weather, and
-regulatory closures into annual fishing effort. Climate reaches
-fleet-level effort through two channels: an *indirect biomass channel*
-via the climate shifters, and a *direct weather channel* via
-vessel-specific exposure to severe winds. We evaluate the framework at
-CMIP6 projections from a six-model ensemble (IPSL-CM6A-LR, GFDL-ESM4,
-CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR) under SSP2-4.5 and
-SSP5-8.5, at mid-century (2041--2060) and end-of-century (2081--2100),
-separating cross-model and within-posterior uncertainty explicitly.
+Our bioeconomic framework combines two empirical components. First, a
+Bayesian state-space model of multi-species stock dynamics --- fit to
+2000--2024 official IFOP and SPRFMO assessments --- estimates, for each
+species, two semi-elasticities of productivity with respect to
+sea-surface temperature and log-chlorophyll-a anomalies. We call these
+parameters \\emph{climate shifters}. Because they enter the biological
+law of motion as coefficients on exogenous climate forcings, they remain
+interpretable when applied to climate states outside the 2000--2024
+sample. Second, a vessel-level negative binomial trip equation ---
+estimated separately for the industrial and artisanal fleets, with year
+fixed effects that absorb aggregate non-climate shocks (notably the
+2019--2020 social and pandemic disruptions) --- maps prices, allocated
+harvest, weather, and regulatory closures into annual fishing effort.
+Climate reaches fleet-level effort through two channels: an *indirect
+biomass channel* via the climate shifters, and a *direct weather
+channel* via vessel-specific exposure to severe winds. We evaluate the
+framework against a six-model CMIP6 ensemble under SSP2-4.5 and
+SSP5-8.5, at mid-century (2041--2060) and end-of-century (2081--2100).
+Throughout, we report two sources of uncertainty separately: dispersion
+across climate models (which future climate trajectory we project
+against) and dispersion in the Bayesian posterior of the structural
+parameters (uncertainty about the elasticities themselves)
 
 We obtain three sets of results. First, the projected fleet-level effort
 response is sharply asymmetric: the artisanal fleet contracts by
