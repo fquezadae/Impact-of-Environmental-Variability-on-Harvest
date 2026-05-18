@@ -1,0 +1,5 @@
+bucket,n_vessels,mean_n_species_lifetime,share_multi_species_lifetime,mean_n_species_per_yr,share_multi_species_per_yr,mean_HHI_full,mean_SPF_share
+IND,129,7.63,0.876,4.14,0.969,0.451,0.67
+LM,888,6.27,0.898,3.81,0.899,0.487,0.804
+BM,189,2.44,0.63,2.14,0.634,0.721,0.84
+UNK_ART,367,4.76,0.896,3.46,0.913,0.489,0.862
