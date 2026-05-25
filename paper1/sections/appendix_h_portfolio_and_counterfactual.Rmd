@@ -1,0 +1,237 @@
+# Permit portfolios and sectoral counterfactual under Ley~21.752 {#appendix-portfolio}
+
+This appendix reports two pieces of descriptive evidence that underpin
+the institutional mechanism developed in Sections~\ref{sec:discussion}.
+Section~\ref{appendix-portfolio-permits} documents the revealed
+multi-species portfolio held by each sector, refuting the common reading
+that the artisanal--industrial asymmetry estimated in the main text is
+driven by single-species permit rigidity at the vessel level.
+Section~\ref{appendix-counterfactual} computes a policy counterfactual
+in which the projected $\mathrm{SSP}5$-$8.5$ end-of-century catch
+allocation is recomputed under the Ley~N$^{\circ}$~21.752 fractioning
+schedule [@Ley21752-2025], in force from $2026$ through $2040$, and
+contrasts it with the Article~$47$~LGPA regime that prevailed during
+the estimation window.
+
+## Multi-species permit portfolios in both sectors {#appendix-portfolio-permits}
+
+A natural concern with the institutional reading of our main results is
+that artisanal vessels may operate under more restrictive permit
+portfolios than industrial vessels, in which case the headline asymmetry
+would reflect within-vessel rigidity rather than the cross-sector wedge.
+Two complementary data sources allow us to test this directly. For the
+industrial sector we use the registry of vessel-level participation
+coefficients (\emph{coeficientes de participación relativa}) for jurel,
+sardina española and anchoveta, vigent through $2012$, released by
+SUBPESCA in response to the Ley de Transparencia request~AH002T-0007379
+[@SUBPESCA2012-LTP]. This is the last pre-LTP snapshot of authorised
+industrial portfolios and remains the legal basis for the Class~A LTP
+coefficients in force thereafter. For the artisanal sector, the
+equivalent administrative registry of permits by RPA and species is not
+publicly available; we therefore use the $2001$--$2024$ IFOP logbook
+($454{,}308$ trip~records on $1{,}583$ vessels covering $81$
+species) and treat the set of species each vessel
+\emph{actually landed} as a revealed-preference lower bound on the
+species for which it holds operational authorisation, since vessels
+cannot legally land species outside their authorised portfolio.
+
+Table~\ref{tab:portfolio-descriptive} reports four portfolio-breadth
+indicators by sector bucket: the mean number of distinct species
+landed over the panel lifetime, the share of vessels landing two or more
+species over that lifetime, the mean number of distinct species landed
+per vessel-year, and the share of vessel-years with two or more species
+active.
+
+\begin{table}[H]
+\centering
+\caption{Permit-portfolio breadth indicators by sector bucket, Chile small pelagic logbook 2001--2024 (artisanal sub-buckets) and SUBPESCA 2012 industrial registry (industrial bucket).\label{tab:portfolio-descriptive}}
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+Bucket & $n$ vessels & Species lifetime & Multi-species lifetime (\%) & Species per year & Multi-species per year (\%) \\
+\midrule
+Industrial (IND)            & $129$  & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
+Lancha Menor (LM)           & $888$  & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
+Unclassified artisanal      & $367$  & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
+Bote Menor (BM)             & $189$  & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[para,flushleft]
+\footnotesize
+\item \emph{Notes.} The IND row is constructed from the SUBPESCA $2012$ registry, which lists
+$1{,}149$ (vessel~$\times$~species~$\times$~macrozone) authorisations across $299$ industrial
+vessels and $26$ \emph{armadores}. Of those $299$ vessels, $75.6\%$ hold authorisations for
+the full anchoveta--sardina--jurel triplet and $67.6\%$ hold authorisations in two or more
+macrozones, with a median of four (zone~$\times$~species) authorisation pairs per vessel.
+Logbook rows are restricted to lances with non-missing species codes (excluding the
+\textit{lance sin captura} code 999). Buckets follow the Kasperski-aligned vessel-type
+classification used in the main text (Section~\ref{sec:tripresults}): LM is \emph{Lancha
+Menor}, BM is \emph{Bote Menor}, and \textit{Unclassified artisanal} pools the remaining
+artisanal vessel types. Species-portfolio metrics are computed over the full $81$-species
+range in the logbook; the SPF triplet (anchoveta, sardina común, jurel) accounts for
+$80$--$86\%$ of artisanal lances and $67\%$ of industrial lances within the panel.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Three substantive readings of Table~\ref{tab:portfolio-descriptive}
+support the institutional argument developed in
+Section~\ref{sec:discussion}. First, the count of permits per vessel
+does not distinguish the two sectors in a way that would generate
+the headline asymmetry: $87.6\%$ of industrial vessels and $89.8\%$ of
+the dominant Lancha Menor sub-bucket of the artisanal sector hold
+authorisations for two or more species over the panel lifetime, with
+similar shares per vessel-year. Second, the within-artisanal
+heterogeneity that anchors the LM--BM contrast in
+Table~\ref{tab:tripcompstatemb} is \emph{not} explained by greater
+species diversification in BM: BM in fact reports the narrowest
+logbook portfolio (mean $2.44$ species lifetime, $2.14$ per year), so
+the smaller projected response of BM to climate stress cannot be a
+permit-diversification story. The most plausible alternative is that
+BM operates substantially outside the regulated logbook
+(coastal multi-species and benthic activity), so the projected
+trip elasticity applies to a smaller fraction of BM's revealed
+livelihood than of LM's. Third, the composition of the multi-species
+portfolio differs sharply: $80$--$86\%$ of artisanal lances and $67\%$
+of industrial lances fall on the anchoveta--sardina--jurel triplet, but
+within that triplet artisanal activity concentrates on the
+anchoveta--sardina pair while industrial activity is more evenly
+spread, with jurel and caballa together absorbing $\sim 70\%$ of
+industrial lances. Under climate forcing, the anchoveta--sardina pair
+responds with the identified negative semi-elasticities of
+Section~\ref{sec:stock-dynamics}, while jurel productivity is
+non-identified at the Centro-Sur scale (Appendix~\ref{appendix-spatial});
+the asymmetric concentration of the artisanal portfolio in the
+anchoveta--sardina pair therefore translates the same climate forcing
+into a sharper effective reduction of the artisanal portfolio than of
+the industrial portfolio, conditional on the institutional inability
+to recompose access across the sectoral boundary.
+
+## Policy counterfactual under Ley~21.752 {#appendix-counterfactual}
+
+The estimation window of the present paper (2018--2024) coincides with
+the Article~$47$ LGPA fractioning regime. Ley~N$^{\circ}$~21.752,
+promulgated on $25$~June~$2025$ [@Ley21752-2025], fixes a new schedule
+of artisanal--industrial fractions in force through $2040$. Across
+the V--Los~Lagos macrozone studied here, the law raises the artisanal
+share to $90\%$ in anchoveta and sardina com\'un (from $78\%$) and
+partitions jurel into a $30\%$ artisanal share in V--Los~R\'ios and
+$15\%$ in Los~Lagos (from a uniform $10\%$ under Article~$47$);
+Table~\ref{tab:fractioning} reports the two regimes side by side.
+A static plug-in evaluation of the climate-conditional artisanal
+landing under each regime is reported in
+Section~\ref{sec:ley21752-implications} of the main text
+(Table~\ref{tab:counterfactual-main}); this appendix records the
+formal derivation and the posterior-propagated, by-model version
+that complements that headline table.
+
+Letting $Q_s^{0}$ denote the $2024$ Cuota Global de Captura for
+stock~$s$ and $\Delta r_s^{\star}/r_s^{0}$ the projected productivity
+change at $\mathrm{SSP}5$-$8.5$ end-of-century, the artisanal
+absolute landing under fractioning regime~$R$ is
+
+\begin{equation}
+L_{\text{art}}^{(R)} \;=\; \sum_{s} \alpha_s^{(R)} \cdot \big(1 + \Delta r_s^{\star}/r_s^{0}\big) \cdot Q_s^{0},
+\label{eq:counterfactual}
+\end{equation}
+
+where $\alpha_s^{(R)}$ is the artisanal fraction of stock~$s$ under
+regime~$R \in \{\text{Art.}~47, \text{Ley }21.752\}$ and the sum
+runs over the four (stock~$\times$~macrozone) units of
+Table~\ref{tab:fractioning}: anchoveta V--Los~Lagos, sardina com\'un
+V--Los~Lagos, jurel V--Los~R\'ios, and jurel Los~R\'ios--Los~Lagos.
+Equation~\eqref{eq:counterfactual} reads the productivity change as a
+proportional adjustment to the steady-state landed volume and
+abstracts from any endogenous TAC-setting response. The plug-in
+version reported in the main text fixes $\Delta r_s^{\star}/r_s^{0}$
+at the cross-model posterior median from
+Table~\ref{tab:growth_compstat}; the posterior-propagated version
+reported below integrates explicitly over the CMIP6 six-model
+ensemble and the within-posterior $90\%$ envelope, returning
+cross-model median plus inter-quartile range for the central estimate
+and the median within-posterior $90\%$ CI for the structural
+uncertainty axis, exactly as in
+Table~\ref{tab:trip_compstat}.
+
+```{r appendix-counterfactual-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Posterior-propagated counterfactual produced by R/run_counterfactual_ley21752.R
+# Format of summary CSV (one row per (stock, regime)):
+#   stock_id, regime, cross_med, cross_q25, cross_q75, within_q05, within_q95, n_models
+# When the script is run, this chunk renders the appendix table directly from disk.
+
+cf_path <- "tables/appendix_h_counterfactual_ley21752.csv"
+
+if (file.exists(cf_path)) {
+
+  cf <- readr::read_csv(cf_path, show_col_types = FALSE)
+
+  stock_label <- c(
+    anchoveta_cs     = "Anchoveta (V--Los~Lagos)",
+    sardina_comun_cs = "Sardina com\\'un (V--Los~Lagos)",
+    jurel_cs         = "Jurel (V--Los~Lagos, aggregate)",
+    TOTAL_CS         = "\\textbf{Total Centro-Sur}"
+  )
+
+  cf <- cf %>%
+    dplyr::mutate(
+      Stock  = stock_label[stock_id],
+      Regime = ifelse(regime == "Art47", "Art.~47 LGPA", "Ley~21.752"),
+      Central = sprintf("$%.1f$ $[%.1f, %.1f]$", cross_med, cross_q25, cross_q75),
+      WithinCI = sprintf("$[%.1f, %.1f]$", within_q05, within_q95)
+    ) %>%
+    dplyr::arrange(factor(stock_id,
+        levels = c("anchoveta_cs","sardina_comun_cs","jurel_cs","TOTAL_CS")),
+        regime) %>%
+    dplyr::select(Stock, Regime, `Cross-model med [IQR] (kt)` = Central,
+                  `Within-posterior 90\\% CI (kt)` = WithinCI)
+
+  knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
+    caption = paste0("Posterior-propagated artisanal absolute landing under the ",
+                     "Article~$47$~LGPA and Ley~$21.752$ fractioning regimes, ",
+                     "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (V--Los~Lagos), ",
+                     "$2024$ Cuotas Globales. \\label{tab:counterfactual}")) %>%
+    fix_stargazer_notes(notes = paste0(
+      "\\emph{Notes.} Cross-model median and IQR are taken across the ",
+      "six CMIP6 models of the per-model posterior median; the within-posterior ",
+      "90\\% CI is the median across models of the per-model posterior ",
+      "$[q_{05}, q_{95}]$. The construction parallels Table~\\ref{tab:trip_compstat}; ",
+      "see \\texttt{R/run\\_counterfactual\\_ley21752.R} for the pipeline. ",
+      "Jurel is held at $\\Delta r^{\\star}/r^{0} = 0$ by the ",
+      "non-identification convention of Section~\\ref{sec:stock-dynamics}; ",
+      "anchoveta and sardina com\\'un use the by-model summaries written by ",
+      "the main T5 pipeline (\\texttt{tables/growth\\_comparative\\_statics\\_by\\_model.csv})."
+    ))
+
+} else {
+
+  cat("\\noindent\\textit{Posterior-propagated counterfactual table not yet built. ",
+      "Run \\texttt{Rscript R/run\\_counterfactual\\_ley21752.R} to generate ",
+      "\\texttt{tables/appendix\\_h\\_counterfactual\\_ley21752.csv}, then re-knit.}\n")
+
+}
+
+```
+
+Three readings of the posterior-propagated counterfactual sharpen the
+plug-in headline reported in the main text. First, the cross-model
+inter-quartile range is narrow at the aggregate level (a few kilotonnes
+on either side of the $122$~kt median total), reflecting the floor-effect
+saturation documented in Appendix~\ref{appendix-trips-ensemble}: once
+the small-pelagic productivity collapses, the cross-model dispersion of
+$L_{\text{art}}$ is small in absolute terms because the residual base on
+which it operates is small. Second, the within-posterior $90\%$ CI is
+substantially wider for anchoveta than for sardina com\'un, because
+the posterior on $(\rho^{SST}_{\text{anch}}, \rho^{CHL}_{\text{anch}})$
+admits a wider envelope of climate-conditional productivity factors
+than the sardina pair. Third, the jurel contribution to the artisanal
+landing is invariant across both axes of uncertainty---it appears as a
+point in the table---because the non-identification convention holds
+$(1 + \Delta r_{\text{jurel}}^{\star}/r_{\text{jurel}}^{0}) = 1$;
+relaxing this convention to the ENSO-prior-propagated envelope of
+Appendix~\ref{sec:appendix-spatial-enso} would add a third source of
+uncertainty whose magnitude is bounded by the three-orders-of-magnitude
+range reported there. The plug-in headline in the main text is therefore
+robust to the cross-model and within-posterior axes that the appendix
+makes explicit, and the institutional reading developed in
+Section~\ref{sec:discussion} carries over unchanged.
