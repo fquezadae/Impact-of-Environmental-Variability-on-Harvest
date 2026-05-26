@@ -28,6 +28,7 @@ header-includes:
   - \usepackage{dcolumn}
   - \usepackage{adjustbox}
   - \usepackage{threeparttable}
+  - \usepackage{float}
   - \usepackage{fancyhdr}
   - \pagestyle{fancy}
   - \fancyhf{}
