@@ -186,22 +186,38 @@ if (file.exists(cf_path)) {
     dplyr::select(Stock, Regime, `Cross-model med [IQR] (kt)` = Central,
                   `Within-posterior 90\\% CI (kt)` = WithinCI)
 
-  knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
-    caption = paste0("Posterior-propagated artisanal absolute landing under the ",
-                     "Article~$47$~LGPA and Ley~$21.752$ fractioning regimes, ",
-                     "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (V--Los~Lagos), ",
-                     "$2024$ Cuotas Globales. \\label{tab:counterfactual}")) %>%
-    fix_stargazer_notes(notes = paste0(
-      "\\emph{Notes.} Cross-model median and IQR are taken across the ",
-      "six CMIP6 models of the per-model posterior median; the within-posterior ",
-      "90\\% CI is the median across models of the per-model posterior ",
-      "$[q_{05}, q_{95}]$. The construction parallels Table~\\ref{tab:trip_compstat}; ",
-      "see \\texttt{R/run\\_counterfactual\\_ley21752.R} for the pipeline. ",
-      "Jurel is held at $\\Delta r^{\\star}/r^{0} = 0$ by the ",
-      "non-identification convention of Section~\\ref{sec:stock-dynamics}; ",
-      "anchoveta and sardina com\\'un use the by-model summaries written by ",
-      "the main T5 pipeline (\\texttt{tables/growth\\_comparative\\_statics\\_by\\_model.csv})."
-    ))
+  # Render manually with threeparttable + footnotes (avoids stargazer wrapper)
+  tbl <- knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
+                      linesep = "")
+
+  cap_str <- paste0(
+    "Posterior-propagated artisanal absolute landing under the ",
+    "Article~$47$~LGPA and Ley~$21.752$ fractioning regimes, ",
+    "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (V--Los~Lagos), ",
+    "$2024$ Cuotas Globales.")
+
+  notes_str <- paste0(
+    "\\emph{Notes.} Cross-model median and IQR are taken across the ",
+    "six CMIP6 models of the per-model posterior median; the within-posterior ",
+    "90\\% CI is the median across models of the per-model posterior ",
+    "$[q_{05}, q_{95}]$. The construction parallels Table~\\ref{tab:trip_compstat}; ",
+    "see \\texttt{R/run\\_counterfactual\\_ley21752.R} for the pipeline. ",
+    "Jurel is held at $\\Delta r^{\\star}/r^{0} = 0$ by the ",
+    "non-identification convention of Section~\\ref{sec:stock-dynamics}; ",
+    "anchoveta and sardina com\\'un use the by-model summaries written by ",
+    "the main T5 pipeline (\\texttt{tables/growth\\_comparative\\_statics\\_by\\_model.csv})."
+  )
+
+  cat("\\begin{table}[H]\n")
+  cat("\\centering\n")
+  cat(sprintf("\\caption{%s\\label{tab:counterfactual}}\n", cap_str))
+  cat("\\begin{threeparttable}\n")
+  cat(as.character(tbl))
+  cat("\n\\begin{tablenotes}[flushleft]\\footnotesize\n")
+  cat(sprintf("\\item %s\n", notes_str))
+  cat("\\end{tablenotes}\n")
+  cat("\\end{threeparttable}\n")
+  cat("\\end{table}\n")
 
 } else {
 

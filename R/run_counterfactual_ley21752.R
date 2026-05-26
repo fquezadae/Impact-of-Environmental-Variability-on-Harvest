@@ -1,7 +1,7 @@
 ## =============================================================================
 ## run_counterfactual_ley21752.R
 ##
-## Computes the policy counterfactual under Ley N°21.752 (2025) versus the
+## Computes the policy counterfactual under Ley N.21.752 (2025) versus the
 ## pre-2025 Article 47 LGPA fractioning regime, propagating the posterior of
 ## (rho^SST_s, rho^CHL_s) and the CMIP6 ensemble through the same productivity
 ## shifter pipeline used in Tables \ref{tab:growth_compstat} and
@@ -38,9 +38,9 @@ gcs <- readr::read_csv("tables/growth_comparative_statics_by_model.csv",
 ##    as @SERNAPESCA2024-cuota in the paper.
 ##
 ##    NB: jurel CS is decomposed into TWO sub-macrozones because Ley 21.752
-##    assigns different artisanal shares to V-Los Ríos (item 4, 30%) and
+##    assigns different artisanal shares to V-Los Rios (item 4, 30%) and
 ##    Los Lagos (item 5, 15%). The SERNAPESCA quota report aggregates
-##    Los Ríos-Los Lagos into a single 80,580 t block, so we treat that
+##    Los Rios-Los Lagos into a single 80,580 t block, so we treat that
 ##    block here as Los Lagos for the post-Ley share (15%, conservative
 ##    lower bound on the true sub-block share).
 ##
@@ -56,7 +56,7 @@ Q0_tonnes <- tibble::tribble(
 
 ## 3) Statutory artisanal shares of TAC, by regime and stock-sub-macrozone.
 ##    Pre-2025: Article 47 LGPA, per @SERNAPESCA2024-cuota.
-##    Post-2025: Article 1 of Ley N°21.752, per @Ley21752-2025
+##    Post-2025: Article 1 of Ley N.21.752, per @Ley21752-2025
 ##    (https://bcn.cl/x54WxT, promulgated 25-jun-2025, in force until 2040).
 alpha_art <- tibble::tribble(
   ~stock_id,                 ~alpha_art47, ~alpha_ley752,
@@ -77,7 +77,7 @@ model_key <- c(
   jurel_cs_los_lagos = "jurel_cs"
 )
 
-## 4) Jurel non-identification convention: hold (1 + Δr/r0) = 1 for jurel
+## 4) Jurel non-identification convention: hold (1 + Deltar/r0) = 1 for jurel
 ##    across all models (the paper's reporting convention, Section
 ##    \ref{sec:stock-dynamics}). The script supports a sensitivity in which
 ##    jurel uses its ENSO-prior-propagated envelope; set jurel_mode = "fixed"
@@ -117,7 +117,7 @@ gcs_f <- gcs_f %>%
   )
 
 ## ----- Artisanal absolute landing under each regime --------------------------
-## L_art = alpha * (1 + Δr/r0) * Q0
+## L_art = alpha * (1 + Deltar/r0) * Q0
 build_L <- function(alpha_col) {
   gcs_f %>%
     mutate(
@@ -148,9 +148,9 @@ readr::write_csv(L_long,
 ##   posterior q05 and q95. This is the within-posterior 90% CI integrated
 ##   over the ensemble (same convention as Table \ref{tab:trip_compstat}).
 ##
-## Aggregate the two jurel sub-rows (V-Los Ríos + Los Lagos) into a single
+## Aggregate the two jurel sub-rows (V-Los Rios + Los Lagos) into a single
 ## "jurel_cs" stock_id BEFORE summarising, so the appendix table reports
-## one jurel row per regime — matching Table \ref{tab:counterfactual-main}
+## one jurel row per regime -- matching Table \ref{tab:counterfactual-main}
 ## in the main text. Sub-macrozone-level numbers remain in the byModel CSV
 ## for downstream uses.
 L_long_agg <- L_long %>%
@@ -233,5 +233,5 @@ cat("  tables/appendix_h_counterfactual_ley21752_byModel.csv  (granular)\n\n")
 ##          sprintf("%.1f [%.1f, %.1f] {%.1f, %.1f}",
 ##                  cross_med, cross_q25, cross_q75, within_q05, within_q95))
 ##
-## Felipe: dime si quieres que reemplace la tabla LaTeX estática del apéndice
-## por una versión que se compute on-the-fly desde este CSV.
+## Felipe: dime si quieres que reemplace la tabla LaTeX estatica del apendice
+## por una version que se compute on-the-fly desde este CSV.
