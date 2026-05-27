@@ -1,7 +1,7 @@
 # Spatial robustness of the jack mackerel non-identification result {#appendix-spatial}
 
 The non-identification of $(\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})$
-reported in Section \ref{identification} admits two observationally
+reported in the Identification of climate shifters section of the main text admits two observationally
 equivalent readings: that jurel productivity is uncoupled from
 Centro-Sur coastal forcing at the annual aggregate, or that the
 relevant forcing operates at a spatial scale broader than the EEZ,
@@ -49,9 +49,9 @@ evaluated at posterior medians.\label{tab:appE-power}}
 \toprule
 Stock & $\sigma_{\text{resid}}$ & $|\rho_{SST}|_{\min}$ & $|\rho_{\log\text{CHL}}|_{\min}$ & $|\rho_{\text{ENSO}}|_{\min}$ \\
 \midrule
-Anchoveta       & $0.28$ & $0.33$ & $0.29$ & $0.16$ \\
-Sardina común   & $0.25$ & $0.29$ & $0.26$ & $0.14$ \\
-Jurel           & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
+Anchoveta & $0.28$ & $0.33$ & $0.29$ & $0.16$ \\
+Sardina común & $0.25$ & $0.29$ & $0.26$ & $0.14$ \\
+Jurel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -82,13 +82,13 @@ climate shifters under four alternative specifications.\label{tab:appE-sigma}}
 \toprule
 Test & Specification & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ (SST) & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ ($\log$~CHL or ENSO) \\
 \midrule
-Spatial extent       & EEZ domain $\mathcal{D}_1$                   & $0.998$        & $1.014$ ($\log$~CHL) \\
-                     & Offshore-extended $\mathcal{D}_2$            & $1.002$        & $1.009$ ($\log$~CHL) \\
-                     & Southeast Pacific $\mathcal{D}_3$            & $0.999$        & $1.011$ ($\log$~CHL) \\
-Biomass coverage     & Dual-source (Centro-Sur + Northern acoustic) & $0.94$         & $0.99$ ($\log$~CHL) \\
-Spatial scale        & Basin-scale ENSO Niño 3.4, lag~1             & ---            & $0.98$ (ENSO) \\
-                     & Basin-scale ENSO Niño 3.4, lag~2             & ---            & $1.01$ (ENSO) \\
-Joint specification  & Local SST + local $\log$~CHL + ENSO (lag~1)  & $1.03$         & $1.00$ ($\log$~CHL); $0.98$ (ENSO) \\
+Spatial extent & EEZ domain $\mathcal{D}_1$ & $0.998$ & $1.014$ ($\log$~CHL) \\
+ & Offshore-extended $\mathcal{D}_2$ & $1.002$ & $1.009$ ($\log$~CHL) \\
+ & Southeast Pacific $\mathcal{D}_3$ & $0.999$ & $1.011$ ($\log$~CHL) \\
+Biomass coverage & Dual-source (Centro-Sur + Northern acoustic) & $0.94$ & $0.99$ ($\log$~CHL) \\
+Spatial scale & Basin-scale ENSO Niño 3.4, lag~1 & --- & $0.98$ (ENSO) \\
+ & Basin-scale ENSO Niño 3.4, lag~2 & --- & $1.01$ (ENSO) \\
+Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$ & $1.00$ ($\log$~CHL); $0.98$ (ENSO) \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -104,8 +104,7 @@ motivated by the $0.88$ log-scale cross-series correlation. The ENSO
 specification replaces the local coastal shifters with the Niño 3.4
 index at the indicated lag. The joint specification estimates all
 three shifters simultaneously for jurel, holding the anchoveta and
-sardina blocks at the main specification of Section
-\ref{sec:stock-dynamics}. Anchoveta and sardina shifter ratios remain
+sardina blocks at the main specification of the Stock dynamics subsection of the main text. Anchoveta and sardina shifter ratios remain
 stable at $0.43$--$0.83$ across all configurations (not reported).
 \end{tablenotes}
 \end{threeparttable}

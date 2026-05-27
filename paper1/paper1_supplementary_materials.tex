@@ -152,7 +152,7 @@
 
 This appendix documents the protocol used to elicit the prior densities
 on the climate shifters \((\rho_i^{SST}, \rho_i^{CHL})\) that enter the
-state-space specification of Section \ref{sec:stock-dynamics}, together
+state-space specification of the Stock dynamics subsection of the main text, together
 with the identifiability diagnostic that motivates the recourse to a
 Bayesian likelihood rather than a direct maximum-likelihood treatment.
 
@@ -248,11 +248,11 @@ Jack mackerel & 0.0 & 1.0 & 0.0 & 1.0 & Boundary solution; vague prior\\
 \section{Predictive diagnostics}\label{appendix-predictive}
 
 This appendix reports the nested predictive comparison referenced in
-Section \ref{sec:stock-dynamics}, comparing three state-space
+the Stock dynamics subsection of the main text, comparing three state-space
 specifications: (i) species-independent dynamics without climate
 shifters (\emph{ind}), (ii) the same with a cross-stock residual
 covariance \(\Omega\) (\emph{omega}), and (iii) the full model
-augmented with the climate shifter of Eq. \eqref{eq:shifter}
+augmented with the climate shifter of Eq.\textasciitilde(1) of the main text
 (\emph{full}). Two predictive metrics are reported: leave-one-out
 PSIS-LOO (Pareto-smoothed importance sampling) and one-step-ahead LFO
 (leave-future-out).
@@ -391,7 +391,7 @@ $\Omega$ (off-diagonal) & 3 & 1.001 & 5,732 & 8,544\\
 \section{Spatial robustness of the jack mackerel non-identification result}\label{appendix-spatial}
 
 The non-identification of \((\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})\)
-reported in Section \ref{identification} admits two observationally
+reported in the Identification of climate shifters section of the main text admits two observationally
 equivalent readings: that jurel productivity is uncoupled from
 Centro-Sur coastal forcing at the annual aggregate, or that the
 relevant forcing operates at a spatial scale broader than the EEZ,
@@ -439,9 +439,9 @@ evaluated at posterior medians.\label{tab:appE-power}}
 \toprule
 Stock & $\sigma_{\text{resid}}$ & $|\rho_{SST}|_{\min}$ & $|\rho_{\log\text{CHL}}|_{\min}$ & $|\rho_{\text{ENSO}}|_{\min}$ \\
 \midrule
-Anchoveta       & $0.28$ & $0.33$ & $0.29$ & $0.16$ \\
-Sardina común   & $0.25$ & $0.29$ & $0.26$ & $0.14$ \\
-Jurel           & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
+Anchoveta & $0.28$ & $0.33$ & $0.29$ & $0.16$ \\
+Sardina común & $0.25$ & $0.29$ & $0.26$ & $0.14$ \\
+Jurel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -472,13 +472,13 @@ climate shifters under four alternative specifications.\label{tab:appE-sigma}}
 \toprule
 Test & Specification & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ (SST) & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ ($\log$~CHL or ENSO) \\
 \midrule
-Spatial extent       & EEZ domain $\mathcal{D}_1$                   & $0.998$        & $1.014$ ($\log$~CHL) \\
-                     & Offshore-extended $\mathcal{D}_2$            & $1.002$        & $1.009$ ($\log$~CHL) \\
-                     & Southeast Pacific $\mathcal{D}_3$            & $0.999$        & $1.011$ ($\log$~CHL) \\
-Biomass coverage     & Dual-source (Centro-Sur + Northern acoustic) & $0.94$         & $0.99$ ($\log$~CHL) \\
-Spatial scale        & Basin-scale ENSO Niño 3.4, lag~1             & ---            & $0.98$ (ENSO) \\
-                     & Basin-scale ENSO Niño 3.4, lag~2             & ---            & $1.01$ (ENSO) \\
-Joint specification  & Local SST + local $\log$~CHL + ENSO (lag~1)  & $1.03$         & $1.00$ ($\log$~CHL); $0.98$ (ENSO) \\
+Spatial extent & EEZ domain $\mathcal{D}_1$ & $0.998$ & $1.014$ ($\log$~CHL) \\
+ & Offshore-extended $\mathcal{D}_2$ & $1.002$ & $1.009$ ($\log$~CHL) \\
+ & Southeast Pacific $\mathcal{D}_3$ & $0.999$ & $1.011$ ($\log$~CHL) \\
+Biomass coverage & Dual-source (Centro-Sur + Northern acoustic) & $0.94$ & $0.99$ ($\log$~CHL) \\
+Spatial scale & Basin-scale ENSO Niño 3.4, lag~1 & --- & $0.98$ (ENSO) \\
+ & Basin-scale ENSO Niño 3.4, lag~2 & --- & $1.01$ (ENSO) \\
+Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$ & $1.00$ ($\log$~CHL); $0.98$ (ENSO) \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -494,8 +494,7 @@ motivated by the $0.88$ log-scale cross-series correlation. The ENSO
 specification replaces the local coastal shifters with the Niño 3.4
 index at the indicated lag. The joint specification estimates all
 three shifters simultaneously for jurel, holding the anchoveta and
-sardina blocks at the main specification of Section
-\ref{sec:stock-dynamics}. Anchoveta and sardina shifter ratios remain
+sardina blocks at the main specification of the Stock dynamics subsection of the main text. Anchoveta and sardina shifter ratios remain
 stable at $0.43$--$0.83$ across all configurations (not reported).
 \end{tablenotes}
 \end{threeparttable}
@@ -578,7 +577,7 @@ adopted throughout the main text.
 
 \section{Decomposition of projection uncertainty across the CMIP6 ensemble}\label{appendix-ensemble}
 
-The comparative statics of Section \ref{projections} integrate two
+The comparative statics of the Climate change projections section of the main text integrate two
 sources of uncertainty: the posterior of the structural shifters
 \((\rho^{SST}_s, \rho^{CHL}_s)\) and the spread of climate-forced
 trajectories across the CMIP6 ensemble. Letting \(X_{s,m,d}\) denote the
@@ -588,8 +587,7 @@ draw \(d\), the law of total variance decomposes
 \(\mathbb{E}_m[\mathrm{Var}_d(X \mid m)]\) and a between-model
 (climate-ensemble) component \(\mathrm{Var}_m[\mathbb{E}_d(X \mid m)]\).
 We compute the decomposition by Monte Carlo from the posterior
-(\(16{,}000\) draws) crossed with the six-model ensemble of Section
-\ref{projections}. Jack mackerel is omitted because its non-identified
+(\(16{,}000\) draws) crossed with the six-model ensemble of the Climate change projections section of the main text. Jack mackerel is omitted because its non-identified
 shifter implies a posterior dominated by the prior, leaving the
 decomposition without a structural reading.
 \label{eq:appF-decomp}
@@ -650,7 +648,7 @@ procedure.
 \section{Decomposition of trip-level projection uncertainty across the CMIP6 ensemble}\label{appendix-trips-ensemble}
 
 The fleet-level comparative statics on trips reported in
-Section \ref{sec:tripresults} (Table \ref{tab:trip_compstat}) integrate
+the Total annual trips section of the main text (the trip comparative-statics table (main text)) integrate
 over three sources of uncertainty: the posterior of the structural
 shifters \((\rho^{SST}_s, \rho^{CHL}_s)\) given the historical record,
 the heterogeneity of catch composition \((\omega_{v,s})\) and historical
@@ -664,7 +662,7 @@ ensemble spread), using the law of total variance. It is the
 companion to Appendix \ref{appendix-ensemble} and answers a different
 diagnostic question: \emph{whether the narrow cross-model interquartile
 range observed for fleet-level trip responses in
-Table \ref{tab:trip_compstat} reflects climate consensus or a
+the trip comparative-statics table (main text) reflects climate consensus or a
 floor-effect saturation of the underlying biomass collapse.}
 
 \subsection{Decomposition}\label{decomposition}
@@ -775,10 +773,10 @@ end-of-century), confirming that what little variance remains is
 within-model.
 
 The means reported in Table \ref{tab:appG-decomp} are systematically
-more negative than the medians reported in Table \ref{tab:trip_compstat}
+more negative than the medians reported in the trip comparative-statics table (main text)
 of the main results section---for example, \(-17.5\%\) for the artisanal
 fleet under SSP5-8.5 end-of-century in this appendix versus \(-10.2\%\) in
-Table \ref{tab:trip_compstat}. This is the same left-skew mechanism
+the trip comparative-statics table (main text). This is the same left-skew mechanism
 documented in Appendix \ref{appendix-ensemble} for the underlying
 productivity response: posterior draws and vessels in which the
 portfolio collapses pull the median up toward the floor at
@@ -815,7 +813,7 @@ two coastal stocks, how does the resulting heterogeneous economic
 exposure across vessels translate into trip-level effort.'' This is the
 econometric counterpart of the well-known result in the climate-impacts
 literature that ensemble averaging masks first-order distributional
-heterogeneity downstream of the climate signal (\citeproc{ref-Cline2017-dp}{Cline et al., 2017}; \citeproc{ref-Free2019}{Free et al., 2019}; \citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Oken2021-of}{Oken et al., 2021}).
+heterogeneity downstream of the climate signal (\citeproc{ref-Cline2017-dp}{Cline et al. 2017}; \citeproc{ref-Free2019}{Free et al. 2019}; \citeproc{ref-Kasperski2013-jz}{Kasperski and Holland 2013}; \citeproc{ref-Oken2021-of}{Oken et al. 2021}).
 
 Figure \ref{fig:appG-decomp} visualises the decomposition.
 
@@ -836,7 +834,7 @@ on the climate signal.}
 \section{Permit portfolios and sectoral counterfactual under Ley\textasciitilde21.752}\label{appendix-portfolio}
 
 This appendix reports two pieces of descriptive evidence that underpin
-the institutional mechanism developed in Sections\textasciitilde{}\ref{sec:discussion}.
+the institutional mechanism developed in Sections\textasciitilde the Discussion section of the main text.
 Section\textasciitilde{}\ref{appendix-portfolio-permits} documents the revealed
 multi-species portfolio held by each sector, refuting the common reading
 that the artisanal--industrial asymmetry estimated in the main text is
@@ -844,7 +842,7 @@ driven by single-species permit rigidity at the vessel level.
 Section\textasciitilde{}\ref{appendix-counterfactual} computes a policy counterfactual
 in which the projected \(\mathrm{SSP}5\)-\(8.5\) end-of-century catch
 allocation is recomputed under the Ley\textsubscript{N\(^{\circ}\)}21.752 fractioning
-schedule (\citeproc{ref-Ley21752-2025}{Congreso Nacional de Chile, 2025}), in force from \(2026\) through \(2040\), and
+schedule (\citeproc{ref-Ley21752-2025}{Congreso Nacional de Chile 2025}), in force from \(2026\) through \(2040\), and
 contrasts it with the Article\textsubscript{\(47\)}LGPA regime that prevailed during
 the estimation window.
 
@@ -859,7 +857,7 @@ industrial sector we use the registry of vessel-level participation
 coefficients (\emph{coeficientes de participación relativa}) for jurel,
 sardina española and anchoveta, vigent through \(2012\), released by
 SUBPESCA in response to the Ley de Transparencia request\textasciitilde AH002T-0007379
-(\citeproc{ref-SUBPESCA2012-LTP}{Subsecretaría de Pesca y Acuicultura (SUBPESCA), 2026}). This is the last pre-LTP snapshot of authorised
+(\citeproc{ref-SUBPESCA2012-LTP}{Subsecretaría de Pesca y Acuicultura (SUBPESCA) 2026}). This is the last pre-LTP snapshot of authorised
 industrial portfolios and remains the legal basis for the Class\textasciitilde A LTP
 coefficients in force thereafter. For the artisanal sector, the
 equivalent administrative registry of permits by RPA and species is not
@@ -885,10 +883,10 @@ active.
 \toprule
 Bucket & $n$ vessels & Species lifetime & Multi-species lifetime (\%) & Species per year & Multi-species per year (\%) \\
 \midrule
-Industrial (IND)            & $129$  & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
-Lancha Menor (LM)           & $888$  & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
-Unclassified artisanal      & $367$  & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
-Bote Menor (BM)             & $189$  & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
+Industrial (IND) & $129$ & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
+Lancha Menor (LM) & $888$ & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
+Unclassified artisanal & $367$ & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
+Bote Menor (BM) & $189$ & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[para,flushleft]
@@ -900,7 +898,7 @@ the full anchoveta--sardina--jurel triplet and $67.6\%$ hold authorisations in t
 macrozones, with a median of four (zone~$\times$~species) authorisation pairs per vessel.
 Logbook rows are restricted to lances with non-missing species codes (excluding the
 \textit{lance sin captura} code 999). Buckets follow the Kasperski-aligned vessel-type
-classification used in the main text (Section~\ref{sec:tripresults}): LM is \emph{Lancha
+classification used in the main text (the Total annual trips section of the main text): LM is \emph{Lancha
 Menor}, BM is \emph{Bote Menor}, and \textit{Unclassified artisanal} pools the remaining
 artisanal vessel types. Species-portfolio metrics are computed over the full $81$-species
 range in the logbook; the SPF triplet (anchoveta, sardina común, jurel) accounts for
@@ -911,14 +909,14 @@ $80$--$86\%$ of artisanal lances and $67\%$ of industrial lances within the pane
 
 Three substantive readings of Table\textasciitilde{}\ref{tab:portfolio-descriptive}
 support the institutional argument developed in
-Section\textasciitilde{}\ref{sec:discussion}. First, the count of permits per vessel
+the Discussion section of the main text. First, the count of permits per vessel
 does not distinguish the two sectors in a way that would generate
 the headline asymmetry: \(87.6\%\) of industrial vessels and \(89.8\%\) of
 the dominant Lancha Menor sub-bucket of the artisanal sector hold
 authorisations for two or more species over the panel lifetime, with
 similar shares per vessel-year. Second, the within-artisanal
 heterogeneity that anchors the LM--BM contrast in
-Table\textasciitilde{}\ref{tab:tripcompstatemb} is \emph{not} explained by greater
+the within-artisanal TIPO\_EMB table (main text) is \emph{not} explained by greater
 species diversification in BM: BM in fact reports the narrowest
 logbook portfolio (mean \(2.44\) species lifetime, \(2.14\) per year), so
 the smaller projected response of BM to climate stress cannot be a
@@ -934,7 +932,7 @@ anchoveta--sardina pair while industrial activity is more evenly
 spread, with jurel and caballa together absorbing \(\sim 70\%\) of
 industrial lances. Under climate forcing, the anchoveta--sardina pair
 responds with the identified negative semi-elasticities of
-Section\textasciitilde{}\ref{sec:stock-dynamics}, while jurel productivity is
+the Stock dynamics subsection of the main text, while jurel productivity is
 non-identified at the Centro-Sur scale (Appendix\textasciitilde{}\ref{appendix-spatial});
 the asymmetric concentration of the artisanal portfolio in the
 anchoveta--sardina pair therefore translates the same climate forcing
@@ -946,17 +944,17 @@ to recompose access across the sectoral boundary.
 
 The estimation window of the present paper (2018--2024) coincides with
 the Article\textasciitilde{}\(47\) LGPA fractioning regime. Ley\textsubscript{N\(^{\circ}\)}21.752,
-promulgated on \(25\)\textsubscript{June}\(2025\) (\citeproc{ref-Ley21752-2025}{Congreso Nacional de Chile, 2025}), fixes a new schedule
+promulgated on \(25\)\textsubscript{June}\(2025\) (\citeproc{ref-Ley21752-2025}{Congreso Nacional de Chile 2025}), fixes a new schedule
 of artisanal--industrial fractions in force through \(2040\). Across
 the V--Los\textasciitilde Lagos macrozone studied here, the law raises the artisanal
 share to \(90\%\) in anchoveta and sardina com\textquotesingle un (from \(78\%\)) and
 partitions jurel into a \(30\%\) artisanal share in V--Los\textasciitilde R\textquotesingle ios and
 \(15\%\) in Los\textasciitilde Lagos (from a uniform \(10\%\) under Article\textasciitilde{}\(47\));
-Table\textasciitilde{}\ref{tab:fractioning} reports the two regimes side by side.
+the fractioning table (main text) reports the two regimes side by side.
 A static plug-in evaluation of the climate-conditional artisanal
 landing under each regime is reported in
-Section\textasciitilde{}\ref{sec:ley21752-implications} of the main text
-(Table\textasciitilde{}\ref{tab:counterfactual-main}); this appendix records the
+the Implications of the 2025 fractioning reform subsection of the main text
+(the static counterfactual table (main text)); this appendix records the
 formal derivation and the posterior-propagated, by-model version
 that complements that headline table.
 
@@ -973,20 +971,20 @@ L_{\text{art}}^{(R)} \;=\; \sum_{s} \alpha_s^{(R)} \cdot \big(1 + \Delta r_s^{\s
 where \(\alpha_s^{(R)}\) is the artisanal fraction of stock\textasciitilde{}\(s\) under
 regime\textasciitilde{}\(R \in \{\text{Art.}~47, \text{Ley }21.752\}\) and the sum
 runs over the four (stock\textsubscript{\(\times\)}macrozone) units of
-Table\textasciitilde{}\ref{tab:fractioning}: anchoveta V--Los\textasciitilde Lagos, sardina com\textquotesingle un
+the fractioning table (main text): anchoveta V--Los\textasciitilde Lagos, sardina com\textquotesingle un
 V--Los\textasciitilde Lagos, jurel V--Los\textasciitilde R\textquotesingle ios, and jurel Los\textsubscript{R'ios--Los}Lagos.
 Equation\textasciitilde{}\eqref{eq:counterfactual} reads the productivity change as a
 proportional adjustment to the steady-state landed volume and
 abstracts from any endogenous TAC-setting response. The plug-in
 version reported in the main text fixes \(\Delta r_s^{\star}/r_s^{0}\)
 at the cross-model posterior median from
-Table\textasciitilde{}\ref{tab:growth_compstat}; the posterior-propagated version
+the stock productivity comparative-statics table (main text); the posterior-propagated version
 reported below integrates explicitly over the CMIP6 six-model
 ensemble and the within-posterior \(90\%\) envelope, returning
 cross-model median plus inter-quartile range for the central estimate
 and the median within-posterior \(90\%\) CI for the structural
 uncertainty axis, exactly as in
-Table\textasciitilde{}\ref{tab:trip_compstat}.
+the trip comparative-statics table (main text).
 
 \begin{table}[H]
 \centering
@@ -1008,7 +1006,7 @@ Jurel (V--Los~Lagos, aggregate) & Ley~21.752 & $185.7$ $[185.7, 185.7]$ & $[185.
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \emph{Notes.} Cross-model median and IQR are taken across the six CMIP6 models of the per-model posterior median; the within-posterior 90\% CI is the median across models of the per-model posterior $[q_{05}, q_{95}]$. The construction parallels Table~\ref{tab:trip_compstat}; see \texttt{R/run\_counterfactual\_ley21752.R} for the pipeline. Jurel is held at $\Delta r^{\star}/r^{0} = 0$ by the non-identification convention of Section~\ref{sec:stock-dynamics}; anchoveta and sardina com\'un use the by-model summaries written by the main T5 pipeline (\texttt{tables/growth\_comparative\_statics\_by\_model.csv}).
+\item \emph{Notes.} Cross-model median and IQR are taken across the six CMIP6 models of the per-model posterior median; the within-posterior 90\% CI is the median across models of the per-model posterior $[q_{05}, q_{95}]$. The construction parallels Table~   he trip comparative-statics table (main text); see \texttt{R/run\_counterfactual\_ley21752.R} for the pipeline. Jurel is held at $\Delta r^{\star}/r^{0} = 0$ by the non-identification convention of Section~  he Stock dynamics subsection of the main text; anchoveta and sardina com\'un use the by-model summaries written by the main T5 pipeline (\texttt{tables/growth\_comparative\_statics\_by\_model.csv}).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -1034,7 +1032,7 @@ uncertainty whose magnitude is bounded by the three-orders-of-magnitude
 range reported there. The plug-in headline in the main text is therefore
 robust to the cross-model and within-posterior axes that the appendix
 makes explicit, and the institutional reading developed in
-Section\textasciitilde{}\ref{sec:discussion} carries over unchanged.
+the Discussion section of the main text carries over unchanged.
 
 \subsection{Inter-sectoral cession evidence from SERNAPESCA quota control reports}\label{sec:cesiones-evidence}
 
@@ -1072,7 +1070,7 @@ on realised landings, which are post-cession; the asymmetry therefore
 reflects the operational allocation produced by the joint
 Article\textsubscript{\(47\)--Article}\(55\)\textasciitilde T regime rather than the de jure
 Article\textasciitilde{}\(47\) fractioning alone. Second, the static counterfactual under
-Ley\textasciitilde{}\(21.752\) in Section\textasciitilde{}\ref{sec:ley21752-implications} of the main
+Ley\textasciitilde{}\(21.752\) in the Implications of the 2025 fractioning reform subsection of the main text of the main
 text and in equation\textasciitilde{}\eqref{eq:counterfactual} of this appendix should
 be read as a de jure upper bound on the operational re-allocation:
 because the industrial sector already cedes the bulk of its assigned
@@ -1094,27 +1092,27 @@ SERNAPESCA quota control reports.\label{tab:cesiones-evidence}}
 \toprule
 Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded & Direction \\
 \midrule
-2018 & anchoveta &  12.8 & $-10.7$ & 84\% & IND$\rightarrow$ART \\
-2018 & sardina   &  74.2 & $-63.2$ & 85\% & IND$\rightarrow$ART \\
-2018 & jurel     & 326.9 & $+16.1$ &  5\% & ART$\rightarrow$IND \\
-2019 & anchoveta &  27.4 & $-25.8$ & 94\% & IND$\rightarrow$ART \\
-2019 & sardina   &  76.0 & $-69.6$ & 92\% & IND$\rightarrow$ART \\
-2019 & jurel     & 339.0 & $+12.0$ &  3\% & ART$\rightarrow$IND \\
-2020 & anchoveta &  38.6 & $-33.3$ & 86\% & IND$\rightarrow$ART \\
-2020 & sardina   &  67.2 & $-60.9$ & 91\% & IND$\rightarrow$ART \\
-2020 & jurel     &1268.1 & $+11.8$ &  1\% & ART$\rightarrow$IND \\
-2021 & anchoveta &  45.3 & $-45.1$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
-2021 & sardina   &  76.9 & $-76.5$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
-2021 & jurel     & 448.7 & $+13.3$ &  3\% & ART$\rightarrow$IND \\
-2022 & anchoveta &  52.2 & $-50.5$ & 97\% & IND$\rightarrow$ART \\
-2022 & sardina   &  77.7 & $-71.6$ & 92\% & IND$\rightarrow$ART \\
-2022 & jurel     & 516.4 & $+15.2$ &  3\% & ART$\rightarrow$IND \\
-2023 & anchoveta &  39.9 & $-37.1$ & 93\% & IND$\rightarrow$ART \\
-2023 & sardina   &  63.3 & $-61.7$ & 98\% & IND$\rightarrow$ART \\
-2023 & jurel     & 637.0 & $-0.7$  &  0\% & IND$\rightarrow$ART \\
-2024 & anchoveta &  53.8 & $-45.5$ & 85\% & IND$\rightarrow$ART \\
-2024 & sardina   &  53.9 & $-51.0$ & 95\% & IND$\rightarrow$ART \\
-2024 & jurel     & 728.6 & $-31.5$ &  4\% & IND$\rightarrow$ART \\
+2018 & anchoveta & 12.8 & $-10.7$ & 84\% & IND$\rightarrow$ART \\
+2018 & sardina & 74.2 & $-63.2$ & 85\% & IND$\rightarrow$ART \\
+2018 & jurel & 326.9 & $+16.1$ & 5\% & ART$\rightarrow$IND \\
+2019 & anchoveta & 27.4 & $-25.8$ & 94\% & IND$\rightarrow$ART \\
+2019 & sardina & 76.0 & $-69.6$ & 92\% & IND$\rightarrow$ART \\
+2019 & jurel & 339.0 & $+12.0$ & 3\% & ART$\rightarrow$IND \\
+2020 & anchoveta & 38.6 & $-33.3$ & 86\% & IND$\rightarrow$ART \\
+2020 & sardina & 67.2 & $-60.9$ & 91\% & IND$\rightarrow$ART \\
+2020 & jurel &1268.1 & $+11.8$ & 1\% & ART$\rightarrow$IND \\
+2021 & anchoveta & 45.3 & $-45.1$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
+2021 & sardina & 76.9 & $-76.5$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
+2021 & jurel & 448.7 & $+13.3$ & 3\% & ART$\rightarrow$IND \\
+2022 & anchoveta & 52.2 & $-50.5$ & 97\% & IND$\rightarrow$ART \\
+2022 & sardina & 77.7 & $-71.6$ & 92\% & IND$\rightarrow$ART \\
+2022 & jurel & 516.4 & $+15.2$ & 3\% & ART$\rightarrow$IND \\
+2023 & anchoveta & 39.9 & $-37.1$ & 93\% & IND$\rightarrow$ART \\
+2023 & sardina & 63.3 & $-61.7$ & 98\% & IND$\rightarrow$ART \\
+2023 & jurel & 637.0 & $-0.7$ & 0\% & IND$\rightarrow$ART \\
+2024 & anchoveta & 53.8 & $-45.5$ & 85\% & IND$\rightarrow$ART \\
+2024 & sardina & 53.9 & $-51.0$ & 95\% & IND$\rightarrow$ART \\
+2024 & jurel & 728.6 & $-31.5$ & 4\% & IND$\rightarrow$ART \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -1139,47 +1137,47 @@ and \texttt{cesiones\_consolidated\_2013\_2024.csv}.
 
 \section{Limitations and caveats}\label{appendix-limitations}
 
-This appendix states in full the seven caveats summarised in Section \ref{sec:discussion} and qualifies the implication of each for the interpretation of the main results.
+This appendix states in full the seven caveats summarised in the Discussion section of the main text and qualifies the implication of each for the interpretation of the main results.
 
-Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the long-run responses capture the mechanical effect of changed climate forcings without accounting for endogenous price adjustments or adaptive management. Sumaila et al. (\citeproc{ref-sumaila2011}{2011}) note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches, while Lam et al. (\citeproc{ref-Lam2016}{2016}) project sizable changes in global fisheries revenues by the 2050s once price responses and cross-country trade are accounted for. Incorporating an inverse demand system and numerical optimization of quota paths is a natural extension to capture these equilibrium adjustments. Second, although our projections integrate over a six-model CMIP6 ensemble, the cross-model spread in chlorophyll-a remains substantial: the cross-model median of \(\Delta \log\text{CHL}\) is close to zero in all scenario--window pairs while the inter-model dispersion is comparable in magnitude to the median, reflecting the well-documented disagreement among Earth system models on the direction and magnitude of primary productivity changes (\citeproc{ref-sumaila2011}{Sumaila et al., 2011}). The variance decomposition reported in Appendix \ref{appendix-ensemble} shows that, for the sardine projection, the between-model component accounts for \(77\)--\(91\)\% of total projection variance under three of the four scenario--window pairs, so the residual ensemble uncertainty on this stock is large despite the multi-model integration. The fleet-level trip projections in Table \ref{tab:trip_compstat}, by contrast, exhibit narrow cross-model interquartile ranges that should not be read as climate consensus: the corresponding decomposition reported in Appendix \ref{appendix-trips-ensemble} attributes \(97\)--\(100\)\% of the total variance in \(\Delta T_f / T_f^{(0)}\) to the within-model component (posterior pooled with vessel heterogeneity within fleet), reflecting a floor-effect saturation in which the stock-dynamics steady-state collapse drives the trip response into a fleet-specific plateau independent of the climate magnitude. The substantive implication is that the marginal information value of expanding the CMIP6 ensemble for fleet-level trip projections is small relative to that of tightening the structural posterior on \((\rho^{SST}_s, \rho^{CHL}_s)\) or refining the description of vessel heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\); what governs the heterogeneity in trip outcomes across vessels and fleets is not which CMIP6 model is correct---given that all of them imply portfolio collapse for the two coastal stocks---but the differential economic exposure to that collapse imposed by historical catch composition and quota allocation. Third, the shifters are identified on a 25-year time series and, while the state-space specification propagates process-noise and measurement-noise uncertainty into the posterior, its ability to detect non-linearities in the climate response is limited. The posterior-to-prior standard-deviation ratios reported in Table \ref{tab:rho-posteriors} provide a direct empirical check that the data update the prior for anchoveta and sardina común (ratios in the \(0.43\)--\(0.83\) range), while leaving the jurel shifters at the prior (ratios essentially equal to one)---the latter being the basis of our non-identification finding. Fourth, our models do not explicitly incorporate risk preferences or production risk, which may play a role in shaping fleet-level responses to environmental variability (\citeproc{ref-Kasperski2013-jz}{Kasperski \& Holland, 2013}; \citeproc{ref-Sethi2014-bn}{Sethi et al., 2014}). Fifth, the biological-closure variable in the trip equation is coded as a zonal proxy with no within-year temporal variation, set to the nominal regulatory ceiling of the reproductive closure regime under the relevant SUBPESCA decrees: the V-VIII zone receives 151 days and the IX-XIV zone receives 182 days throughout the panel. The underlying regulatory chronology is in fact non-trivial---D.Ex. 115/1998 governed the closure regime through July 2016 with annual modifications (D.Ex. 1661/2009 establishing 21 August to 21 October as the standing period, with year-specific adjustments in D.Ex. 705/2010, 796/2012, 747/2013, and 598/2015); D.Ex. 530/2016 then introduced a referential period of 6 July to 31 October with a fixed core (3 August to 4 October) and dynamic windows triggered by weekly IGS/PHA biological indicators; D.Ex. 137/2021 refined the indicator thresholds; and D.Ex. 05/2024 superseded the 530/2016 decree---and the actual realised closure days reported by the SUBPESCA Indicadores Biológicos portal range from \(98\) (in \(2019\)) to \(230\) (in \(2024\)) across regions and years. Constructing a year-by-year closure variable that reconciles the nominal regulatory regime with the actual realised closure days reported in the portal (available from \(2019\) onward) and with auxiliary recruitment-closure decrees not regulated by the reproductive-closure chain documented above is a non-trivial data-engineering task that we leave to follow-up work; for the present paper the zonal proxy captures the structural V-VIII / IX-XIV differential (\(31\) days) that, under the year-fixed-effects specification of Section \ref{sec:tripresults}, is the variation that identifies \(\beta_{\text{closure}}\). Sixth, the trip equation panel is constructed from IFOP logbook records and is therefore representative of the purse-seine fleet that operates under the LTP quota architecture; smaller artisanal vessels using non-purse-seine gears (lampara, lines) operate outside the logbook system. Cross-validation against the SERNAPESCA vessel-level landings database confirms that the panel's portfolio weights \(\omega_{v,s}\) match the SERNAPESCA aggregate within two percentage points for the industrial fleet and within three percentage points (catch-weighted) for the purse-seine artisanal subset that the panel represents. The non-purse-seine artisanal segment, which accounts for approximately \(30\%\) of total Centro-Sur artisanal landings and exhibits a higher proportional exposure to jack mackerel, is not modeled here; a sample-weighting extension that incorporates that segment is left to future work. The biomass likelihood, by contrast, is constructed from SERNAPESCA all-gear landings and is unaffected by this restriction. Seventh, the direct weather channel is constructed from five of the six CMIP6 ensemble members because CESM2 does not publish near-surface wind components (uas, vas) in the CMIP6 DRS for the relevant scenarios and time windows; CESM2 contributes to the indirect biomass channel through SST and chlorophyll deltas (six members in SSP5-8.5, five in SSP2-4.5 by the chlorophyll restriction noted in Section \ref{projection-approach}) but enters the direct channel with \(\Delta\text{wind} = 0\) by construction. The contribution of CESM2 to the cross-model spread of fleet-level trips therefore flows entirely through the indirect channel, which is the dominant source of variance in any case under the floor-effect saturation documented in Appendix \ref{appendix-trips-ensemble}.
+Several caveats apply to the present analysis. First, the projections hold ex-vessel prices and management rules constant at historical levels, implying that the long-run responses capture the mechanical effect of changed climate forcings without accounting for endogenous price adjustments or adaptive management. Sumaila et al. (\citeproc{ref-sumaila2011}{2011}) note that reduced fish supply under climate change could increase prices, partially offsetting revenue losses from lower catches, while Lam et al. (\citeproc{ref-Lam2016}{2016}) project sizable changes in global fisheries revenues by the 2050s once price responses and cross-country trade are accounted for. Incorporating an inverse demand system and numerical optimization of quota paths is a natural extension to capture these equilibrium adjustments. Second, although our projections integrate over a six-model CMIP6 ensemble, the cross-model spread in chlorophyll-a remains substantial: the cross-model median of \(\Delta \log\text{CHL}\) is close to zero in all scenario--window pairs while the inter-model dispersion is comparable in magnitude to the median, reflecting the well-documented disagreement among Earth system models on the direction and magnitude of primary productivity changes (\citeproc{ref-sumaila2011}{Sumaila et al. 2011}). The variance decomposition reported in Appendix \ref{appendix-ensemble} shows that, for the sardine projection, the between-model component accounts for \(77\)--\(91\)\% of total projection variance under three of the four scenario--window pairs, so the residual ensemble uncertainty on this stock is large despite the multi-model integration. The fleet-level trip projections in the trip comparative-statics table (main text), by contrast, exhibit narrow cross-model interquartile ranges that should not be read as climate consensus: the corresponding decomposition reported in Appendix \ref{appendix-trips-ensemble} attributes \(97\)--\(100\)\% of the total variance in \(\Delta T_f / T_f^{(0)}\) to the within-model component (posterior pooled with vessel heterogeneity within fleet), reflecting a floor-effect saturation in which the stock-dynamics steady-state collapse drives the trip response into a fleet-specific plateau independent of the climate magnitude. The substantive implication is that the marginal information value of expanding the CMIP6 ensemble for fleet-level trip projections is small relative to that of tightening the structural posterior on \((\rho^{SST}_s, \rho^{CHL}_s)\) or refining the description of vessel heterogeneity in \((\omega_{v,s}, H^{\text{alloc}}_v)\); what governs the heterogeneity in trip outcomes across vessels and fleets is not which CMIP6 model is correct---given that all of them imply portfolio collapse for the two coastal stocks---but the differential economic exposure to that collapse imposed by historical catch composition and quota allocation. Third, the shifters are identified on a 25-year time series and, while the state-space specification propagates process-noise and measurement-noise uncertainty into the posterior, its ability to detect non-linearities in the climate response is limited. The posterior-to-prior standard-deviation ratios reported in the climate-shifter posterior identification table (main text) provide a direct empirical check that the data update the prior for anchoveta and sardina común (ratios in the \(0.43\)--\(0.83\) range), while leaving the jurel shifters at the prior (ratios essentially equal to one)---the latter being the basis of our non-identification finding. Fourth, our models do not explicitly incorporate risk preferences or production risk, which may play a role in shaping fleet-level responses to environmental variability (\citeproc{ref-Kasperski2013-jz}{Kasperski and Holland 2013}; \citeproc{ref-Sethi2014-bn}{Sethi et al. 2014}). Fifth, the biological-closure variable in the trip equation is coded as a zonal proxy with no within-year temporal variation, set to the nominal regulatory ceiling of the reproductive closure regime under the relevant SUBPESCA decrees: the V-VIII zone receives 151 days and the IX-XIV zone receives 182 days throughout the panel. The underlying regulatory chronology is in fact non-trivial---D.Ex. 115/1998 governed the closure regime through July 2016 with annual modifications (D.Ex. 1661/2009 establishing 21 August to 21 October as the standing period, with year-specific adjustments in D.Ex. 705/2010, 796/2012, 747/2013, and 598/2015); D.Ex. 530/2016 then introduced a referential period of 6 July to 31 October with a fixed core (3 August to 4 October) and dynamic windows triggered by weekly IGS/PHA biological indicators; D.Ex. 137/2021 refined the indicator thresholds; and D.Ex. 05/2024 superseded the 530/2016 decree---and the actual realised closure days reported by the SUBPESCA Indicadores Biológicos portal range from \(98\) (in \(2019\)) to \(230\) (in \(2024\)) across regions and years. Constructing a year-by-year closure variable that reconciles the nominal regulatory regime with the actual realised closure days reported in the portal (available from \(2019\) onward) and with auxiliary recruitment-closure decrees not regulated by the reproductive-closure chain documented above is a non-trivial data-engineering task that we leave to follow-up work; for the present paper the zonal proxy captures the structural V-VIII / IX-XIV differential (\(31\) days) that, under the year-fixed-effects specification of the Total annual trips section of the main text, is the variation that identifies \(\beta_{\text{closure}}\). Sixth, the trip equation panel is constructed from IFOP logbook records and is therefore representative of the purse-seine fleet that operates under the LTP quota architecture; smaller artisanal vessels using non-purse-seine gears (lampara, lines) operate outside the logbook system. Cross-validation against the SERNAPESCA vessel-level landings database confirms that the panel's portfolio weights \(\omega_{v,s}\) match the SERNAPESCA aggregate within two percentage points for the industrial fleet and within three percentage points (catch-weighted) for the purse-seine artisanal subset that the panel represents. The non-purse-seine artisanal segment, which accounts for approximately \(30\%\) of total Centro-Sur artisanal landings and exhibits a higher proportional exposure to jack mackerel, is not modeled here; a sample-weighting extension that incorporates that segment is left to future work. The biomass likelihood, by contrast, is constructed from SERNAPESCA all-gear landings and is unaffected by this restriction. Seventh, the direct weather channel is constructed from five of the six CMIP6 ensemble members because CESM2 does not publish near-surface wind components (uas, vas) in the CMIP6 DRS for the relevant scenarios and time windows; CESM2 contributes to the indirect biomass channel through SST and chlorophyll deltas (six members in SSP5-8.5, five in SSP2-4.5 by the chlorophyll restriction noted in the Projection approach subsection of the main text) but enters the direct channel with \(\Delta\text{wind} = 0\) by construction. The contribution of CESM2 to the cross-model spread of fleet-level trips therefore flows entirely through the indirect channel, which is the dominant source of variance in any case under the floor-effect saturation documented in Appendix \ref{appendix-trips-ensemble}.
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
 
 \protect\phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
+\begin{CSLReferences}{1}{1}
 \bibitem[\citeproctext]{ref-Arcos2001-jq}
-Arcos, D. F., Cubillos, L. A., \& Núñez, S. P. (2001). The jack mackerel fishery and {El Ni{ñ}o} 1997--98 effects off {Chile}. \emph{Progress in Oceanography}, \emph{49}(1--4), 597--617. \url{https://doi.org/10.1016/S0079-6611(01)00043-X}
+Arcos, D. F., L. A. Cubillos, and S. P. Núñez. 2001. {``The Jack Mackerel Fishery and {El Ni{ñ}o} 1997--98 Effects Off {Chile}.''} \emph{Progress in Oceanography} 49 (1--4): 597--617. \url{https://doi.org/10.1016/S0079-6611(01)00043-X}.
 
 \bibitem[\citeproctext]{ref-Cline2017-dp}
-Cline, T. J., Schindler, D. E., \& Hilborn, R. (2017). Fisheries portfolio diversification and turnover buffer alaskan fishing communities from abrupt resource and market changes. \emph{Nat. Commun.}, \emph{8}, 14042.
+Cline, Timothy J., Daniel E. Schindler, and Ray Hilborn. 2017. {``Fisheries Portfolio Diversification and Turnover Buffer Alaskan Fishing Communities from Abrupt Resource and Market Changes.''} \emph{Nat. Commun.} 8 (January): 14042.
 
 \bibitem[\citeproctext]{ref-Ley21752-2025}
-Congreso Nacional de Chile. (2025). \emph{Ley {N\textsuperscript{o}}~21.752: Fija un nuevo fraccionamiento entre el sector pesquero artesanal e industrial} {[}Law{]}. Biblioteca del Congreso Nacional de Chile. \url{https://bcn.cl/x54WxT}
+Congreso Nacional de Chile. 2025. \emph{Ley {N\textsuperscript{o}}~21.752: Fija Un Nuevo Fraccionamiento Entre El Sector Pesquero Artesanal e Industrial}. Law. Biblioteca del Congreso Nacional de Chile. \url{https://bcn.cl/x54WxT}.
 
 \bibitem[\citeproctext]{ref-Free2019}
-Free, C. M., Thorson, J. T., Pinsky, M. L., Oken, K. L., Wiedenmann, J., \& Jensen, O. P. (2019). Impacts of historical warming on marine fisheries production. \emph{Science}, \emph{363}(6430), 979--983. \url{https://doi.org/10.1126/science.aau1758}
+Free, Christopher M., James T. Thorson, Malin L. Pinsky, Kiva L. Oken, John Wiedenmann, and Olaf P. Jensen. 2019. {``Impacts of Historical Warming on Marine Fisheries Production.''} \emph{Science} 363 (6430): 979--83. \url{https://doi.org/10.1126/science.aau1758}.
 
 \bibitem[\citeproctext]{ref-Kasperski2013-jz}
-Kasperski, S., \& Holland, D. S. (2013). Income diversification and risk for fishermen. \emph{Proc. Natl. Acad. Sci. U. S. A.}, \emph{110}(6), 2076--2081.
+Kasperski, Stephen, and Daniel S. Holland. 2013. {``Income Diversification and Risk for Fishermen.''} \emph{Proc. Natl. Acad. Sci. U. S. A.} 110 (6): 2076--81.
 
 \bibitem[\citeproctext]{ref-Lam2016}
-Lam, V. W. Y., Cheung, W. W. L., Reygondeau, G., \& Sumaila, U. R. (2016). Projected change in global fisheries revenues under climate change. \emph{Scientific Reports}, \emph{6}, 32607. \url{https://doi.org/10.1038/srep32607}
+Lam, Vicky W. Y., William W. L. Cheung, Gabriel Reygondeau, and U. Rashid Sumaila. 2016. {``Projected Change in Global Fisheries Revenues Under Climate Change.''} \emph{Scientific Reports} 6: 32607. \url{https://doi.org/10.1038/srep32607}.
 
 \bibitem[\citeproctext]{ref-Oken2021-of}
-Oken, K. L., Holland, D. S., \& Punt, A. E. (2021). The effects of population synchrony, life history, and access constraints on benefits from fishing portfolios. \emph{Ecol. Appl.}, \emph{31}(4), e2307.
+Oken, Kiva L., Daniel S. Holland, and André E. Punt. 2021. {``The Effects of Population Synchrony, Life History, and Access Constraints on Benefits from Fishing Portfolios.''} \emph{Ecol. Appl.} 31 (4): e2307.
 
 \bibitem[\citeproctext]{ref-Pena-Torres2017-gn}
-Peña-Torres, J., Dresdner, J., \& Vasquez, F. (2017). El niño and fishing location decisions: The chilean straddling jack mackerel fishery. \emph{Mar. Resour. Econ.}, \emph{32}(3), 249--275.
+Peña-Torres, Julio, Jorge Dresdner, and Felipe Vasquez. 2017. {``El Niño and Fishing Location Decisions: The Chilean Straddling Jack Mackerel Fishery.''} \emph{Mar. Resour. Econ.} 32 (3): 249--75.
 
 \bibitem[\citeproctext]{ref-Sethi2014-bn}
-Sethi, S. A., Reimer, M., \& Knapp, G. (2014). Alaskan fishing community revenues and the stabilizing role of fishing portfolios. \emph{Mar. Policy}, \emph{48}, 134--141.
+Sethi, Suresh Andrew, Matthew Reimer, and Gunnar Knapp. 2014. {``Alaskan Fishing Community Revenues and the Stabilizing Role of Fishing Portfolios.''} \emph{Mar. Policy} 48 (September): 134--41.
 
 \bibitem[\citeproctext]{ref-SUBPESCA2012-LTP}
-Subsecretaría de Pesca y Acuicultura (SUBPESCA). (2026). \emph{Listado de naves por empresa y coeficientes de participación autorizados en pesquerías industriales de jurel, sardina y anchoveta, vigentes hasta 2012} {[}Administrative dataset{]}. Gobierno de Chile.
+Subsecretaría de Pesca y Acuicultura (SUBPESCA). 2026. \emph{Listado de Naves Por Empresa y Coeficientes de Participación Autorizados En Pesquerías Industriales de Jurel, Sardina y Anchoveta, Vigentes Hasta 2012}. Administrative dataset. Gobierno de Chile.
 
 \bibitem[\citeproctext]{ref-sumaila2011}
-Sumaila, U. R., Cheung, W. W., Lam, V. W., Pauly, D., \& Herrick, S. (2011). Climate change impacts on the biophysics and economics of world fisheries. \emph{Nature Climate Change}, \emph{1}(9), 449--456.
+Sumaila, U. Rashid, William WL Cheung, Vicky WY Lam, Daniel Pauly, and Samuel Herrick. 2011. {``Climate Change Impacts on the Biophysics and Economics of World Fisheries.''} \emph{Nature Climate Change} 1 (9): 449--56.
 
 \end{CSLReferences}
 

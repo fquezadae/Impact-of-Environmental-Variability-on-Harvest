@@ -2,7 +2,7 @@
 
 This appendix documents the protocol used to elicit the prior densities
 on the climate shifters $(\rho_i^{SST}, \rho_i^{CHL})$ that enter the
-state-space specification of Section \ref{sec:stock-dynamics}, together
+state-space specification of the Stock dynamics subsection of the main text, together
 with the identifiability diagnostic that motivates the recourse to a
 Bayesian likelihood rather than a direct maximum-likelihood treatment.
 
@@ -22,30 +22,30 @@ only, $+\log$CHL only, and joint $+$SST$+\log$CHL.
 
 ```{r stress-mape-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 mape_raw <- read.csv("data/bio_params/qa/hindcast_sst_comparison.csv",
-                     stringsAsFactors = FALSE)
+ stringsAsFactors = FALSE)
 
 stock_label <- c(
-  anchoveta_cs       = "Anchoveta",
-  sardina_comun_cs   = "Sardina com\\'un",
-  jurel_cs           = "Jack mackerel"
+ anchoveta_cs = "Anchoveta",
+ sardina_comun_cs = "Sardina com\\'un",
+ jurel_cs = "Jack mackerel"
 )
 
 stock_order <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
 
 mape_tbl <- mape_raw %>%
-  dplyr::arrange(match(stock_id, stock_order)) %>%
-  dplyr::transmute(
-    Stock              = stock_label[stock_id],
-    `Base`             = sprintf("%.1f", median_err_pct_base),
-    `+ SST`            = sprintf("%.1f", median_err_pct_restricted),
-    `+ log CHL`        = sprintf("%.1f", median_err_pct_chl),
-    `+ SST and log CHL` = sprintf("%.1f", median_err_pct_both)
-  )
+ dplyr::arrange(match(stock_id, stock_order)) %>%
+ dplyr::transmute(
+ Stock = stock_label[stock_id],
+ `Base` = sprintf("%.1f", median_err_pct_base),
+ `+ SST` = sprintf("%.1f", median_err_pct_restricted),
+ `+ log CHL` = sprintf("%.1f", median_err_pct_chl),
+ `+ SST and log CHL` = sprintf("%.1f", median_err_pct_both)
+ )
 
 kable(mape_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
-      align = "lrrrr",
-      caption = "Median absolute percent error of the deterministic Schaefer hindcast across shifter variants. \\label{tab:stress-mape}") %>%
-  kable_styling(latex_options = c("hold_position"), font_size = 10)
+ align = "lrrrr",
+ caption = "Median absolute percent error of the deterministic Schaefer hindcast across shifter variants. \\label{tab:stress-mape}") %>%
+ kable_styling(latex_options = c("hold_position"), font_size = 10)
 ```
 
 No variant brings any of the three stocks below a $20\%$ MAPE
@@ -92,20 +92,20 @@ $\rho^{CHL}$ switches sign between anchoveta and sardina com\'un.
 
 ```{r stress-priors-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 priors_tbl <- data.frame(
-  Stock        = c("Anchoveta", "Sardina com\\'un", "Jack mackerel"),
-  `rho_SST_mu` = c("-2.3", "-2.0", "0.0"),
-  `rho_SST_sd` = c("1.0",  "1.0",  "1.0"),
-  `rho_CHL_mu` = c("-2.3", "+2.1", "0.0"),
-  `rho_CHL_sd` = c("1.0",  "1.0",  "1.0"),
-  Source       = c("Joint MLE", "Joint MLE", "Boundary solution; vague prior"),
-  check.names = FALSE,
-  stringsAsFactors = FALSE
+ Stock = c("Anchoveta", "Sardina com\\'un", "Jack mackerel"),
+ `rho_SST_mu` = c("-2.3", "-2.0", "0.0"),
+ `rho_SST_sd` = c("1.0", "1.0", "1.0"),
+ `rho_CHL_mu` = c("-2.3", "+2.1", "0.0"),
+ `rho_CHL_sd` = c("1.0", "1.0", "1.0"),
+ Source = c("Joint MLE", "Joint MLE", "Boundary solution; vague prior"),
+ check.names = FALSE,
+ stringsAsFactors = FALSE
 )
 names(priors_tbl) <- c("Stock",
-  "$\\mu_{\\rho^{SST}}$", "$\\sigma_{\\rho^{SST}}$",
-  "$\\mu_{\\rho^{CHL}}$", "$\\sigma_{\\rho^{CHL}}$", "Source")
+ "$\\mu_{\\rho^{SST}}$", "$\\sigma_{\\rho^{SST}}$",
+ "$\\mu_{\\rho^{CHL}}$", "$\\sigma_{\\rho^{CHL}}$", "Source")
 kable(priors_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
-      align = "lrrrrl",
-      caption = "Independent normal priors on the climate shifters used in the state-space likelihood. \\label{tab:stress-priors}") %>%
-  kable_styling(latex_options = c("hold_position"), font_size = 10)
+ align = "lrrrrl",
+ caption = "Independent normal priors on the climate shifters used in the state-space likelihood. \\label{tab:stress-priors}") %>%
+ kable_styling(latex_options = c("hold_position"), font_size = 10)
 ```

@@ -11,7 +11,7 @@ output:
     keep_tex: true
     pandoc_args: ["--variable=fontsize:11pt"]
 bibliography: ../bibliography.bib
-csl: ../apa.csl
+csl: ../chicago-author-date.csl
 linkcolor: blue
 citecolor: blue
 urlcolor: blue

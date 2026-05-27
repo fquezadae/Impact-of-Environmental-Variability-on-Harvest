@@ -1,7 +1,7 @@
 # Permit portfolios and sectoral counterfactual under Ley~21.752 {#appendix-portfolio}
 
 This appendix reports two pieces of descriptive evidence that underpin
-the institutional mechanism developed in Sections~\ref{sec:discussion}.
+the institutional mechanism developed in Sections~the Discussion section of the main text.
 Section~\ref{appendix-portfolio-permits} documents the revealed
 multi-species portfolio held by each sector, refuting the common reading
 that the artisanal--industrial asymmetry estimated in the main text is
@@ -50,10 +50,10 @@ active.
 \toprule
 Bucket & $n$ vessels & Species lifetime & Multi-species lifetime (\%) & Species per year & Multi-species per year (\%) \\
 \midrule
-Industrial (IND)            & $129$  & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
-Lancha Menor (LM)           & $888$  & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
-Unclassified artisanal      & $367$  & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
-Bote Menor (BM)             & $189$  & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
+Industrial (IND) & $129$ & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
+Lancha Menor (LM) & $888$ & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
+Unclassified artisanal & $367$ & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
+Bote Menor (BM) & $189$ & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[para,flushleft]
@@ -65,7 +65,7 @@ the full anchoveta--sardina--jurel triplet and $67.6\%$ hold authorisations in t
 macrozones, with a median of four (zone~$\times$~species) authorisation pairs per vessel.
 Logbook rows are restricted to lances with non-missing species codes (excluding the
 \textit{lance sin captura} code 999). Buckets follow the Kasperski-aligned vessel-type
-classification used in the main text (Section~\ref{sec:tripresults}): LM is \emph{Lancha
+classification used in the main text (the Total annual trips section of the main text): LM is \emph{Lancha
 Menor}, BM is \emph{Bote Menor}, and \textit{Unclassified artisanal} pools the remaining
 artisanal vessel types. Species-portfolio metrics are computed over the full $81$-species
 range in the logbook; the SPF triplet (anchoveta, sardina común, jurel) accounts for
@@ -76,14 +76,14 @@ $80$--$86\%$ of artisanal lances and $67\%$ of industrial lances within the pane
 
 Three substantive readings of Table~\ref{tab:portfolio-descriptive}
 support the institutional argument developed in
-Section~\ref{sec:discussion}. First, the count of permits per vessel
+the Discussion section of the main text. First, the count of permits per vessel
 does not distinguish the two sectors in a way that would generate
 the headline asymmetry: $87.6\%$ of industrial vessels and $89.8\%$ of
 the dominant Lancha Menor sub-bucket of the artisanal sector hold
 authorisations for two or more species over the panel lifetime, with
 similar shares per vessel-year. Second, the within-artisanal
 heterogeneity that anchors the LM--BM contrast in
-Table~\ref{tab:tripcompstatemb} is \emph{not} explained by greater
+the within-artisanal TIPO\_EMB table (main text) is \emph{not} explained by greater
 species diversification in BM: BM in fact reports the narrowest
 logbook portfolio (mean $2.44$ species lifetime, $2.14$ per year), so
 the smaller projected response of BM to climate stress cannot be a
@@ -99,7 +99,7 @@ anchoveta--sardina pair while industrial activity is more evenly
 spread, with jurel and caballa together absorbing $\sim 70\%$ of
 industrial lances. Under climate forcing, the anchoveta--sardina pair
 responds with the identified negative semi-elasticities of
-Section~\ref{sec:stock-dynamics}, while jurel productivity is
+the Stock dynamics subsection of the main text, while jurel productivity is
 non-identified at the Centro-Sur scale (Appendix~\ref{appendix-spatial});
 the asymmetric concentration of the artisanal portfolio in the
 anchoveta--sardina pair therefore translates the same climate forcing
@@ -117,11 +117,11 @@ the V--Los~Lagos macrozone studied here, the law raises the artisanal
 share to $90\%$ in anchoveta and sardina com\'un (from $78\%$) and
 partitions jurel into a $30\%$ artisanal share in V--Los~R\'ios and
 $15\%$ in Los~Lagos (from a uniform $10\%$ under Article~$47$);
-Table~\ref{tab:fractioning} reports the two regimes side by side.
+the fractioning table (main text) reports the two regimes side by side.
 A static plug-in evaluation of the climate-conditional artisanal
 landing under each regime is reported in
-Section~\ref{sec:ley21752-implications} of the main text
-(Table~\ref{tab:counterfactual-main}); this appendix records the
+the Implications of the 2025 fractioning reform subsection of the main text
+(the static counterfactual table (main text)); this appendix records the
 formal derivation and the posterior-propagated, by-model version
 that complements that headline table.
 
@@ -138,92 +138,92 @@ L_{\text{art}}^{(R)} \;=\; \sum_{s} \alpha_s^{(R)} \cdot \big(1 + \Delta r_s^{\s
 where $\alpha_s^{(R)}$ is the artisanal fraction of stock~$s$ under
 regime~$R \in \{\text{Art.}~47, \text{Ley }21.752\}$ and the sum
 runs over the four (stock~$\times$~macrozone) units of
-Table~\ref{tab:fractioning}: anchoveta V--Los~Lagos, sardina com\'un
+the fractioning table (main text): anchoveta V--Los~Lagos, sardina com\'un
 V--Los~Lagos, jurel V--Los~R\'ios, and jurel Los~R\'ios--Los~Lagos.
 Equation~\eqref{eq:counterfactual} reads the productivity change as a
 proportional adjustment to the steady-state landed volume and
 abstracts from any endogenous TAC-setting response. The plug-in
 version reported in the main text fixes $\Delta r_s^{\star}/r_s^{0}$
 at the cross-model posterior median from
-Table~\ref{tab:growth_compstat}; the posterior-propagated version
+the stock productivity comparative-statics table (main text); the posterior-propagated version
 reported below integrates explicitly over the CMIP6 six-model
 ensemble and the within-posterior $90\%$ envelope, returning
 cross-model median plus inter-quartile range for the central estimate
 and the median within-posterior $90\%$ CI for the structural
 uncertainty axis, exactly as in
-Table~\ref{tab:trip_compstat}.
+the trip comparative-statics table (main text).
 
 ```{r appendix-counterfactual-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # Posterior-propagated counterfactual produced by R/run_counterfactual_ley21752.R
 # Format of summary CSV (one row per (stock, regime)):
-#   stock_id, regime, cross_med, cross_q25, cross_q75, within_q05, within_q95, n_models
+# stock_id, regime, cross_med, cross_q25, cross_q75, within_q05, within_q95, n_models
 # When the script is run, this chunk renders the appendix table directly from disk.
 
 cf_path <- "tables/appendix_h_counterfactual_ley21752.csv"
 
 if (file.exists(cf_path)) {
 
-  cf <- readr::read_csv(cf_path, show_col_types = FALSE)
+ cf <- readr::read_csv(cf_path, show_col_types = FALSE)
 
-  stock_label <- c(
-    anchoveta_cs     = "Anchoveta (V--Los~Lagos)",
-    sardina_comun_cs = "Sardina com\\'un (V--Los~Lagos)",
-    jurel_cs         = "Jurel (V--Los~Lagos, aggregate)",
-    TOTAL_CS         = "\\textbf{Total Centro-Sur}"
-  )
+ stock_label <- c(
+ anchoveta_cs = "Anchoveta (V--Los~Lagos)",
+ sardina_comun_cs = "Sardina com\\'un (V--Los~Lagos)",
+ jurel_cs = "Jurel (V--Los~Lagos, aggregate)",
+ TOTAL_CS = "\\textbf{Total Centro-Sur}"
+ )
 
-  cf <- cf %>%
-    dplyr::mutate(
-      Stock  = stock_label[stock_id],
-      Regime = ifelse(regime == "Art47", "Art.~47 LGPA", "Ley~21.752"),
-      Central = sprintf("$%.1f$ $[%.1f, %.1f]$", cross_med, cross_q25, cross_q75),
-      WithinCI = sprintf("$[%.1f, %.1f]$", within_q05, within_q95)
-    ) %>%
-    dplyr::arrange(factor(stock_id,
-        levels = c("anchoveta_cs","sardina_comun_cs","jurel_cs","TOTAL_CS")),
-        regime) %>%
-    dplyr::select(Stock, Regime, `Cross-model med [IQR] (kt)` = Central,
-                  `Within-posterior 90\\% CI (kt)` = WithinCI)
+ cf <- cf %>%
+ dplyr::mutate(
+ Stock = stock_label[stock_id],
+ Regime = ifelse(regime == "Art47", "Art.~47 LGPA", "Ley~21.752"),
+ Central = sprintf("$%.1f$ $[%.1f, %.1f]$", cross_med, cross_q25, cross_q75),
+ WithinCI = sprintf("$[%.1f, %.1f]$", within_q05, within_q95)
+ ) %>%
+ dplyr::arrange(factor(stock_id,
+ levels = c("anchoveta_cs","sardina_comun_cs","jurel_cs","TOTAL_CS")),
+ regime) %>%
+ dplyr::select(Stock, Regime, `Cross-model med [IQR] (kt)` = Central,
+ `Within-posterior 90\\% CI (kt)` = WithinCI)
 
-  # Render manually with threeparttable + footnotes (avoids stargazer wrapper)
-  tbl <- knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
-                      linesep = "")
+ # Render manually with threeparttable + footnotes (avoids stargazer wrapper)
+ tbl <- knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
+ linesep = "")
 
-  cap_str <- paste0(
-    "Posterior-propagated artisanal absolute landing under the ",
-    "Article~$47$~LGPA and Ley~$21.752$ fractioning regimes, ",
-    "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (V--Los~Lagos), ",
-    "$2024$ Cuotas Globales.")
+ cap_str <- paste0(
+ "Posterior-propagated artisanal absolute landing under the ",
+ "Article~$47$~LGPA and Ley~$21.752$ fractioning regimes, ",
+ "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (V--Los~Lagos), ",
+ "$2024$ Cuotas Globales.")
 
-  notes_str <- paste0(
-    "\\emph{Notes.} Cross-model median and IQR are taken across the ",
-    "six CMIP6 models of the per-model posterior median; the within-posterior ",
-    "90\\% CI is the median across models of the per-model posterior ",
-    "$[q_{05}, q_{95}]$. The construction parallels Table~\\ref{tab:trip_compstat}; ",
-    "see \\texttt{R/run\\_counterfactual\\_ley21752.R} for the pipeline. ",
-    "Jurel is held at $\\Delta r^{\\star}/r^{0} = 0$ by the ",
-    "non-identification convention of Section~\\ref{sec:stock-dynamics}; ",
-    "anchoveta and sardina com\\'un use the by-model summaries written by ",
-    "the main T5 pipeline (\\texttt{tables/growth\\_comparative\\_statics\\_by\\_model.csv})."
-  )
+ notes_str <- paste0(
+ "\\emph{Notes.} Cross-model median and IQR are taken across the ",
+ "six CMIP6 models of the per-model posterior median; the within-posterior ",
+ "90\\% CI is the median across models of the per-model posterior ",
+ "$[q_{05}, q_{95}]$. The construction parallels Table~\the trip comparative-statics table (main text); ",
+ "see \\texttt{R/run\\_counterfactual\\_ley21752.R} for the pipeline. ",
+ "Jurel is held at $\\Delta r^{\\star}/r^{0} = 0$ by the ",
+ "non-identification convention of Section~\the Stock dynamics subsection of the main text; ",
+ "anchoveta and sardina com\\'un use the by-model summaries written by ",
+ "the main T5 pipeline (\\texttt{tables/growth\\_comparative\\_statics\\_by\\_model.csv})."
+ )
 
-  cat("\\begin{table}[H]\n")
-  cat("\\centering\n")
-  cat(sprintf("\\caption{%s\\label{tab:counterfactual}}\n", cap_str))
-  cat("\\begin{threeparttable}\n")
-  cat(as.character(tbl))
-  cat("\n\\begin{tablenotes}[flushleft]\\footnotesize\n")
-  cat(sprintf("\\item %s\n", notes_str))
-  cat("\\end{tablenotes}\n")
-  cat("\\end{threeparttable}\n")
-  cat("\\end{table}\n")
+ cat("\\begin{table}[H]\n")
+ cat("\\centering\n")
+ cat(sprintf("\\caption{%s\\label{tab:counterfactual}}\n", cap_str))
+ cat("\\begin{threeparttable}\n")
+ cat(as.character(tbl))
+ cat("\n\\begin{tablenotes}[flushleft]\\footnotesize\n")
+ cat(sprintf("\\item %s\n", notes_str))
+ cat("\\end{tablenotes}\n")
+ cat("\\end{threeparttable}\n")
+ cat("\\end{table}\n")
 
 } else {
 
-  cat("\\noindent\\textit{Posterior-propagated counterfactual table not yet built. ",
-      "Run \\texttt{Rscript R/run\\_counterfactual\\_ley21752.R} to generate ",
-      "\\texttt{tables/appendix\\_h\\_counterfactual\\_ley21752.csv}, then re-knit.}\n")
+ cat("\\noindent\\textit{Posterior-propagated counterfactual table not yet built. ",
+ "Run \\texttt{Rscript R/run\\_counterfactual\\_ley21752.R} to generate ",
+ "\\texttt{tables/appendix\\_h\\_counterfactual\\_ley21752.csv}, then re-knit.}\n")
 
 }
 
@@ -250,7 +250,7 @@ uncertainty whose magnitude is bounded by the three-orders-of-magnitude
 range reported there. The plug-in headline in the main text is therefore
 robust to the cross-model and within-posterior axes that the appendix
 makes explicit, and the institutional reading developed in
-Section~\ref{sec:discussion} carries over unchanged.
+the Discussion section of the main text carries over unchanged.
 
 
 ## Inter-sectoral cession evidence from SERNAPESCA quota control reports {#sec:cesiones-evidence}
@@ -289,7 +289,7 @@ on realised landings, which are post-cession; the asymmetry therefore
 reflects the operational allocation produced by the joint
 Article~$47$--Article~$55$~T regime rather than the de jure
 Article~$47$ fractioning alone. Second, the static counterfactual under
-Ley~$21.752$ in Section~\ref{sec:ley21752-implications} of the main
+Ley~$21.752$ in the Implications of the 2025 fractioning reform subsection of the main text of the main
 text and in equation~\eqref{eq:counterfactual} of this appendix should
 be read as a de jure upper bound on the operational re-allocation:
 because the industrial sector already cedes the bulk of its assigned
@@ -311,27 +311,27 @@ SERNAPESCA quota control reports.\label{tab:cesiones-evidence}}
 \toprule
 Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded & Direction \\
 \midrule
-2018 & anchoveta &  12.8 & $-10.7$ & 84\% & IND$\rightarrow$ART \\
-2018 & sardina   &  74.2 & $-63.2$ & 85\% & IND$\rightarrow$ART \\
-2018 & jurel     & 326.9 & $+16.1$ &  5\% & ART$\rightarrow$IND \\
-2019 & anchoveta &  27.4 & $-25.8$ & 94\% & IND$\rightarrow$ART \\
-2019 & sardina   &  76.0 & $-69.6$ & 92\% & IND$\rightarrow$ART \\
-2019 & jurel     & 339.0 & $+12.0$ &  3\% & ART$\rightarrow$IND \\
-2020 & anchoveta &  38.6 & $-33.3$ & 86\% & IND$\rightarrow$ART \\
-2020 & sardina   &  67.2 & $-60.9$ & 91\% & IND$\rightarrow$ART \\
-2020 & jurel     &1268.1 & $+11.8$ &  1\% & ART$\rightarrow$IND \\
-2021 & anchoveta &  45.3 & $-45.1$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
-2021 & sardina   &  76.9 & $-76.5$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
-2021 & jurel     & 448.7 & $+13.3$ &  3\% & ART$\rightarrow$IND \\
-2022 & anchoveta &  52.2 & $-50.5$ & 97\% & IND$\rightarrow$ART \\
-2022 & sardina   &  77.7 & $-71.6$ & 92\% & IND$\rightarrow$ART \\
-2022 & jurel     & 516.4 & $+15.2$ &  3\% & ART$\rightarrow$IND \\
-2023 & anchoveta &  39.9 & $-37.1$ & 93\% & IND$\rightarrow$ART \\
-2023 & sardina   &  63.3 & $-61.7$ & 98\% & IND$\rightarrow$ART \\
-2023 & jurel     & 637.0 & $-0.7$  &  0\% & IND$\rightarrow$ART \\
-2024 & anchoveta &  53.8 & $-45.5$ & 85\% & IND$\rightarrow$ART \\
-2024 & sardina   &  53.9 & $-51.0$ & 95\% & IND$\rightarrow$ART \\
-2024 & jurel     & 728.6 & $-31.5$ &  4\% & IND$\rightarrow$ART \\
+2018 & anchoveta & 12.8 & $-10.7$ & 84\% & IND$\rightarrow$ART \\
+2018 & sardina & 74.2 & $-63.2$ & 85\% & IND$\rightarrow$ART \\
+2018 & jurel & 326.9 & $+16.1$ & 5\% & ART$\rightarrow$IND \\
+2019 & anchoveta & 27.4 & $-25.8$ & 94\% & IND$\rightarrow$ART \\
+2019 & sardina & 76.0 & $-69.6$ & 92\% & IND$\rightarrow$ART \\
+2019 & jurel & 339.0 & $+12.0$ & 3\% & ART$\rightarrow$IND \\
+2020 & anchoveta & 38.6 & $-33.3$ & 86\% & IND$\rightarrow$ART \\
+2020 & sardina & 67.2 & $-60.9$ & 91\% & IND$\rightarrow$ART \\
+2020 & jurel &1268.1 & $+11.8$ & 1\% & ART$\rightarrow$IND \\
+2021 & anchoveta & 45.3 & $-45.1$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
+2021 & sardina & 76.9 & $-76.5$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
+2021 & jurel & 448.7 & $+13.3$ & 3\% & ART$\rightarrow$IND \\
+2022 & anchoveta & 52.2 & $-50.5$ & 97\% & IND$\rightarrow$ART \\
+2022 & sardina & 77.7 & $-71.6$ & 92\% & IND$\rightarrow$ART \\
+2022 & jurel & 516.4 & $+15.2$ & 3\% & ART$\rightarrow$IND \\
+2023 & anchoveta & 39.9 & $-37.1$ & 93\% & IND$\rightarrow$ART \\
+2023 & sardina & 63.3 & $-61.7$ & 98\% & IND$\rightarrow$ART \\
+2023 & jurel & 637.0 & $-0.7$ & 0\% & IND$\rightarrow$ART \\
+2024 & anchoveta & 53.8 & $-45.5$ & 85\% & IND$\rightarrow$ART \\
+2024 & sardina & 53.9 & $-51.0$ & 95\% & IND$\rightarrow$ART \\
+2024 & jurel & 728.6 & $-31.5$ & 4\% & IND$\rightarrow$ART \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize

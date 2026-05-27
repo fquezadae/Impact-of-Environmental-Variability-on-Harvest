@@ -1,7 +1,7 @@
 # Decomposition of trip-level projection uncertainty across the CMIP6 ensemble {#appendix-trips-ensemble}
 
 The fleet-level comparative statics on trips reported in
-Section \ref{sec:tripresults} (Table \ref{tab:trip_compstat}) integrate
+the Total annual trips section of the main text (the trip comparative-statics table (main text)) integrate
 over three sources of uncertainty: the posterior of the structural
 shifters $(\rho^{SST}_s, \rho^{CHL}_s)$ given the historical record,
 the heterogeneity of catch composition $(\omega_{v,s})$ and historical
@@ -15,7 +15,7 @@ ensemble spread), using the law of total variance. It is the
 companion to Appendix \ref{appendix-ensemble} and answers a different
 diagnostic question: *whether the narrow cross-model interquartile
 range observed for fleet-level trip responses in
-Table \ref{tab:trip_compstat} reflects climate consensus or a
+the trip comparative-statics table (main text) reflects climate consensus or a
 floor-effect saturation of the underlying biomass collapse.*
 
 ## Decomposition
@@ -66,38 +66,38 @@ each of the 830 vessels in the panel.
 
 ```{r appG-load, echo=FALSE, message=FALSE, warning=FALSE}
 suppressPackageStartupMessages({
-  library(dplyr)
-  library(readr)
+ library(dplyr)
+ library(readr)
 })
 
 appG_raw <- readr::read_csv(
-  "tables/appendix_g_trips_variance_decomposition_raw.csv",
-  show_col_types = FALSE)
+ "tables/appendix_g_trips_variance_decomposition_raw.csv",
+ show_col_types = FALSE)
 
 # Helpers para extraer una celda formatted
 appG_pct <- function(fleet, scn, win, col) {
-  v <- appG_raw %>%
-    dplyr::filter(TIPO_FLOTA == fleet,
-                  scenario   == scn,
-                  window     == win) %>%
-    dplyr::pull({{ col }})
-  sprintf("%.0f%%", 100 * v[1])
+ v <- appG_raw %>%
+ dplyr::filter(TIPO_FLOTA == fleet,
+ scenario == scn,
+ window == win) %>%
+ dplyr::pull({{ col }})
+ sprintf("%.0f%%", 100 * v[1])
 }
 appG_sd <- function(fleet, scn, win, col) {
-  v <- appG_raw %>%
-    dplyr::filter(TIPO_FLOTA == fleet,
-                  scenario   == scn,
-                  window     == win) %>%
-    dplyr::pull({{ col }})
-  sprintf("%.4f", v[1])
+ v <- appG_raw %>%
+ dplyr::filter(TIPO_FLOTA == fleet,
+ scenario == scn,
+ window == win) %>%
+ dplyr::pull({{ col }})
+ sprintf("%.4f", v[1])
 }
 
 # Atajos para celdas que la prosa cita
-art_245mid_within   <- appG_pct("ART", "ssp245", "mid", pct_within)
-art_585end_within   <- appG_pct("ART", "ssp585", "end", pct_within)
-ind_585end_within   <- appG_pct("IND", "ssp585", "end", pct_within)
-sd_art_585end       <- appG_sd("ART",  "ssp585", "end", sd_total)
-sd_ind_585end       <- appG_sd("IND",  "ssp585", "end", sd_total)
+art_245mid_within <- appG_pct("ART", "ssp245", "mid", pct_within)
+art_585end_within <- appG_pct("ART", "ssp585", "end", pct_within)
+ind_585end_within <- appG_pct("IND", "ssp585", "end", pct_within)
+sd_art_585end <- appG_sd("ART", "ssp585", "end", sd_total)
+sd_ind_585end <- appG_sd("IND", "ssp585", "end", sd_total)
 ```
 
 Table \ref{tab:appG-decomp} reports the decomposition for the four
@@ -105,29 +105,29 @@ scenario--window pairs and two fleets.
 
 ```{r appG-table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 appG_tab <- appG_raw %>%
-  dplyr::transmute(
-    Fleet                     = fleet_label,
-    Scenario                  = scenario_label,
-    `$n_m$`                   = n_models,
-    `Mean $\\%\\Delta$`       = sprintf("$%+0.1f\\%%$", 100 * mean_pct_change),
-    `$SD$ total`              = sprintf("%.4f", sd_total),
-    `$\\%$ within`            = sprintf("$%.0f\\%%$", 100 * pct_within),
-    `$\\%$ between`           = sprintf("$%.0f\\%%$", 100 * pct_between)
-  )
+ dplyr::transmute(
+ Fleet = fleet_label,
+ Scenario = scenario_label,
+ `$n_m$` = n_models,
+ `Mean $\\%\\Delta$` = sprintf("$%+0.1f\\%%$", 100 * mean_pct_change),
+ `$SD$ total` = sprintf("%.4f", sd_total),
+ `$\\%$ within` = sprintf("$%.0f\\%%$", 100 * pct_within),
+ `$\\%$ between` = sprintf("$%.0f\\%%$", 100 * pct_between)
+ )
 
 knitr::kable(appG_tab,
-             format    = "latex",
-             escape    = FALSE,
-             booktabs  = TRUE,
-             align     = "llcrrrr",
-             caption   = paste("Variance decomposition of",
-                               "$\\Delta T_f / T_f^{(0)}$",
-                               "into within-model (posterior pooled",
-                               "with vessel heterogeneity) and",
-                               "between-model (CMIP6) components.",
-                               "$n_m$ is the number of CMIP6 models",
-                               "contributing to the cell."),
-             label     = "appG-decomp")
+ format = "latex",
+ escape = FALSE,
+ booktabs = TRUE,
+ align = "llcrrrr",
+ caption = paste("Variance decomposition of",
+ "$\\Delta T_f / T_f^{(0)}$",
+ "into within-model (posterior pooled",
+ "with vessel heterogeneity) and",
+ "between-model (CMIP6) components.",
+ "$n_m$ is the number of CMIP6 models",
+ "contributing to the cell."),
+ label = "appG-decomp")
 ```
 
 The decomposition shows that the within-model component dominates the
@@ -168,10 +168,10 @@ end-of-century), confirming that what little variance remains is
 within-model.
 
 The means reported in Table \ref{tab:appG-decomp} are systematically
-more negative than the medians reported in Table \ref{tab:trip_compstat}
+more negative than the medians reported in the trip comparative-statics table (main text)
 of the main results section---for example, $-17.5\%$ for the artisanal
 fleet under SSP5-8.5 end-of-century in this appendix versus $-10.2\%$ in
-Table \ref{tab:trip_compstat}. This is the same left-skew mechanism
+the trip comparative-statics table (main text). This is the same left-skew mechanism
 documented in Appendix \ref{appendix-ensemble} for the underlying
 productivity response: posterior draws and vessels in which the
 portfolio collapses pull the median up toward the floor at
