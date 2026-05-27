@@ -1,20 +1,13 @@
 # Markov-chain convergence diagnostics {#appendix-convergence}
 
-This appendix reports the mixing and effective-sample-size diagnostics
-of the four Hamiltonian Monte Carlo chains used to obtain the posterior
-of the T4b-full specification reported in
-Section \ref{identification}. The fit was run with four chains of
-2,000 post-warmup iterations each, for a total of 8,000
-post-warmup draws. The non-centred parameterisation of $(r_i^{0}, K_i, B_{i,0})$
-combined with a Lewandowski--Kurowicka--Joe prior on the cross-stock
-correlation matrix $\Omega$ delivers chains that mix well across all
-top-level quantities; in particular, the two parameters most prone to
-non-identification in this class of state-space models---the process
-noise $\sigma_{\text{proc},i}$ and the observation noise
-$\sigma_{\text{obs},i}$---both satisfy the standard convergence
-thresholds. We report the within-group worst case (maximum split-$\hat{R}$
-and minimum bulk- and tail-ESS) for each family of top-level parameters
-in Table \ref{tab:convergence}.
+Table \ref{tab:convergence} reports the Gelman--Rubin $\hat{R}$ and
+the bulk/tail effective sample sizes for the top-level parameters of
+the full state-space specification, evaluated on four independent
+Hamiltonian Monte Carlo chains of $2{,}000$ post-warmup iterations
+each. All $\hat{R}$ values are below $1.01$ and all effective sample
+sizes exceed $400$, indicating that posterior summaries are not
+contaminated by between-chain divergence or by autocorrelation between
+adjacent draws.
 
 ```{r convergence-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 conv_raw <- read.csv("data/outputs/t4b/t4b_full_summary.csv",
@@ -91,27 +84,3 @@ kable(conv_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       "all top-level parameters."),
       general_title = "Note:", escape = TRUE, threeparttable = TRUE)
 ```
-
-The top-level parameters of the T4b-full posterior all satisfy the
-standard convergence thresholds: the maximum split-$\hat{R}$ across
-$N = 24$ top-level quantities is $1.009$, attained for the jack-mackerel
-observation noise $\sigma_{\text{obs},3}$, and the minimum bulk- and
-tail-ESS are $1{,}370$ and $936$ respectively, again attained at
-$\sigma_{\text{obs},i}$ where the observation likelihood interacts with
-the seven non-surveyed years of the jack-mackerel series and with the
-two left-censored observations of 2012 and 2015. All other parameter
-families enjoy bulk-ESS above $3{,}000$ and tail-ESS above $5{,}900$.
-The three climate-shifter components of primary interest---
-$(\rho_i^{SST}, \rho_i^{CHL})$---attain $\hat{R} \leq 1.001$ and bulk-ESS
-above $8{,}300$ across all stocks, so the identification results of
-Section \ref{identification} are not driven by under-mixed chains.
-
-We additionally report the absence of post-warmup divergent transitions
-across all four chains, the maximum tree depth of the No-U-Turn Sampler
-remained below the default cap of $10$ in all draws, and the average
-energy Bayesian fraction of missing information exceeded $0.5$ on every
-chain---each of these auxiliary diagnostics is available in the
-underlying Stan fit object archived at
-\texttt{data/outputs/t4b/t4b\_full\_fit.rds}. Taken together with
-Table \ref{tab:convergence}, the diagnostic battery supports the
-posterior summaries reported in the main text.

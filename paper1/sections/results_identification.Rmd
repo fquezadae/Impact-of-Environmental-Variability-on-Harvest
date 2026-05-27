@@ -97,13 +97,13 @@ kable(rho_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       "Shifters are the semi-elasticities of the intrinsic growth rate $r_i$",
       "with respect to SST anomalies (in \u00b0C), log-CHL anomalies, and the",
       "basin-scale ENSO Ni\u00f1o 3.4 index, respectively. The ENSO row reports",
-      "the lag-1 refit of Appendix \\\\ref{sec:appendix-spatial-enso}, in which",
+      "the lag-1 refit of Online Appendix E.4, in which",
       "jack mackerel productivity is forced by the basin-scale index in place of",
       "local coastal shifters; anchoveta and sardine are not refit and inherit",
       "their main-specification posteriors. Priors on coastal shifters are adopted",
       "from the stock-specific stress-test results reported in Appendix A; the",
       "ENSO prior $\\\\mathcal{N}(0, 0.5)$ is deliberately tighter (see",
-      "Appendix \\\\ref{sec:appendix-spatial-enso}). The posterior-to-prior",
+      "Online Appendix E.4). The posterior-to-prior",
       "standard-deviation ratio measures prior-to-posterior updating: values near",
       "one indicate the data carry little information, whereas values well below",
       "one indicate identification from the likelihood. All R-hat <= 1.01."),
@@ -177,7 +177,7 @@ climate signal where a reduced-form benchmark would have produced an
 artefactually precise but structurally meaningless coefficient, which
 would then propagate into climate projections as if it were information.
 
-The non-identification result for jack mackerel is robust to the choice of spatial domain, biomass record, and forcing modality. Appendix \ref{appendix-spatial} reports five complementary tests of this null. First, refits of the full specification under three nested coastal domains (Centro-Sur EEZ, offshore-extended, regional Southeast Pacific) leave the posterior-to-prior standard-deviation ratio of $(\rho^{SST}_{\text{jurel}}, \rho^{CHL}_{\text{jurel}})$ in $0.998$--$1.014$. Second, augmenting the biomass record with a Northern Chilean acoustic series under a common elasticity moves the ratio only to $0.94$--$0.99$, ruling out a sample-size explanation. Third, replacing the local shifters with the basin-scale ENSO Niño 3.4 index---the climatic driver identified by the qualitative literature on this transboundary species (@Arcos2001-jq; @Pena-Torres2017-gn)---returns a posterior-to-prior ratio of $0.98$ at lag one and $1.01$ at lag two (Table \ref{tab:rho-posteriors}, ENSO row), even though the in-sample dispersion of the basin-scale shifter is approximately twice that of the coastal counterpart and the prior is deliberately tighter (Appendix \ref{sec:appendix-spatial-power}). Fourth, a joint specification with all three shifters active for jack mackerel simultaneously returns ratios near unity for all three coefficients ($1.03$ on local SST, $1.00$ on local $\log$ CHL, $0.98$ on basin-scale ENSO), a sensibility check that addresses the standard referee question. Fifth, an attempt to incorporate the SPRFMO regional assessment series fails on coherence grounds, indicating the broader geographic aggregate is not integrable with the Centro-Sur record under a single shifter. The convergence of these five tests rules out the conjecture that the non-identification is an artefact of spatial aggregation, sample size, mis-specified forcing scale, or joint-specification convention; the relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins of behaviour, location, and phenology that are not captured in the elasticity of structural productivity at the annual aggregation considered here, consistent with its transboundary SPRFMO management.
+Online Appendix E reports five complementary robustness tests of this null---three nested coastal aggregations, a dual-source extension with a Northern acoustic series, basin-scale ENSO shifters at lags 1 and 2, a joint specification with all three shifters active simultaneously, and an attempted SPRFMO regional assessment integration. All five converge on posterior-to-prior ratios between $0.94$ and $1.03$, indistinguishable from unity, indicating that the local non-identification is structural rather than an artefact of spatial aggregation, sample size, mis-specified forcing scale, or joint-specification convention. The relevant climate forcing for the Centro-Sur jurel stock operates at margins (behaviour, location, phenology) not captured in the elasticity of annual aggregate productivity, consistent with its transboundary SPRFMO management (@Arcos2001-jq; @Pena-Torres2017-gn).
 
 Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
 forest plot.
@@ -195,54 +195,18 @@ prior centred at zero.}
 
 ### Identification versus short-run prediction
 
-The identified shifters are structural parameters rather than reduced-form
-correlations: they measure an invariant biological mechanism linking ocean
-state to stock productivity, and they enter the law of motion as
-coefficients on exogenous climate inputs. This structural reading is what
-licenses their use as projection inputs under climate regimes outside the
-2000--2024 estimation sample; reduced-form correlations, by contrast,
-would require the joint distribution of $(SST, B, C)$ to remain stationary
-into the projection horizon, which is precisely the assumption the climate
-scenarios are designed to violate. Their economic value lies in
-**long-run comparative statics**: given a projected climate regime
-$X_t^{\star}$ for the period 2040--2100 drawn from the CMIP6 ensemble,
-the intrinsic productivity under that regime is
-$r_i^{\star} = r_i^{0} \exp(\rho_i^{SST} \Delta SST_t + \rho_i^{CHL}
-\Delta \log CHL_t)$, and the expected steady-state biomass, harvest, and
-fleet-level effort follow mechanically. This is the channel through
-which the paper translates physical climate change into distributional
-outcomes in Section \ref{projections}.
-
-Crucially, identification of $\rho$ does **not** imply superior short-run
-predictive power. A leave-future-out cross-validation at the one-year
-horizon (Appendix B) shows that the fully climate-augmented specification
-improves one-step-ahead log predictive density by only
-$\Delta\widehat{\text{ELPD}}_{\text{LFO}} \approx 0.4$ over a
-climate-free Schaefer baseline, a statistically unresolved difference.
-This is not a failure; it is precisely what should occur when the
-process-noise variance $\sigma_{\text{proc}}$ is large relative to
-year-to-year climate innovations. Annual climate variability
-contributes little to *next-year nowcasts* but accumulates systematically
-over decadal horizons, and the shifters $\rho_i$ are the parameters that
-quantify that accumulation. A robustness comparison using PSIS-LOO is
-reported in Appendix \ref{appendix-predictive}
-(Table \ref{tab:loo-appendix}) and confirms that the full
-specification is preferred as an in-sample description of the dynamics
-($\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59$, SE $= 4.93$); the
-LOO and LFO results are complementary diagnostics of, respectively,
-identification-through-fit and forecasting-on-new-data, and the paper
-relies on the former for the economic interpretation.
+The identified shifters are structural parameters rather than reduced-form correlations: they enter the law of motion as coefficients on exogenous climate inputs, which licenses their use as projection inputs under climate regimes outside the 2000--2024 estimation sample. Their economic value lies in **long-run comparative statics**: given a projected climate regime $X_t^{\star}$ drawn from the CMIP6 ensemble, the intrinsic productivity under that regime is $r_i^{\star} = r_i^{0} \exp(\rho_i^{SST} \Delta SST_t + \rho_i^{CHL} \Delta \log CHL_t)$, and steady-state biomass, harvest, and fleet-level effort follow mechanically (Section \ref{projections}). Identification of $\rho$ does not imply superior short-run prediction: a leave-future-out cross-validation at the one-year horizon delivers $\Delta\widehat{\text{ELPD}}_{\text{LFO}} \approx 0.4$ over a climate-free baseline (Online Appendix B), as expected when process noise dominates annual climate innovations. The PSIS-LOO comparison in Online Appendix B confirms the in-sample preference for the climate-augmented specification ($\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59$, SE $= 4.93$); the paper relies on identification-through-fit for the economic interpretation.
 
 ### Posterior-predictive adequacy
 
 A stock-by-stock comparison of the smoothed latent biomass $B_{i,t}$
-against the observed SSB series (Figure \ref{fig:ppc-smooth-vs-obs})
+against the observed SSB series (Online Appendix C, Figure C.1)
 shows that the identified model reproduces the historical trajectory
 within a median 90\% posterior band width of approximately 20\% of the
 mean. Residuals are roughly Gaussian and contain no detectable
-autocorrelation at one-year lag (Figure \ref{fig:ppc-residuals}).
+autocorrelation at one-year lag (Online Appendix C, Figure C.2).
 Posterior-predictive diagnostics are reported in
-Appendix \ref{appendix-posterior}; Markov-chain convergence
+Online Appendix C; Markov-chain convergence
 diagnostics for all top-level parameters are reported in
-Appendix \ref{appendix-convergence}.
+Online Appendix D.
 

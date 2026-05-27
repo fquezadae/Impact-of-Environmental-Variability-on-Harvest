@@ -1,0 +1,84 @@
+---
+title: "Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries"
+subtitle: "\\begin{center}{\\Large\\textbf{Online Appendix}}\\end{center}"
+author: "Felipe J. Quezada-Escalona"
+date: "`r withr::with_locale(c(LC_TIME = 'English'), format(Sys.Date(), '%B %Y'))`"
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    number_sections: true
+    toc: false
+    keep_tex: true
+    pandoc_args: ["--variable=fontsize:11pt"]
+bibliography: ../bibliography.bib
+csl: ../apa.csl
+linkcolor: blue
+citecolor: blue
+urlcolor: blue
+link-citations: TRUE
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{10pt}
+  - \usepackage{authblk}
+  - \usepackage{booktabs}
+  - \usepackage{caption}
+  - \usepackage{dcolumn}
+  - \usepackage{adjustbox}
+  - \usepackage{threeparttable}
+  - \usepackage{float}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - "\\setlength{\\headheight}{14pt}"
+  - "\\fancyhead[L]{\\small\\scshape Online Appendix: Asymmetric Climate Impacts on Fishing Effort}"
+  - "\\fancyhead[R]{\\small\\thepage}"
+  - "\\renewcommand{\\headrulewidth}{0.4pt}"
+  - "\\renewcommand{\\thesection}{\\Alph{section}}"
+  - "\\renewcommand{\\thesubsection}{\\Alph{section}.\\arabic{subsection}}"
+editor_options:
+  markdown:
+    wrap: none
+---
+
+```{r supp-setup, include=FALSE}
+suppressPackageStartupMessages({
+  library(knitr)
+  library(kableExtra)
+  library(dplyr)
+  library(readr)
+})
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+# Set cwd to project root so paper1/sections/... paths resolve consistently with main paper
+knitr::opts_knit$set(root.dir = here::here())
+```
+
+```{r appendix-stress, child='paper1/sections/appendix_stress_tests.Rmd'}
+```
+
+```{r appendix-predictive, child='paper1/sections/appendix_predictive_diagnostics.Rmd'}
+```
+
+```{r appendix-posterior, child='paper1/sections/appendix_posterior_diagnostics.Rmd'}
+```
+
+```{r appendix-convergence, child='paper1/sections/appendix_convergence_diagnostics.Rmd'}
+```
+
+```{r appendix-spatial, child='paper1/sections/appendix_spatial_jurel.Rmd'}
+```
+
+```{r appendix-variance, child='paper1/sections/appendix_variance_decomposition.Rmd'}
+```
+
+```{r appendix-trips-variance, child='paper1/sections/appendix_g_trips_variance_decomposition.Rmd'}
+```
+
+```{r appendix-portfolio, child='paper1/sections/appendix_h_portfolio_and_counterfactual.Rmd'}
+```
+
+```{r appendix-limitations, child='paper1/sections/appendix_i_limitations.Rmd'}
+```
+
+# References {.unnumbered}
