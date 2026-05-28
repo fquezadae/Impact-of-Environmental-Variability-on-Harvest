@@ -63,7 +63,7 @@ projection is therefore the structural posterior.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{figs/t4b/appendix_f_variance_decomposition.png}
+\includegraphics[width=0.85\textwidth]{../figs/t4b/appendix_f_variance_decomposition.png}
 \caption{Variance decomposition of $\Delta r^*_s / r^{(0)}_s$ across
 the CMIP6 ensemble. Bars stack to one within each scenario--window
 pair, splitting total variance into within-model (posterior, blue) and

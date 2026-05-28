@@ -10,7 +10,11 @@ contaminated by between-chain divergence or by autocorrelation between
 adjacent draws.
 
 ```{r convergence-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-conv_raw <- read.csv("data/outputs/t4b/t4b_full_summary.csv",
+conv_path <- "data/outputs/t4b/t4b_full_summary.csv"
+
+if (file.exists(conv_path)) {
+
+conv_raw <- read.csv(conv_path,
  stringsAsFactors = FALSE) %>%
  dplyr::filter(!is.na(rhat)) %>%
  dplyr::mutate(group = gsub("\\[.*\\]", "", variable))
@@ -83,4 +87,12 @@ kable(conv_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
  "therefore excluded. The conventional thresholds are Rhat <= 1.01 and ESS >= 400 for",
  "all top-level parameters."),
  general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+
+} else {
+
+ cat("\\noindent\\textit{Convergence diagnostics table not yet built. ",
+ "Run \\texttt{Rscript R/08\\_stan\\_t4/08\\_fit\\_t4b\\_full.R} to generate ",
+ "\\texttt{data/outputs/t4b/t4b\\_full\\_summary.csv}, then re-knit.}\n")
+
+}
 ```

@@ -37,6 +37,9 @@ header-includes:
   - "\\renewcommand{\\headrulewidth}{0.4pt}"
   - "\\renewcommand{\\thesection}{\\Alph{section}}"
   - "\\renewcommand{\\thesubsection}{\\Alph{section}.\\arabic{subsection}}"
+  - "\\usepackage{chngcntr}"
+  - "\\counterwithin{table}{section}"
+  - "\\counterwithin{figure}{section}"
 editor_options:
   markdown:
     wrap: none

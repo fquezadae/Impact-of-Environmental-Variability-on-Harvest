@@ -215,7 +215,7 @@ Figure \ref{fig:appG-decomp} visualises the decomposition.
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.85\textwidth]{figs/t4b/appendix_g_trips_variance_decomposition.png}
+\includegraphics[width=0.85\textwidth]{../figs/t4b/appendix_g_trips_variance_decomposition.png}
 \caption{Variance decomposition of $\Delta T_f / T_f^{(0)}$ across the
 CMIP6 ensemble. Bars stack to one within each scenario--window pair
 and split the total variance into within-model (posterior pooled with
