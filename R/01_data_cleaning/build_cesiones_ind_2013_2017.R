@@ -37,17 +37,30 @@ RAW <- here::here("paper1", "portfolio_check", "raw_sernapesca")
 # --- helpers -----------------------------------------------------------------
 norm <- function(x) stringr::str_squish(tolower(ifelse(is.na(x), "", as.character(x))))
 
-# ¿la celda de col1 es el encabezado de una unidad de pesquería de la especie en V-X?
-# (zona "v-x"/"v - x", excluye XV-II, III-IV, V-IX, XIV-X, etc.)
-is_unit_header <- function(cell, species) {
+# ¿la celda de col1 es el encabezado de una unidad de pesquería target?
+# unit_key in {"anchoveta_VX","sardina_VX","jurel_VIX","jurel_XIVX"}
+is_unit_header <- function(cell, unit_key) {
   s <- norm(cell)
   if (s == "") return(FALSE)
-  sp_ok <- if (species == "anchoveta") str_starts(s, "anchoveta")
-           else str_detect(s, "^s(ardina)?\\.? ?com")
-  if (!sp_ok) return(FALSE)
   z <- str_remove_all(s, "\\s")            # quita espacios para testear la zona
-  str_detect(z, "v-x") && !str_detect(z, "xv") &&
-    !str_detect(z, "iii") && !str_detect(z, "v-ix") && !str_detect(z, "xiv")
+  if (unit_key == "anchoveta_VX") {
+    return(str_starts(s, "anchoveta") &&
+           str_detect(z, "v-x") && !str_detect(z, "xv") &&
+           !str_detect(z, "iii") && !str_detect(z, "v-ix") && !str_detect(z, "xiv"))
+  }
+  if (unit_key == "sardina_VX") {
+    return(str_detect(s, "^s(ardina)?\\.? ?com") &&
+           str_detect(z, "v-x") && !str_detect(z, "xv") &&
+           !str_detect(z, "iii") && !str_detect(z, "v-ix") && !str_detect(z, "xiv"))
+  }
+  if (unit_key == "jurel_VIX") {
+    return(str_starts(s, "jurel") &&
+           str_detect(z, "v-ix") && !str_detect(z, "xv") && !str_detect(z, "xiv"))
+  }
+  if (unit_key == "jurel_XIVX") {
+    return(str_starts(s, "jurel") && str_detect(z, "xiv-x"))
+  }
+  FALSE
 }
 # ¿col1 abre OTRA unidad (para cerrar el bloque actual)?
 is_any_unit <- function(cell) {
@@ -82,15 +95,15 @@ cfg <- list(
 
 num <- function(x) suppressWarnings(as.numeric(x))
 
-extract_unit <- function(df, species, col_asig, col_ces, mode, verbose = TRUE) {
+extract_unit <- function(df, unit_key, col_asig, col_ces, mode, verbose = TRUE) {
   n <- nrow(df)
   in_block <- FALSE; asig <- 0; ces <- 0; rows_used <- list()
   sub_candidates <- list()
   for (i in seq_len(n)) {
     c1 <- df[[1]][i]
     if (!is.na(c1) && nzchar(norm(c1))) {
-      if (is_unit_header(c1, species)) { in_block <- TRUE }
-      else if (is_any_unit(c1))        { in_block <- FALSE }
+      if (is_unit_header(c1, unit_key)) { in_block <- TRUE }
+      else if (is_any_unit(c1))         { in_block <- FALSE }
     }
     if (!in_block) next
     a  <- num(df[[col_asig]][i]); ce <- num(df[[col_ces]][i])
@@ -113,12 +126,21 @@ extract_unit <- function(df, species, col_asig, col_ces, mode, verbose = TRUE) {
     asig <- best$a; ces <- ifelse(is.na(best$ce), 0, best$ce)
     rows_used <- list(best$i)
   }
-  if (verbose) cat(sprintf("    [%s] filas usadas: %s\n", species,
+  if (verbose) cat(sprintf("    [%s] filas usadas: %s\n", unit_key,
                            paste(unlist(rows_used), collapse = ",")))
   list(asignada = asig, cesion = ces)
 }
 
 # --- loop ---------------------------------------------------------------------
+# Cada unidad reconstruida se reporta como una FILA en el CSV detallado
+# (anchoveta V-X, sardina V-X, jurel V-IX, jurel XIV-X). El consolidated y la
+# Tabla H.3b suman jurel V-IX + XIV-X en una fila "jurel" por año.
+unit_map <- list(
+  list(key = "anchoveta_VX", species = "anchoveta",   zone = "V-X"),
+  list(key = "sardina_VX",   species = "sardina",     zone = "V-X"),
+  list(key = "jurel_VIX",    species = "jurel",       zone = "V-IX"),
+  list(key = "jurel_XIVX",   species = "jurel",       zone = "XIV-X")
+)
 out <- list()
 for (yr in names(cfg)) {
   cf <- cfg[[yr]]
@@ -129,13 +151,13 @@ for (yr in names(cfg)) {
     read_excel(path, sheet = cf$sheet, col_names = FALSE, col_types = "text", .name_repair = "minimal"),
     error = function(e) { cat("  ERROR leyendo:", conditionMessage(e), "\n"); NULL })
   if (is.null(df)) next
-  for (sp in c("anchoveta", "sardina")) {
-    r <- extract_unit(df, sp, cf$col_asig, cf$col_ces, cf$mode)
-    if (is.na(r$asignada) || r$asignada <= 0) { cat(sprintf("  %s: sin datos\n", sp)); next }
+  for (u in unit_map) {
+    r <- extract_unit(df, u$key, cf$col_asig, cf$col_ces, cf$mode)
+    if (is.na(r$asignada) || r$asignada <= 0) { cat(sprintf("  %-13s: sin datos\n", u$key)); next }
     share <- abs(r$cesion) / r$asignada
-    cat(sprintf("  %-9s asignada=%10.1f t  cesion=%11.1f t  share=%6.1f%%\n",
-                sp, r$asignada, r$cesion, 100 * share))
-    out[[length(out)+1]] <- data.frame(year = as.integer(yr), species = sp,
+    cat(sprintf("  %-13s asignada=%10.1f t  cesion=%11.1f t  share=%6.1f%%\n",
+                u$key, r$asignada, r$cesion, 100 * share))
+    out[[length(out)+1]] <- data.frame(year = as.integer(yr), species = u$species, zone = u$zone,
                                         IND_asignada_t = r$asignada, IND_cesion_t = r$cesion,
                                         share = share)
   }
@@ -143,29 +165,60 @@ for (yr in names(cfg)) {
 res <- dplyr::bind_rows(out)
 
 # --- VALIDACIÓN 2017 (no negociable) -----------------------------------------
-chk <- function(y, sp, a_exp, c_exp) {
-  row <- res %>% filter(year == y, species == sp)
-  if (nrow(row) == 0) { cat(sprintf("VALIDACION %d %s: FALTA\n", y, sp)); return(FALSE) }
-  ok <- abs(row$IND_asignada_t - a_exp) < 5 && abs(row$IND_cesion_t - c_exp) < 5
-  cat(sprintf("VALIDACION %d %-9s: asignada %.1f (esp %.1f) cesion %.1f (esp %.1f) -> %s\n",
-              y, sp, row$IND_asignada_t, a_exp, row$IND_cesion_t, c_exp, ifelse(ok, "OK", "*** FALLA ***")))
+# Tolerancias absolutas en toneladas (kt rounded en NOTA -> 5t para anch/sard;
+# jurel V-IX/XIV-X tomados de los subtotales raw, tolerancia más amplia).
+chk <- function(y, sp, zn, a_exp, c_exp, tol = 5) {
+  row <- res %>% filter(year == y, species == sp, zone == zn)
+  if (nrow(row) == 0) { cat(sprintf("VALIDACION %d %s %s: FALTA\n", y, sp, zn)); return(FALSE) }
+  ok <- abs(row$IND_asignada_t - a_exp) < tol && abs(row$IND_cesion_t - c_exp) < tol
+  cat(sprintf("VALIDACION %d %-9s %-5s: asignada %.1f (esp %.1f) cesion %.1f (esp %.1f) -> %s\n",
+              y, sp, zn, row$IND_asignada_t, a_exp, row$IND_cesion_t, c_exp,
+              ifelse(ok, "OK", "*** FALLA ***")))
   ok
 }
 cat("\n----- validación contra 2017 verificado -----\n")
-v1 <- chk(2017, "anchoveta", 12558.0, -9034.18)
-v2 <- chk(2017, "sardina",   72401.5, -48885.2)
-if (!(v1 && v2)) warning("La validación 2017 falló: revisá la config del año antes de usar los números 2013-2016.")
+v1 <- chk(2017, "anchoveta", "V-X",  12558.0,  -9034.18)
+v2 <- chk(2017, "sardina",   "V-X",  72401.5, -48885.2)
+v3 <- chk(2017, "jurel",     "V-IX", 200384.8,  7279.2, tol = 50)
+v4 <- chk(2017, "jurel",     "XIV-X", 27905.0,  2406.2, tol = 20)
+if (!(v1 && v2 && v3 && v4))
+  warning("La validación 2017 falló: revisá la config del año antes de usar los números 2013-2016.")
 
 # --- resumen + rango ----------------------------------------------------------
 res <- res %>% mutate(share_pct = round(100 * share, 1))
-cat("\n----- TABLA RECONSTRUIDA (anchoveta + sardina común, V-X) -----\n")
+cat("\n----- TABLA RECONSTRUIDA detallada por unidad -----\n")
 print(res, row.names = FALSE)
-cat(sprintf("\nRANGO share cedido IND->ART 2013-2017 = %.0f%% a %.0f%%\n",
-            100 * min(res$share), 100 * max(res$share)))
-cat("  -> usar este rango (redondeado) para reemplazar el '11-72%' del Online Appendix H.3.\n")
+
+# Suma jurel V-IX + XIV-X en una fila "jurel" por año (consistente con
+# cesiones_consolidated_2013_2024.csv y con la Tabla H.3b 2018-2024).
+res_jurel_sum <- res %>%
+  filter(species == "jurel") %>%
+  group_by(year) %>%
+  summarise(species = "jurel",
+            zone = "V-IX + XIV-X",
+            IND_asignada_t = sum(IND_asignada_t),
+            IND_cesion_t   = sum(IND_cesion_t),
+            .groups = "drop") %>%
+  mutate(share = abs(IND_cesion_t) / IND_asignada_t,
+         share_pct = round(100 * share, 1))
+res_consol <- bind_rows(res %>% filter(species != "jurel"), res_jurel_sum) %>%
+  arrange(year, species)
+
+cat("\n----- VISTA CONSOLIDADA (jurel V-IX + XIV-X sumados) -----\n")
+print(res_consol, row.names = FALSE)
+
+cat(sprintf("\nRANGO share cedido anch/sard V-X 2013-2017 = %.0f%% a %.0f%%\n",
+            100 * min(res$share[res$species %in% c("anchoveta","sardina")]),
+            100 * max(res$share[res$species %in% c("anchoveta","sardina")])))
+cat(sprintf("RANGO share cedido jurel (V-IX+XIV-X) 2013-2017 = %.1f%% a %.1f%%\n",
+            100 * min(res_jurel_sum$share), 100 * max(res_jurel_sum$share)))
 
 # --- salida -------------------------------------------------------------------
 outpath <- here::here("paper1", "portfolio_check", "cesiones_ind_2013_2017_rebuilt.csv")
 write.csv(res, outpath, row.names = FALSE)
-cat(sprintf("\nEscrito: %s\n", outpath))
+cat(sprintf("\nEscrito (detallado por unidad): %s\n", outpath))
+
+outpath_consol <- here::here("paper1", "portfolio_check", "cesiones_ind_2013_2017_consolidated_view.csv")
+write.csv(res_consol, outpath_consol, row.names = FALSE)
+cat(sprintf("Escrito (vista consolidada, jurel sumado): %s\n", outpath_consol))
 cat("Revisá las filas/bloques impresos arriba antes de pisar cesiones_consolidated_2013_2024.csv.\n")

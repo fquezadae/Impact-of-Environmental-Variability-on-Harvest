@@ -124,6 +124,20 @@
 \affil{Universidad de Concepci\'on \vspace{-48pt}}
 \newcommand{\keywords}[1]{\par\noindent\textbf{Keywords:} #1}
 \newcommand{\jelcodes}[1]{\par\noindent\textbf{JEL Codes:} #1}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -310,7 +324,7 @@ H^{alloc}_{vy,s}=\omega_{vs}^r\,\bar{Q}_{sy}^r, \qquad H^{alloc}_{vy}=\sum_{s} H
 
 Each vessel is assigned to its administrative region based on its modal departure port in the logbook records. Artisanal TACs are assigned at the regional level (Valparaíso, Biobío, Araucanía, Los Ríos, Los Lagos), while industrial TACs follow the regulatory zone structure established by SUBPESCA (the Valparaíso--Araucanía and Los Ríos--Los Lagos zones for jack mackerel; the Valparaíso--Los Lagos zone for sardine and anchoveta). This regional construction introduces cross-sectional variation in \(H^{alloc}_{vy}\) that reflects the heterogeneous quota environments faced by vessels operating in different parts of the Centro-Sur fishery.
 
-Following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the trip equation enters allocated harvest \emph{by species} rather than as a scalar aggregate: the regressor vector contains \(H^{alloc}_{vy,s}\) for \(s \in \{\text{anchoveta},\,\text{sardine},\,\text{jack mackerel}\}\) with separate semi-elasticities \(\beta_h^s\). Ex-vessel prices likewise enter at \((year, region)\) resolution, mapped to each vessel through its modal departure region. For the artisanal fleet, the response to allocated anchoveta is allowed to vary by vessel type through an interaction \(H^{alloc}_{vy,\text{anchoveta}} \times \text{TIPO\_EMB}\), motivated by the observation in the data that small-vessel categories (LM = \emph{lancha motor}, the dominant 77\% of the artisanal panel) exhibit a near-zero elasticity to anchoveta quota, while medium-vessel categories (BM = \emph{bote motor}, 8\%) exhibit a strong positive elasticity in the spirit of the Kasperski (2015) benchmark. The interaction is estimated only for TIPO\_EMB categories with at least 50 vessel-year observations (BM, LM, UNK); three small categories with \(N<50\) (BR, BRV, L) collectively represent less than 0.1\% of artisanal effort and quota and are reported with an aggregated rather than category-specific coefficient. The Kasperski-aligned specification is preferred by an information criterion of \(\Delta\text{AIC} = -167.9\) for the artisanal fleet (and \(-5.0\) for the industrial fleet) relative to the legacy scalar specification, with multicollinearity diagnostics (VIFs below 2.5 across all six regressors and both fleets) confirming separate identification of the three \(\beta_h^s\).
+Following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}), the trip equation enters allocated harvest \emph{by species} rather than as a scalar aggregate: the regressor vector contains \(H^{alloc}_{vy,s}\) for \(s \in \{\text{anchoveta},\,\text{sardine},\,\text{jack mackerel}\}\) with separate semi-elasticities \(\beta_h^s\). Ex-vessel prices likewise enter at \((year, region)\) resolution, mapped to each vessel through its modal departure region. For the artisanal fleet, the response to allocated anchoveta is allowed to vary by vessel type through an interaction \(H^{alloc}_{vy,\text{anchoveta}} \times \text{TIPO\_EMB}\), motivated by the observation in the data that small-vessel categories (LM = \emph{lancha motor}, the dominant 77\% of the artisanal panel) exhibit a near-zero elasticity to anchoveta quota, while medium-vessel categories (BM = \emph{bote motor}, 8\%) exhibit a strong positive elasticity in the spirit of the Kasperski (2015) benchmark. The interaction is estimated only for TIPO\_EMB categories with at least 50 vessel-year observations (BM, LM, UNK); three small categories with \(N<50\) (BR = \emph{bote remo}, plus the obsolete codes BRV = \emph{bote remo vela} and L = \emph{lancha}) collectively represent less than 0.1\% of artisanal effort and quota and are reported with an aggregated rather than category-specific coefficient. The Kasperski-aligned specification is preferred by an information criterion of \(\Delta\text{AIC} = -167.9\) for the artisanal fleet (and \(-5.0\) for the industrial fleet) relative to the legacy scalar specification, with multicollinearity diagnostics (VIFs below 2.5 across all six regressors and both fleets) confirming separate identification of the three \(\beta_h^s\).
 
 The vector \(Z_v\) contains time-invariant vessel characteristics, including hold capacity (log of cubic meters) and vessel type. Hold capacity determines the physical constraint on catch per trip and proxies for vessel scale.
 

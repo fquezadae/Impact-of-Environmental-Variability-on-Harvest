@@ -362,7 +362,34 @@ sizes exceed \(400\), indicating that posterior summaries are not
 contaminated by between-chain divergence or by autocorrelation between
 adjacent draws.
 
-\noindent\textit{Convergence diagnostics table not yet built.  Run \texttt{Rscript R/08\_stan\_t4/08\_fit\_t4b\_full.R} to generate  \texttt{data/outputs/t4b/t4b\_full\_summary.csv}, then re-knit.}
+\begin{table}[!h]
+\centering
+\caption{\label{tab:convergence-table}Markov-chain convergence diagnostics for the top-level parameters of the T4b-full state-space specification. \label{tab:convergence}}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{threeparttable}
+\begin{tabular}[t]{lrrrr}
+\toprule
+Parameter & $N$ & Max $\widehat{R}$ & Min ESS$_{\text{bulk}}$ & Min ESS$_{\text{tail}}$\\
+\midrule
+$r_i^{0}$ & 3 & 1.001 & 8,446 & 10,508\\
+$K_i$ & 3 & 1.000 & 9,789 & 9,777\\
+$B_{i,0}$ & 3 & 1.001 & 18,919 & 11,844\\
+$\sigma_{\text{proc},i}$ & 3 & 1.003 & 3,353 & 5,997\\
+$\sigma_{\text{obs},i}$ & 3 & 1.009 & 1,370 & 936\\
+\addlinespace
+$\rho_i^{SST}$ & 3 & 1.000 & 8,312 & 10,147\\
+$\rho_i^{CHL}$ & 3 & 1.001 & 14,319 & 10,633\\
+$\Omega$ (off-diagonal) & 3 & 1.001 & 5,732 & 8,544\\
+\textit{All top-level parameters} & 24 & 1.009 & 1,370 & 936\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Note:} 
+\item Diagnostics are computed from four chains of 2,000 post-warmup iterations. Within each parameter family, the table reports the worst case across the three stocks (or the three off-diagonal entries of Omega): the largest split-Rhat and the smallest bulk- and tail-effective sample sizes. The diagonal of Omega is fixed at one and is therefore excluded. The conventional thresholds are Rhat <= 1.01 and ESS >= 400 for all top-level parameters.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 \section{Spatial robustness of the jack mackerel non-identification result}\label{appendix-spatial}
 
@@ -1034,20 +1061,27 @@ effective, and captured tonnage by sector from the workbook's summary
 sheet.
 
 Two qualitative facts emerge from the consolidated \(2013\)--\(2024\)
-series (the \(2018\)--\(2024\) subperiod is reported in
-Table \ref{tab:cesiones-evidence}). First, in the
+series, which we report in two panels separated by species pattern:
+anchoveta and sardine in Table \ref{tab:cesiones-anchsard}
+and jack mackerel in Table \ref{tab:cesiones-jurel}. First, in the
 anchoveta and sardine fisheries the industrial sector cedes a large
-share of its assigned TAC to artisanal cessionaries: the share of the
-industrial assignment transferred to artisanal operators ranges from
-\(85\%\) to \(99\%\) in \(2019\)--\(2024\) and from \(12\%\) to \(72\%\) across the
-\(2013\)--\(2017\) industrial quota-control workbooks. The cession volume scales with the TAC and
-ranges from \(26\) to \(50\) kt per year in anchoveta and from \(51\) to
-\(77\) kt per year in sardine. Second, in the jack mackerel fishery the
-cession flow is an order of magnitude smaller relative to the assigned
-TAC (\(-3.5\) to \(+4.3\%\)) and reverses direction across years: \(2019\)--\(2022\)
-records small artisanal-to-industrial cessions of \(11\)--\(15\) kt per year,
-which reverse to industrial-to-artisanal cessions of \(0.7\) and \(31.5\) kt
-in \(2023\) and \(2024\) respectively.
+share of its assigned TAC to artisanal cessionaries in every year of the
+\(2013\)--\(2024\) window: the share of the industrial assignment
+transferred to artisanal operators ranges from \(12\%\) to \(72\%\) over
+\(2013\)--\(2017\) and tightens to \(85\%\)--\(\sim\!100\%\) over \(2019\)--\(2024\),
+with the upper tail tracking the consolidation of the per-titular
+LTP assignments into the single annual SERNAPESCA \emph{RESUMEN}
+sheet from \(2018\) onwards. The cession volume scales with the TAC and,
+in the \(2018\)--\(2024\) subperiod, ranges from \(26\) to \(50\) kt per year
+in anchoveta and from \(51\) to \(77\) kt per year in sardine. Second, in
+the jack mackerel fishery the cession flow is an order of magnitude
+smaller relative to the assigned TAC---never exceeding \(14\%\) of the
+industrial assignment in any year of the \(2013\)--\(2024\) window and
+falling below \(5\%\) in eight of the twelve years---and reverses
+direction across years: artisanal-to-industrial cessions dominate the
+\(2013\)--\(2014\) and \(2018\)--\(2022\) subperiods, while industrial-to-artisanal
+flows dominate the \(2015\) and \(2023\)--\(2024\) rows of Table
+\ref{tab:cesiones-jurel}.
 
 The implication for the main-text policy interpretation is twofold.
 First, the structural asymmetry that the paper identifies is estimated
@@ -1068,60 +1102,129 @@ re-pricing of the inter-sectoral cession channel under the new
 \(1.3\) UTM/ton patent rather than the de jure share reassignment.
 
 \begin{table}[H]
-\centering
-\caption{Inter-sectoral cession flow, Central-South small pelagic fishery, $2018$--$2024$. Source:
-SERNAPESCA quota control reports.\label{tab:cesiones-evidence}}
+\centering\small
+\renewcommand{\arraystretch}{0.95}
+\caption{Inter-sectoral cession flow, anchoveta and sardine, Central-South small pelagic fishery, $2013$--$2024$. Source:
+SERNAPESCA quota control reports.\label{tab:cesiones-anchsard}}
 \begin{threeparttable}
-\begin{tabular}{lrrrrr}
+\begin{tabular}{lrrrr}
 \toprule
-Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded & Direction \\
+Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
 \midrule
-2018 & anchoveta & 12.8 & $-10.7$ & 84\% & IND$\rightarrow$ART \\
-2018 & sardine & 74.2 & $-63.2$ & 85\% & IND$\rightarrow$ART \\
-2018 & jack mackerel & 326.9 & $+16.1$ & 5\% & ART$\rightarrow$IND \\
-2019 & anchoveta & 27.4 & $-25.8$ & 94\% & IND$\rightarrow$ART \\
-2019 & sardine & 76.0 & $-69.6$ & 92\% & IND$\rightarrow$ART \\
-2019 & jack mackerel & 339.0 & $+12.0$ & 3\% & ART$\rightarrow$IND \\
-2020 & anchoveta & 38.6 & $-33.3$ & 86\% & IND$\rightarrow$ART \\
-2020 & sardine & 67.2 & $-60.9$ & 91\% & IND$\rightarrow$ART \\
-2020 & jack mackerel &1268.1 & $+11.8$ & 1\% & ART$\rightarrow$IND \\
-2021 & anchoveta & 45.3 & $-45.1$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
-2021 & sardine & 76.9 & $-76.5$ &$\sim\!100\%$ & IND$\rightarrow$ART \\
-2021 & jack mackerel & 448.7 & $+13.3$ & 3\% & ART$\rightarrow$IND \\
-2022 & anchoveta & 52.2 & $-50.5$ & 97\% & IND$\rightarrow$ART \\
-2022 & sardine & 77.7 & $-71.6$ & 92\% & IND$\rightarrow$ART \\
-2022 & jack mackerel & 516.4 & $+15.2$ & 3\% & ART$\rightarrow$IND \\
-2023 & anchoveta & 39.9 & $-37.1$ & 93\% & IND$\rightarrow$ART \\
-2023 & sardine & 63.3 & $-61.7$ & 98\% & IND$\rightarrow$ART \\
-2023 & jack mackerel & 637.0 & $-0.7$ & 0\% & IND$\rightarrow$ART \\
-2024 & anchoveta & 53.8 & $-45.5$ & 85\% & IND$\rightarrow$ART \\
-2024 & sardine & 53.9 & $-51.0$ & 95\% & IND$\rightarrow$ART \\
-2024 & jack mackerel & 728.6 & $-31.5$ & 4\% & IND$\rightarrow$ART \\
+\multicolumn{5}{l}{\emph{Panel A. Per-titular LTP workbooks (2013--2017)}} \\
+2013 & anchoveta &  25.5 & $-3.1$  & 12\% \\
+2013 & sardine   & 128.5 & $-31.1$ & 24\% \\
+2014 & anchoveta &   7.7 & $-3.9$  & 51\% \\
+2014 & sardine   & 104.8 & $-46.6$ & 44\% \\
+2015 & anchoveta &   6.3 & $-2.5$  & 40\% \\
+2015 & sardine   &  65.2 & $-21.8$ & 33\% \\
+2016 & anchoveta &   7.3 & $-2.1$  & 29\% \\
+2016 & sardine   &  59.8 & $+15.6$ & 26\% \\
+2017 & anchoveta &  12.6 & $-9.0$  & 72\% \\
+2017 & sardine   &  72.4 & $-48.9$ & 67\% \\
+\midrule
+\multicolumn{5}{l}{\emph{Panel B. Consolidated RESUMEN sheet (2018--2024)}} \\
+2018 & anchoveta &  12.8 & $-10.7$ & 84\% \\
+2018 & sardine   &  74.2 & $-63.2$ & 85\% \\
+2019 & anchoveta &  27.4 & $-25.8$ & 94\% \\
+2019 & sardine   &  76.0 & $-69.6$ & 92\% \\
+2020 & anchoveta &  38.6 & $-33.3$ & 86\% \\
+2020 & sardine   &  67.2 & $-60.9$ & 91\% \\
+2021 & anchoveta &  45.3 & $-45.1$ & $\sim\!100\%$ \\
+2021 & sardine   &  76.9 & $-76.5$ & $\sim\!100\%$ \\
+2022 & anchoveta &  52.2 & $-50.5$ & 97\% \\
+2022 & sardine   &  77.7 & $-71.6$ & 92\% \\
+2023 & anchoveta &  39.9 & $-37.1$ & 93\% \\
+2023 & sardine   &  63.3 & $-61.7$ & 98\% \\
+2024 & anchoveta &  53.8 & $-45.5$ & 85\% \\
+2024 & sardine   &  53.9 & $-51.0$ & 95\% \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
 \item \emph{Notes.} ``IND assigned'' is the industrial fraction of the
-Cuota Global de Captura aggregated across sub-macrozones (anchoveta and
-sardine: Valparaíso--Los Lagos; jack mackerel: Arica y Parinacota--Los Lagos). ``IND cession''
-sums the \emph{Movimientos} column across industrial regional rows of
-the SERNAPESCA \emph{RESUMEN} sheet; negative values denote
-industrial-to-artisanal flows, positive values
-denote the reverse direction. ``Share ceded'' is the absolute ratio
-$|\text{cession}|/\text{IND assigned}$. The $2018$ report is published online by SERNAPESCA on the same page as
-the $2019$--$2024$ reports, in a per-titular CSV format, and is parsed analogously to the workbook series. The table reports the
-$2018$--$2024$ consolidated \emph{RESUMEN} series, the period for which SERNAPESCA
-publishes the consolidated summary sheet. The $2013$--$2017$ industrial
-quota-control workbooks predate that consolidated sheet and use a per-titular
-per-period layout (and, in $2013$, a mid-year LMC-to-LTP regime change), so they
-are not tabulated row-by-row here; the industrial cession shares reconstructed
-from them ($12$--$72\%$, see text) are archived in
-\texttt{cesiones\_ind\_2013\_2017\_rebuilt.csv}.
-The full per-year, per-sub-macrozone CSV is archived in
+Cuota Global de Captura aggregated across the Valparaíso--Los Lagos
+sub-macrozones. ``IND cession'' is the net industrial-side movement of
+quota out of the industrial pool: \emph{negative} values denote
+industrial-to-artisanal flows, \emph{positive} values denote the reverse
+direction. ``Share ceded'' is the absolute ratio
+$|\text{cession}|/\text{IND assigned}$. Panel~A is reconstructed from the
+$2013$--$2017$ per-titular SERNAPESCA quota-control workbooks
+(\emph{Pelagicos LTP} sheet for $2014$--$2017$; \emph{Pelagicos LMC y
+LTP} sheet for the $2013$ LMC-to-LTP transition); cessions are summed
+across titulares and sub-periods. Panel~B is taken from the SERNAPESCA
+consolidated \emph{RESUMEN} sheet published from $2018$ onwards. The
+$2018$ report uses a per-titular online layout and is parsed analogously
+to the workbook series. The legal regime (Ley~$20{,}657$, in force from
+February~$2013$) is common to the full window. The reconstructed
+Panel~A series is archived in
+\texttt{cesiones\_ind\_2013\_2017\_rebuilt.csv} and the full per-year,
+per-sub-macrozone CSV in
 \texttt{paper1/portfolio\_check/cesiones\_intersectoral\_2019\_2024.csv}
 and \texttt{cesiones\_consolidated\_2013\_2024.csv}.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
+
+\begin{table}[H]
+\centering\small
+\renewcommand{\arraystretch}{0.95}
+\caption{Inter-sectoral cession flow, jack mackerel, Central-South, $2013$--$2024$. Source:
+SERNAPESCA quota control reports.\label{tab:cesiones-jurel}}
+\begin{threeparttable}
+\begin{tabular}{lrrrr}
+\toprule
+Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
+\midrule
+\multicolumn{5}{l}{\emph{Panel A. Per-titular LTP workbooks (2013--2017, V-IX + XIV-X)}} \\
+2013 & jack mackerel & 138.4 & $+0.5$  & 0\%  \\
+2014 & jack mackerel & 198.6 & $+27.3$ & 14\% \\
+2015 & jack mackerel & 203.1 & $-17.2$ & 8\%  \\
+2016 & jack mackerel & 203.0 & $+11.7$ & 6\%  \\
+2017 & jack mackerel & 228.3 & $+9.7$  & 4\%  \\
+\midrule
+\multicolumn{5}{l}{\emph{Panel B. Consolidated RESUMEN sheet (2018--2024, XV--X)}} \\
+2018 & jack mackerel &  326.9 & $+16.1$ & 5\% \\
+2019 & jack mackerel &  339.0 & $+12.0$ & 3\% \\
+2020 & jack mackerel & 1268.1 & $+11.8$ & 1\% \\
+2021 & jack mackerel &  448.7 & $+13.3$ & 3\% \\
+2022 & jack mackerel &  516.4 & $+15.2$ & 3\% \\
+2023 & jack mackerel &  637.0 & $-0.7$  & 0\% \\
+2024 & jack mackerel &  728.6 & $-31.5$ & 4\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes.} Column conventions follow Table
+\ref{tab:cesiones-anchsard}: negative ``IND cession'' values denote
+industrial-to-artisanal flows, positive values denote the reverse
+direction. Panel~A reconstructs the industrial-side cession from the
+$2013$--$2017$ per-titular SERNAPESCA workbooks, summing the
+\emph{Pelagicos LTP} sub-bloques \emph{Jurel V-IX} and \emph{Jurel XIV-X}
+(the two Central-South management units, summed to match the
+$2018$--$2024$ aggregation). Panel~B is taken from the SERNAPESCA
+consolidated \emph{RESUMEN} sheet and aggregates the Arica y
+Parinacota--Los Lagos (XV--X) regional rows. Panel B therefore includes
+the small Arica-Antofagasta (XV--IV) volumes absent from Panel A; this
+inflates the Panel~B IND-assigned column relative to Panel~A but does
+not affect the qualitative reading (cession share remains below the
+range observed for anchoveta and sardine in Table
+\ref{tab:cesiones-anchsard} in every year of the full $2013$--$2024$
+window, and the cession direction is bidirectional across years).
+The reconstructed Panel~A series is archived alongside the anchoveta
+and sardine rows in \texttt{cesiones\_ind\_2013\_2017\_rebuilt.csv}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+ut does
+not affect the qualitative reading (cession share remains below the
+range observed for anchoveta and sardine in Table
+\ref{tab:cesiones-anchsard} in every year of the full \(2013\)--\(2024\)
+window, and the cession direction is bidirectional across years).
+The reconstructed Panel\textasciitilde A series is archived alongside the anchoveta
+and sardine rows in \texttt{cesiones\_ind\_2013\_2017\_rebuilt.csv}.
+\textbackslash end\{tablenotes\}
+\textbackslash end\{threeparttable\}
+\textbackslash end\{table\}
 
 \section{Limitations and caveats}\label{appendix-limitations}
 
