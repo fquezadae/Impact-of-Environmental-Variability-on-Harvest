@@ -49,39 +49,23 @@ per vessel-year, and the share of vessel-years with two or more species
 active.
 
 \begin{table}[H]
-\centering
-\caption{Permit-portfolio breadth indicators by sector bucket, Chile small pelagic logbook 2001--2024 (artisanal sub-buckets) and SUBPESCA 2012 industrial registry (industrial bucket).\label{tab:portfolio-descriptive}}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.95}
+\caption{Permit-portfolio breadth indicators by sector bucket, Chile small pelagic logbook $2001$--$2024$ (artisanal) and SUBPESCA $2012$ registry (industrial).\label{tab:portfolio-descriptive}}
 \begin{threeparttable}
 \begin{tabular}{lrrrrr}
 \toprule
-Bucket & $n$ vessels & Species lifetime & Multi-species lifetime (\%) & Species per year & Multi-species per year (\%) \\
+Bucket & $n$ vessels & Sp.\ lifetime & Multi-sp.\ lifetime (\%) & Sp.\ per year & Multi-sp.\ per year (\%) \\
 \midrule
-Industrial (IND) & $129$ & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
-Lancha Menor (LM) & $888$ & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
-Unclassified artisanal & $367$ & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
-Bote Menor (BM) & $189$ & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
+Industrial (IND)        & $129$ & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
+Lancha Menor (LM)       & $888$ & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
+Unclassified artisanal  & $367$ & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
+Bote Menor (BM)         & $189$ & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}[para,flushleft]
-\footnotesize
-\item \emph{Notes.} The IND row is constructed from the SUBPESCA $2012$ registry, which lists
-$1{,}149$ (vessel~$\times$~species~$\times$~macrozone) authorisations across $299$ industrial
-vessels and $26$ \emph{armadores}. Of those $299$ vessels, $75.6\%$ hold authorisations for
-the full anchoveta--sardine--jack mackerel triplet and $67.6\%$ hold authorisations in two or more
-macrozones, with a median of four (zone~$\times$~species) authorisation pairs per vessel.
-Logbook rows are restricted to lances with non-missing species codes (excluding the
-\textit{lance sin captura} code 999). Buckets follow the Kasperski-aligned vessel-type
-classification used in the main text (the Total annual trips section), which follows the
-IFOP operational typology for the scientific observers' logbook (IFOP $2016$, Table~13): LM denotes
-\emph{Lancha a Motor} (artisanal motorised lancha), BM denotes \emph{Bote a Motor} (artisanal
-motorised bote), and \textit{Unclassified artisanal} pools the remaining artisanal vessel types
-(industrial vessels are reported by IFOP as PAM, \emph{Pesquero de Alta Mar}). The empirical
-separation between LM and BM in the panel is clear: LM vessels have a median CAPACIDAD\_BODEGA of
-$64$~m\textsuperscript{3} (IQR $[39, 80]$, $n=956$), BM vessels a median of $4$~m\textsuperscript{3}
-(IQR $[4, 7]$, $n=210$), and the Unclassified residual a median of $25$~m\textsuperscript{3}
-(IQR $[15, 46]$, $n=222$), so the central $50\%$ of each distribution does not overlap. Species-portfolio metrics are computed over the full $81$-species
-range in the logbook; the SPF triplet (anchoveta, sardine, jack mackerel) accounts for
-$80$--$86\%$ of artisanal lances and $67\%$ of industrial lances within the panel.
+\begin{tablenotes}[para,flushleft]\footnotesize
+\item \emph{Notes.} IND row: SUBPESCA $2012$ registry ($1{,}149$ authorisations across $299$ vessels; $75.6\%$ hold the full anchoveta--sardine--jack mackerel triplet, $67.6\%$ are authorised in $\geq 2$ macrozones). Artisanal rows: $2001$--$2024$ IFOP scientific-observer logbook, lances with valid species codes. Buckets follow the IFOP $2016$ typology used in the main text: LM = \emph{Lancha a Motor}, BM = \emph{Bote a Motor}, industrial reported as PAM; LM and BM separate empirically by hold capacity (median $64$ vs $4$~m\textsuperscript{3}, non-overlapping IQRs). The anchoveta--sardine--jack mackerel triplet accounts for $80$--$86\%$ of artisanal and $67\%$ of industrial lances.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -353,7 +337,7 @@ Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \emph{Notes.} Industrial share of Cuota Global de Captura, Valparaíso to Los Lagos. Negative cession denotes industrial-to-artisanal flows. $2013$--$2017$ reconstructed from per-titular SERNAPESCA workbooks; $2018$--$2024$ from the SERNAPESCA summary sheet.
+\item \emph{Notes.} Industrial share of Cuota Global de Captura, Valparaíso to Los Lagos. Negative cession denotes industrial-to-artisanal flows.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
