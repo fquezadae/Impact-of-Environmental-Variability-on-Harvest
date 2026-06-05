@@ -278,7 +278,7 @@ Our identification target in this subsection is the vector of climate semi-elast
 B_{i,t+1} \;=\; B_{i,t} + r_{i,t}\, B_{i,t}\!\left(1 - \frac{B_{i,t}}{K_i}\right) \;-\; C_{i,t} \;+\; \varepsilon_{i,t}, \qquad \varepsilon_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{proc},i}^2\big), \label{eq:law-of-motion}
 \end{equation}
 
-where $C_{i,t}$ is the observed annual catch, $K_i$ is the stock-specific carrying capacity, and $\sigma_{\text{proc},i}$ is the standard deviation of the stochastic recruitment innovation. Climate enters the dynamics through a log-linear shifter on the intrinsic growth rate,
+where $C_{i,t}$ is the observed annual catch, $K_i$ is the stock-specific carrying capacity, and $\sigma_{\text{proc},i}$ is the standard deviation of the stochastic recruitment innovation. The innovations are jointly distributed across species with a free $3\times 3$ correlation matrix $\Omega$ identified from the data, allowing ecological coupling not captured by the climate shifters. Climate enters the dynamics through a log-linear shifter on the intrinsic growth rate,
 
 \begin{equation}
 r_{i,t} \;=\; r_i^{0}\, \exp\!\Big(\, \rho_i^{SST}\, (SST_{t-1} - \overline{SST}) \;+\; \rho_i^{CHL}\, (\log CHL_{t-1} - \overline{\log CHL}) \,\Big), \label{eq:shifter}
