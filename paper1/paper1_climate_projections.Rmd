@@ -268,31 +268,6 @@ Climate projections for SST, chlorophyll-a, and near-surface wind speed are obta
 
 ### Stock dynamics {#sec:stock-dynamics}
 
-Our identification target in this subsection is the vector of climate semi-elasticities $(\rho^{SST}_i, \rho^{CHL}_i)$ across the three stocks $i \in \{\text{anchoveta}, \text{sardine}, \text{jack mackerel}\}$---the structural parameters that translate sea-surface temperature and chlorophyll-a anomalies into shifts in long-run stock productivity. We estimate them within a Bayesian state-space model where the latent biomass $B_{i,t}$ of each stock follows a Schaefer law of motion whose intrinsic growth rate varies log-linearly with these forcings. The law of motion is
-
-\begin{equation}
-B_{i,t+1} \;=\; B_{i,t} + r_{i,t}\, B_{i,t}\!\left(1 - \frac{B_{i,t}}{K_i}\right) \;-\; C_{i,t} \;+\; \varepsilon_{i,t}, \qquad \varepsilon_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{proc},i}^2\big), \label{eq:law-of-motion}
-\end{equation}
-
-where $C_{i,t}$ is the observed annual catch, $K_i$ is the stock-specific carrying capacity, and $\sigma_{\text{proc},i}$ is the standard deviation of the stochastic recruitment innovation. The innovations are jointly distributed across species with a free $3\times 3$ correlation matrix $\Omega$ identified from the data, allowing ecological coupling not captured by the climate shifters. Specifically,
-
-\begin{equation}
-r_{i,t} \;=\; r_i^{0}\, \exp\!\Big(\, \rho_i^{SST}\, (SST_{t-1} - \overline{SST}) \;+\; \rho_i^{CHL}\, (\log CHL_{t-1} - \overline{\log CHL}) \,\Big), \label{eq:shifter}
-\end{equation}
-
-so $\rho_i^{SST}$ and $\rho_i^{CHL}$ are the semi-elasticities of intrinsic stock productivity to a one-degree Celsius SST anomaly and to a one-log-point chlorophyll-a anomaly, respectively. Because these parameters enter the law of motion as coefficients on exogenous climate forcings, they are invariant to the joint historical distribution of $(SST, B, C)$---transportable, in the structural sense, to climate regimes outside the 2000--2024 estimation sample. This transportability matters because the comparative-statics exercise of Section \emph{\nameref{projections}} evaluates the climate shifter at projected SST anomalies that lie several historical standard deviations beyond the estimation envelope.
-
-Latent biomass is linked to the official survey-based estimates of spawning stock biomass $B_{i,t}^{\text{obs}}$---published by IFOP for anchoveta and sardine in Centro-Sur Chile and by SPRFMO for jack mackerel---through a log-normal measurement equation,
-
-\begin{equation}
-\log B_{i,t}^{\text{obs}} \;=\; \log B_{i,t} \,+\, u_{i,t}, \qquad u_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{obs},i}^2\big). \label{eq:obs}
-\end{equation}
-
-Environmental conditions are summarized annually by sea surface temperature (SST) and chlorophyll-a concentration (CHL), averaged over the Centro-Sur region within the Chilean EEZ and lagged one year to respect the pre-determined ordering of environmental forcing relative to year-$t$ biomass. The choice of these two covariates follows a large biological literature that identifies thermal regime and primary productivity as the dominant local drivers of small-pelagic dynamics in the Humboldt Current System [@Axbard2016; @cahuin2009; @Yáñez2014; see @cheung2008; @jennings2008].
-
-We estimate the state-space specification by Hamiltonian Monte Carlo in Stan. With $N=25$ annual observations per stock, joint identification of $(r^{0}_i, K_i, \rho^{SST}_i, \rho^{CHL}_i)$ requires the prior information embedded in the IFOP and SPRFMO single-species assessments; Online Appendix A documents the resulting prior elicitation protocol and the boundary problem under maximum likelihood. We estimate three nested specifications and adopt the climate-augmented version of Eq. \eqref{eq:shifter} as our primary object of interpretation, with the nested predictive comparison relegated to Online Appendix B and convergence diagnostics ($\hat{R} < 1.01$ and bulk/tail ESS $> 400$ for all top-level parameters) to Online Appendix D. The seven jack mackerel Centro-Sur years without a survey estimate enter the likelihood as latent biomass states identified dynamically; two further years (2012, 2015) enter through a log-normal censored-observation term at the assessment detection limit, with all associated uncertainty propagated directly into the posterior of $(\rho_{\text{jack mackerel}}^{SST}, \rho_{\text{jack mackerel}}^{CHL})$---that is, integrated through the likelihood so the posterior reflects this measurement uncertainty rather than collapsing it to a point value.
-
-
 Figure \@ref(fig:biomass) shows that anchoveta, sardine, and jack mackerel exhibit distinct biomass trajectories over the 2000--2024 window, with no evidence of strong interannual co-movement across species once scale differences are accounted for. Harvest pressure is visibly associated with these fluctuations; jack mackerel in particular experienced an abrupt decline during the late 2000s, consistent with the combined effects of intense fishing and unfavorable environmental conditions.
 
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000--2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
@@ -333,6 +308,35 @@ ggplot(biomass2, aes(x = year, y = biomass, color = species, group = species)) +
 rm(biomass_long, biomass2)
 
 ```
+
+Our identification target in this subsection is the vector of climate semi-elasticities $(\rho^{SST}_i, \rho^{CHL}_i)$ across the three stocks $i \in \{\text{anchoveta}, \text{sardine}, \text{jack mackerel}\}$---the structural parameters that translate sea-surface temperature and chlorophyll-a anomalies into shifts in long-run stock productivity. We estimate them within a Bayesian state-space model where the latent biomass $B_{i,t}$ of each stock follows a Schaefer law of motion whose intrinsic growth rate varies log-linearly with these forcings. The law of motion is
+
+\begin{equation}
+B_{i,t+1} \;=\; B_{i,t} + r_{i,t}\, B_{i,t}\!\left(1 - \frac{B_{i,t}}{K_i}\right) \;-\; C_{i,t} \;+\; \varepsilon_{i,t}, \qquad \varepsilon_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{proc},i}^2\big), \label{eq:law-of-motion}
+\end{equation}
+
+where $r_{i,t}$ is the intrinsic growth rate (specified below), $K_i$ is the stock-specific carrying capacity, $C_{i,t}$ is the observed annual catch, and $\varepsilon_{i,t}$ is the stochastic shock to recruitment with standard deviation $\sigma_{\text{proc},i}$. The shocks are jointly distributed across species with a free $3\times 3$ correlation matrix $\Omega$ identified from the data, allowing ecological coupling not captured by the climate forcings (e.g., direct trophic interactions or competition for plankton).
+
+Environmental conditions are summarized annually by sea surface temperature (SST) and chlorophyll-a concentration (CHL), averaged over the Centro-Sur region within the Chilean EEZ and lagged one year because environmental conditions affect recruitment and growth with a one-year delay, so that SST and CHL precede year-$t$ biomass causally. The choice of these two covariates follows a large biological literature that identifies thermal regime and primary productivity as the dominant local drivers of small-pelagic dynamics in the Humboldt Current System [@Alheit2004; @cahuin2009; @Yáñez2014].
+
+The climate shifter on $r_{i,t}$ takes the log-linear form,
+
+\begin{equation}
+r_{i,t} \;=\; r_i^{0}\, \exp\!\Big(\, \rho_i^{SST}\, (SST_{t-1} - \overline{SST}) \;+\; \rho_i^{CHL}\, (\log CHL_{t-1} - \overline{\log CHL}) \,\Big), \label{eq:shifter}
+\end{equation}
+
+so $\rho_i^{SST}$ and $\rho_i^{CHL}$ are the semi-elasticities of intrinsic stock productivity to a one-degree Celsius SST anomaly and to a one-log-point chlorophyll-a anomaly $\log(CHL_{t-1}/\overline{CHL})$, respectively. Because these parameters enter the law of motion as coefficients on exogenous climate forcings, they are generalisable---in the structural sense---to climate regimes outside the 2000--2024 estimation sample. This generalisability matters because the comparative-statics exercise of Section \emph{\nameref{projections}} applies the shifter at projected SST anomalies several SDs beyond anything observed in 2000--2024.
+
+Latent biomass is linked to the official survey-based estimates of total stock biomass $B_{i,t}^{\text{obs}}$ published by IFOP for all three species in Centro-Sur Chile, through a log-normal measurement equation,
+
+\begin{equation}
+\log B_{i,t}^{\text{obs}} \;=\; \log B_{i,t} \,+\, u_{i,t}, \qquad u_{i,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{obs},i}^2\big). \label{eq:obs}
+\end{equation}
+
+where $u_{i,t}$ is the log-observation error---capturing sampling and detection noise in the hydroacoustic survey---with standard deviation $\sigma_{\text{obs},i}$.
+
+We estimate the state-space specification by Hamiltonian Monte Carlo in Stan. With $N=25$ annual observations per stock, joint identification of $(r^{0}_i, K_i, \rho^{SST}_i, \rho^{CHL}_i)$ requires the prior information embedded in the IFOP and SPRFMO single-species assessments; Online Appendix A documents the prior construction and shows that maximum likelihood fails without these priors. We compare three nested specifications: (i) independent stocks with no climate shifters, (ii) joint stocks via $\Omega$ with no shifters, and (iii) joint stocks with shifters (Eq.~\eqref{eq:shifter}). We adopt (iii) as our primary specification; the nested predictive comparison is reported in Online Appendix B, and convergence diagnostics in Online Appendix D.
+
 
 ### Total annual trips
 
