@@ -4,7 +4,7 @@ Table \ref{tab:rho-posteriors} reports the posterior identification of
 the local climate shifters $\{\rho_s^{SST}, \rho_s^{CHL}\}_{s=1}^{3}$
 introduced in Section \emph{\nameref{methods}}, together with the
 basin-scale ENSO shifter $\rho^{\text{ENSO}}_{\text{jur}}$ from the
-jack mackerel refit of Online Appendix E.4. Priors are weakly informative
+jack mackerel refit of Online Appendix E.4. The model reproduces the historical biomass trajectories within a median 90\% posterior band width of approximately 20\% of the mean; posterior-predictive and convergence diagnostics are reported in Online Appendices C and D. Priors are weakly informative
 and constructed from independent reduced-form regressions (Appendix A). The
 posterior-to-prior standard-deviation ratio in the rightmost column
 measures how much the 2000--2024 biomass series refines each parameter
@@ -80,13 +80,15 @@ kable(rho_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       "local SST (\u00b0C), local log-CHL (log-points), and the basin-scale",
       "Ni\u00f1o 3.4 index. The ENSO row reports the lag-1 refit of Online",
       "Appendix E.4 for jack mackerel only; anchoveta and sardine inherit their",
-      "main-specification posteriors. The ENSO prior $\\\\mathcal{N}(0, 0.5)$ is",
-      "deliberately tighter than the coastal priors. All $\\\\hat{R} \\\\leq 1.01$."),
+      "main-specification posteriors. All $\\\\hat{R} \\\\leq 1.01$."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 ```
 
-The pattern of identification is itself informative and organises the
-economic interpretation of the paper. Three facts stand out.
+Three patterns in Table \ref{tab:rho-posteriors} organise the
+discussion: (i) the two coastal stocks are identified on both shifters,
+with sardine's SST semi-elasticity roughly twice that of anchoveta; (ii) their CHL
+shifters carry opposite signs, reflecting a trophic asymmetry; and (iii)
+jack mackerel returns a structural null on all three shifters, including the basin-scale ENSO refit.
 
 First, for the two coastal upwelling stocks---anchoveta and sardine
 común---both climate shifters are identified with substantial precision.
@@ -105,36 +107,29 @@ lowers the intrinsic growth rate of anchoveta by approximately 24\%
 ($1 - e^{-2.75 \cdot 0.26}$) relative to the climatological mean. Under a
 policy-relevant warming signal of $+1\,^{\circ}\text{C}$, comparable to
 mid-century CMIP6 SSP2-4.5 projections for the Chilean coastal zone, the
-implied declines are 65\% for anchoveta and 94\% for sardine, although
+implied declines are 65\% for anchoveta and 94\% for sardine. Applied
+to a fishery whose anchoveta--sardine combined
+Centro-Sur TAC has averaged roughly $440$ kt per year over the 2012--2024
+window, the implied losses are on the order of $300$--$400$ kt per year
+under sustained $+1\,^{\circ}\text{C}$ warming. The caveat is that
 $+1\,^{\circ}\text{C}$ lies approximately four historical standard
-deviations outside the estimation window and these projections therefore
-rely on the log-linear extrapolation embedded in the shifter function.
-Either way, the magnitudes are economically first-order for a fishery whose
-Centro-Sur TAC is in the low hundred-thousand-tonne range. The narrow
-historical SST variance ($\hat{\sigma}_{SST} = 0.26\,^{\circ}\text{C}$)
-also explains, mechanically, why the one-step-ahead forecasting test of
-Appendix B fails to discriminate between the climate-augmented and the
-climate-free specifications: within the estimation window the annual
-climate signal is small relative to the stochastic process innovation
-$\sigma_{\text{proc}}$, yet accumulates to economically consequential
-levels only over decadal horizons.
+deviations beyond the 2000--2024 estimation window, so the projection
+relies on the log-linear extrapolation embedded in the shifter function.
 
-Second, the two coastal stocks respond to chlorophyll-a with **opposite
-signs**: $\rho^{CHL}_{\text{anch}} = -3.64$ (CI $[-5.01, -2.25]$) versus
+
+Second, the two coastal stocks respond to chlorophyll-a with opposite signs: $\rho^{CHL}_{\text{anch}} = -3.64$ (CI $[-5.01, -2.25]$) versus
 $\rho^{CHL}_{\text{sard}} = +2.17$ (CI $[+0.96, +3.37]$). At one historical
 standard deviation of $\log CHL$ ($\hat{\sigma}_{\log CHL} = 0.095$, a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardine growth by
-approximately 23\%. This is a reduced-form footprint of the well-documented trophic asymmetry between the two species: sardine feeds directly on phytoplankton and benefits from primary-productivity pulses, while anchoveta feeds on larger zooplankton whose populations are suppressed under phytoplankton-dominated regimes [@Alheit2004]. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are therefore consistent with the established food-web structure of the Humboldt Current ecosystem rather than a statistical artefact. The economic implication is
+approximately 23\%. This is a reduced-form footprint of the well-documented anchoveta--sardine asymmetry in the Humboldt Current ecosystem: the opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the regime-shift literature [@Alheit2004] rather than a statistical artefact. The economic implication is
 first-order for this paper: the artisanal fleet, which lands both
-species, is not simply "climate-exposed"; it is exposed to **within-target
-heterogeneity** in the sign of climate effects. A warming-and-greening
+species, is not simply "climate-exposed"; it is exposed to within-target heterogeneity in the sign of climate effects. A warming-and-greening
 regime therefore does not translate into a uniform shock on the artisanal
 sector, but into a substitution across species that the current
 quota-allocation rules, indexed by species, cannot fully absorb.
 
-Third, and in marked contrast, **neither SST nor CHL shifters are identified
-for jack mackerel**. The posterior standard deviations $\sigma_{\text{post}}$
+Third, and in marked contrast, neither SST nor CHL shifters are identified for jack mackerel. The posterior standard deviations $\sigma_{\text{post}}$
 are indistinguishable from the prior scale ($\sigma_{\text{post}}/\sigma_{\text{prior}}
 \approx 1$), the posterior means lie near zero, and the credible intervals
 straddle zero in both directions. This is the expected result under the
@@ -167,21 +162,4 @@ zero; jack mackerel posteriors coincide with the weakly informative
 prior centred at zero.}
 \label{fig:rho-forest}
 \end{figure}
-
-### Identification versus short-run prediction
-
-The identified shifters are structural parameters rather than reduced-form correlations: they enter the law of motion as coefficients on exogenous climate inputs, which licenses their use as projection inputs under climate regimes outside the 2000--2024 estimation sample. Their economic value lies in **long-run comparative statics**: given a projected climate regime $X_t^{\star}$ drawn from the CMIP6 ensemble, the intrinsic productivity under that regime is $r_s^{\star} = r_s^{0} \exp(\rho_s^{SST} \Delta SST_t + \rho_s^{CHL} \Delta \log CHL_t)$, and steady-state biomass, harvest, and fleet-level effort follow mechanically (Section \ref{projections}). Identification of $\rho$ does not imply superior short-run prediction: a leave-future-out cross-validation at the one-year horizon delivers $\Delta\widehat{\text{ELPD}}_{\text{LFO}} \approx 0.4$ over a climate-free baseline (Online Appendix B), as expected when process noise dominates annual climate innovations. The PSIS-LOO comparison in Online Appendix B confirms the in-sample preference for the climate-augmented specification ($\Delta\widehat{\text{ELPD}}_{\text{LOO}} = 14.59$, SE $= 4.93$); the paper relies on identification-through-fit for the economic interpretation.
-
-### Posterior-predictive adequacy
-
-A stock-by-stock comparison of the smoothed latent biomass $B_{s,t}$
-against the observed SSB series (Online Appendix C, Figure C.1)
-shows that the identified model reproduces the historical trajectory
-within a median 90\% posterior band width of approximately 20\% of the
-mean. Residuals are roughly Gaussian and contain no detectable
-autocorrelation at one-year lag (Online Appendix C, Figure C.2).
-Posterior-predictive diagnostics are reported in
-Online Appendix C; Markov-chain convergence
-diagnostics for all top-level parameters are reported in
-Online Appendix D.
 
