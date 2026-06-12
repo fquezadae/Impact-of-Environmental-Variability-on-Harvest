@@ -1,0 +1,72 @@
+# ==============================================================================
+# .gitignore — Fondecyt Bioeconomic Model Project
+# ==============================================================================
+
+# --- R / RStudio ---
+.Rproj.user/
+.Rhistory
+.RData
+.RDataTmp
+.Renviron
+*.Rcheck/
+
+# --- Data (large/sensitive, tracked locally only) ---
+/data/harvest/
+/data/logbooks/
+/data/biomass/
+/data/env/
+/data/ports/
+/data/trips/
+/data/outputs/
+*.nc
+
+# --- Third-party reports (copyright; not redistributed) ---
+# Source documents from IFOP, SPRFMO, SUBPESCA, SERNAPESCA, etc.
+# Tracked locally only; see data/README.md for download URLs.
+/data/bio_params/refs/**/*.pdf
+
+# --- Raw bulk extracts (large; not redistributed) ---
+# SERNAPESCA Ley 20.285 transparency response (AH010T0006857) — re-request
+# from SERNAPESCA or rebuild from the processed CSV in data/bio_params/.
+/data/bio_params/sernapesca_bd_desembarque_raw.csv
+# Deprecated IFOP cerco-only landings extract (replaced by SERNAPESCA v3).
+/data/bio_params/refs/deep_search/*.xlsx
+
+# --- Compilation outputs (reproducible from source) ---
+output/
+_main.Rmd
+_bookdown_files/
+libs/
+*.aux
+*.log
+*.synctex.gz
+*.toc
+*.out
+*.bbl
+*.blg
+*.knit.md
+*_files/
+
+# --- Archive (old manuscript + legacy code) ---
+/archive/
+
+# --- OS / system ---
+Thumbs.db
+.DS_Store
+*.exe
+*.lnk
+tree.txt
+
+# --- Temporary / scratch ---
+*.tmp
+~$*
+
+# --- Stray log files at root (ESGF / Pangeo download passes, etc.) ---
+/esgf_log*.txt
+/ssp*_log.txt
+/*_log.txt
+
+# --- Pre-fix backups generated during edits ---
+*.bak
+*.pre_*.bak
+.positai

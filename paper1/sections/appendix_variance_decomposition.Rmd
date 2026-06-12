@@ -1,0 +1,81 @@
+# Decomposition of projection uncertainty across the CMIP6 ensemble {#appendix-ensemble}
+
+The comparative statics of the Climate change projections section of the main text integrate two
+sources of uncertainty: the posterior of the structural shifters
+$(\rho^{SST}_s, \rho^{CHL}_s)$ and the spread of climate-forced
+trajectories across the CMIP6 ensemble. Letting $X_{s,m,d}$ denote the
+percentage change in $r_s$ implied by climate model $m$ and posterior
+draw $d$, the law of total variance decomposes
+$\mathrm{Var}_{(m,d)}(X)$ into a within-model (posterior) component
+$\mathbb{E}_m[\mathrm{Var}_d(X \mid m)]$ and a between-model
+(climate-ensemble) component $\mathrm{Var}_m[\mathbb{E}_d(X \mid m)]$.
+We compute the decomposition by Monte Carlo from the posterior
+($16{,}000$ draws) crossed with the six-model ensemble of the Climate change projections section of the main text. Jack mackerel is omitted because its non-identified
+shifter implies a posterior dominated by the prior, leaving the
+decomposition without a structural reading.
+\label{eq:appF-decomp}
+
+```{r appF-table, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+suppressPackageStartupMessages(library(dplyr))
+appF_raw <- readr::read_csv(
+ "tables/appendix_f_variance_decomposition_raw.csv",
+ show_col_types = FALSE)
+
+appF_tab <- appF_raw %>%
+ transmute(
+ Stock = stock_label,
+ Scenario = scenario_label,
+ `$n_m$` = n_models,
+ `Mean $\\%\\Delta$` = sprintf("$%+0.1f\\%%$", 100 * mean_pct_change),
+ `$SD$ total` = sprintf("%.3f", sd_total),
+ `$\\%$ within` = sprintf("$%.0f\\%%$", 100 * pct_within),
+ `$\\%$ between` = sprintf("$%.0f\\%%$", 100 * pct_between)
+ )
+
+knitr::kable(appF_tab,
+ format = "latex",
+ escape = FALSE,
+ booktabs = TRUE,
+ align = "llcrrrr",
+ caption = paste("Variance decomposition of",
+ "$\\Delta r^*_s / r^{(0)}_s$",
+ "into within-model (posterior) and",
+ "between-model (CMIP6) components.",
+ "$n_m$ is the number of CMIP6 models",
+ "contributing to the cell.",
+ "Jack mackerel omitted",
+ "(non-identified shifter)."),
+ label = "appF-decomp")
+```
+
+The decomposition reveals a sharp contrast between the two identified
+stocks. For \emph{sardine}, the between-model component dominates in
+three of four scenario--window pairs ($77$--$91\%$ of total variance):
+the within-model posterior on $\rho^{SST}_{\text{sard}}$ is tight
+enough that the bottleneck is climate ensemble disagreement, not
+structural inference. The single exception is SSP$5$-$8.5$
+end-of-century, where the within share rises to $59\%$ due to a floor
+effect at $-100\%$ rather than a substantive shift. For
+\emph{anchoveta}, the within-model component is comparable to or larger
+than the between-model component across all scenarios, reaching $97\%$
+under SSP$5$-$8.5$ end-of-century. The bottleneck on the anchoveta
+projection is therefore the structural posterior.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../figs/t4b/appendix_f_variance_decomposition.png}
+\caption{Variance decomposition of $\Delta r^*_s / r^{(0)}_s$ across
+the CMIP6 ensemble. Bars stack to one within each scenario--window
+pair, splitting total variance into within-model (posterior, blue) and
+between-model (CMIP6 spread, orange) components. Sardine projections
+are climate-driven except in the SSP$5$-$8.5$ end-of-century cell where
+the floor effect inverts the ratio mechanically. Anchoveta projections
+are posterior-driven, particularly under SSP$5$-$8.5$ end-of-century
+($97\%$ within). Jack mackerel omitted.\label{fig:appF-decomp}}
+\end{figure}
+
+The implication for uncertainty management is species-specific:
+shrinking the anchoveta projection uncertainty requires a longer or
+more informative survey series, while the sardine projection requires
+either a larger CMIP6 ensemble or a defensible ensemble-weighting
+procedure.

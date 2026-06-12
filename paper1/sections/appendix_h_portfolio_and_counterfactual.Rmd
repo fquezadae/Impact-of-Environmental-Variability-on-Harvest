@@ -1,0 +1,368 @@
+# Permit portfolios and sectoral counterfactual {#appendix-portfolio}
+
+This appendix reports three pieces of evidence that underpin
+the institutional mechanism developed in the Discussion section of the main text.
+Section \ref{appendix-portfolio-permits} documents the revealed
+multi-species portfolio held by each sector, refuting the common reading
+that the artisanal--industrial asymmetry estimated in the main text is
+driven by single-species permit rigidity at the vessel level.
+Section \ref{appendix-counterfactual} computes a policy counterfactual
+in which the projected $\mathrm{SSP}5$-$8.5$ end-of-century catch
+allocation is recomputed under the 2025 fractioning reform
+[@Ley21752-2025], in force through $2040$, and contrasts it with the
+pre-reform regime that prevailed during the estimation window.
+Section \ref{sec:cesiones-evidence} documents the realised
+inter-sectoral quota cession flow over $2013$--$2024$, showing that the
+industrial sector already cedes the bulk of its assigned small-pelagic
+TAC to artisanal operators, so that the de jure 2025 reform of
+Section \ref{appendix-counterfactual} should be read as an upper bound
+on the post-cession allocation.
+
+## Multi-species permit portfolios in both sectors {#appendix-portfolio-permits}
+
+A natural concern with the institutional reading of our main results is
+that artisanal vessels may operate under more restrictive permit
+portfolios than industrial vessels, in which case the headline asymmetry
+would reflect within-vessel rigidity rather than the cross-sector wedge.
+Two complementary data sources allow us to test this directly. For the
+industrial sector we use the registry of vessel-level participation
+coefficients (\emph{coeficientes de participación relativa}) for jack
+mackerel, sardine and anchoveta, in force through $2012$, released by
+SUBPESCA in response to the Ley de Transparencia request AH002T-0007379
+[@SUBPESCA2012-LTP]. This is the last pre-LTP snapshot of authorised
+industrial portfolios and remains the legal basis for the Class A LTP
+coefficients in force thereafter. For the artisanal sector, the
+equivalent administrative registry of permits by RPA and species is not
+publicly available; we therefore use the $2001$--$2024$ IFOP logbook
+($454{,}308$ trip records on $1{,}583$ vessels covering $81$
+species) and treat the set of species each vessel
+\emph{actually landed} as a revealed-preference lower bound on the
+species for which it holds operational authorisation, since vessels
+cannot legally land species outside their authorised portfolio.
+
+Table \ref{tab:portfolio-descriptive} reports four portfolio-breadth
+indicators by sector bucket, with vessel types following the IFOP
+scientific-observer typology [@IFOP2016-observadores]: the mean number of distinct species
+landed over the panel lifetime, the share of vessels landing two or more
+species over that lifetime, the mean number of distinct species landed
+per vessel-year, and the share of vessel-years with two or more species
+active.
+
+\begin{table}[H]
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.95}
+\caption{Permit-portfolio breadth indicators by sector bucket, Chile small pelagic logbook $2001$--$2024$ (artisanal) and SUBPESCA $2012$ registry (industrial).\label{tab:portfolio-descriptive}}
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+Bucket & $n$ vessels & Sp.\ lifetime & Multi-sp.\ lifetime (\%) & Sp.\ per year & Multi-sp.\ per year (\%) \\
+\midrule
+Industrial (IND)        & $129$ & $7.63$ & $87.6$ & $4.14$ & $96.9$ \\
+Lancha Menor (LM)       & $888$ & $6.27$ & $89.8$ & $3.81$ & $89.9$ \\
+Unclassified artisanal  & $367$ & $4.76$ & $89.6$ & $3.46$ & $91.3$ \\
+Bote Menor (BM)         & $189$ & $2.44$ & $63.0$ & $2.14$ & $63.4$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[para,flushleft]\footnotesize
+\item \emph{Notes.} IND row: SUBPESCA $2012$ registry ($1{,}149$ authorisations across $299$ vessels; $75.6\%$ hold the full anchoveta--sardine--jack mackerel triplet, $67.6\%$ are authorised in $\geq 2$ macrozones). Artisanal rows: $2001$--$2024$ IFOP scientific-observer logbook, lances with valid species codes. Buckets follow the IFOP $2016$ typology used in the main text: LM = \emph{Lancha a Motor}, BM = \emph{Bote a Motor}, industrial reported as PAM; LM and BM separate empirically by hold capacity (median $64$ vs $4$~m\textsuperscript{3}, non-overlapping IQRs). The anchoveta--sardine--jack mackerel triplet accounts for $80$--$86\%$ of artisanal and $67\%$ of industrial lances.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Three substantive readings of Table \ref{tab:portfolio-descriptive}
+support the institutional argument developed in
+the Discussion section of the main text. First, the count of permits per vessel
+does not distinguish the two sectors in a way that would generate
+the headline asymmetry: $87.6\%$ of industrial vessels and $89.8\%$ of
+the dominant Lancha Menor sub-bucket of the artisanal sector hold
+authorisations for two or more species over the panel lifetime, with
+similar shares per vessel-year. Second, the within-artisanal
+heterogeneity that anchors the LM--BM contrast in
+the within-artisanal TIPO\_EMB table (main text) is \emph{not} explained by greater
+species diversification in BM: BM in fact reports the narrowest
+logbook portfolio (mean $2.44$ species lifetime, $2.14$ per year), so
+the smaller projected response of BM to climate stress cannot be a
+permit-diversification story. The most plausible alternative is that
+BM operates substantially outside the regulated logbook
+(coastal multi-species and benthic activity), so the projected
+trip elasticity applies to a smaller fraction of BM's revealed
+livelihood than of LM's. Third, the composition of the multi-species
+portfolio differs sharply: $80$--$86\%$ of artisanal lances and $67\%$
+of industrial lances fall on the anchoveta--sardine--jack mackerel triplet, but
+within that triplet artisanal activity concentrates on the
+anchoveta--sardine pair while industrial activity is more evenly
+spread, with jack mackerel and caballa together absorbing $\sim 70\%$ of
+industrial lances. Under climate forcing, the anchoveta--sardine pair
+responds with the identified negative semi-elasticities of
+the Stock dynamics subsection of the main text, while jack mackerel productivity is
+non-identified at the Centro-Sur scale (Appendix \ref{appendix-spatial});
+the asymmetric concentration of the artisanal portfolio in the
+anchoveta--sardine pair therefore translates the same climate forcing
+into a sharper effective reduction of the artisanal portfolio than of
+the industrial portfolio, conditional on the institutional inability
+to recompose access across the sectoral boundary.
+
+## Policy counterfactual under the 2025 reform {#appendix-counterfactual}
+
+The estimation window of the present paper (2018--2024) coincides with
+the pre-reform fractioning regime. The 2025 fractioning reform
+[@Ley21752-2025] fixes a new schedule of artisanal--industrial fractions
+in force through $2040$. Across
+the Valparaíso--Los Lagos macrozone studied here, the law raises the artisanal
+share to $90\%$ in anchoveta and sardine (from $78\%$) and
+partitions jack mackerel into a $30\%$ artisanal share in Valparaíso--Los Ríos and
+$15\%$ in Los Lagos (from a uniform $10\%$ pre-reform);
+the fractioning table (main text) reports the two regimes side by side.
+A static plug-in evaluation of the climate-conditional artisanal
+landing under each regime is reported in
+the Implications of the 2025 fractioning reform subsection of the main text
+(the static counterfactual table (main text)); this appendix records the
+formal derivation and the posterior-propagated, by-model version
+that complements that headline table.
+
+Letting $Q_s^{0}$ denote the $2024$ Cuota Global de Captura for
+stock $s$ and $\Delta r_s^{\star}/r_s^{0}$ the projected productivity
+change at $\mathrm{SSP}5$-$8.5$ end-of-century, the artisanal
+absolute landing under fractioning regime $R$ is
+
+\begin{equation}
+L_{\text{art}}^{(R)} \;=\; \sum_{s} \alpha_s^{(R)} \cdot \big(1 + \Delta r_s^{\star}/r_s^{0}\big) \cdot Q_s^{0},
+\label{eq:counterfactual}
+\end{equation}
+
+where $\alpha_s^{(R)}$ is the artisanal fraction of stock $s$ under
+regime $R \in \{\text{pre-reform}, \text{2025 reform}\}$ and the sum
+runs over the four (stock $\times$ macrozone) units of
+the fractioning table (main text): anchoveta Valparaíso--Los Lagos, sardine
+Valparaíso--Los Lagos, jack mackerel Valparaíso--Los Ríos, and jack mackerel Los Lagos.
+Equation \eqref{eq:counterfactual} reads the productivity change as a
+proportional adjustment to the steady-state landed volume and
+abstracts from any endogenous TAC-setting response. The plug-in
+version reported in the main text fixes $\Delta r_s^{\star}/r_s^{0}$
+at the cross-model posterior median from
+the stock productivity comparative-statics table (main text); the posterior-propagated version
+reported below integrates explicitly over the CMIP6 six-model
+ensemble and the within-posterior $90\%$ envelope, returning
+cross-model median plus inter-quartile range for the central estimate
+and the median within-posterior $90\%$ CI for the structural
+uncertainty axis, exactly as in
+the trip comparative-statics table (main text).
+
+```{r appendix-counterfactual-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Posterior-propagated counterfactual produced by R/run_counterfactual_ley21752.R
+# Format of summary CSV (one row per (stock, regime)):
+# stock_id, regime, cross_med, cross_q25, cross_q75, within_q05, within_q95, n_models
+# When the script is run, this chunk renders the appendix table directly from disk.
+
+cf_path <- "tables/appendix_h_counterfactual_ley21752.csv"
+
+if (file.exists(cf_path)) {
+
+ cf <- readr::read_csv(cf_path, show_col_types = FALSE)
+
+ stock_label <- c(
+ anchoveta_cs = "Anchoveta",
+ sardina_comun_cs = "Sardine",
+ jurel_cs = "Jack mackerel",
+ TOTAL_CS = "\\textbf{Total}"
+ )
+
+ cf <- cf %>%
+ dplyr::mutate(
+ Stock = stock_label[stock_id],
+ Regime = ifelse(regime == "Art47", "Pre-reform", "2025 reform"),
+ Central = sprintf("$%.1f$ $[%.1f, %.1f]$", cross_med, cross_q25, cross_q75),
+ WithinCI = sprintf("$[%.1f, %.1f]$", within_q05, within_q95)
+ ) %>%
+ dplyr::arrange(factor(stock_id,
+ levels = c("anchoveta_cs","sardina_comun_cs","jurel_cs","TOTAL_CS")),
+ regime) %>%
+ dplyr::select(Stock, Regime, `Cross-model [IQR] (kt)` = Central,
+ `Within-post.\\ CI (kt)` = WithinCI)
+
+ # Render manually with threeparttable + footnotes (avoids stargazer wrapper)
+ tbl <- knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
+ linesep = "")
+
+ cap_str <- paste0(
+ "Posterior-propagated artisanal absolute landing under the ",
+ "pre-reform and 2025 fractioning regimes, ",
+ "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (Valparaíso--Los Lagos), ",
+ "$2024$ Cuotas Globales.")
+
+ notes_str <- paste0(
+ "\\emph{Notes.} Cross-model statistics across six CMIP6 models of the per-model posterior median; ",
+ "within-posterior 90\\% CI is the median across models of per-model $[q_{05}, q_{95}]$. ",
+ "Jack mackerel is held at $\\Delta r^{\\star}/r^{0} = 0$ (non-identified at Centro-Sur scale)."
+ )
+
+ cat("\\begin{table}[H]\n")
+ cat("\\centering\\small\n")
+ cat("\\setlength{\\tabcolsep}{4pt}\n")
+ cat("\\renewcommand{\\arraystretch}{0.95}\n")
+ cat(sprintf("\\caption{%s\\label{tab:counterfactual}}\n", cap_str))
+ cat("\\begin{threeparttable}\n")
+ cat(as.character(tbl))
+ cat("\n\\begin{tablenotes}[flushleft]\\footnotesize\n")
+ cat(sprintf("\\item %s\n", notes_str))
+ cat("\\end{tablenotes}\n")
+ cat("\\end{threeparttable}\n")
+ cat("\\end{table}\n")
+
+} else {
+
+ cat("\\noindent\\textit{Posterior-propagated counterfactual table not yet built. ",
+ "Run \\texttt{Rscript R/run\\_counterfactual\\_ley21752.R} to generate ",
+ "\\texttt{tables/appendix\\_h\\_counterfactual\\_ley21752.csv}, then re-knit.}\n")
+
+}
+
+```
+
+Three readings of the posterior-propagated counterfactual sharpen the
+plug-in headline reported in the main text. First, the cross-model
+inter-quartile range is narrow at the aggregate level (a few kilotonnes
+on either side of the $122$ kt median total), reflecting the floor-effect
+saturation documented in Appendix \ref{appendix-trips-ensemble}: once
+the small-pelagic productivity collapses, the cross-model dispersion of
+$L_{\text{art}}$ is small in absolute terms because the residual base on
+which it operates is small. Second, the within-posterior $90\%$ CI is
+substantially wider for anchoveta than for sardine, because
+the posterior on $(\rho^{SST}_{\text{anch}}, \rho^{CHL}_{\text{anch}})$
+admits a wider envelope of climate-conditional productivity factors
+than the sardine pair. Third, the jack mackerel contribution to the artisanal
+landing is invariant across both axes of uncertainty---it appears as a
+point in the table---because the non-identification convention holds
+$(1 + \Delta r_{\text{jack mackerel}}^{\star}/r_{\text{jack mackerel}}^{0}) = 1$;
+relaxing this convention to the ENSO-prior-propagated envelope of
+Appendix \ref{sec:appendix-spatial-enso} would add a third source of
+uncertainty whose magnitude is bounded by the three-orders-of-magnitude
+range reported there. The plug-in headline in the main text is therefore
+robust to the cross-model and within-posterior axes that the appendix
+makes explicit, and the institutional reading developed in
+the Discussion section of the main text carries over unchanged.
+
+
+## Inter-sectoral cession evidence from SERNAPESCA quota control reports {#sec:cesiones-evidence}
+
+This subsection documents the realised inter-sectoral cession flow,
+the single administrative re-allocation
+channel admitted by the de jure fractioning regime. The data source is
+the annual SERNAPESCA quota control report, published as an Excel
+workbook for each pair (anchoveta--sardine Valparaíso--Los Lagos) and
+(jack mackerel Arica y Parinacota--Los Lagos). For each species--year we extract the assigned, ceded,
+effective, and captured tonnage by sector from the workbook's summary
+sheet.
+
+Two qualitative facts emerge from the consolidated $2013$--$2024$
+series, which we report in two tables separated by species pattern:
+anchoveta and sardine in Table \ref{tab:cesiones-anchsard}
+and jack mackerel in Table \ref{tab:cesiones-jurel}. First, in the
+anchoveta and sardine fisheries the industrial sector cedes a large
+share of its assigned TAC to artisanal cessionaries in every year of the
+$2013$--$2024$ window: the share of the industrial assignment
+transferred to artisanal operators ranges from $12\%$ to $72\%$ over
+$2013$--$2017$ and tightens to $85\%$--$\sim\!100\%$ over $2018$--$2024$. The cession volume scales with the TAC and,
+in the $2018$--$2024$ subperiod, ranges from $26$ to $50$ kt per year
+in anchoveta and from $51$ to $77$ kt per year in sardine. Second, in
+the jack mackerel fishery the cession flow is an order of magnitude
+smaller relative to the assigned TAC---never exceeding $14\%$ of the
+industrial assignment in any year of the $2013$--$2024$ window and
+falling below $5\%$ in eight of the twelve years---and reverses
+direction across years: artisanal-to-industrial cessions dominate the
+$2013$--$2014$ and $2016$--$2022$ subperiods, while industrial-to-artisanal
+flows dominate the $2015$ and $2023$--$2024$ rows of Table
+\ref{tab:cesiones-jurel}.
+
+The implication for the main-text policy interpretation is twofold.
+First, the structural asymmetry that the paper identifies is estimated
+on realised landings, which are post-cession; the asymmetry therefore
+reflects the post-cession allocation produced by the joint pre-reform
+fractioning and cession regime rather than the de jure
+fractioning alone. Second, the static counterfactual
+in the Implications of the 2025 fractioning reform subsection of the main
+text and in equation \eqref{eq:counterfactual} of this appendix should
+be read as a de jure upper bound on the post-cession allocation:
+because the industrial sector already cedes the bulk of its assigned
+small-pelagic TAC to artisanal operators under the pre-reform regime,
+the $12$ percentage-point reduction in the industrial de jure share
+under the 2025 reform translates into a
+proportionally smaller change in realised artisanal landings. Cession
+contracts under the inter-sectoral channel are bilateral agreements
+between LTP-holders and RPA-holders subject to ex-ante SUBPESCA
+authorisation. The post-cession allocation therefore depends on the
+de jure fractioning combined with the realised cession flows
+documented in Tables \ref{tab:cesiones-anchsard} and
+\ref{tab:cesiones-jurel}.
+
+\begin{table}[H]
+\centering\small
+\renewcommand{\arraystretch}{0.95}
+\caption{Inter-sectoral cession flow, anchoveta and sardine, Valparaíso to Los Lagos, $2013$--$2024$. Source: SERNAPESCA quota control reports.\label{tab:cesiones-anchsard}}
+\begin{threeparttable}
+\begin{tabular}{lrrrr}
+\toprule
+Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
+\midrule
+2013 & anchoveta &  25.5 & $-3.1$  & 12\% \\
+2013 & sardine   & 128.5 & $-31.1$ & 24\% \\
+2014 & anchoveta &   7.7 & $-3.9$  & 51\% \\
+2014 & sardine   & 104.8 & $-46.6$ & 44\% \\
+2015 & anchoveta &   6.3 & $-2.5$  & 40\% \\
+2015 & sardine   &  65.2 & $-21.8$ & 33\% \\
+2016 & anchoveta &   7.3 & $-2.1$  & 29\% \\
+2016 & sardine   &  59.8 & $+15.6$ & 26\% \\
+2017 & anchoveta &  12.6 & $-9.0$  & 72\% \\
+2017 & sardine   &  72.4 & $-48.9$ & 67\% \\
+2018 & anchoveta &  12.8 & $-10.7$ & 84\% \\
+2018 & sardine   &  74.2 & $-63.2$ & 85\% \\
+2019 & anchoveta &  27.4 & $-25.8$ & 94\% \\
+2019 & sardine   &  76.0 & $-69.6$ & 92\% \\
+2020 & anchoveta &  38.6 & $-33.3$ & 86\% \\
+2020 & sardine   &  67.2 & $-60.9$ & 91\% \\
+2021 & anchoveta &  45.3 & $-45.1$ & $\sim\!100\%$ \\
+2021 & sardine   &  76.9 & $-76.5$ & $\sim\!100\%$ \\
+2022 & anchoveta &  52.2 & $-50.5$ & 97\% \\
+2022 & sardine   &  77.7 & $-71.6$ & 92\% \\
+2023 & anchoveta &  39.9 & $-37.1$ & 93\% \\
+2023 & sardine   &  63.3 & $-61.7$ & 98\% \\
+2024 & anchoveta &  53.8 & $-45.5$ & 85\% \\
+2024 & sardine   &  53.9 & $-51.0$ & 95\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes.} Industrial share of Cuota Global de Captura, Valparaíso to Los Lagos. Negative cession denotes industrial-to-artisanal flows.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\renewcommand{\arraystretch}{0.95}
+\caption{Inter-sectoral cession flow, jack mackerel, $2013$--$2024$. Source: SERNAPESCA quota control reports.\label{tab:cesiones-jurel}}
+\begin{threeparttable}
+\begin{tabular}{lrrrr}
+\toprule
+Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
+\midrule
+2013 & jack mackerel & 138.4 & $+0.5$  & 0\%  \\
+2014 & jack mackerel & 198.6 & $+27.3$ & 14\% \\
+2015 & jack mackerel & 203.1 & $-17.2$ & 8\%  \\
+2016 & jack mackerel & 203.0 & $+11.7$ & 6\%  \\
+2017 & jack mackerel & 228.3 & $+9.7$  & 4\%  \\
+$2018^{\dagger}$ & jack mackerel &  326.9 & $+16.1$ & 5\% \\
+$2019^{\dagger}$ & jack mackerel &  339.0 & $+12.0$ & 3\% \\
+$2020^{\dagger}$ & jack mackerel & 1268.1 & $+11.8$ & 1\% \\
+$2021^{\dagger}$ & jack mackerel &  448.7 & $+13.3$ & 3\% \\
+$2022^{\dagger}$ & jack mackerel &  516.4 & $+15.2$ & 3\% \\
+$2023^{\dagger}$ & jack mackerel &  637.0 & $-0.7$  & 0\% \\
+$2024^{\dagger}$ & jack mackerel &  728.6 & $-31.5$ & 4\% \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes.} Conventions as in Table \ref{tab:cesiones-anchsard}. $^{\dagger}$$2018$--$2024$ is the national aggregate (the SERNAPESCA summary sheet is not disaggregated by sub-macrozone); the share-ceded column remains comparable because the additional Arica-to-Atacama volume enters both numerator and denominator.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

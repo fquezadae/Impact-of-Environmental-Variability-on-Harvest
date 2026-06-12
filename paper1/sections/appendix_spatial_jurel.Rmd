@@ -1,0 +1,186 @@
+# Spatial robustness of the jack mackerel non-identification result {#appendix-spatial}
+
+The non-identification of $(\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})$
+reported in the Identification of climate shifters section of the main text admits two observationally
+equivalent readings: that jurel productivity is uncoupled from
+Centro-Sur coastal forcing at the annual aggregate, or that the
+relevant forcing operates at a spatial scale broader than the EEZ,
+diluting the local-domain signal. This appendix tests four
+explanations for the null --- insufficient power, insufficient
+spatial extent, insufficient biomass coverage, and a poor choice of
+spatial scale --- and concludes that the null is structural rather
+than aggregation-driven within the $2000$--$2024$ Centro-Sur record.
+
+## Identification power on the sample {#sec:appendix-spatial-power}
+
+Linearising the Schaefer transition in log-differences,
+$\Delta \log B_{i,t+1} = \alpha_i - \beta_i (B_{i,t}/K_i) + \rho_i^X X_{t-1} + \varepsilon_{i,t}$
+with $\varepsilon_{i,t} \sim \mathcal{N}(0, \sigma_{i,\text{resid}}^2)$
+and $\sigma_{i,\text{resid}} = \sqrt{\sigma_{i,\text{proc}}^2 + 2\sigma_{i,\text{obs}}^2}$,
+the OLS-equivalent standard error on a sample of $N=24$ lag-one
+observations is
+$\mathrm{SE}(\hat{\rho}_i^X) \approx \sigma_{i,\text{resid}} / [\mathrm{sd}(X)\sqrt{N-K}]$
+with $K=3$ regressors. The minimum shifter magnitude detectable at
+$80\%$ power for a two-sided $90\%$ credible interval is then
+$|\rho_i^X|_{\min} \approx 2.56\,\mathrm{SE}(\hat{\rho}_i^X)$.
+
+Evaluated at the posterior medians of $\sigma_{\text{proc}}$ and
+$\sigma_{\text{obs}}$, $\sigma_{i,\text{resid}}$ is $0.28$ for
+anchoveta, $0.25$ for sardine, and $1.28$ for jurel --- the latter
+roughly $4.6$ times the coastal-stock average and the main reason
+why the prior dominates the jurel posterior. Table \ref{tab:appE-power}
+reports $|\rho|_{\min}$ for the three stocks and three candidate
+shifters. The jurel envelope spans $|\rho|_{\min}$ of $1.50$ on
+local SST, $1.32$ on local $\log$~CHL, and $0.71$ on basin-scale
+ENSO, against an envelope of empirically plausible biological
+elasticities centred near $0.05$--$0.30$ in absolute value, far below the
+$|\rho|_{\min}$ envelope reported here. The sample is therefore insufficiently informative
+to support a credible interval for jurel under any of these
+forcings, regardless of the true elasticity.
+
+\begin{table}[H]
+\centering
+\caption{Minimum shifter magnitude $|\rho|_{\min}$ detectable at
+$80\%$ power on the $2000$--$2024$ sample.
+$\sigma_{\text{resid}} = \sqrt{\sigma_{\text{proc}}^2 + 2\sigma_{\text{obs}}^2}$
+evaluated at posterior medians.\label{tab:appE-power}}
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+Stock & $\sigma_{\text{resid}}$ & $|\rho_{SST}|_{\min}$ & $|\rho_{\log\text{CHL}}|_{\min}$ & $|\rho_{\text{ENSO}}|_{\min}$ \\
+\midrule
+Anchoveta & $0.28$ & $0.33$ & $0.29$ & $0.16$ \\
+Sardina común & $0.25$ & $0.29$ & $0.26$ & $0.14$ \\
+Jurel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes.} Detectable magnitudes computed from
+$|\rho_i^X|_{\min} \approx 2.56\,\sigma_{i,\text{resid}} / [\mathrm{sd}(X)\sqrt{N-K}]$
+with $N=24$, $K=3$. $\mathrm{sd}(X)$ are sample standard deviations of
+the Centro-Sur EEZ-aggregated SST and $\log$~CHL anomalies and of the
+Niño 3.4 index over the estimation window.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+## Posterior identification across alternative specifications {#sec:appendix-spatial-results}
+
+We re-fit the state-space jurel block under four alternative shifter
+configurations, each designed to test one mechanical explanation for
+the local null. Table \ref{tab:appE-sigma} reports the
+posterior-to-prior standard deviation ratios for the jurel shifters
+under each specification; ratios at unity indicate no posterior
+updating relative to the prior.
+
+\begin{table}[H]
+\centering
+\caption{Posterior-to-prior standard deviation ratios of the jurel
+climate shifters under four alternative specifications.\label{tab:appE-sigma}}
+\begin{threeparttable}
+\begin{tabular}{llcc}
+\toprule
+Test & Specification & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ (SST) & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ ($\log$~CHL or ENSO) \\
+\midrule
+Spatial extent & EEZ domain $\mathcal{D}_1$ & $0.998$ & $1.014$ ($\log$~CHL) \\
+ & Offshore-extended $\mathcal{D}_2$ & $1.002$ & $1.009$ ($\log$~CHL) \\
+ & Southeast Pacific $\mathcal{D}_3$ & $0.999$ & $1.011$ ($\log$~CHL) \\
+Biomass coverage & Dual-source (Centro-Sur + Northern acoustic) & $0.94$ & $0.99$ ($\log$~CHL) \\
+Spatial scale & Basin-scale ENSO Niño 3.4, lag~1 & --- & $0.98$ (ENSO) \\
+ & Basin-scale ENSO Niño 3.4, lag~2 & --- & $1.01$ (ENSO) \\
+Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$ & $1.00$ ($\log$~CHL); $0.98$ (ENSO) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes.} $\mathcal{D}_1$ is the Chilean EEZ between $18^{\circ}$S
+and $42^{\circ}$S out to $200$ nautical miles. $\mathcal{D}_2$ extends to
+$1{,}000$ km offshore. $\mathcal{D}_3$ is the regional Southeast Pacific
+domain $5^{\circ}$S--$45^{\circ}$S, $70^{\circ}$W--$120^{\circ}$W.
+Spatial aggregates are area-weighted (with $\cos(\text{lat})$) and
+centred on the $2000$--$2024$ mean. The dual-source extension augments
+the Centro-Sur biomass likelihood with the Northern Chilean acoustic
+series under a common shifter $\rho_{\text{jurel}}^{\text{common}}$,
+motivated by the $0.88$ log-scale cross-series correlation. The ENSO
+specification replaces the local coastal shifters with the Niño 3.4
+index at the indicated lag. The joint specification estimates all
+three shifters simultaneously for jurel, holding the anchoveta and
+sardina blocks at the main specification of the Stock dynamics subsection of the main text. Anchoveta and sardina shifter ratios remain
+stable at $0.43$--$0.83$ across all configurations (not reported).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+All four tests deliver a posterior-to-prior ratio between $0.94$ and
+$1.03$ for the jurel shifters, statistically indistinguishable from
+unity given the prior dispersion. The two ratios closest to "informative
+updating" --- the dual-source extension at $0.94$--$0.99$ and the
+basin-scale ENSO at $0.98$ --- remain well above the $0.7$ threshold
+below which posterior intervals discriminate the shifter from zero
+on the prior support, consistent with the analytic power calculation
+of Table \ref{tab:appE-power}.
+
+## Dual-source extension {#sec:appendix-spatial-dual}
+
+The Centro-Sur and Northern Chilean acoustic biomass series exhibit a
+$0.88$ log-scale correlation across overlapping years
+($2012$--$2024$), motivating a joint-likelihood specification in
+which a common shifter $\rho^{\text{common}}$ is identified
+simultaneously on both records. The extension multiplies the number
+of informative jurel-biomass observations by approximately $1.7$
+while preserving the prior structure of the main fit. The resulting
+$\sigma_{\text{post}}/\sigma_{\text{prior}}$ ratios of $0.94$
+(SST) and $0.99$ ($\log$~CHL) are the strongest posterior updating
+observed in any specification considered in this appendix, but
+remain well above the threshold for material identification.
+
+## Basin-scale ENSO test {#sec:appendix-spatial-enso}
+
+Replacing the local coastal shifters with the basin-scale ENSO
+Niño 3.4 index tests whether the relevant climatic forcing for
+jurel operates at the basin scale rather than the coastal scale,
+consistent with the empirical evidence of @Pena-Torres2017-gn
+(ENSO-driven shifts in jurel location choices) and @Arcos2001-jq
+(SPRFMO-scale stock dynamics under broad-basin forcing). The
+specification estimates a single $\rho_{\text{jurel}}^{\text{ENSO}}$
+on lag-1 and lag-2 ENSO anomalies in alternative runs. The
+resulting ratios of $0.98$ (lag~1) and $1.01$ (lag~2) are both
+indistinguishable from unity, consistent with the analytic
+$|\rho_{\text{ENSO}}|_{\min} = 0.71$ of Table \ref{tab:appE-power}.
+
+A prior-propagation sensitivity combines the posterior of
+$\rho_{\text{jurel}}^{\text{ENSO}}$ with the CMIP6 ensemble of
+basin-scale temperature deltas to compute a $90\%$ predictive
+interval for the jurel productivity factor under SSP$5$-$8.5$
+end-of-century. The interval spans approximately three orders of
+magnitude ($[0.05, 19.5]$), confirming that prior-propagated
+projections are uninformative for policy and validating the
+fixed-$r^{\star}_{\text{jurel}}$ convention adopted in the main
+text.
+
+A separate exploratory attempt to incorporate the SPRFMO range-wide
+assessment (OROP-PS, encompassing Chile, Peru, Ecuador and adjacent
+high-seas) fails on coherence grounds: the augmented likelihood
+exhibits multimodal posterior support and unsatisfactory chain
+mixing, indicating that the broader geographic aggregate is not
+integrable with the Centro-Sur record under a single shifter.
+
+## Implication for the main claim {#sec:appendix-spatial-implication}
+
+The four tests above rule out the most natural mechanical
+explanations for the jurel non-identification: it is not a
+small-sample artefact within the available power envelope
+(Table \ref{tab:appE-power}); it does not respond to broader spatial
+aggregation of the local shifters (E.1: $\mathcal{D}_1$ through
+$\mathcal{D}_3$); it does not respond to expanded biomass coverage
+through the Northern Chilean acoustic series (E.2 dual-source); and
+it does not respond to replacing the local shifters with a
+basin-scale forcing (E.3 ENSO). The convergence of these four tests
+points to a structural rather than aggregation-driven limitation of
+the present record. Closing the identification gap will require
+either a substantially longer biomass record (the $25$-year window
+limits any moderate-magnitude shifter to below detection) or a
+basin-scale assessment with explicit cross-stock spillover within
+a fully transboundary stock-dynamics specification. Within the
+present record, holding $r^{\star}_{\text{jurel}}$ fixed at the
+prior mean is the defensible reporting choice and is the convention
+adopted throughout the main text.

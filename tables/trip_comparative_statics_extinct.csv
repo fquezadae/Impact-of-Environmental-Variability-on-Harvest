@@ -1,0 +1,13 @@
+"Stock","Scenario","n_models","Pr(extinct) cross med","Pr(extinct) cross IQR","factor_B cross med","factor_B cross IQR","Non-identified"
+"Anchoveta CS","SSP2-4.5, 2041-2060",5,"0.563","[0.492, 0.586]","0.000","[0.000, 0.019]",FALSE
+"Anchoveta CS","SSP2-4.5, 2081-2100",5,"0.807","[0.751, 0.916]","0.000","[0.000, 0.000]",FALSE
+"Anchoveta CS","SSP5-8.5, 2041-2060",6,"0.774","[0.683, 0.820]","0.000","[0.000, 0.000]",FALSE
+"Anchoveta CS","SSP5-8.5, 2081-2100",6,"0.957","[0.942, 0.962]","0.000","[0.000, 0.000]",FALSE
+"Sardine CS","SSP2-4.5, 2041-2060",5,"0.873","[0.688, 0.998]","0.000","[0.000, 0.000]",FALSE
+"Sardine CS","SSP2-4.5, 2081-2100",5,"0.999","[0.992, 1.000]","0.000","[0.000, 0.000]",FALSE
+"Sardine CS","SSP5-8.5, 2041-2060",6,"0.990","[0.837, 0.999]","0.000","[0.000, 0.000]",FALSE
+"Sardine CS","SSP5-8.5, 2081-2100",6,"1.000","[1.000, 1.000]","0.000","[0.000, 0.000]",FALSE
+"Jack mackerel CS","SSP2-4.5, 2041-2060",5,"n.i.","n.i.","n.i.","n.i.",TRUE
+"Jack mackerel CS","SSP2-4.5, 2081-2100",5,"n.i.","n.i.","n.i.","n.i.",TRUE
+"Jack mackerel CS","SSP5-8.5, 2041-2060",6,"n.i.","n.i.","n.i.","n.i.",TRUE
+"Jack mackerel CS","SSP5-8.5, 2081-2100",6,"n.i.","n.i.","n.i.","n.i.",TRUE

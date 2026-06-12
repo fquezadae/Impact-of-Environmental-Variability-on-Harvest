@@ -1,0 +1,31 @@
+# Posterior-predictive checks {#appendix-posterior}
+
+This appendix reports posterior-predictive diagnostics of the full
+state-space specification: (i) the smoothed latent biomass versus the
+observed survey-based estimates, and (ii) the corresponding year-level
+residuals.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{../figs/t4b/t4b_full_smooth_vs_obs.png}
+\caption{Smoothed latent biomass $B_{i,t}$ of the full specification
+against survey-based SSB observations, by stock. Solid line: posterior
+median; shaded band: $90\%$ credible interval. Open circles: official
+IFOP/SPRFMO point estimates; downward arrows: left-censored
+observations at the assessment detection limit (jurel $2012$,
+$2015$).\label{fig:ppc-smooth-vs-obs}}
+\end{figure}
+
+The smoothed band has a median width of approximately $20\%$ of the
+posterior mean, tightening over years with direct observation and
+widening across the seven non-surveyed jurel years (latent biomass
+identified dynamically through the Schaefer transition and two censored
+observations in $2012$ and $2015$).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{../figs/t4b/t4b_full_residuals.png}
+\caption{Standardised year-level residuals of the full specification by
+stock. The Ljung--Box test of residual autocorrelation does not reject
+the null at conventional levels for any of the three stocks.\label{fig:ppc-residuals}}
+\end{figure}

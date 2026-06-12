@@ -1,0 +1,982 @@
+---
+title: "Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries"
+subtitle: "\\begin{center}{\\color{red}\\Large\\textbf{DRAFT – PLEASE DO NOT CITE}}\\end{center}"
+author: "Felipe J. Quezada-Escalona"
+date: "`r withr::with_locale(c(LC_TIME = 'English'), format(Sys.Date(), '%B %Y'))`"
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    number_sections: false
+    toc: false
+    keep_tex: true
+    pandoc_args: ["--variable=fontsize:11pt"]
+  bookdown::latex_document2: default
+bibliography: ../bibliography.bib
+csl: ../chicago-author-date.csl # Optional: for APA-style citations
+linkcolor: blue
+citecolor: blue
+urlcolor: blue
+link-citations: TRUE
+nocite: |
+  @SERNAPESCA2024-cuota, @Boletin17096-21
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+  - \usepackage{indentfirst}  # Enables first-line indentation
+  - \setlength{\parindent}{10pt}  # Adjusts the indentation size
+  - \usepackage{authblk}
+  - \usepackage{booktabs}
+  - \usepackage{caption}
+  - \usepackage{dcolumn}
+  - \usepackage{adjustbox}
+  - \usepackage{threeparttable}
+  - \usepackage{float}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - "\\setlength{\\headheight}{14pt}"
+  - "\\addtolength{\\topmargin}{-2pt}"
+  - "\\fancyhead[L]{\\small\\scshape Asymmetric Climate Impacts on Fishing Effort}"
+  - "\\fancyhead[R]{\\small\\thepage}"
+  - "\\renewcommand{\\headrulewidth}{0.4pt}"
+  - \usepackage{etoolbox}
+  - \AtBeginEnvironment{CSLReferences}{\small\setstretch{1.0}}
+  - "\\author{Felipe J. Quezada-Escalona\\thanks{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: felipequezada@udec.cl.}}"
+  - "\\affil{Universidad de Concepci\\'on \\vspace{-48pt}}"
+  - "\\newcommand{\\keywords}[1]{\\par\\noindent\\textbf{Keywords:} #1}"
+  - "\\newcommand{\\jelcodes}[1]{\\par\\noindent\\textbf{JEL Codes:} #1}"
+editor_options:
+  markdown: 
+    wrap: none
+abstract: "Climate-driven shifts in stock productivity reach fishing fleets unevenly when species portfolios differ across segments and the sector-level allocation of catch rights cannot adjust to relative productivity changes. We quantify this distributional channel for the small pelagic fishery of Central-South Chile (anchoveta, sardine, jack mackerel), managed under a fixed industrial--artisanal allocation. We couple a Bayesian state-space model of stock dynamics, fit to 2000--2024 official assessment data, with a vessel-level trip equation; climate enters through an indirect biomass channel and a direct weather channel. Under a six-model CMIP6 ensemble, projected fleet-level effort falls by 13--15 percent for the artisanal fleet but only 0.8--1.0 percent for the industrial fleet---an asymmetry of roughly fifteen to one driven by differential portfolio exposure and weather sensitivity. The findings imply that climate-adaptation policy should revisit the sector-level allocation of catch rights, allowing it to respond to relative productivity shifts."
+---
+
+\keywords{Bayesian state-space model; Bioeconomic projection; Chilean small pelagic fishery; Climate change; Fishing effort; Fleet heterogeneity; Quota allocation}
+
+\jelcodes{Q22, Q54, Q57, Q58}
+
+```{r directorio, message=FALSE, warning=FALSE, include=FALSE}
+rm(list = ls())
+gc()
+
+# Definir directorios según usuario
+
+usuario <- Sys.info()[["user"]]
+# computador <- Sys.info()[["nodename"]]  # Alternativamente puedes usar esto
+if (usuario == "felip") {
+  dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "FACEA") {
+  dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else if (usuario == "Felipe") {
+  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
+} else {
+  stop("Usuario no reconocido. Defina el directorio correspondiente.")
+}
+rm(usuario)
+
+# Fijar la raíz del proyecto como working directory para todos los chunks
+# siguientes. Así las rutas relativas ("data/...", "figs/...") resuelven
+# desde la raíz del proyecto y no desde paper1/, evitando depender del
+# junction paper1/data -> ../data.
+knitr::opts_knit$set(root.dir = here::here())
+
+# Todos los paquetes usados en el documento se cargan acá, en el setup
+# chunk, para que el Rmd sea independiente del orden y del estado de la
+# sesión interactiva. Orden: data.table DESPUÉS de dplyr (para que
+# dplyr::filter no sea enmascarado). MASS NO se carga acá —
+# glm.nb se llama con namespace explícito (MASS::glm.nb) para evitar
+# que MASS::select enmascare dplyr::select más abajo.
+suppressPackageStartupMessages({
+  # Manipulación de datos
+  library(dplyr)
+  library(tidyr)
+  library(data.table)
+  library(tibble)
+  library(janitor)
+
+  # Visualización
+  library(ggplot2)
+  library(scales)
+  library(viridis)
+
+  # Modelado
+  library(lavaan)
+  library(sandwich)
+  library(lmtest)
+
+  # Tablas / output
+  library(stargazer)
+  library(kableExtra)
+})
+
+# Helper: post-procesa la salida de stargazer para sacar las notas
+# del \tabular y meterlas en un \begin{threeparttable}...
+# \begin{tablenotes}...\end{tablenotes}\end{threeparttable}. Con
+# esto las notas hacen wrap al ancho *natural* del tabular (el que
+# dictan las filas de datos), sin forzar al tabular a inflarse para
+# acomodar una nota larga como una sola línea.
+# Requiere \usepackage{threeparttable} en el header (ya está en el
+# YAML de este documento).
+fix_stargazer_notes <- function(tex) {
+  begin_tab <- grep("\\\\begin\\{tabular\\}", tex)
+  end_tab   <- grep("\\\\end\\{tabular\\}",   tex)
+  if (length(begin_tab) == 0 || length(end_tab) == 0) return(tex)
+  begin_tab <- begin_tab[1]
+  end_tab   <- end_tab[1]
+
+  hline_idxs <- grep("\\\\hline", tex[seq_len(end_tab)])
+  if (length(hline_idxs) == 0) return(tex)
+  last_hline <- max(hline_idxs)
+  if (last_hline + 1 > end_tab - 1) return(tex)  # no hay filas de notas
+
+  note_range <- seq(last_hline + 1, end_tab - 1)
+  note_raw   <- tex[note_range]
+
+  # Extraer el contenido de cada \multicolumn{N}{l}{<content>} \\.
+  # stargazer emite las notas con prefijo de columna-label, p.ej.
+  # "\textit{Note:}  & \multicolumn{3}{l}{...} \\" o " & \multicolumn{...}".
+  # Por eso aceptamos cualquier prefijo antes del \multicolumn.
+  note_content <- sub(
+    "^.*\\\\multicolumn\\{\\d+\\}\\{l\\}\\{(.*)\\}\\s*\\\\\\\\\\s*$",
+    "\\1",
+    note_raw
+  )
+  ok <- note_content != note_raw & nzchar(trimws(note_content))
+  note_content <- note_content[ok]
+  if (length(note_content) == 0) return(tex)
+
+  # Prefijar "Note:" inline al primer item — así queda como una sola
+  # línea ("Note: $^*$ p<0.1; ...") sin agregar un \item extra que
+  # introduce salto de línea adicional.
+  note_content[1] <- paste0("\\textit{Note:} ", note_content[1])
+
+  notes_block <- c(
+    "\\end{tabular}",
+    "\\begin{tablenotes}[flushleft]",
+    "\\footnotesize",
+    paste0("\\item ", note_content),
+    "\\end{tablenotes}",
+    "\\end{threeparttable}"
+  )
+
+  c(
+    tex[seq_len(begin_tab - 1)],
+    "\\begin{threeparttable}",
+    tex[seq(begin_tab, last_hline)],
+    notes_block,
+    if (end_tab + 1 <= length(tex)) tex[seq(end_tab + 1, length(tex))] else character(0)
+  )
+}
+
+```
+
+# Introduction
+
+Climate change is reshaping the productivity of marine fisheries, but the incidence of this reshaping across fleet segments is rarely uniform. Quota-allocation regimes that fix the industrial--artisanal split of the catch were typically designed under stationary-climate assumptions, so a fleet-asymmetric productivity shock acts as a de facto reallocation of harvest rights. Whether such regimes should anticipate this reallocation depends on the projected magnitude and asymmetry of fleet-level effort responses under credible climate scenarios---a quantity that the empirical literature has rarely delivered jointly for multi-species fisheries managed under sector-asymmetric allocation regimes.
+
+We provide that quantity for the small pelagic fishery (SPF) of Central-South Chile (from Valparaíso to Los Lagos), part of the country's largest fishery---approximately 86% of national fish landings by industrial and artisanal sectors in 2019 [@SUBPESCA2020]---and the segment in which all three target species, anchoveta (\emph{Engraulis ringens}), sardine (\emph{Strangomera bentincki}; locally, sardina común), and jack mackerel (\emph{Trachurus murphyi}; locally, jurel), coexist in non-negligible shares of both fleet portfolios. These three species share habitat and are coupled through trophic and market linkages [@Alheit2004; @Arancibia2019-FIPA; @dresdner2013]. The fishery is managed through a sector-specific quota architecture: a fixed industrial-versus-artisanal allocation splits the Total Allowable Catch between the two segments, while within-sector distribution operates through Transferable Fishing Licenses (\emph{Licencias Transables de Pesca}, LTP) for the industrial fleet and the Artisanal Extraction Regime (\emph{Régimen Artesanal de Extracción}, RAE) for the artisanal fleet, with limited cross-sector transferability. Because the two segments target different species portfolios, a stock-asymmetric climate shock translates directly into a fleet-asymmetric effort response. Cross-country evidence indicates that Chile is projected to lose part of its maximum catch potential under climate change: @Cheung2010 classify Chile among a group of countries with moderate projected declines (6--13% by 2055), including the contiguous United States, China and Brazil; the available climate-fisheries economics literature is patchy globally and concentrated in a few well-studied regions [@sumaila2011]. To our knowledge, no existing study for Chile combines multi-species stock dynamics with vessel-level effort responses under projected climate scenarios.[^1]
+
+[^1]: The only empirical study of Chilean fisher behavior that we are aware of is @Pena-Torres2017-gn, which analyses how the El Niño--Southern Oscillation (ENSO) affects location choices in the jack mackerel fishery.
+
+Our bioeconomic framework combines two empirical components. First, a Bayesian state-space model of multi-species stock dynamics --- fitted to 2000--2024 official assessments from the Chilean Fisheries Development Institute (Instituto de Fomento Pesquero, IFOP) and the South Pacific Regional Fisheries Management Organisation (SPRFMO) --- estimates, for each species, two semi-elasticities of productivity with respect to sea-surface temperature and log-chlorophyll-a anomalies. We call these parameters *climate shifters*. Because they enter the biological law of motion as coefficients on exogenous climate forcings, they retain a structural interpretation when applied to climate states outside the 2000--2024 sample. Second, a vessel-level negative binomial trip equation --- estimated separately for the industrial and artisanal fleets, with year fixed effects --- maps prices, allocated harvest, weather, and regulatory closures into annual fishing effort. Climate reaches fleet-level effort through two channels: an *indirect biomass channel* via the climate shifters, and a *direct weather channel* via vessel-specific exposure to severe winds. We evaluate the framework against a six-model ensemble from the Coupled Model Intercomparison Project Phase 6 (CMIP6) under two Shared Socioeconomic Pathway scenarios, SSP2-4.5 (moderate emissions) and SSP5-8.5 (high emissions), at mid-century (2041--2060) and end-of-century (2081--2100).
+
+We obtain three sets of results. First, the artisanal segment absorbs most of the projected climate impact: fleet-level effort falls by $13$--$15\%$ for artisanal vessels but only $0.8$--$1.0\%$ for industrial vessels under SSP$5$-$8.5$, an asymmetry of roughly fifteen to one. Second, this asymmetry is driven by differential portfolio exposure combined with limited cross-sector transferability: the artisanal fleet is concentrated in anchoveta and sardine, whose climate shifters are large and well-identified, while $95\%$ of the industrial fleet's portfolio sits in jack mackerel, whose Centro-Sur climate shifter the data cannot identify. Third, the within-artisanal heterogeneity is itself first-order: the dominant *lancha motor* segment contracts by $-19.9\%$, the smaller *bote motor* segment by only $-3.2\%$.
+
+The remainder of the paper is organized as follows. The next section describes the economic and institutional setting of the Chilean SPF. We then present the empirical framework --- data, stock-dynamics model, trip equation, and projection design --- followed by results on identified climate shifters, comparative-statics projections of stock productivity, and projections of fleet-level effort. The paper closes with a discussion of policy implications and limitations, and brief concluding remarks.
+
+# The small pelagic fishery in Chile
+
+The fishery is divided into two latitudinal zones with distinct species compositions. The northern zone (from Arica y Parinacota to Coquimbo) is dominated by anchoveta and jack mackerel, while sardine is effectively absent. In contrast, the Central-South zone (from Valparaíso to Los Lagos) includes all three species in non-negligible shares within both artisanal and industrial landings. Because this region supports a genuinely multi-species fishery operating under a fixed sector-level allocation regime, it provides the relevant setting for evaluating the distributional consequences of climate-induced shifts in stock productivity, and is therefore the focus of this paper. The principal ports servicing this zone include San Antonio, Tomé, Talcahuano, San Vicente, Coronel, Lota, and Corral. The three species are harvested primarily by purse-seine fleets that differ in vessel size, operating range, and species composition.
+
+<!-- Early bioeconomic characterizations of the Chilean pelagic fishery focused on the northern zone under an aggregated Gordon-Schaefer framework [@Aliaga2001]; a comparable integrated analysis for the Central-South zone, coupling multi-species stock dynamics with environmental drivers, remains absent. -->
+
+The historical evolution of the fishery illustrates the portfolio mechanism developed in the remainder of the paper. The jack mackerel fishery was initially concentrated in northern Chile but shifted toward the Central-South zone during the mid-1980s [@Pena-Torres2017-gn], where fishing grounds have traditionally operated within 50 nautical miles of the coast. Between 1987 and 2004, approximately 85\% of jack mackerel landings were directed to the reduction industry [@Pena-Torres2017-gn], reflecting the importance of fishmeal and fish-oil export markets in determining the value of the industrial portfolio. Sardine and anchoveta, by contrast, are jointly harvested using the same gear and fishing grounds. The two species share habitat and fishing technology, making species differentiation at the point of capture effectively impossible [@dresdner2013]. As a result, the binding constraint on the species mix of landings is the quota regime, not biology or technology.
+
+The status of the three stocks has evolved substantially over time. Central-South anchoveta was classified as collapsed through 2018, reclassified as overexploited in 2019, and has been harvested within maximum sustainable yield (MSY) limits since 2020. Sardine has generally remained within MSY reference levels, except in 2021 and 2023 when it was classified as overexploited. Jack mackerel remained overexploited until 2018 and has since been harvested within MSY limits.
+
+Biological closures (\emph{vedas}) constitute a central management instrument for sardine and anchoveta. In the Central-South zone, reproductive closures extend from July to October in Araucanía--Los Lagos and from August to October in Valparaíso--Biobío, while recruitment closures occur from January through February across all regions. In total, these regulations generate 151 closed fishing days per year in Valparaíso--Biobío and 182 days in Araucanía--Los Lagos. Jack mackerel is not subject to seasonal biological closures.
+
+The Chilean SPF is managed through an annual Total Allowable Catch (TAC; \emph{Cuota Global}), further subdivided across regions and seasons, with unused quotas reassignable within the fishing year and small fractions reserved for research and contingency. Anchoveta and sardine operate under a mixed-species quota framework in which each species has an independent quota but substitution between them is permitted.
+
+The partition of each TAC between the industrial and artisanal sectors is fixed by statute. The pre-reform partition governed the de jure allocation during the estimation window (2013--2024); a 2025 reform [@Ley21752-2025] fixes a new partition in force until 2040 (Table \ref{tab:fractioning}). Under the pre-reform regime, the artisanal sector held $78\%$ of the Central-South anchoveta and sardine TACs and $10\%$ of the jack mackerel TAC; the 2025 reform raises the anchoveta and sardine artisanal shares to $90\%$ across Valparaíso--Los Lagos, and the jack mackerel artisanal share to $30\%$ in Valparaíso--Los Ríos and $15\%$ in Los Lagos. The de jure partition admits a single administratively rationed inter-sectoral re-allocation channel, subject to ex-ante authorisation by the Subsecretaría de Pesca y Acuicultura (SUBPESCA). Quota control reports from the Servicio Nacional de Pesca y Acuicultura (SERNAPESCA) for $2013$--$2024$ document that the industrial sector cedes a persistently large share of its assigned anchoveta and sardine TACs to artisanal cessionaries --- from $12$--$72\%$ over $2013$--$2017$, tightening to $85$--$99\%$ every year in $2018$--$2024$ (Online Appendix, Table H.3) --- while jack mackerel cessions are an order of magnitude smaller and shift direction across years (Online Appendix, Table H.4). Our empirical specifications are therefore identified on realised landings, which are post-cession: the post-cession allocation reflects the joint statutory--cession regime, not the de jure fractioning alone.
+
+Within the industrial sector, an individual transferable quota (ITQ) system known as Transferable Fishing Licenses (\emph{Licencias Transables de Pesca}, LTP) has operated since 2013: Class A licenses were allocated according to historical catch shares, whereas Class B licenses---up to 15\% of the industrial allocation---have been distributed through sealed-bid first-price auctions since 2015.^[@peña_torres_2022_MRE document that these Class B auctions have exhibited low participation, limited capacity to reflect economies of scale, and indications of coordinated bidding.] The artisanal sector operates under a limited-entry regime, with regional TACs distributed through the \emph{Régimen Artesanal de Extracción} (RAE) according to area, vessel size, landing site, or fisher organization.
+
+\begin{table}[H]
+\centering
+\caption{Statutory sectoral partition of the Central-South small pelagic TACs, pre- and post-2025 reform.\label{tab:fractioning}}
+\begin{threeparttable}
+\begin{tabular}{lcc}
+\toprule
+ & \multicolumn{2}{c}{Artisanal share of TAC (\%)} \\
+\cmidrule(lr){2-3}
+Stock & Pre-reform & 2025 reform \\
+\midrule
+Anchoveta (Valparaíso--Los Lagos)             & $78$ & $90$ \\
+Sardina com\'un (Valparaíso--Los Lagos)       & $78$ & $90$ \\
+Jack mackerel (Valparaíso--Los Ríos)                  & $10$ & $30$ \\
+Jack mackerel (Los Lagos)                             & $10$ & $15$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[para,flushleft]
+\footnotesize
+\item \emph{Notes.} Sources: SERNAPESCA (2024) for the pre-2025 regime and Congreso Nacional de Chile (2025) for the 2025 reform, in force until 31 December 2040.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
+
+env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
+env_dt_00_11 <- readRDS(paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"))
+
+```
+
+```{r load_biomass, message=FALSE, warning=FALSE, include=FALSE}
+
+biomass <- readRDS("data/biomass/biomass_dt.rds")
+
+```
+
+```{r load_harvest, message=FALSE, warning=FALSE, include=FALSE}
+
+harvest <- readRDS("data/harvest/sernapesca_v2.rds")
+
+```
+
+# Methods {#methods}
+
+Our empirical strategy targets two structural objects---climate shifters of stock productivity and fleet-specific elasticities of fishing effort---and combines them to compute counterfactual fleet responses under future climate paths. First, we identify the climate shifters: species-specific semi-elasticities of intrinsic stock productivity with respect to sea-surface temperature and chlorophyll-a anomalies. We estimate them within a Bayesian state-space model of multi-species stock dynamics, with a Schaefer law of motion and priors taken from official IFOP and SPRFMO assessments. Second, we estimate fleet-specific elasticities of annual fishing effort with respect to allocated harvest, ex-vessel prices, weather exposure, and regulatory closures, using a negative binomial count model fitted separately for the artisanal and industrial fleets, with year fixed effects that absorb aggregate non-climate shocks. Third, we compute long-run comparative statics under a six-model CMIP6 ensemble (SSP2-4.5 and SSP5-8.5, mid- and end-of-century) through two channels: the identified climate shifters apply to the stock-dynamics steady state to obtain long-run productivity (indirect biomass channel), while projected wind anomalies enter the trip equation via bad-weather days (direct weather channel).
+
+## Historical data
+
+We use IFOP purse-seine logbook data covering 2013--2024. The dataset includes trip-level microdata with detailed records on vessel identifiers, departure and arrival times, vessel capacity, fleet and vessel type, ports of departure and landing, fishery codes, haul timing and location, species composition, and retained catch. We also requested annual stock biomass series for 2000--2024 from official IFOP and SPRFMO assessments and aggregate landings by region and species from SERNAPESCA. For prices, we use ex-vessel monthly series from IFOP's \emph{Monitoreo Económico de la Industria Pesquera y Acuícola Nacional}, which records monthly raw-material payments by processing plants to fishers, disaggregated by plant, region, species, raw-material type, and consumption class (human or animal). Processing-volume series are reported on a census basis across plants, while the price series is sample-based.
+
+Environmental covariates are obtained from the E.U. Copernicus Marine Service Information, accessed through the Copernicus Marine Toolbox API. Sea surface temperature comes from the Global Ocean Physics Reanalysis (GLORYS12V1) at 1/12° horizontal resolution [@GLORYS12V1]. Surface wind speed is taken from the Global Ocean Hourly Reprocessed Sea Surface Wind and Stress from Scatterometer and Model dataset, at 0.125° horizontal resolution and hourly frequency [@WIND_GLO_PHY]. Chlorophyll-a concentrations come from the Global Ocean Colour dataset at $\sim 4$~km horizontal resolution [@GlobColour]. All environmental data were retrieved daily (hourly for winds) for the 2013--2024 period, covering the Chilean Exclusive Economic Zone (EEZ) between 32°S and 42°S (Figure \@ref(fig:figEnvData)).
+
+The jack mackerel biomass sample over the 2000--2024 estimation window is partial: $16$ of $25$ years contribute a point estimate from the official IFOP hydroacoustic assessment, two more (2012, 2015) report biomass values below $3$~kt---three orders of magnitude under the series' historical mean---which we treat as left-censored at $3$~kt under the assumption that the acoustic survey cannot reliably distinguish small-positive values from zero, and seven carry no biomass observation. The reduced informational content is one of the structural reasons behind the non-identification result for the jack mackerel climate shifter (Section \emph{\nameref{identification}}).
+
+```{r figEnvData, echo=FALSE, fig.align='center', fig.cap="Geographical extent of the study area used for environmental covariates limited to the Chilean Exclusive Economic Zone", message=FALSE, warning=FALSE, fig.pos='ht!', out.width='80%'}
+
+knitr::include_graphics("../figs/env_data_map.pdf", error = FALSE)
+
+```
+
+## Future climate data {#future-climate-data}
+
+Climate projections for SST, chlorophyll-a, and near-surface wind speed are obtained from the CMIP6 archive using a six-model ensemble selected to span the range of warming responses across the CMIP6 archive (from low- to high-sensitivity models; full list in Online Appendix F). We use monthly outputs for two future scenarios: SSP2-4.5 (moderate) and SSP5-8.5 (high emissions). Section \emph{\nameref{projection-approach}} describes the projection horizons, baseline period, and change-factor procedure used to translate CMIP6 outputs into our empirical models.
+
+## Econometric models
+
+### Stock dynamics {#sec:stock-dynamics}
+
+Figure \@ref(fig:biomass) shows that anchoveta, sardine, and jack mackerel exhibit distinct biomass trajectories over the 2000--2024 window, with no evidence of strong interannual co-movement across species once scale differences are accounted for. Harvest pressure is visibly associated with these fluctuations; jack mackerel in particular experienced an abrupt decline during the late 2000s, consistent with the combined effects of intense fishing and unfavorable environmental conditions.
+
+```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000--2024)", fig.pos='ht!', message=FALSE, warning=FALSE}
+
+biomass_long <- biomass %>%
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_cs_interp_primary),
+               names_to = "species", 
+               values_to = "biomass") %>%
+  filter(!is.na(biomass)) %>%
+  arrange(species, year)
+
+biomass_long$biomass <- as.numeric(biomass_long$biomass)
+biomass_long$year <- as.numeric(biomass_long$year)
+biomass_long$species <- dplyr::recode(biomass_long$species,
+                               sardine_biomass = "Sardine", 
+                               anchoveta_biomass = "Anchoveta", 
+                               jurel_biomass_cs = "Jack Mackerel", 
+                               jurel_cs_interp_primary = "Jack Mackerel (interpolated)")
+
+biomass2 <- biomass_long %>% 
+  filter(species %in% c("Sardine", "Anchoveta", "Jack Mackerel (interpolated)")) %>%
+  mutate(species = ifelse(species == "Jack Mackerel (interpolated)", "Jack Mackerel", species))
+
+ggplot(biomass2, aes(x = year, y = biomass, color = species, group = species)) +
+  geom_smooth(se = TRUE, method = "loess", span = 0.4, linetype = "solid") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = "Year",
+       y = "Biomass (tons)",
+       color = "Species") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.y = element_text(angle = 0, hjust = 1),
+    legend.position = "right" 
+  ) + 
+  scale_color_viridis_d(option = "D")
+
+rm(biomass_long, biomass2)
+
+```
+
+Our identification target in this subsection is the vector of climate semi-elasticities $(\rho^{SST}_s, \rho^{CHL}_s)$ across the three stocks $s \in \{\text{anchoveta}, \text{sardine}, \text{jack mackerel}\}$---the structural parameters that translate sea-surface temperature and chlorophyll-a anomalies into shifts in long-run stock productivity. We estimate them within a Bayesian state-space model where the latent biomass $B_{s,t}$ of each stock follows a Schaefer law of motion whose intrinsic growth rate varies log-linearly with these forcings. The law of motion is
+
+\begin{equation}
+B_{s,t+1} \;=\; B_{s,t} + r_{s,t}\, B_{s,t}\!\left(1 - \frac{B_{s,t}}{K_s}\right) \;-\; C_{s,t} \;+\; \varepsilon_{s,t}, \qquad \varepsilon_{s,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{proc},s}^2\big), \label{eq:law-of-motion}
+\end{equation}
+
+where $r_{s,t}$ is the intrinsic growth rate (specified below), $K_s$ is the stock-specific carrying capacity, $C_{s,t}$ is the observed annual catch, and $\varepsilon_{s,t}$ is the stochastic shock to recruitment with standard deviation $\sigma_{\text{proc},s}$. The shocks are jointly distributed across species with a free $3\times 3$ correlation matrix $\Omega$ identified from the data, allowing ecological coupling not captured by the climate forcings (e.g., direct trophic interactions or competition for plankton).
+
+Environmental conditions are summarized annually by sea surface temperature (SST) and chlorophyll-a concentration (CHL), averaged over the Centro-Sur region within the Chilean EEZ and lagged one year because environmental conditions affect recruitment and growth with a one-year delay, so that SST and CHL precede year-$t$ biomass causally. The choice of these two covariates follows a large biological literature that identifies thermal regime and primary productivity as the dominant local drivers of small-pelagic dynamics in the Humboldt Current System [@Alheit2004; @cahuin2009; @Yáñez2014].
+
+The climate shifter on $r_{s,t}$ takes the log-linear form,
+
+\begin{equation}
+r_{s,t} \;=\; r_s^{0}\, \exp\!\Big(\, \rho_s^{SST}\, (SST_{t-1} - \overline{SST}) \;+\; \rho_s^{CHL}\, (\log CHL_{t-1} - \overline{\log CHL}) \,\Big), \label{eq:shifter}
+\end{equation}
+
+so $\rho_s^{SST}$ and $\rho_s^{CHL}$ are the semi-elasticities of intrinsic stock productivity to a one-degree Celsius SST anomaly and to a one-log-point chlorophyll-a anomaly $\log(CHL_{t-1}/\overline{CHL})$, respectively. Because these parameters enter the law of motion as coefficients on exogenous climate forcings, they are generalisable---in the structural sense---to climate regimes outside the 2000--2024 estimation sample. This generalisability matters because the comparative-statics exercise of Section \emph{\nameref{projections}} applies the shifter at projected SST anomalies several SDs beyond anything observed in 2000--2024.
+
+Latent biomass is linked to the official survey-based estimates of total stock biomass $B_{s,t}^{\text{obs}}$ published by IFOP for all three species in Centro-Sur Chile, through a log-normal equation,
+
+\begin{equation}
+\log B_{s,t}^{\text{obs}} \;=\; \log B_{s,t} \,+\, u_{s,t}, \qquad u_{s,t} \sim \mathcal{N}\!\big(0,\, \sigma_{\text{obs},s}^2\big). \label{eq:obs}
+\end{equation}
+
+where $u_{s,t}$ is the log-observation error---capturing sampling and detection noise in the hydroacoustic survey---with standard deviation $\sigma_{\text{obs},s}$.
+
+We estimate the state-space specification by Hamiltonian Monte Carlo in Stan. With $N=25$ annual observations per stock, joint identification of $(r^{0}_s, K_s, \rho^{SST}_s, \rho^{CHL}_s)$ requires the prior information embedded in the IFOP and SPRFMO single-species assessments; Online Appendix A documents the prior construction and shows that maximum likelihood fails without these priors. We compare three nested specifications: (i) independent stocks with no climate shifters, (ii) joint stocks via $\Omega$ with no shifters, and (iii) joint stocks with shifters (Eq. \eqref{eq:shifter}). We adopt (iii) as our primary specification; the nested predictive comparison is reported in Online Appendix B, and convergence diagnostics in Online Appendix D.
+
+For jack mackerel we additionally fit a specification in which the growth rate is forced by the basin-scale Niño 3.4 SST anomaly at lag 1 in place of the local SST/CHL shifters, motivated by biological evidence that the Centro-Sur stock is influenced by forcing scales broader than the local coastal upwelling regime [@Arcos2001-jq; @Pena-Torres2017-gn]. The posterior of that ENSO shifter is reported in Table \ref{tab:rho-posteriors} alongside the local shifters and discussed in Online Appendix E.4; anchoveta and sardine are not refit.
+
+
+### Total annual trips
+
+We model the annual number of fishing trips taken by vessel $v$ in year $y$ as a count process following @Kasperski2015-jm. We estimate separate effort models for the industrial and artisanal fleets to allow distinct elasticities to prices, allocated quota, weather, and biological closures. This specification explicitly accommodates technological heterogeneity across fleet segments, reflecting differences in vessel capacity, operating scale, and production technology.
+
+The trip equation is a negative binomial (NB) count model:
+
+\begin{equation}
+T_{vy} \sim \text{NB}(\lambda_{vy}, \theta), \qquad \lambda_{vy} = \exp\!\left(U_{vy}'\beta\right), \label{eq:nb_trips}
+\end{equation}
+
+where $T_{vy}$ denotes the total number of purse-seine trips recorded for vessel $v$ in year $y$ and $\theta$ is the dispersion parameter that accommodates the substantial overdispersion of $T_{vy}$ (variance-to-mean ratio of $22.4$ for artisanal and $4.9$ for industrial).
+
+The vector of explanatory variables $U_{vy}$ includes output prices by species, vessel-level allocated harvest, fixed vessel characteristics, and operating conditions:
+
+\begin{equation}
+U_{vy}=\big[p_{sy},\, H^{alloc}_{vy,s},\, Z_v,\, O_{vy}\big] \quad\text{for } s \in \{\text{anchoveta}, \text{sardine}, \text{jack mackerel}\}. \label{eq:U_trips}
+\end{equation}
+
+Output prices $p_{sy}$ are species-specific ex-vessel prices constructed from IFOP's \emph{Monitoreo Económico de la Industria Pesquera y Acuícola Nacional} by aggregating the monthly plant-level series to annual averages over peak fishing months, following @dresdner2013, and deflating to constant 2018 pesos using the consumer price index from the Central Bank of Chile. Prices are mapped to each vessel through its modal departure region.
+
+Quota shares do not enter Eq. \eqref{eq:nb_trips} directly. Instead, shares translate annual TACs into vessel-level allocated harvests. Let $\omega_{vs}^r$ denote vessel $v$'s historical share of landings of species $s$ within its administrative region $r$ (for artisanal vessels) or regulatory zone (for industrial vessels), computed over the full sample period. Given the effective TAC $\bar{Q}_{sy}^r$ for species $s$ in year $y$ and region $r$---obtained from SERNAPESCA quota monitoring records and reflecting all inter-fleet transfers and adjustments---vessel-level allocated harvest is:
+
+\begin{equation}
+H^{alloc}_{vy,s}=\omega_{vs}^r\,\bar{Q}_{sy}^r. \label{eq:Halloc}
+\end{equation}
+
+Each vessel is assigned to its administrative region based on its modal departure port in the logbook records. Artisanal TACs are assigned at the regional level (Valparaíso, Biobío, Araucanía, Los Ríos, Los Lagos), while industrial TACs follow the regulatory zone structure established by SUBPESCA (the Valparaíso--Araucanía and Los Ríos--Los Lagos zones for jack mackerel; the Valparaíso--Los Lagos zone for sardine and anchoveta). This regional construction introduces cross-sectional variation in $H^{alloc}_{vy,s}$ that reflects the heterogeneous quota environments faced by vessels operating in different parts of the Centro-Sur fishery.
+
+The vector $Z_v$ contains time-invariant vessel characteristics, including hold capacity (log of cubic meters) and vessel type. Hold capacity determines the physical constraint on catch per trip and proxies for vessel scale.
+
+For the artisanal fleet, the response to allocated anchoveta ($H^{alloc}_{vy,\text{anchoveta}}$) varies sharply by vessel type: small-vessel categories (BM = \emph{bote motor}, $8\%$ of the panel) exhibit a strong positive elasticity---when their anchoveta allocation rises, they fish more trips---while large-vessel categories (LM = \emph{lancha motor}, $77\%$) show near-zero response. Without a vessel-type interaction, this within-class heterogeneity collapses to a misleading aggregate; we therefore include $H^{alloc}_{vy,\text{anchoveta}} \times \text{Vessel type}$ in the artisanal specification, following @Kasperski2015-jm. The interaction is estimated only for \emph{Vessel type} categories with at least $50$ vessel-year observations; the remaining categories (collectively $<0.1\%$ of artisanal effort) carry an aggregated coefficient. Sardine and jack mackerel quotas do not display this within-fleet heterogeneity.
+
+The vector $O_{vy}$ captures operating and regulatory constraints that vary across both vessels and years. Unlike the environmental variables in the stock dynamics model, which reflect biological productivity (SST, chlorophyll-a), the variables in the trip equation capture conditions that affect the *feasibility* of fishing operations. Two vessel--year variables are constructed using each vessel's center of gravity (COG)---the catch-weighted centroid of its haul locations over the sample period. First, the number of bad-weather days is computed as the count of days per year in which the maximum daily wind speed exceeds 8 m/s at the environmental grid point ($0.125° \approx 14$~km resolution) nearest to the vessel's COG.\footnote{The wind threshold of 8 m/s corresponds approximately to Beaufort scale 5, at which purse-seine operations become difficult for artisanal vessels. We selected this threshold via AIC comparison across 8, 10, and 12 m/s cut-offs on the trip-equation fit.} Second, the number of days closed for biological closures (\textit{vedas}) is assigned based on the regulatory zone corresponding to the vessel's COG latitude. In the Centro-Sur region, sardine and anchoveta face seasonal closures for reproduction (August--October in Valparaíso--Biobío; July--October in Araucanía--Los Lagos) and recruitment (January--February in all regions), yielding 151 and 182 closed days per year, respectively. Jack mackerel has no biological closures.
+
+Trips, harvest, and prices may be jointly determined within the year, implying potential endogeneity in reduced-form trip regressions. The purpose of Eq. \eqref{eq:nb_trips}, however, is not causal identification but rather to provide an empirically grounded behavioral relationship that maps changes in prices, quotas, and environmental conditions into expected fishing effort under projected climate scenarios.
+
+## Projection approach {#projection-approach}
+
+We assess the impact of climate change on the Chilean small pelagic fishery through two channels: (i) a *direct weather channel*, in which projected changes in wind speed alter the number of bad-weather days that constrain fishing operations and thus enter the negative binomial trip equation; and (ii) an *indirect biomass channel*, in which projected changes in SST and CHL modify each stock's intrinsic productivity $r_{s,t}$ through the climate shifter $(\rho_s^{SST}, \rho_s^{CHL})$ of Eq. \eqref{eq:shifter} and, in turn, the law of motion in Eq. \eqref{eq:law-of-motion}.
+
+Climate projections are derived from the six-model CMIP6 ensemble described in Section \emph{\nameref{future-climate-data}}, under SSP$2$-$4.5$ and SSP$5$-$8.5$. We apply the change-factor method [@Wilby2004; @Tabor2010] independently to each model, preserving observed interannual variability and fine-scale spatial structure from satellite records while imposing the CMIP6 climate-change signal. For each model and variable, the delta is computed between the future climatology and a historical baseline matched to the 2000--2024 estimation window. Because CMIP6 'historical' simulations terminate in 2014, we extend the baseline through 2024 using SSP2-4.5 (near-term scenarios diverge negligibly).\footnote{One model--variable combination is spliced from SSP5-8.5 instead because the SSP2-4.5 file is missing from the model's archive.} We consider mid-century ($2041$--$2060$) and end-of-century ($2081$--$2100$) windows. The projections propagate two sources of uncertainty: (i) estimation uncertainty in the empirical parameters---the Bayesian posterior of the climate shifters ($\rho_s^{SST}$, $\rho_s^{CHL}$) and the maximum-likelihood standard errors of the trip-equation coefficients ($\beta$'s)---and (ii) climate uncertainty from the six CMIP6 models (each gives a different projected delta). The decomposition of total variance into these two components is reported in Online Appendix F (stock productivity) and Appendix G (fleet-level trips).
+
+For the direct weather channel, monthly wind speed deltas from CMIP6 are applied additively to the daily wind speed observations at each vessel's centre-of-gravity (COG); the number of bad-weather days per year is then recomputed at the projected mean using the same $8$ m/s operability threshold as in the historical panel. Because the historical daily wind distribution at vessel COGs sits sufficiently close to the threshold, a small upward shift in the mean displaces a non-negligible mass of the upper tail past it, generating substantially more days exceeding the threshold despite the small absolute change in the mean.
+
+For the indirect biomass channel, the CMIP6 SST delta (in °C) and log-CHL delta (in log-points) are added to the historical anomaly series. These enter Eq. \eqref{eq:shifter} and shift each stock's intrinsic growth rate to $r_s^{\star} = r_s^{0} \cdot \exp(\rho_s^{SST}\, \Delta SST + \rho_s^{CHL}\, \Delta \log CHL)$. The new $r_s^{\star}$ translates into a new Schaefer steady-state biomass $B_s^{\star} = K_s (1 - F_s / r_s^{\star})$---collapsing to zero if $F_s \geq r_s^{\star}$. Under proportional-TAC management, each species' relative biomass shift $B_s^{\star}/B_s^{0}$ scales the corresponding vessel-level allocated harvest $H^{alloc}_{vy,s}$. The trip equation aggregates the three species-specific shifts through the Kasperski-aligned semi-elasticities $\beta_h^s$, so each vessel's projected effort response reflects all three biomass shifts simultaneously, weighted by its historical exposure to each species. We compute the headline quantity $\Delta r_s^{\star}/r_s^{0}$---the climate-driven shift in long-run productivity---for every combination of CMIP6 model and posterior draw of $(\rho_s^{SST}, \rho_s^{CHL})$.
+
+Our framework is positioned as long-run comparative statics, not a year-by-year forecast. Because the empirical models are estimated on interannual variability rather than decadal trends, the projections capture short-run behavioural responses to environmental and weather shocks but cannot identify long-run adaptation by fishers or managers [@Aufhammer2018]. Prices, quotas, and adaptive behaviour are held fixed at historical levels. The framework therefore provides a benchmark for the direction and magnitude of climate impacts under a fixed-institution baseline; relaxations that endogenize price adjustment, quota revision, or vessel-level adaptation are flagged as natural extensions of this work.
+
+# Results
+
+```{r results-identification, child='paper1/sections/results_identification.Rmd'}
+```
+
+## Total annual trips {#sec:tripresults}
+
+```{r poisson_dt, message=FALSE, warning=FALSE, include=FALSE}
+
+# ---- Load pre-built dataset from poisson_model.R ----
+poisson_df <- readRDS("data/trips/poisson_dt.rds")
+
+df_ind <- poisson_df %>% filter(TIPO_FLOTA == "IND")
+df_art <- poisson_df %>% filter(TIPO_FLOTA == "ART")
+
+```
+
+```{r est_poisson, message=FALSE, warning=FALSE, include=FALSE}
+
+# ---- Negative Binomial estimation: Kasperski-aligned PRIMARY (2026-05-11)
+# IND: 3 species-specific H_alloc + 3 species-specific prices + year FE.
+# ART: same plus interaction H_alloc_anchoveta x TIPO_EMB (Simpson-paradox
+# motivated; see Sec 4.4 within-ART decomposition table).
+# Year FE absorbs aggregate shocks (estallido social 2019, COVID 2020--2022).
+
+nb_ind <- MASS::glm.nb(
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta + H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_ind
+)
+
+nb_art <- MASS::glm.nb(
+  T_vy ~ log_bodega +
+    H_alloc_anchoveta * TIPO_EMB +
+    H_alloc_sardina_comun + H_alloc_jurel +
+    price_anchov + price_sardina + price_jurel +
+    days_bad_weather + days_closed_vy +
+    factor(year),
+  data = df_art
+)
+
+# ---- Sensitivity: legacy spec (scalar H_alloc_vy) ----
+nb_ind_noFE <- MASS::glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_ind
+)
+
+nb_art_noFE <- MASS::glm.nb(
+  T_vy ~ log_bodega + H_alloc_vy +
+    price_jurel + price_sardina + price_anchov +
+    days_bad_weather + days_closed_vy +
+    TIPO_EMB + factor(year),
+  data = df_art
+)
+
+# ---- Robust SEs clustered by vessel ----
+se_ind <- sqrt(diag(vcovCL(nb_ind, cluster = df_ind$COD_BARCO)))
+se_art <- sqrt(diag(vcovCL(nb_art, cluster = df_art$COD_BARCO)))
+se_ind_noFE <- sqrt(diag(vcovCL(nb_ind_noFE, cluster = df_ind$COD_BARCO)))
+se_art_noFE <- sqrt(diag(vcovCL(nb_art_noFE, cluster = df_art$COD_BARCO)))
+
+# ---- LR test NB vs Poisson (primary, with year FE) ----
+pois_ind <- glm(formula(nb_ind), family = poisson, data = df_ind)
+pois_art <- glm(formula(nb_art), family = poisson, data = df_art)
+
+lr_snd <- as.numeric(2 * (logLik(nb_ind) - logLik(pois_ind)))
+lr_art <- as.numeric(2 * (logLik(nb_art) - logLik(pois_art)))
+
+# ---- Pseudo-R^2 metrics (NB models) ----
+# Three standard pseudo-R^2 are reported in the literature for count models.
+# We report Cragg-Uhler (a.k.a. Nagelkerke) because it is bounded on [0,1]
+# and has the most OLS-like interpretation; McFadden is also computed for
+# robustness but not displayed.
+nb_ind_null <- MASS::glm.nb(T_vy ~ 1, data = df_ind)
+nb_art_null <- MASS::glm.nb(T_vy ~ 1, data = df_art)
+
+n_ind <- nobs(nb_ind)
+n_art <- nobs(nb_art)
+ll_full_ind <- as.numeric(logLik(nb_ind))
+ll_null_ind <- as.numeric(logLik(nb_ind_null))
+ll_full_art <- as.numeric(logLik(nb_art))
+ll_null_art <- as.numeric(logLik(nb_art_null))
+
+# McFadden (kept for diagnostic logging)
+mcfadden_ind <- 1 - ll_full_ind / ll_null_ind
+mcfadden_art <- 1 - ll_full_art / ll_null_art
+
+# Cragg-Uhler / Nagelkerke pseudo-R^2:
+#   R2_CU = [1 - (L0/L1)^(2/N)] / [1 - L0^(2/N)]
+cu_ind <- (1 - exp(-2 * (ll_full_ind - ll_null_ind) / n_ind)) /
+          (1 - exp( 2 * ll_null_ind / n_ind))
+cu_art <- (1 - exp(-2 * (ll_full_art - ll_null_art) / n_art)) /
+          (1 - exp( 2 * ll_null_art / n_art))
+
+# Deviance pseudo-R^2 (kept for diagnostic logging)
+dev_r2_ind <- 1 - nb_ind$deviance / nb_ind$null.deviance
+dev_r2_art <- 1 - nb_art$deviance / nb_art$null.deviance
+
+message(sprintf(
+  "Pseudo-R^2 IND: McFadden=%.3f, Cragg-Uhler=%.3f, Deviance=%.3f",
+  mcfadden_ind, cu_ind, dev_r2_ind))
+message(sprintf(
+  "Pseudo-R^2 ART: McFadden=%.3f, Cragg-Uhler=%.3f, Deviance=%.3f",
+  mcfadden_art, cu_art, dev_r2_art))
+
+# ---- Sensitivity comparison: betas with/without year FE ----
+sens_ind <- data.frame(
+  variable = c("H_alloc_vy", "days_bad_weather", "days_closed_vy",
+               "price_jurel", "price_sardina", "price_anchov",
+               "log_bodega"),
+  with_FE   = sapply(c("H_alloc_vy","days_bad_weather","days_closed_vy",
+                       "price_jurel","price_sardina","price_anchov",
+                       "log_bodega"),
+                     function(v) coef(nb_ind)[v]),
+  no_FE     = sapply(c("H_alloc_vy","days_bad_weather","days_closed_vy",
+                       "price_jurel","price_sardina","price_anchov",
+                       "log_bodega"),
+                     function(v) coef(nb_ind_noFE)[v])
+)
+sens_art <- data.frame(
+  variable = c("H_alloc_vy", "days_bad_weather", "days_closed_vy",
+               "price_jurel", "price_sardina", "price_anchov",
+               "log_bodega"),
+  with_FE   = sapply(c("H_alloc_vy","days_bad_weather","days_closed_vy",
+                       "price_jurel","price_sardina","price_anchov",
+                       "log_bodega"),
+                     function(v) coef(nb_art)[v]),
+  no_FE     = sapply(c("H_alloc_vy","days_bad_weather","days_closed_vy",
+                       "price_jurel","price_sardina","price_anchov",
+                       "log_bodega"),
+                     function(v) coef(nb_art_noFE)[v])
+)
+
+```
+
+Table \ref{tab:poisson_results} reports the negative binomial estimates separately for each fleet segment. The specification includes year fixed effects, which absorb aggregate shocks affecting both fleets contemporaneously---most notably the 2019 social outbreak (\emph{estallido social}) and the 2020--2022 COVID-19 period---and identify the structural coefficients $\beta_H$ (allocated harvest) and $\beta_{\text{weather}}$ (bad-weather days) from within-year cross-vessel variation. Without year fixed effects, $\hat{\beta}_{\text{weather}}^{\text{ART}}$ is approximately twice as large in magnitude, reflecting the contemporaneous correlation between high-wind years and the social/pandemic shocks. The year-FE specification is therefore the basis for the climate projections in Section \emph{\nameref{projections}}; the relative trip projection $T^{\text{FUT}}_v / T^{\text{HIST}}_v$ does not depend on the year-FE values themselves, which cancel in the ratio.
+
+```{r tabla_poisson, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Truco para usar stargazer con MASS::glm.nb (que tira "Unrecognized object
+# type"): construimos un GLM Poisson con la misma formula y reemplazamos sus
+# coeficientes por los del NB. stargazer lo reconoce como GLM; los SE
+# clusterizados se pasan externamente con `se = list(...)` y las stats
+# relevantes (N, LR test) se emiten por separado en las notas.
+nb_ind_s <- pois_ind
+nb_art_s <- pois_art
+nb_ind_s$coefficients <- coef(nb_ind)
+nb_art_s$coefficients <- coef(nb_art)
+
+tex_nb <- capture.output(
+  stargazer(
+    nb_ind_s, nb_art_s,
+    type = "latex",
+    header = FALSE,
+    float = TRUE,
+    title = paste0("Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = ",
+                    nobs(nb_ind), ", $N_{ART}$ = ", nobs(nb_art), ")"),
+    label = "tab:poisson_results",
+    column.labels = c("Industrial", "Artisanal"),
+    column.separate = c(1, 1),
+    dep.var.labels.include = FALSE,
+    covariate.labels = c(
+      "Hold capacity (log m$^3$)",
+      "Allocated harvest anchoveta ($H^{alloc}_{vy,anch}$, tons)",
+      "Allocated harvest sardine ($H^{alloc}_{vy,sard}$, tons)",
+      "Allocated harvest jack mackerel ($H^{alloc}_{vy,jur}$, tons)",
+      "Price anchoveta (1000s \\$/ton)",
+      "Price sardine (1000s \\$/ton)",
+      "Price jack mackerel (1000s \\$/ton)",
+      "Bad weather days",
+      "Veda days",
+      "Vessel type (UNK)",
+      "Vessel type (BR)",
+      "Vessel type (BRV)",
+      "Vessel type (L)",
+      "Vessel type (LM)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (BR)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (BRV)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (L)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (LM)",
+      "$H^{alloc}_{vy,anch} \\times$ TIPO\\_EMB (UNK)",
+      "Constant"
+    ),
+    omit = "factor\\(year\\)",
+    order = c("^log_bodega$",
+              "^H_alloc_anchoveta$",
+              "^H_alloc_sardina_comun$",
+              "^H_alloc_jurel$",
+              "^price_anchov$",
+              "^price_sardina$",
+              "^price_jurel$",
+              "^days_bad_weather$",
+              "^days_closed_vy$",
+              "^TIPO_EMBUNK$",
+              "^TIPO_EMBBR$",
+              "^TIPO_EMBBRV$",
+              "^TIPO_EMBL$",
+              "^TIPO_EMBLM$",
+              "^H_alloc_anchoveta:TIPO_EMBBR$",
+              "^H_alloc_anchoveta:TIPO_EMBBRV$",
+              "^H_alloc_anchoveta:TIPO_EMBL$",
+              "^H_alloc_anchoveta:TIPO_EMBLM$",
+              "^H_alloc_anchoveta:TIPO_EMBUNK$",
+              "^\\(Intercept\\)$"),
+    add.lines = list(
+      c("Year fixed effects", "Yes", "Yes"),
+      c("Pseudo-$R^2$ (Cragg-Uhler)",
+        sprintf("%.3f", cu_ind),
+        sprintf("%.3f", cu_art))
+    ),
+    se = list(se_ind, se_art),
+    digits = 3,
+    single.row = TRUE,
+    omit.stat = c("ll", "aic", "bic", "res.dev", "null.dev"),
+    no.space = TRUE,
+    font.size = "footnotesize",
+    notes = c(
+      "$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01.",
+      "Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton, merged at $(year, vessel,region)$ resolution with fallback to year-level national mean when the regional cell is missing.",
+      "Allocated harvest is species-specific: $H^{alloc}_{vy,s} = \\omega^{hist}_{vs} \\bar{Q}_{sy}^{r(v)}$ following Kasperski (2015) Eq. 17. The artisanal regression interacts $H^{alloc}_{vy,anchoveta}$ with TIPO\\_EMB; TIPO\\_EMB categories with $N<50$ vessel-years (BR, BRV, L) are retained in the fit for completeness but excluded from the aggregate factor\\_trips projections.",
+      "Year fixed effects absorb aggregate shocks (estallido social 2019, COVID 2020--2022).",
+      paste0("LR test NB vs Poisson: Industrial $\\chi^2$ = ",
+             round(lr_snd, 1), "; Artisanal $\\chi^2$ = ",
+             round(lr_art, 1), " (both $p < 0.001$).")
+    ),
+    notes.append = FALSE,
+    notes.align = "l"
+  )
+)
+cat(fix_stargazer_notes(tex_nb), sep = "\n")
+
+```
+
+The coefficients on species-specific allocated harvest reveal cross-fleet heterogeneity that the legacy scalar specification could not capture. The industrial fleet shows a positive and significant response of trips to allocated anchoveta and sardine quotas (quota-binding behaviour), while the response to jack mackerel quota is indistinguishable from zero. The artisanal fleet's response to anchoveta allocation is scale-dependent and only becomes visible in the Kasperski-aligned interaction $H^{\text{alloc}}_{\text{anch}} \times \text{Vessel type}$: smaller vessel categories (BM = bote motor, $8\%$ of the panel) exhibit a strong positive coefficient on anchoveta allocation while larger categories do not, so the scalar specification averages the two effects and reports a near-zero aggregate. The species-specific quota-share mechanism translates regional TACs into vessel-level effort adjustments under the projections of Section \emph{\nameref{projections}}.
+
+The two fleets differ markedly in price responsiveness. For the industrial fleet, the jack mackerel price is positive and significant ($p < 0.01$), consistent with this fleet's primary orientation toward jack mackerel. Sardine and anchoveta prices have no detectable effect on industrial effort, reflecting the limited participation of industrial vessels in the sardine--anchoveta fishery. For the artisanal fleet, the sardine price is positive and significant ($p < 0.01$), consistent with sardine being the dominant target species for artisanal vessels in the Centro-Sur region. The anchoveta-price coefficient is negative and significant; this counterintuitive sign likely reflects simultaneity, as years of low anchoveta availability generate both higher prices (through the inverse-demand channel) and fewer trips (through reduced catch opportunities). The negative reduced-form correlation does not threaten the projection exercise: the trip equation enters Section \emph{\nameref{projection-approach}} only as the empirical mapping from harvest allocations and environmental conditions to fleet-level trips, not as a causal demand curve.
+
+Hold capacity is not significant for the industrial fleet, where vessels are relatively homogeneous in scale, but it is positive and significant for the artisanal fleet. Among artisanal vessels, larger hold capacity is associated with more annual trips, consistent with larger vessels being more commercially active and better able to sustain operations across varying conditions.
+
+The environmental and regulatory variables show distinct patterns. Adverse weather days carry a negative coefficient for the artisanal fleet (vessels in grids with more days of wind above $8$ m/s undertake fewer trips, controlling for year-specific aggregate conditions) and is statistically indistinguishable from zero for the industrial fleet, consistent with size-dependent weather tolerance. Biological closure days are strongly negative for the industrial fleet. The artisanal coefficient is positive but admits no causal reading under year fixed effects: the underlying closure variable is constant within each artisanal management zone, so the regression identifies only off the cross-zone differential and conflates locational heterogeneity in artisanal effort intensity with the causal effect of closures. A within-zone closure variable that exploits the realised closure days reported in the SUBPESCA Indicadores Biológicos portal from $2019$ onwards is left for follow-up work.
+
+Vessel-type dummies capture residual heterogeneity in fleet composition. Among artisanal vessels, larger vessel categories (L, BRV) are associated with substantially fewer trips relative to the baseline, reflecting differences in trip duration and operational patterns across vessel classes.
+
+## Climate change projections {#projections}
+
+The projection methodology is summarized in Section \emph{\nameref{projection-approach}}. Under each scenario and time window, we translate CMIP6-derived environmental deltas into (i) changes in bad-weather days that enter the trip equation (direct channel) and (ii) posterior draws of the stock-specific effective growth rate $r_{s,t}^{\star}$, obtained by evaluating the identified climate shifter of Eq. \eqref{eq:shifter} at the projected SST and log-CHL anomalies (indirect channel).
+
+### Projected environmental changes
+
+Table \ref{tab:env_projections} summarises the projected environmental changes as cross-model medians with inter-model IQR. SST warms by $+0.7$ to $+2.4\,^{\circ}$C across scenarios. The chlorophyll-a signal is small in magnitude relative to cross-model spread, reflecting documented CMIP6 disagreement on primary-productivity responses. Wind speed increases modestly ($+0.1$ to $+0.4$ m/s cross-model median), but translates into $+10$ to $+23.5$ additional bad-weather days per year because the historical daily wind distribution at vessel COGs sits sufficiently close to the 8 m/s operability threshold that a small upward shift in the mean displaces a non-negligible mass of the upper tail past it.
+
+```{r envprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+deltas_ens <- readr::read_csv("data/cmip6/deltas_ensemble.csv",
+                              show_col_types = FALSE)
+
+env_stats <- deltas_ens %>%
+  dplyr::filter(var %in% c("sst", "logchl", "wind_speed")) %>%
+  dplyr::mutate(
+    # Para CHL convertir log-anomaly a porcentaje: %ΔCHL = (exp(Δlog) - 1) * 100
+    delta_disp = ifelse(var == "logchl", (exp(delta) - 1) * 100, delta)
+  ) %>%
+  dplyr::group_by(var, scenario, window) %>%
+  dplyr::summarise(
+    med = median(delta_disp),
+    q25 = quantile(delta_disp, 0.25),
+    q75 = quantile(delta_disp, 0.75),
+    .groups = "drop"
+  )
+
+fmt_cell <- function(med, q25, q75, digits = 2) {
+  sprintf("$%+0.*f$ \\,[$%+0.*f$, $%+0.*f$]",
+          digits, med, digits, q25, digits, q75)
+}
+
+env_stats <- env_stats %>%
+  dplyr::mutate(
+    cell = dplyr::case_when(
+      var == "logchl"     ~ fmt_cell(med, q25, q75, digits = 1),
+      TRUE                ~ fmt_cell(med, q25, q75, digits = 2)
+    )
+  )
+
+env_wide <- env_stats %>%
+  dplyr::select(var, scenario, window, cell) %>%
+  tidyr::pivot_wider(names_from = var, values_from = cell) %>%
+  dplyr::mutate(
+    SSP    = ifelse(scenario == "ssp245", "SSP2-4.5", "SSP5-8.5"),
+    Window = ifelse(window   == "mid",    "2041--2060", "2081--2100")
+  ) %>%
+  dplyr::arrange(scenario, window) %>%
+  dplyr::transmute(
+    SSP, Window,
+    `$\\Delta$ SST ($^{\\circ}$C)`         = sst,
+    `$\\Delta$ CHL (\\%)`                  = logchl,
+    `$\\Delta$ wind speed (m/s)`           = wind_speed
+  )
+
+knitr::kable(env_wide, format = "latex", booktabs = TRUE, escape = FALSE,
+             caption = paste("Projected environmental changes for Centro-Sur",
+                             "Chile (CMIP6 six-model ensemble, change-factor method;",
+                             "cross-model median with inter-model IQR in",
+                             "brackets). \\label{tab:env_projections}")) %>%
+  kableExtra::kable_styling(latex_options = c("hold_position"),
+                            font_size = 9)
+
+```
+
+### Comparative statics on intrinsic stock productivity
+
+Table \ref{tab:growth_compstat} reports the comparative-statics object $\Delta r_s^{\star} / r_s^{0}$, obtained by evaluating the identified climate shifter at the CMIP6 ensemble deltas and integrating over the posterior of $(\rho_s^{SST}, \rho_s^{CHL})$. We report two distinct uncertainty axes separately: the cross-model median and IQR of the model-level posterior medians (climate uncertainty), and the median across models of the within-model 90\% posterior credible interval (structural uncertainty); a separate variance decomposition appears in Online Appendix F. Jack mackerel is reported as non-identified (``n.i.'') consistent with the identification result in Section \emph{\nameref{identification}}.
+
+```{r growthcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+gcs <- read.csv("paper1/tables/growth_comparative_statics.csv",
+                stringsAsFactors = FALSE, check.names = FALSE,
+                colClasses = "character")
+
+# Orden custom de stocks: anchoveta, sardine, jack mackerel.
+gcs <- gcs[order(factor(gcs$Stock,
+                        levels = c("Anchoveta CS",
+                                   "Sardine CS",
+                                   "Jack mackerel CS"))), ]
+
+# El CSV viene con "%" crudo en las celdas. Para que no las interprete LaTeX
+# como comentarios, las escapamos como "\\%".
+pct_escape <- function(x) gsub("%", "\\\\%", x, fixed = FALSE)
+
+gcs_tbl <- gcs %>%
+  dplyr::transmute(
+    Stock                                            = Stock,
+    Scenario                                         = Scenario,
+    `$n_m$`                                          = n_models,
+    `$\\Delta SST$ ($^{\\circ}$C)`                   = `DSST (C)`,
+    `$\\Delta \\log\\text{CHL}$`                     = `DlogCHL`,
+    `$\\Delta r_s^{\\star}/r_s^{0}$ (cross median)`  = pct_escape(`%Delta cross median`),
+    `Cross-model IQR`                                = pct_escape(`%Delta cross IQR`),
+    `Within posterior 90\\% CI`                      = pct_escape(`%Delta within posterior CI`),
+    `$\\Pr(\\Delta<0)$`                              = `Pr(Delta<0) cross median`
+  )
+
+kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      align = "llccccccr",
+      caption = "Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. \\label{tab:growth_compstat}") %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"),
+                font_size = 8) %>%
+  footnote(general = paste(
+      "Entries summarise the posterior of the proportional change in intrinsic productivity,",
+      "Delta r / r0 = exp(rho_SST * Delta SST + rho_CHL * Delta log CHL) - 1,",
+      "evaluated at scenario-window-specific CMIP6 anomalies for each of n_m models in the ensemble",
+      "and integrated over the posterior of (rho_SST, rho_CHL) from the full state-space specification.",
+      "The cross-model IQR is the 25th-to-75th percentile range across CMIP6 models of the within-model posterior medians and captures inter-model climate uncertainty.",
+      "The within posterior 90% CI is the cross-model median of the within-model 5th-to-95th-percentile posterior interval and captures structural uncertainty about (rho_SST, rho_CHL) holding the climate forcing fixed.",
+      "Jack mackerel CS is reported as non-identified ('n.i.') because the posterior of its shifters coincides with the weakly informative prior; see the identification discussion in Results.",
+      "n_m = 5 instead of 6 in the SSP2-4.5 panels because CESM2 does not publish chl-ssp245 in the NCAR CMIP6 catalogue.",
+      "Under SSP5-8.5 end-of-century the implied SST anomaly lies approximately nine in-sample standard deviations outside the realised 2000-2024 envelope, so it is best read as a structural-form stress test under the maintained log-linear shifter.",
+      "Raw numerical values are archived in tables/growth_comparative_statics_raw.csv;",
+      "model-level disaggregation is in tables/growth_comparative_statics_by_model.csv.",
+      "Appendix F reports the variance decomposition between cross-model and within-model components."),
+      general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+
+```
+
+```{r growthridgeline, echo=FALSE, fig.align='center', fig.cap="Posterior distribution of the proportional change in intrinsic stock productivity under CMIP6 scenarios, six-model ensemble. Ridges are kernel-smoothed marginal posteriors of the proportional change in intrinsic productivity derived from draws of the state-space full specification, with one ridge per CMIP6 model in each scenario--window pair; vertical line at zero. CESM2 is absent from the SSP2-4.5 panels because chl-ssp245 is not published in the NCAR CMIP6 catalogue. Jack mackerel is omitted because its climate shifter is not identified in the 2000--2024 sample.", fig.pos='ht!', out.width='95%', message=FALSE, warning=FALSE}
+
+knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png", error = FALSE)
+
+```
+
+The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (cross-model median $+0.74\,^{\circ}$C; $\Delta\log\text{CHL}$ near zero in the cross-model median, with non-trivial inter-model spread), the cross-model median of anchoveta's intrinsic productivity declines by $51\%$ and sardine's by $79\%$, with posterior probability of negative impact equal to one in both cases.
+
+Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median $+2.39\,^{\circ}$C, $\Delta\log\text{CHL}$ cross-model median $-0.013$ with $5$th-percentile of $-0.30$ across models) the cross-model medians deepen to $-90\%$ and $-99.9\%$ respectively, and the entire $90\%$ credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is $0.99$ rather than $1$ because under a small fraction of (model, draw) pairs a sufficiently negative $\Delta\log\text{CHL}$ combined with $\rho^{CHL}_{\text{anch}}<0$ offsets the SST-driven collapse.
+
+The identified signs confirm the qualitative reading of the shifters in Section \emph{\nameref{identification}}: both coastal stocks respond negatively to SST, but sardine carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardine than for anchoveta.
+
+The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. The shifters $(\rho_s^{SST}, \rho_s^{CHL})$ enter the law of motion as coefficients on exogenous climate forcings, which makes them invariant to the joint distribution of $(SST, B, C)$ and therefore evaluable at climate regimes outside the estimation window---in particular, at an SST anomaly of $+2.3^{\circ}$C that lies roughly nine historical standard deviations beyond the 2000--2024 mean. A purely correlational specification would not license this extrapolation.
+
+### Implications for fleet-level effort
+
+Table \ref{tab:trip_compstat} translates the comparative-statics object on intrinsic stock productivity in Table \ref{tab:growth_compstat} into a comparative-statics object on fleet-level annual trips. Each posterior draw is propagated through the stock-dynamics steady-state equation under historical average fishing pressure and then through the negative binomial trip equation of Section \emph{\nameref{sec:tripresults}}. Vessel-level responses are then aggregated within fleet, with each vessel weighted by its 2012--2024 catch composition.
+
+```{r tripcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tcs <- read.csv("paper1/tables/trip_comparative_statics_raw.csv",
+                stringsAsFactors = FALSE, check.names = FALSE)
+
+# Helpers: formateo de porcentajes y bandas. Todos los "%" se escapan como
+# "\\%" porque el kable sale con escape = FALSE (para que los math symbols
+# del header pasen tal cual a LaTeX).
+fmt_pct <- function(x) sprintf("%+.1f\\%%", 100 * (x - 1))
+fmt_band_pct <- function(q25, q75) {
+  sprintf("[%+.1f\\%%,\\,%+.1f\\%%]",
+          100 * (q25 - 1), 100 * (q75 - 1))
+}
+fmt_pr_band <- function(q25, q75) {
+  sprintf("[%.2f,\\,%.2f]", q25, q75)
+}
+
+tcs_tbl <- tcs %>%
+  dplyr::mutate(
+    Fleet    = ifelse(TIPO_FLOTA == "ART", "Artisanal", "Industrial"),
+    Scenario = scenario_label,
+    # Pr(loss): cross-model median + cross-IQR
+    pr_loss_col = paste0(sprintf("%.2f", pr_portfolio_loss_cross_med),
+                         "\\,",
+                         fmt_pr_band(pr_portfolio_loss_cross_q25,
+                                     pr_portfolio_loss_cross_q75)),
+    # Marginal trips: cross-model median + cross-IQR
+    trips_marg_col = paste0(fmt_pct(factor_trips_marg_cross_med),
+                            "\\,",
+                            fmt_band_pct(factor_trips_marg_cross_q25,
+                                         factor_trips_marg_cross_q75)),
+    # Conditional trips: cross-model median of within-model medians + cross-IQR
+    trips_cond_col = ifelse(
+      is.na(factor_trips_cond_cross_med),
+      "collapse-dom.",
+      paste0(fmt_pct(factor_trips_cond_cross_med),
+             "\\,",
+             fmt_band_pct(factor_trips_cond_cross_q25,
+                          factor_trips_cond_cross_q75))
+    )
+  ) %>%
+  dplyr::arrange(Fleet, Scenario) %>%
+  dplyr::transmute(
+    Fleet,
+    Scenario,
+    `$\\Pr(f^H_v < 0.5)$`                  = pr_loss_col,
+    `$\\%\\Delta$ trips (marginal)`        = trips_marg_col,
+    `$\\%\\Delta$ trips (conditional)`     = trips_cond_col
+  )
+
+kable(tcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      linesep = "",
+      align = "llcll",
+      caption = "Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. Entries are cross-model medians with cross-model IQRs in brackets, aggregated within each CMIP6 model over posterior draws and vessels within fleet. \\label{tab:trip_compstat}") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
+  footnote(general = paste(
+    "Entries summarise the posterior of the proportional change in fleet-level annual trips,",
+    "computed for each of the six CMIP6 models in the ensemble and then aggregated across models.",
+    "Within each model, the posterior is integrated over draws of the full state-space specification and vessels within fleet (composition-weighted exposure).",
+    "Cross-model medians and 25th-to-75th-percentile inter-quartile ranges across the n_m models are reported in brackets;",
+    "the median across models of the within-model 5th-to-95th-percentile posterior interval (within posterior CI) is archived in tables/trip_comparative_statics_raw.csv.",
+    "f_H is the composition-weighted biomass factor relative to the historical baseline:",
+    "f_H = sum over species of omega_vs * B_star_s / B_hist_s,",
+    "where B_star_s = K_s * (1 - F_hist_s / r_eff_s) is the Schaefer steady-state biomass",
+    "and omega_vs is the vessel's realized catch share in species s.",
+    "Pr(f_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half.",
+    "The marginal median integrates over all posterior draws within each model;",
+    "the conditional median restricts to draws with f_H >= 0.5, isolating the pure climate-elasticity component",
+    "from the steady-state collapse component of the trip response.",
+    "Jack mackerel is treated as non-identified (factor_B = 1) consistent with the identification discussion in the Results section.",
+    "Raw numerical values, by-model disaggregation, and by-stock extinction probabilities are archived in tables/trip_comparative_statics_raw.csv, tables/trip_comparative_statics_by_model.csv, and tables/trip_comparative_statics_extinct.csv.",
+    "The narrow cross-IQR observed in many cells reflects a floor effect: once Schaefer steady-state collapse saturates the portfolio-weighted biomass factor across models, the trip response converges to exp(-beta * H_alloc * 1), independent of climate magnitude. Appendix G reports the formal two-way variance decomposition of the fleet-level trip response, which confirms that the within-model component (posterior plus vessel heterogeneity) dominates the total variance under saturated regimes; Appendix F reports the analogous decomposition for the underlying productivity response."
+  ),
+  general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+
+```
+
+The posterior probability of portfolio loss---defined as a reduction of more than fifty percent in the composition-weighted biomass factor $f^H_v$ relative to the 2000--2024 historical baseline---exceeds 0.95 for the artisanal fleet under every CMIP6 scenario considered and reaches 0.99 under SSP5-8.5 end-of-century. For the industrial fleet, the loss probability is a stable 0.12 across all four scenarios, driven entirely by its five-percent exposure to sardine; the remaining 95% of its historical portfolio is allocated to jack mackerel, whose climate shifter is treated as non-identified in Section \emph{\nameref{identification}}. The asymmetry in loss probability between the two fleets is first-order and stable across climate pathways, approximately eight-fold across all four scenarios.
+
+Decomposing the fleet-level trip response isolates the channels through which this asymmetry operates. The \emph{marginal} posterior median of $\%\Delta$ trips ranges from $-13.2\%$ (SSP2-4.5 mid) to $-15.0\%$ (SSP5-8.5 end) for the artisanal fleet and from $-0.8\%$ to $-1.0\%$ for the industrial fleet---a ratio of roughly fifteen to one at end-of-century. The \emph{conditional} posterior median, restricted to draws with $f^H_v \geq 0.5$, isolates the climate-elasticity component from the portfolio-collapse component and yields $-3.8\%$ to $-4.6\%$ for artisanal and $-0.7\%$ to $-1.0\%$ for industrial, a conditional ratio of roughly four to one.
+
+Two channels generate this asymmetry. The \emph{indirect biomass channel} transmits the climate signal asymmetrically through portfolio composition: the artisanal fleet is concentrated in the two coastal-upwelling stocks with identified climate shifters, while $95\%$ of the industrial fleet's portfolio sits in jack mackerel, whose Centro-Sur shifter is non-identified and held at the climatological mean.
+
+The \emph{direct weather channel} transmits the signal through differential weather sensitivity: $\hat{\beta}_{\text{weather}}^{\text{ART}} = -0.0007$ (marginally significant) vs $\hat{\beta}_{\text{weather}}^{\text{IND}} = -0.0003$ (indistinguishable from zero), translating the projected $+10$ to $+23.5$ days of additional bad weather into a $-0.7\%$ to $-1.9\%$ contribution to the artisanal response and near-zero for industrial. The limited cross-sector transferability of the prevailing sector-level allocation locks this dual exposure into differential losses of harvest capacity, consistent with the portfolio mechanism documented by @Kasperski2013-jz and the access constraints of @Oken2021-of.
+
+The between-fleet asymmetry decomposes further into within-artisanal heterogeneity by vessel type (Table \ref{tab:tripcompstatemb}). The dominant \emph{lancha motor} (LM) segment ($77\%$ of the panel) contracts by $-19.9\%$ under SSP5-8.5 end-of-century, driven by its identified positive sardine elasticity and the projected $-99.9\%$ steady-state collapse of the sardine stock. The smaller \emph{bote motor} (BM) segment ($8\%$) contracts by only $-3.2\%$ at the marginal median, because its identified positive anchoveta elasticity ($\hat{\beta}_h^{\,\mathrm{anch,BM}} = +0.016$, $p < 0.001$) partially offsets the sardine contraction in the high-mass posterior region. The intermediate UNK segment ($14\%$) contracts by $-7.6\%$. Portfolio-loss probability exceeds $0.98$ in all three categories, so the differential within artisanal is concentrated in the magnitude rather than the incidence of portfolio collapse.
+
+```{r tripcompstatemb, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+tcs_emb_raw <- read.csv("paper1/tables/trip_comparative_statics_by_tipo_emb_raw.csv",
+                        stringsAsFactors = FALSE, check.names = FALSE)
+
+# Filter to SSP5-8.5 end-of-century; reorder by panel share LM > UNK > BM
+tcs_emb_raw <- subset(tcs_emb_raw,
+                      scenario == "ssp585" & window == "end" &
+                      TIPO_EMB %in% c("BM", "LM", "UNK"))
+tcs_emb_raw <- tcs_emb_raw[match(c("LM", "UNK", "BM"), tcs_emb_raw$TIPO_EMB), ]
+
+emb_label <- c(BM = "Bote motor (BM)", LM = "Lancha motor (LM)", UNK = "Unidentified (UNK)")
+
+# Build cells with properly-escaped \\% so LaTeX does not treat % as comment.
+fmt_pct  <- function(x) sprintf("%+.1f\\%%", 100 * (x - 1))
+fmt_band <- function(lo, hi) sprintf("[%+.1f\\%%,\\,%+.1f\\%%]",
+                                     100 * (lo - 1), 100 * (hi - 1))
+
+tcs_emb_tbl <- data.frame(
+  Segment      = emb_label[tcs_emb_raw$TIPO_EMB],
+  PrLoss       = sprintf("%.2f", tcs_emb_raw$pr_portfolio_loss_cross_med),
+  Marginal     = fmt_pct(tcs_emb_raw$factor_trips_marg_cross_med),
+  IQR          = fmt_band(tcs_emb_raw$factor_trips_marg_cross_q25,
+                          tcs_emb_raw$factor_trips_marg_cross_q75),
+  Conditional  = ifelse(is.na(tcs_emb_raw$factor_trips_cond_cross_med),
+                        "collapse-dom.",
+                        fmt_pct(tcs_emb_raw$factor_trips_cond_cross_med)),
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+names(tcs_emb_tbl) <- c("Segment",
+                        "Pr(portfolio loss)",
+                        "$\\%\\Delta$ trips (marginal)",
+                        "Cross-model IQR",
+                        "$\\%\\Delta$ trips (conditional)")
+
+kable(tcs_emb_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+      linesep = "",
+      align = "lcccc",
+      caption = "Within-artisanal-fleet decomposition of the long-run trip response by vessel type, under SSP5-8.5 end-of-century. Entries are cross-model medians with cross-model IQRs in brackets. The marginal column integrates over all posterior draws; the conditional column restricts to draws in which the composition-weighted biomass factor is at least one-half, isolating the climate-elasticity component from the steady-state collapse component.") %>%
+  kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
+  footnote(general = paste(
+    "Categories with fewer than 50 vessel-year observations (BR, BRV, L) collectively account for less than 0.1 percent of artisanal effort and quota and are excluded from this table.",
+    "Vessel type BM is the reference category in the negative binomial interaction; LM and UNK enter as deviations.",
+    "Raw cross-model values and other scenario-window combinations are archived in trip_comparative_statics_by_tipo_emb_raw.csv."
+  ),
+  general_title = "Note:", threeparttable = TRUE)
+```
+
+Three caveats qualify this thought experiment. First, the Schaefer steady-state comparative statics holds fishing pressure fixed at the 2000--2024 historical average; any regulatory response that lowered $F$ in the face of falling productivity would attenuate both the loss probability and the marginal trip response reported here. Second, the 2000--2024 window was not itself in Schaefer equilibrium under $F_{\text{hist}}$: an internal consistency check evaluated at $\Delta SST = 0$ and $\Delta \log CHL = 0$ yields a median $f^H_v$ of $1.015$ rather than $1.000$, so the results should be read as responses \emph{relative to the baseline steady-state}, not relative to the observed 2000--2024 trajectory. Third, jack mackerel is treated as non-identified at the Centro-Sur scale, a null on \emph{local identification} rather than on biological climate sensitivity: the $25$-year window provides only $16$ informative annual observations against a historical SST envelope of $\hat{\sigma}_{SST} \approx 0.26\,^{\circ}\text{C}$. Five complementary tests reported in Online Appendix E (nested coastal domains, dual-source extension, basin-scale ENSO, joint specification, SPRFMO integration) all return posterior-to-prior ratios indistinguishable from unity, indicating that the local null is structural. The industrial fleet's apparent climate protection in Table \ref{tab:trip_compstat} therefore rests on a null about local identification, which a range-wide SPRFMO analysis would be the appropriate setting to refine.
+
+# Discussion {#sec:discussion}
+
+Our results reveal a substantial asymmetry in how climate change affects different segments of Chile's small pelagic fishery, governed by the differential exposure of each fleet's species portfolio to the identified climate parameters under limited cross-sector transferability. The artisanal fleet, concentrated in the sardine--anchoveta pair, is the segment whose long-run harvest capacity is most exposed to the CMIP6 signal; the industrial fleet's $95\%$ exposure to jack mackerel (whose local productivity is non-identified) buffers it under the maintained convention. This finding aligns with the broader literature on heterogeneous climate impacts within fleets [@sumaila2011; @Free2019] and underscores that aggregate projections can mask first-order distributional consequences inside the same fishery. The asymmetry further decomposes within the artisanal fleet by vessel type: the dominant LM segment contracts by approximately twenty percent, while the smaller BM segment contracts by only three to four percent (Table \ref{tab:tripcompstatemb}).
+
+The non-identification of $(\rho_{\text{jur}}^{SST}, \rho_{\text{jur}}^{CHL})$ at the Centro-Sur scale is itself a substantive result rather than a nuisance, but its policy reading depends on the distinction between \emph{non-identification} and \emph{no climate effect}. Five converging tests reported in Online Appendix E (varying coastal aggregation, augmenting biomass coverage, replacing local shifters with basin-scale ENSO, joint specification, and SPRFMO integration) all return posterior-to-prior ratios in $0.94$--$1.03$. Existing empirical evidence documents that climate forcing operates on jack mackerel at scales broader than local coastal anomalies---@Arcos2001-jq on intrusion of the $15\,^{\circ}$C isotherm during the $1997$--$98$ El Niño, @Pena-Torres2017-gn on ENSO-driven shifts in location choices in the Chilean fishery---but each documents climatic effects on \emph{margins} (location choice, range distribution, spawning timing) that are not necessarily captured in the elasticity of annual aggregate productivity. Closing the identification gap will require either a longer biomass record or a basin-scale SPRFMO assessment with explicit cross-stock spillover. We accordingly hold $r^{*}_{\text{jack mackerel}}$ fixed in the projections; a prior-propagation sensitivity reported in Online Appendix E.4 returns a $90\%$ predictive interval of approximately three orders of magnitude on the productivity factor under SSP$5$-$8.5$ end-of-century, confirming that the fixed-$r^{*}$ convention is the defensible reporting choice.
+
+The two channels through which climate change reaches fleet-level effort operate on very different scales and on different segments of the fleet. The direct weather channel is small in mean wind anomaly---the cross-model median CMIP6 increase in near-surface wind speed is below $+0.5$ m/s even under SSP5-8.5 end-of-century---but the historical daily wind distribution at vessel COGs sits sufficiently close to the 8 m/s operability threshold that additional bad-weather days exceed twenty per year on average under SSP5-8.5 end-of-century. This translates into a $-0.7\%$ to $-1.9\%$ marginal contribution to the artisanal trip response and a contribution indistinguishable from zero for the industrial fleet, reflecting the differential weather sensitivity captured by $\hat{\beta}_{\text{weather}}$. The indirect biomass channel dominates the response in absolute terms for both fleets but operates entirely through portfolio composition, so the asymmetry it generates is intrinsic to the fixed sector-level allocation of stocks across segments. Climate adaptation policy in the Centro-Sur therefore needs to address both margins. The indirect channel calls for reform of the institutional architecture that mediates portfolio exposure---quota allocation rules, cross-fleet transferability, and the design of TACs under shifting species productivity. The direct channel calls for operational measures targeted at the artisanal segment specifically, such as expanded port infrastructure, vessel reinforcement programs, or weather-indexed insurance, which are first-order for that fleet but redundant for the industrial purse-seine fleet. This conclusion is based on the CMIP6 monthly wind ensemble; downscaled regional climate models that resolve extreme wind events could only raise the weight of the direct channel further.
+
+CMIP6 SST anomalies under SSP$5$-$8.5$ end-of-century reach roughly $+2.3\,^{\circ}$C, nearly an order of magnitude outside the $25$-year estimation window ($\hat{\sigma}_{SST} \approx 0.26\,^{\circ}$C). The corresponding posterior of $\Delta r_s^{\star}/r_s^{0}$ therefore leans on the log-linear extrapolation embedded in the shifter function. Thermal-tolerance arguments in the climate-fisheries literature [@Cheung2010; @Free2019] imply that for stocks operating below their thermal optimum, a log-linear specification, if anything, \emph{under-states} the productivity response under high warming, so the projected magnitudes should be read as conservative within the class of monotone shifter functions consistent with the identified posterior signs.
+
+Seven caveats qualify the present analysis: holding ex-vessel prices and management rules constant; substantial cross-model spread in chlorophyll-a; identification on a $25$-year series limiting non-linearity detection; the absence of risk preferences in the trip equation; the zonal coding of biological closures; the purse-seine focus of the trip-equation panel; and the missing wind components for CESM2 in the direct weather channel. Online Appendix I states each in full and qualifies its implication for the interpretation developed above.
+
+The finding that climate change creates winners and losers within the same fishery has direct implications for quota-allocation policy. A natural first reading would attribute the asymmetry to rigid single-species permits in the artisanal sector, but both sectors operate \emph{de jure} multi-species permit portfolios: SUBPESCA's $2012$ registry records simultaneous authorisations across all three pelagic species for $76\%$ of industrial vessels [@SUBPESCA2012-LTP]; the IFOP logbook in turn reveals that $90\%$ of artisanal vessels operate a multi-species portfolio in any given year. The asymmetric climate sensitivity we identify is therefore not driven by permit count but by four dimensions of the institutional architecture. First, the statutory partition fixes inter-sectoral shares at the legislative level (Table \ref{tab:fractioning}). Second, the partition admits a single administratively rationed re-allocation channel: industrial titulares cede $85$--$99\%$ of their assigned anchoveta and sardine TACs to artisanal cessionaries each year ($25$--$77$ kt per species-year), while jack mackerel cessions are an order of magnitude smaller and reverse direction across years (Online Appendix H.3). The channel is non-market in the conventional sense but operational rather than dormant. Third, within-sector transferability is asymmetric: industrial coefficients trade under LTP since $2013$, while artisanal RAE assignments remain locked to the regional registry. Fourth, the revealed portfolio composition differs in its climate correlation structure: the artisanal logbook shows $80$--$86\%$ of activity concentrated in the anchoveta--sardina pair (both with identified negative climate elasticities), while $67\%$ of industrial activity sits in the same pair with the remainder in jack mackerel and caballa (non-identified at the Centro-Sur scale). The asymmetry the paper estimates therefore quantifies the cost of a statutory partition combined with a climate-correlated artisanal portfolio under projected SSP$5$-$8.5$ stress. Online Appendix H reports the descriptive evidence and Online Appendix H.2 computes a policy counterfactual.
+
+## Implications of the 2025 fractioning reform {#sec:ley21752-implications}
+
+The asymmetry estimated in this paper is identified on the pre-reform fractioning regime that prevailed during the estimation window (2013--2024). The 2025 reform, in force from $2026$ until $2040$, modifies that regime in two relevant directions for the Central-South small pelagic fishery [@Ley21752-2025]. First, the artisanal share of the anchoveta and sardine TACs rises from $78\%$ to $90\%$ across the Valparaíso--Los Lagos macrozone; the same artisanal sector therefore now holds a deeper claim on stocks whose long-run productivity is projected to collapse under SSP$5$-$8.5$ end-of-century. Second, the artisanal share of the jack mackerel TAC rises from $10\%$ to $30\%$ in Valparaíso--Los Ríos and from $10\%$ to $15\%$ in Los Lagos---a quota-weighted aggregate of approximately $28\%$ across the macrozone---giving the artisanal sector partial access to the species whose local productivity is non-identified at the Centro-Sur scale and whose climate response is held fixed in our projections. Table \ref{tab:counterfactual-main} reports the static plug-in counterfactual at SSP$5$-$8.5$ end-of-century, holding the structural posterior and the TAC level at $2024$ values and varying only the statutory artisanal share.
+
+\begin{table}[H]
+\centering
+\caption{Static counterfactual: artisanal absolute landing under the pre-reform and 2025 fractioning regimes at SSP$5$-$8.5$ end-of-century, Centro-Sur (Valparaíso--Los Lagos), $2024$ Cuotas Globales.\label{tab:counterfactual-main}}
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+ & & \multicolumn{2}{c}{Artisanal share ($\alpha_s$)} & \multicolumn{2}{c}{Artisanal landing $L_{\text{art}}$ (kt)} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6}
+Stock & TAC 2024 (kt) & Pre-reform & 2025 reform & Pre-reform & 2025 reform \\
+\midrule
+Anchoveta (Valparaíso--Los Lagos)            & $211.3$ & $0.78$ & $0.90$ & $17.1$  & $19.8$  \\
+Sardina com\'un (Valparaíso--Los Lagos)      & $290.6$ & $0.78$ & $0.90$ & $0.2$   & $0.3$   \\
+Jack mackerel (Valparaíso--Los Ríos)               & $578.6$ & $0.10$ & $0.30$ & $57.9$  & $173.6$ \\
+Jack mackerel (Los Lagos)                 & $80.6$  & $0.10$ & $0.15$ & $8.1$   & $12.1$  \\
+\addlinespace
+\textbf{Total Centro-Sur}           &         &        &        & $\mathbf{83.3}$ & $\mathbf{205.7}$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[para,flushleft]
+\footnotesize
+\item \emph{Notes.} Static plug-in evaluation of $L_{\text{art}}^{(R)} = \sum_s \alpha_s^{(R)} \cdot (1 + \widehat{\Delta r_s^{\star}/r_s^{0}}) \cdot Q_s^{0}$, with $\widehat{\Delta r_s^{\star}/r_s^{0}}$ set to the cross-model median at SSP$5$-$8.5$ end-of-century from Table \ref{tab:growth_compstat} ($-89.6\%$ anchoveta, $-99.9\%$ sardine, $0\%$ jack mackerel by the non-identification convention of Section \ref{sec:stock-dynamics}). $Q_s^{0}$ is the $2024$ Cuota Global de Captura. Artisanal fractions follow the pre-reform statutory schedule and the 2025 reform. The Los Ríos--Los Lagos jack mackerel quota is reported as a single block by SERNAPESCA; the row applies the Los Lagos artisanal share ($15\%$) as a conservative lower bound on the true sub-block share, which would rise toward $30\%$ to the extent that Los Ríos contributes to the aggregate quota. The posterior-propagated version of this table, with cross-model IQR and within-posterior $90\%$ CI, is reported in Online Appendix H.2.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Three readings of Table \ref{tab:counterfactual-main} structure the policy interpretation. First, the redistribution \emph{raises} the absolute artisanal landing under projected SSP$5$-$8.5$ end-of-century stress by approximately $122$ kt at the Centro-Sur aggregate, almost entirely through the $20$-percentage-point increase in the artisanal jack mackerel share in Valparaíso--Los Ríos rather than through anchoveta and sardine, whose projected productivity collapse makes the $12$-percentage-point increase in the artisanal share mechanically small. Second, the policy logic of the redistribution---designed to protect the artisanal sector---in fact \emph{deepens} the artisanal exposure to anchoveta and sardine biomass collapse under climate stress: the same sector now holds $90\%$ rather than $78\%$ of a TAC projected to fall to floor levels. The net welfare effect therefore depends on whether the jack mackerel access expansion outweighs the deepened anchoveta-sardine exposure. Third, the counterfactual is a de jure upper bound on the post-cession allocation. Under the pre-2025 regime the industrial sector ceded $85$--$99\%$ of its assigned anchoveta and sardine TACs to artisanal cessionaries via the cession channel (Online Appendix H.3), so the $12$-percentage-point rise in the artisanal de jure share translates into a much smaller change in realised landings; the operationally meaningful change is the contraction of the cession volume that industrial titulares had been intermediating for fee. The reform is therefore primarily \emph{redistributive} (transferring rent from industrial titulares to artisanal armadores) rather than \emph{allocative} in anchoveta and sardine; for jack mackerel, historical cessions are an order of magnitude smaller and the de jure expansion is operationally meaningful.
+
+# Conclusions
+
+This paper identifies the structural climate elasticities of stock productivity in the Chilean small pelagic fishery and combines them with a vessel-level effort equation to compute long-run comparative statics on fleet-level fishing effort under projected climate paths. We contribute in three ways. First, we couple a Bayesian state-space model with negative binomial trip equations estimated separately by sector, showing that the direction of the distributional asymmetry across fleets is governed by the interaction between portfolio composition and the limited cross-sector transferability of the prevailing allocation, extending the portfolio-and-access mechanism of @Kasperski2013-jz, @Cline2017-dp, and @Oken2021-of to a climate-shock setting. Second, we identify $(\rho_s^{SST}, \rho_s^{CHL})$ sharply for the two coastal-upwelling stocks and document non-identification for jack mackerel at the Centro-Sur scale. Third, the variance decomposition shows that once the stock-dynamics steady-state collapse saturates the artisanal portfolio, the within-model component accounts for essentially all variance in projected fleet-level effort, so the policy-relevant uncertainty lies in the structural posterior rather than in CMIP6 disagreement.
+
+The projected comparative statics indicate that the long-run intrinsic productivity of the coastal-upwelling pair---anchoveta and sardine---declines sharply under all CMIP6 scenarios considered. Sardine is consistently more exposed than anchoveta, with the SSP5-8.5 end-of-century scenario driving its steady-state productivity to floor levels at the Centro-Sur scale. The Centro-Sur jack mackerel stock, by contrast, does not provide sufficient information to identify a local climate elasticity in the 2000--2024 sample, consistent with its transboundary SPRFMO management. These results suggest that climate-adaptation policy in this fishery should target the quota-allocation architecture---specifically, the binding industrial--artisanal split and the limited cross-sector transferability that locks each fleet into its historical portfolio---rather than operational margins alone.
+
+Several extensions are natural. A bi-level Stackelberg optimisation that uses our posterior as prior would deliver full forward biomass trajectories under endogenous TACs and effort allocation, following @Kasperski2015-jm with explicit cost functions and an inverse-demand system. The spatial dimension of effort allocation is a second extension, connecting the multi-species model to the location-choice literature [@Dupont1993-jn; @Smith2005-us; @Hicks2020-mz]; migrating the annual NB trip equation to a daily discrete-choice specification with environmentally informed SDMs as proxies for local availability would capture daily and within-port heterogeneity, following @Quezada2026-cp. Finally, incorporating risk preferences and production risk would provide a richer characterisation of fleet responses to projected environmental variability [@Kasperski2013-jz].
+
+# Acknowledgments {.unnumbered}
+
+The author thanks Andrea Araya, Karen Walker, and Carola Hernández (Instituto de Fomento Pesquero, IFOP) for providing access to the trip-level logbook data and for responding to detailed methodological questions about its structure during data preparation. The author also thanks IFOP institutionally for granting access to the data. Comments from participants at the 2025 NENRE EfD-Chile meeting and from the audience at the 2026 ICES/PICES Small Pelagic Fish Symposium in La Paz, Mexico, improved earlier versions of this manuscript. The author bears sole responsibility for any remaining errors. Funding was provided by ANID-Chile through ANID Fondecyt Iniciación 11250223 and through ANID INCAR\textsuperscript{2} CIA250009.
+
+# Data and code availability {.unnumbered}
+
+All code required to replicate the analysis is openly available at \url{https://github.com/fquezadae/Impact-of-Environmental-Variability-on-Harvest}. Environmental covariates are obtained from publicly available sources (E.U. Copernicus Marine Service for the historical period; CMIP6 archive via the Earth System Grid Federation for projections), and stock-assessment biomass series from IFOP and SPRFMO annual technical reports. Vessel-level logbook data are restricted-access and were obtained from IFOP under Chile's Transparency Law (Ley 20.285).
+
+# References {.unnumbered}
+
+::: {#refs}
+:::

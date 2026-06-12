@@ -1,0 +1,130 @@
+# Reduced-form stress tests and prior elicitation {#appendix-stress}
+
+This appendix documents the protocol used to elicit the prior densities
+on the climate shifters $(\rho_s^{SST}, \rho_s^{CHL})$ that enter the
+state-space specification of the Stock dynamics subsection of the main text, together
+with the identifiability diagnostic that motivates the recourse to a
+Bayesian likelihood rather than a direct maximum-likelihood treatment.
+
+## Deterministic hindcast and cross-variant fit {#sec:appendix-stress-spec}
+
+For each stock $s$ we estimate a deterministic Schaefer hindcast over
+$2000$--$2024$, $\hat B_{s,t+1} = \hat B_{s,t} + r_{s,t}\hat B_{s,t}(1 - \hat B_{s,t}/K_s) - C_{s,t}$
+with $r_{s,t} = r_s^{0} \exp(\rho_s^{SST}(SST_{t-1}-\overline{SST}) + \rho_s^{CHL}(\log CHL_{t-1}-\overline{\log CHL}))$,
+biological parameters $(r_s^{0}, K_s, B_{0,s})$ held at the centres of the
+IFOP/SPRFMO single-species priors, and shifters estimated by bounded
+least squares on $[-3,3]^2$ minimising median absolute percent error
+(MAPE). Four nested variants are reported: base ($\rho=0$), $+$SST
+only, $+\log$CHL only, and joint $+$SST$+\log$CHL.
+\label{eq:stress-law}
+\label{eq:stress-shifter}
+\label{sec:appendix-stress-results}
+
+```{r stress-mape-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+mape_raw <- read.csv("data/bio_params/qa/hindcast_sst_comparison.csv",
+ stringsAsFactors = FALSE)
+
+stock_label <- c(
+ anchoveta_cs = "Anchoveta",
+ sardina_comun_cs = "Sardina com\\'un",
+ jurel_cs = "Jack mackerel"
+)
+
+stock_order <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
+
+mape_tbl <- mape_raw %>%
+ dplyr::arrange(match(stock_id, stock_order)) %>%
+ dplyr::transmute(
+ Stock = stock_label[stock_id],
+ `Base` = sprintf("%.1f", median_err_pct_base),
+ `+ SST` = sprintf("%.1f", median_err_pct_restricted),
+ `+ log CHL` = sprintf("%.1f", median_err_pct_chl),
+ `+ SST and log CHL` = sprintf("%.1f", median_err_pct_both)
+ )
+
+kable(mape_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+ align = "lrrrr",
+ caption = "Median absolute percent error of the deterministic Schaefer hindcast across shifter variants. \\label{tab:stress-mape}") %>%
+ kable_styling(latex_options = c("hold_position"), font_size = 10)
+```
+
+No variant brings any of the three stocks below a $20\%$ MAPE
+threshold. The two coastal stocks benefit from activating SST
+(anchoveta: $95.9\%\to 30.8\%$, sardine: $98.5\%\to 23.1\%$), with
+the joint specification delivering further marginal improvement.
+Jack mackerel hindcast errors remain in the $44$--$49\%$ range across
+all variants, with no shifter distinguishably better than the base.
+
+The joint-variant point estimates carry an internally coherent
+biological reading for the coastal stocks. Anchoveta: both shifters
+negative and similar in magnitude
+($\rho^{SST} \approx -2.3$, $\rho^{CHL} \approx -2.3$). Sardina
+com\'un: $\rho^{SST} \approx -2.0$ but $\rho^{CHL} \approx +2.1$
+(opposite sign to anchoveta, consistent with the warm-water mesotrophic
+affinity that distinguishes sardine from anchoveta in the Humboldt
+Current biological literature). Jack mackerel: $\rho^{SST} \approx +0.6$
+small and the $\rho^{CHL}$ estimate binds at the lower boundary of the
+admissible box; we read the boundary solution as a failure of point
+identification rather than a finding of strong climate forcing.
+
+## Identifiability diagnostic and prior elicitation {#sec:appendix-stress-diag}
+\label{sec:appendix-stress-priors}
+
+Two diagnostics motivate the use of weakly informative priors rather
+than direct maximum-likelihood estimation. First, the two environmental
+forcings are statistically orthogonal over the $2000$--$2024$ sample
+(Pearson $r = 0.030$, $p = 0.888$), so the cross-variant gap in
+hindcast error cannot be attributed to collinearity in the design
+matrix. Second, the jurel MLE binds at the boundary, indicating that
+the climate signal is not separately identifiable from process and
+observation noise absorbed into the residual under a deterministic
+single-species hindcast; the Bayesian state-space specification
+addresses both limitations within a single inferential framework.
+
+Table \ref{tab:stress-priors} reports the priors on
+$(\rho_s^{SST}, \rho_s^{CHL})$ used in the structural likelihood.
+Prior centres for the two coastal stocks are the joint MLEs rounded to
+one decimal place; jurel priors are centred at zero so that posterior
+identification is driven by the structural likelihood rather than by
+the boundary solution. All priors are independent normal with unit
+standard deviation; no hierarchical pooling is imposed because
+$\rho^{CHL}$ switches sign between anchoveta and sardine.
+
+This prior-elicitation strategy is a form of empirical Bayes: the
+prior centres for anchoveta and sardine are derived from the same
+2000--2024 biomass series that enters the state-space likelihood,
+which trades pure data-prior independence for tractable identification
+under $N=25$ annual observations. We adopt this trade-off deliberately
+for two reasons. First, the prior standard deviation $\sigma = 1$ is
+large enough that the posterior is free to move substantially: the
+posterior of $\rho_s^{CHL}$ for anchoveta migrates to $-3.65$
+(prior mean $-2.3$), more than one prior standard deviation from
+the centre, illustrating that the data does refine the prior when
+informative. Second, the alternative of centring all priors at zero
+would, under $N=25$, leave the joint posterior of
+$(r_s^{0}, K_s, B_{0,s}, \rho_s^{SST}, \rho_s^{CHL})$ weakly identified
+or multimodal, producing posteriors that are uninformative for
+projections regardless of whether the underlying coupling is real or
+absent. The empirical-Bayes choice therefore makes the non-identification
+result for jack mackerel a substantive finding rather than a numerical
+artefact of weak posterior geometry.
+
+```{r stress-priors-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+priors_tbl <- data.frame(
+ Stock = c("Anchoveta", "Sardina com\\'un", "Jack mackerel"),
+ `rho_SST_mu` = c("-2.3", "-2.0", "0.0"),
+ `rho_SST_sd` = c("1.0", "1.0", "1.0"),
+ `rho_CHL_mu` = c("-2.3", "+2.1", "0.0"),
+ `rho_CHL_sd` = c("1.0", "1.0", "1.0"),
+ Source = c("Joint MLE", "Joint MLE", "Boundary solution; vague prior"),
+ check.names = FALSE,
+ stringsAsFactors = FALSE
+)
+names(priors_tbl) <- c("Stock",
+ "$\\mu_{\\rho^{SST}}$", "$\\sigma_{\\rho^{SST}}$",
+ "$\\mu_{\\rho^{CHL}}$", "$\\sigma_{\\rho^{CHL}}$", "Source")
+kable(priors_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+ align = "lrrrrl",
+ caption = "Independent normal priors on the climate shifters used in the state-space likelihood. \\label{tab:stress-priors}") %>%
+ kable_styling(latex_options = c("hold_position"), font_size = 10)
+```

@@ -1,0 +1,260 @@
+stock_id,especie,zona,regiones,year,semester,year_label,ssb_t,biomass_total_t,recruits_mil_ind
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,1997,1,1997,399510.0,1441100.0,34440.2
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,1998,1,1998,216469.0,337281.0,39357.9
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,1999,1,1999,222286.0,562588.0,19365.0
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2000,1,2000,197225.0,375874.0,27824.1
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2001,1,2001,235123.0,487957.0,48278.2
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2002,1,2002,398871.0,586719.0,36676.1
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2003,1,2003,567182.0,1505940.0,70557.4
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2004,1,2004,741441.0,1399490.0,69181.2
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2005,1,2005,656599.0,1526720.0,94162.0
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2006,1,2006,736146.0,1494090.0,110178.0
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2007,1,2007,778470.0,1400880.0,63902.5
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2008,1,2008,541355.0,977632.0,45794.5
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2009,1,2009,337604.0,739353.0,47305.2
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2010,1,2010,179415.0,409822.0,25078.1
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2011,1,2011,78094.3,221184.0,14972.4
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2012,1,2012,65713.8,137135.0,12638.9
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2013,1,2013,70600.5,146412.0,8901.05
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2014,1,2014,88066.1,182752.0,10712.2
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2015,1,2015,110545.0,186661.0,11265.2
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2016,1,2016,124657.0,253022.0,18037.7
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2017,1,2017,191699.0,390681.0,23542.6
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2018,1,2018,238034.0,356244.0,29107.7
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2019,1,2019,290432.0,501277.0,45721.3
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2020,1,2020,402245.0,746403.0,63967.7
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2021,1,2021,599887.0,930030.0,34595.7
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2022,1,2022,644953.0,981295.0,44663.4
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2023,1,2023,613848.0,1007600.0,56319.3
+anchoveta_cs,Anchoveta,Centro-sur,Valparaíso-Los Lagos,2024,1,2024,645034.0,1101970.0,73861.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1985,1,1985,60699.0,259630.0,20942.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1986,1,1986,76851.0,358380.0,23018.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1987,1,1987,81104.0,313500.0,15804.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1988,1,1988,70517.0,328640.0,21234.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1989,1,1989,84621.0,440510.0,32561.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1990,1,1990,85425.0,410210.0,20998.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1991,1,1991,56245.0,267480.0,11388.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1992,1,1992,68802.0,344900.0,29103.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1993,1,1993,83597.0,469530.0,30922.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1994,1,1994,144690.0,816810.0,70772.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1995,1,1995,120560.0,677720.0,24203.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1996,1,1996,71258.0,400650.0,23569.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1997,1,1997,64922.0,352690.0,21722.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1998,1,1998,54307.0,367300.0,24793.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,1999,1,1999,63205.0,320580.0,19223.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2000,1,2000,52457.0,249930.0,12305.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2001,1,2001,40192.0,140530.0,4597.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2002,1,2002,53160.0,257750.0,23829.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2003,1,2003,79707.0,434290.0,31028.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2004,1,2004,83835.0,419980.0,23857.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2005,1,2005,76727.0,406100.0,26181.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2006,1,2006,86650.0,438570.0,29333.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2007,1,2007,88164.0,365680.0,17580.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2008,1,2008,63752.0,304290.0,16989.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2009,1,2009,64289.0,288580.0,18180.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2010,1,2010,64722.0,297150.0,17905.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2011,1,2011,72939.0,381000.0,28098.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2012,1,2012,91419.0,369710.0,20022.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2013,1,2013,75306.0,285290.0,12536.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2014,1,2014,46658.0,193200.0,8057.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2015,1,2015,33104.0,141230.0,7666.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2016,1,2016,37956.0,182940.0,13874.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2017,1,2017,56060.0,226320.0,14603.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2018,1,2018,65169.0,308760.0,21749.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2019,1,2019,94124.0,474680.0,36594.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2020,1,2020,97849.0,378190.0,13490.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2021,1,2021,85575.0,426620.0,33101.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2022,1,2022,96054.0,408750.0,20092.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2023,1,2023,77577.0,243440.0,7604.0
+anchoveta_norte,Anchoveta,Norte,Atacama-Coquimbo,2024,1,2024,51531.0,151780.0,5665.0
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1986,1,1986,1334.8,2287.7,348.01
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1986,2,1986.5,1474.3,2423.3,80.954
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1987,1,1987,820.4,1157.0,38.539
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1987,2,1987.5,370.06,579.75,317.48
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1988,1,1988,652.59,1353.7,709.94
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1988,2,1988.5,1750.4,3145.2,388.66
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1989,1,1989,2105.1,3247.4,133.13
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1989,2,1989.5,1145.6,1731.6,243.48
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1990,1,1990,758.46,1357.6,186.19
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1990,2,1990.5,736.26,1215.6,379.06
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1991,1,1991,1035.9,1909.9,41.783
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1991,2,1991.5,701.62,981.26,304.38
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1992,1,1992,642.39,1436.5,153.16
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1992,2,1992.5,331.87,875.47,354.56
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1993,1,1993,611.61,1393.4,104.81
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1993,2,1993.5,371.58,916.11,967.97
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1994,1,1994,1620.7,3486.5,207.4
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1994,2,1994.5,1251.4,2268.2,1042.7
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1995,1,1995,2058.2,4176.5,660.97
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1995,2,1995.5,2672.2,4209.8,286.76
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1996,1,1996,2316.0,3315.6,35.164
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1996,2,1996.5,1056.7,1535.4,693.3
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1997,1,1997,1402.1,2797.0,124.66
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1997,2,1997.5,1022.5,1574.8,274.11
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1998,1,1998,827.13,1410.0,47.977
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1998,2,1998.5,674.54,937.49,397.21
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1999,1,1999,944.39,1916.5,820.82
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,1999,2,1999.5,1893.0,3414.8,200.06
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2000,1,2000,2005.1,2946.1,83.346
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2000,2,2000.5,615.87,1087.5,275.65
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2001,1,2001,536.97,1172.7,91.354
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2001,2,2001.5,380.53,698.44,288.0
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2002,1,2002,552.28,1305.4,447.93
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2002,2,2002.5,852.74,1783.5,136.63
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2003,1,2003,723.62,1231.1,251.08
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2003,2,2003.5,724.66,1347.1,421.4
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2004,1,2004,1242.6,2301.0,188.83
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2004,2,2004.5,769.4,1478.4,586.06
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2005,1,2005,1158.0,2440.2,272.42
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2005,2,2005.5,1172.3,1966.1,190.56
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2006,1,2006,832.09,1604.8,284.8
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2006,2,2006.5,663.26,1387.1,486.36
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2007,1,2007,1203.3,2378.6,154.79
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2007,2,2007.5,732.44,1251.3,230.95
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2008,1,2008,589.12,1228.0,75.998
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2008,2,2008.5,205.93,553.55,286.49
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2009,1,2009,458.85,1069.5,400.98
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2009,2,2009.5,948.64,1760.9,173.28
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2010,1,2010,1009.3,1575.4,143.5
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2010,2,2010.5,658.05,1144.9,531.51
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2011,1,2011,1291.3,2386.2,98.634
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2011,2,2011.5,992.99,1511.1,147.89
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2012,1,2012,475.13,907.22,423.02
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2012,2,2012.5,947.45,1775.5,92.485
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2013,1,2013,933.15,1336.8,378.11
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2013,2,2013.5,1064.0,1933.3,213.03
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2014,1,2014,951.41,1577.8,212.61
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2014,2,2014.5,778.26,1299.5,144.22
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2015,1,2015,670.25,1038.0,219.56
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2015,2,2015.5,634.74,1079.1,56.932
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2016,1,2016,453.09,672.48,304.35
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2016,2,2016.5,685.37,1250.4,228.61
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2017,1,2017,1003.3,1580.8,132.86
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2017,2,2017.5,757.79,1161.2,340.2
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2018,1,2018,994.86,1725.0,357.04
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2018,2,2018.5,1166.7,1922.9,380.67
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2019,1,2019,1332.5,2170.0,263.81
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2019,2,2019.5,1197.0,1836.0,152.26
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2020,1,2020,929.21,1357.5,241.31
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2020,2,2020.5,1071.7,1661.7,322.39
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2021,1,2021,1223.4,1946.8,319.11
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2021,2,2021.5,1379.3,2136.3,183.53
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2022,1,2022,1163.3,1691.6,238.98
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2022,2,2022.5,915.74,1453.5,139.04
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2023,1,2023,624.44,923.28,42.753
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2023,2,2023.5,461.56,629.49,134.39
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2024,1,2024,419.08,703.26,255.27
+anchoveta_sur_peru_norte_chile,Anchoveta,Sur_Peru-Norte_Chile,Arica_Parinacota-Antofagasta,2024,2,2024.5,789.24,1512.5,2133.9
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1970,1,1970,14627.0,,5639.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1971,1,1971,13517.0,,5248.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1972,1,1972,12521.0,,4829.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1973,1,1973,11543.0,,4308.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1974,1,1974,10514.0,,4353.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1975,1,1975,9651.0,,5621.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1976,1,1976,9005.0,,7073.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1977,1,1977,8547.0,,10592.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1978,1,1978,8374.0,,13366.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1979,1,1979,8265.0,,13931.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1980,1,1980,8346.0,,14537.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1981,1,1981,8200.0,,16977.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1982,1,1982,7798.0,,19617.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1983,1,1983,8835.0,,27328.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1984,1,1984,9257.0,,20731.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1985,1,1985,9833.0,,24733.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1986,1,1986,13348.0,,55334.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1987,1,1987,17857.0,,51832.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1988,1,1988,19641.0,,25665.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1989,1,1989,18524.0,,15192.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1990,1,1990,17052.0,,17198.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1991,1,1991,15921.0,,22653.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1992,1,1992,15068.0,,25393.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1993,1,1993,13534.0,,14559.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1994,1,1994,10991.0,,15805.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1995,1,1995,8035.0,,14809.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1996,1,1996,5877.0,,14927.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1997,1,1997,4567.0,,17310.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1998,1,1998,4613.0,,16882.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,1999,1,1999,5701.0,,21615.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2000,1,2000,7021.0,,20525.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2001,1,2001,7476.0,,20675.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2002,1,2002,8181.0,,18689.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2003,1,2003,8218.0,,11298.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2004,1,2004,7572.0,,10042.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2005,1,2005,6946.0,,10841.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2006,1,2006,5820.0,,6243.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2007,1,2007,4036.0,,2124.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2008,1,2008,2801.0,,5727.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2009,1,2009,2268.0,,8838.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2010,1,2010,2172.0,,4977.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2011,1,2011,2085.0,,3994.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2012,1,2012,2126.0,,3616.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2013,1,2013,2285.0,,3991.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2014,1,2014,2694.0,,6760.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2015,1,2015,3285.0,,7428.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2016,1,2016,4358.0,,13676.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2017,1,2017,6439.0,,22724.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2018,1,2018,9599.0,,30616.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2019,1,2019,12630.0,,23838.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2020,1,2020,14538.0,,15660.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2021,1,2021,16259.0,,21202.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2022,1,2022,17498.0,,9891.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2023,1,2023,17577.0,,7458.0
+jurel_orop_ps,Jurel,OROP-PS,ZEE Chile-Ecuador y AJN Peru,2024,1,2024,17738.0,,18326.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2002,1,2002,50931.0,188870.0,8348.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2003,1,2003,49755.0,173290.0,9096.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2004,1,2004,44423.0,223850.0,20761.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2005,1,2005,70802.0,290560.0,17333.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2006,1,2006,88418.0,247870.0,5060.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2007,1,2007,51455.0,191820.0,9949.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2008,1,2008,34921.0,163170.0,9792.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2009,1,2009,28337.0,127370.0,3947.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2010,1,2010,18201.0,79870.0,4913.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2011,1,2011,17659.0,75637.0,4424.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2012,1,2012,17226.0,119080.0,13441.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2013,1,2013,41635.0,130530.0,2275.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2014,1,2014,30124.0,122180.0,9485.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2015,1,2015,33487.0,108960.0,2352.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2016,1,2016,21482.0,73906.0,3182.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2017,1,2017,14222.0,64635.0,4553.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2018,1,2018,18203.0,67286.0,3926.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2019,1,2019,21602.0,106090.0,10634.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2020,1,2020,40774.0,112360.0,1179.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2021,1,2021,30280.0,75460.0,2109.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2022,1,2022,17124.0,55518.0,2724.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2023,1,2023,16194.0,64001.0,5623.0
+sardina_austral_los_lagos,Sardina austral,Región de Los Lagos,Atacama-Coquimbo,2024,1,2024,28054.0,88456.0,4866.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1991,1,1991,2278640.0,3166250.0,171146.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1992,1,1992,1509950.0,2149750.0,95478.6
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1993,1,1993,727298.0,1060270.0,99352.5
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1994,1,1994,403656.0,964675.0,144689.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1995,1,1995,427957.0,813669.0,118739.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1996,1,1996,500926.0,1535860.0,207888.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1997,1,1997,656208.0,1092650.0,84345.3
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1998,1,1998,355370.0,778124.0,37861.4
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,1999,1,1999,329605.0,681577.0,36234.6
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2000,1,2000,213174.0,495573.0,47711.6
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2001,1,2001,133284.0,481567.0,91734.6
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2002,1,2002,268842.0,748497.0,128586.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2003,1,2003,286677.0,782298.0,105414.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2004,1,2004,229582.0,798044.0,75936.3
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2005,1,2005,143264.0,671109.0,71840.2
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2006,1,2006,188399.0,1384980.0,380518.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2007,1,2007,677146.0,1157790.0,76598.8
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2008,1,2008,607100.0,3328190.0,627529.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2009,1,2009,1401210.0,3011410.0,332159.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2010,1,2010,970651.0,1930670.0,259218.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2011,1,2011,989243.0,3031310.0,366630.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2012,1,2012,1204910.0,2827860.0,520474.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2013,1,2013,1175990.0,1964450.0,102296.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2014,1,2014,947671.0,3293390.0,296521.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2015,1,2015,1351900.0,2367710.0,256101.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2016,1,2016,1115690.0,2042920.0,114967.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2017,1,2017,913928.0,2825190.0,247516.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2018,1,2018,970309.0,2744660.0,295642.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2019,1,2019,1442440.0,2023000.0,93322.8
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2020,1,2020,975757.0,1640530.0,84706.5
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2021,1,2021,638556.0,1861980.0,224209.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2022,1,2022,1084250.0,1904580.0,97278.3
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2023,1,2023,865074.0,2020400.0,133082.0
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2024,1,2024,702558.0,1077300.0,57222.7
+sardina_comun_cs,Sardina común,Centro-sur,Valparaíso-Los Lagos,2025,1,2025,504822.0,1296690.0,122671.0

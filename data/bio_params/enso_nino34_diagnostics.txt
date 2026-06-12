@@ -1,0 +1,9 @@
+ENSO Nino 3.4 anual 2000-2024 -- diagnosticos
+Fuente: NOAA-CPC sstoi.indices (ERSSTv5)
+Generado:  2026-05-04 12:49:52.206535 
+------------------------------------------------------------
+nino34_sst      : mean=27.079 sd=0.549
+ENSO_c          : sd=0.549
+lag-1 autocor   : 0.194
+cor(ENSO, SST_D1)    = +0.366
+cor(ENSO, logCHL_D1) = +0.053

@@ -1,0 +1,174 @@
+:root {
+  --udec-blue: #113b63;
+  --udec-gold: #f59f18;
+}
+
+/* Custom title slide */
+.title-slide {
+  background-color: var(--udec-blue) !important;
+  color: white !important;
+  background-image:
+    url(https://fquezadae.github.io/Slides-Econometria/figs/depto_economia_blanco.png),
+    url(../figs/incar2_blanco.png);
+  background-position:
+    7.5% 6%,
+    32% 0%;
+  background-size:
+    200px,
+    auto 110px;
+  background-repeat:
+    no-repeat,
+    no-repeat;
+}
+
+.title-slide h1,
+.title-slide h2,
+.title-slide h3 {
+  color: white !important;
+}
+
+
+hr, .title-slide h2::after, .mline h1::after {
+  content: '';
+  display: block;
+  border: none;
+  background-color: #f59f18;
+  color: #f59f18;
+  height: 1px;
+}
+
+.inverse {
+  background-color: var(--udec-blue) !important;
+  color: white !important;
+}
+
+.inverse h1,
+.inverse h2,
+.inverse h3,
+.inverse p {
+  color: white !important;
+}
+
+a {
+  color: #113b63 !important;
+  text-decoration: none;
+}
+
+/* Links on inverse (blue) slides — make them visible */
+.inverse a {
+  color: #f59f18 !important;
+  text-decoration: underline;
+}
+
+
+.remark-slide-content {
+  border-top: 80px solid #113b63;
+
+}
+
+
+/* ---- Estilos universales para texto ---- */
+.remark-slide-content b,
+.remark-slide-content strong {
+  font-weight: 700 !important;
+}
+.remark-slide-content i,
+.remark-slide-content em {
+  font-style: italic !important;
+}
+
+/* ---- Ajuste para slides inverse ---- */
+.inverse b,
+.inverse strong {
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+.inverse i,
+.inverse em {
+  font-style: italic !important;
+}
+
+/* ---- UdeC gold highlight ---- */
+span.udecgold {
+  color: #f59f18;
+  font-weight: 700;
+}
+
+.example-box {
+  background-color: #f5f5f5;   /* gris claro */
+  border-left: 6px solid #004b87; /* azul UdeC o el color que prefieras */
+  padding: 10px 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  font-size: 0.95em;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.example-box b {
+  color: #004b87; /* título en azul */
+}
+
+/* ---- Card gris (.card[ ... ]) ---- */
+.card {
+  background-color: #f7f7f7;
+  border: 1px solid #e2e2e2;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 4px 0;
+}
+
+.card p:first-child {
+  margin-top: 0;
+}
+
+.card p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Take-home destacado (.tldr[ ... ]) ---- */
+.tldr {
+  border-left: 5px solid var(--udec-gold);
+  background-color: #fffaf0;
+  padding: 10px 16px;
+  margin: 32px 0 14px 0;
+  font-style: italic;
+  color: #2a2a2a;
+  border-radius: 0 4px 4px 0;
+  display: block;
+  clear: both;
+}
+
+.tldr p {
+  margin: 0;
+}
+
+.inverse .tldr {
+  background-color: rgba(245, 159, 24, 0.15);
+  color: #fff;
+}
+
+
+/* Columnas clásicas de xaringan (remark) */
+.pull-left, .pull-right {
+  box-sizing: border-box;
+  display: block;
+  vertical-align: top;
+}
+
+.pull-left  { float: left;  width: 48%; padding-right: 1.0rem; }
+.pull-right { float: right; width: 48%; padding-left:  1.0rem; }
+
+/* Asegura que lo de abajo no se suba sobre las columnas */
+.remark-slide-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Restaura viñetas por si algún tema las anuló */
+.remark-slide-content ul, .remark-slide-content ol {
+  list-style: disc;
+  margin-left: 1.2em;
+  padding-left: 0.2em;
+}
+.remark-slide-content li { margin: 0.15em 0; }
