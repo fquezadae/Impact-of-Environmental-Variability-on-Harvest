@@ -99,7 +99,7 @@ materially. For anchoveta, a one-degree positive SST anomaly is associated
 with a semi-elasticity of $\rho^{SST}_{\text{anch}} = -1.06$
 (CI $[-1.79, -0.38]$); for sardine, the corresponding semi-elasticity
 is more than twice as large, $\rho^{SST}_{\text{sard}} = -2.75$
-(CI $[-3.46, -2.02]$). Evaluated at one historical standard deviation of
+(CI $[-3.46, -2.02]$). Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy], and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by [@Gomez2012, $r=-0.83$]. Evaluated at one historical standard deviation of
 the SST anomaly series (estimation-sample $\hat{\sigma}_{SST} =
 0.26\,^{\circ}\text{C}$ over 2000--2024), a thermal shock of that magnitude
 lowers the intrinsic growth rate of anchoveta by approximately 24\%
@@ -114,7 +114,7 @@ window, the implied losses are on the order of $300$--$400$ kt per year
 under sustained $+1\,^{\circ}\text{C}$ warming. The caveat is that
 $+1\,^{\circ}\text{C}$ lies approximately four historical standard
 deviations beyond the 2000--2024 estimation window, so the projection
-relies on the log-linear extrapolation embedded in the shifter function. Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy], and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by [@Gomez2012, $r=-0.83$].
+relies on the log-linear extrapolation embedded in the shifter function. 
 
 
 Second, the two coastal stocks respond to chlorophyll-a with opposite signs: $\rho^{CHL}_{\text{anch}} = -3.64$ (CI $[-5.01, -2.25]$) versus
