@@ -2,6 +2,92 @@
 
 Notable changes to the project, in reverse chronological order.
 
+## 2026-06-12 (paper1: §4.1 + §4.2 audit and polish, prior overlay in shifter figure)
+
+End-to-end review of §4.1 (Identification of climate shifters) and §4.2
+(Total annual trips) prose against the actual fitted coefficients and figures.
+Detected and corrected several significant errors in §4.2 — including a
+sign-flipped coefficient defended in prose.
+
+### §4.1 — prose polish and defensive citations
+
+- Reformulated CHL/SST discussion: framed as competitive dynamics between
+  anchoveta and sardine rather than direct biological effect of chlorophyll
+  on anchoveta (avoids over-claiming). Citations updated to Alheit (2004),
+  Schwartzlose et al. (1999), Gomez et al. (2012, r=+0.92 sardine-CHL CS),
+  with Gomez also cited for sardine SST (r=-0.83) and Arancibia et al.
+  (2019, FIPA 2017-63) for jurel behaviour/migration/phenology.
+- Reframed jurel non-identification: declared the vague prior at zero as
+  deliberate (so posterior moves only if data refines it); replaced
+  "indicates no climate coupling" with "insufficient information to identify
+  climate effects at this scale, consistent with jurel ranging across the
+  broader Southeast Pacific (managed through SPRFMO accordingly)."
+- Robustness paragraph rendered in plain English ("try to rule out the
+  standard technical explanations for the null" rather than asserting all
+  alternatives are ruled out).
+- New bib entry: `Gomez2012` (Fisheries Oceanography 21(6):405–414).
+- Appendix A:
+  - Unified math index `i→s`; added $B_{0,s}$ to the IFOP/SPRFMO prior
+    parameter list.
+  - Added defensive paragraph declaring the empirical-Bayes choice and
+    justifying σ=1 prior scale (sufficient for posterior to move materially;
+    alternative all-zero priors would leave the joint posterior weakly
+    identified under N=25).
+- Figure `t4b_full_rho_shifters` regenerated: stocks in English (Anchoveta
+  CS, Sardine CS, Jack mackerel CS), no title, prior 90% CI overlaid as
+  dashed lines (anch/sard priors centered on hindcast MLEs, jurel priors at
+  0, ENSO prior tighter at σ=0.5), `position_dodge` widened to 0.8 to
+  separate jurel CHL/ENSO labels.
+
+### §4.2 — audit against cluster-SE coefficients
+
+Cross-checked prose against `summary(nb_*)` with vessel-clustered robust SEs
+(`vcovCL`). Significant errors detected and corrected:
+
+- L632 (allocated harvest):
+  - IND × anchoveta presented as "positive and significant"; actual cluster
+    p=0.26 (NS). Fixed.
+  - IND × jurel presented as "indistinguishable from zero"; actual cluster
+    p=0.055 (marginally significant at 10%). Fixed.
+  - ART × sardine and ART × jurel responses entirely omitted; added (sardine
+    p<0.001, jurel reframed as NS under cluster SE at p=0.16).
+- L634 (prices):
+  - ART × anchoveta price presented as **negative and significant** with an
+    "inverse-demand simultaneity" defensive paragraph. Actual coefficient
+    is **positive** at p<0.001. Reformulated with supply-side
+    interpretation; removed the inverse-demand paragraph entirely.
+  - IND × sardine price presented as "no detectable effect"; actual p<0.01
+    (significantly NEGATIVE). Fixed.
+  - IND × jurel price stated as p<0.01; actual cluster p<0.10 (marginal).
+    Fixed.
+- L638 (environmental): ART × weather reframed as not significant under
+  cluster SE (p=0.12 cluster).
+- Table 3 footnote tightened from 5 lines to 2 lines: removed year-FE
+  redundancy (already in main text) and the Kasperski Eq. 17 + N<50
+  explanation (already in Methods §3.3.2).
+- L534 (opening): "trip-equation coefficients" replacing the partial list
+  "$\beta_H$ and $\beta_{\text{weather}}$".
+
+### Methods + acknowledgments
+
+- Acknowledgments + Data availability: corrected `Iniciación` encoding and
+  `INCAR²` typography, added Transparency Law (Ley 20.285) reference,
+  added NENRE EfD-Chile 2025 and ICES/PICES Small Pelagic Fish Symposium
+  La Paz 2026 mentions.
+- Methods §3.3.1: added an ex-ante biological rationale for the ENSO refit
+  specification (Arcos 2001 + Pena-Torres 2017) so the ENSO row in Table 2
+  of Results §4.1 is anchored in Methods.
+- Methods §3.3.2: `vesselType` → `Vessel type` (prose + math + table note).
+
+### Cleanup
+
+- Removed orphan `paper1/sections/results_loo_comparison.Rmd` (legacy main
+  text section, content already in Appendix B).
+- Removed `paper1/sections/_drafts/` (5 files from the May draft cycle, all
+  already integrated).
+- Removed 8 `.pre_recorte_*.bak` and `.pre_pdf_fixes.bak` files (post-recorte
+  backups from May 27).
+
 ## 2026-05-08 (paper2: Version C diagnostic resolution, NB spec audit, planned refactor)
 
 This entry consolidates a session that started from a review of
