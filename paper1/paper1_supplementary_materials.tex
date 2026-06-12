@@ -230,7 +230,26 @@ one decimal place; jurel priors are centred at zero so that posterior
 identification is driven by the structural likelihood rather than by
 the boundary solution. All priors are independent normal with unit
 standard deviation; no hierarchical pooling is imposed because
-\(\rho^{CHL}\) switches sign between anchoveta and sardina com\textquotesingle un.
+\(\rho^{CHL}\) switches sign between anchoveta and sardine.
+
+This prior-elicitation strategy is a form of empirical Bayes: the
+prior centres for anchoveta and sardine are derived from the same
+2000--2024 biomass series that enters the state-space likelihood,
+which trades pure data-prior independence for tractable identification
+under \(N=25\) annual observations. We adopt this trade-off deliberately
+for two reasons. First, the prior standard deviation \(\sigma = 1\) is
+large enough that the posterior is free to move substantially: the
+posterior of \(\rho_s^{CHL}\) for anchoveta migrates to \(-3.65\)
+(prior mean \(-2.3\)), more than one prior standard deviation from
+the centre, illustrating that the data does refine the prior when
+informative. Second, the alternative of centring all priors at zero
+would, under \(N=25\), leave the joint posterior of
+\((r_s^{0}, K_s, B_{0,s}, \rho_s^{SST}, \rho_s^{CHL})\) weakly identified
+or multimodal, producing posteriors that are uninformative for
+projections regardless of whether the underlying coupling is real or
+absent. The empirical-Bayes choice therefore makes the non-identification
+result for jack mackerel a substantive finding rather than a numerical
+artefact of weak posterior geometry.
 
 \begin{table}[!h]
 \centering
