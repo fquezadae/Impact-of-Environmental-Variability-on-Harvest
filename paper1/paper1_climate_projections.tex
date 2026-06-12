@@ -126,20 +126,6 @@
 \affil{Universidad de Concepci\'on \vspace{-48pt}}
 \newcommand{\keywords}[1]{\par\noindent\textbf{Keywords:} #1}
 \newcommand{\jelcodes}[1]{\par\noindent\textbf{JEL Codes:} #1}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -415,14 +401,14 @@ window, the implied losses are on the order of \(300\)--\(400\) kt per year
 under sustained \(+1\,^{\circ}\text{C}\) warming. The caveat is that
 \(+1\,^{\circ}\text{C}\) lies approximately four historical standard
 deviations beyond the 2000--2024 estimation window, so the projection
-relies on the log-linear extrapolation embedded in the shifter function.
+relies on the log-linear extrapolation embedded in the shifter function. Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}), and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by (\citeproc{ref-Gomez2012}{Gomez et al. 2012}, \(r=-0.83\)).
 
 Second, the two coastal stocks respond to chlorophyll-a with opposite signs: \(\rho^{CHL}_{\text{anch}} = -3.64\) (CI \([-5.01, -2.25]\)) versus
 \(\rho^{CHL}_{\text{sard}} = +2.17\) (CI \([+0.96, +3.37]\)). At one historical
 standard deviation of \(\log CHL\) (\(\hat{\sigma}_{\log CHL} = 0.095\), a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardine growth by
-approximately 23\%. This is a reduced-form footprint of the well-documented anchoveta--sardine asymmetry in the Humboldt Current ecosystem: the opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the regime-shift literature (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}) rather than a statistical artefact. The economic implication is
+approximately 23\%. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the well-documented anchoveta--sardine asymmetry under regime shifts in the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}): they might reflect the relative competitive dynamics between the two species under high-productivity regimes rather than a direct biological effect of chlorophyll on anchoveta. The positive coupling between coastal chlorophyll and common sardine recruitment in Centro-Sur Chile is documented with correlation \(r=0.92\) between CHL and log recruitment by (\citeproc{ref-Gomez2012}{Gomez et al. 2012}). The economic implication is
 first-order for this paper: the artisanal fleet, which lands both
 species, is not simply ``climate-exposed''; it is exposed to within-target heterogeneity in the sign of climate effects. A warming-and-greening
 regime therefore does not translate into a uniform shock on the artisanal
@@ -786,6 +772,9 @@ E.U. Copernicus Marine Service Information. 2025c. \emph{Global Ocean Physics Re
 \bibitem[\citeproctext]{ref-Free2019}
 Free, Christopher M., James T. Thorson, Malin L. Pinsky, Kiva L. Oken, John Wiedenmann, and Olaf P. Jensen. 2019. {``Impacts of Historical Warming on Marine Fisheries Production.''} \emph{Science} 363 (6430): 979--83. \url{https://doi.org/10.1126/science.aau1758}.
 
+\bibitem[\citeproctext]{ref-Gomez2012}
+Gomez, Fabian, Aldo Montecinos, Samuel Hormazabal, Luis A. Cubillos, Marco Correa-Ramirez, and Francisco P. Chavez. 2012. {``Impact of Spring Upwelling Variability Off Southern--Central {Chile} on Common Sardine ({Strangomera bentincki}) Recruitment.''} \emph{Fisheries Oceanography} 21 (6): 405--14. \url{https://doi.org/10.1111/j.1365-2419.2012.00632.x}.
+
 \bibitem[\citeproctext]{ref-Hicks2020-mz}
 Hicks, Robert L., Daniel S. Holland, Peter T. Kuriyama, and Kurt E. Schnier. 2020. {``Choice Sets for Spatial Discrete Choice Models in Data Rich Environments.''} \emph{Res. Energy Econ.} 60 (May): 101148.
 
@@ -806,6 +795,9 @@ Peña-Torres, Julio, Roberto Muñoz, Felipe Quezada, and Cristóbal Kaufmann. 20
 
 \bibitem[\citeproctext]{ref-Quezada2026-cp}
 Quezada-Escalona, Felipe J., Desiree Tommasi, Isaac C. Kaplan, Barbara Muhling, and Stephen M. Stohs. 2026. {``Are Fishing Decisions Flexible? Participation, Species Target, and Landing Location Choices in the {U.S.} West Coast Coastal Pelagic Species Fishery.''} \emph{Ecol. Econ.} 247: 109051. \url{https://doi.org/10.1016/j.ecolecon.2026.109051}.
+
+\bibitem[\citeproctext]{ref-Schwartzlose1999-uy}
+Schwartzlose, R. A., J. Alheit, A. Bakun, et al. 1999. {``Worldwide Large-Scale Fluctuations of Sardine and Anchovy Populations.''} \emph{S. Afr. J. Mar. Sci.} 21: 289--347.
 
 \bibitem[\citeproctext]{ref-SERNAPESCA2024-cuota}
 Servicio Nacional de Pesca y Acuicultura (SERNAPESCA), and Subsecretaría de Pesca y Acuicultura (SUBPESCA). 2024. \emph{Cuota Global, Cuota Industrial y Licencias Clase a y Clase b Con y Sin Proyecto de Ley, Año 2024}. Administrative dataset. Gobierno de Chile.

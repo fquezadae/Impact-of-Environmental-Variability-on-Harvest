@@ -114,7 +114,7 @@ window, the implied losses are on the order of $300$--$400$ kt per year
 under sustained $+1\,^{\circ}\text{C}$ warming. The caveat is that
 $+1\,^{\circ}\text{C}$ lies approximately four historical standard
 deviations beyond the 2000--2024 estimation window, so the projection
-relies on the log-linear extrapolation embedded in the shifter function.
+relies on the log-linear extrapolation embedded in the shifter function. Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy], and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by [@Gomez2012, $r=-0.83$].
 
 
 Second, the two coastal stocks respond to chlorophyll-a with opposite signs: $\rho^{CHL}_{\text{anch}} = -3.64$ (CI $[-5.01, -2.25]$) versus
@@ -122,7 +122,7 @@ $\rho^{CHL}_{\text{sard}} = +2.17$ (CI $[+0.96, +3.37]$). At one historical
 standard deviation of $\log CHL$ ($\hat{\sigma}_{\log CHL} = 0.095$, a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardine growth by
-approximately 23\%. This is a reduced-form footprint of the well-documented anchoveta--sardine asymmetry in the Humboldt Current ecosystem: the opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the regime-shift literature [@Alheit2004] rather than a statistical artefact. The economic implication is
+approximately 23\%. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the well-documented anchoveta--sardine asymmetry under regime shifts in the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy]: they might reflect the relative competitive dynamics between the two species under high-productivity regimes rather than a direct biological effect of chlorophyll on anchoveta. The positive coupling between coastal chlorophyll and common sardine recruitment in Centro-Sur Chile is documented with correlation $r=0.92$ between CHL and log recruitment by [@Gomez2012]. The economic implication is
 first-order for this paper: the artisanal fleet, which lands both
 species, is not simply "climate-exposed"; it is exposed to within-target heterogeneity in the sign of climate effects. A warming-and-greening
 regime therefore does not translate into a uniform shock on the artisanal
