@@ -311,7 +311,7 @@ Each vessel is assigned to its administrative region based on its modal departur
 
 The vector \(Z_v\) contains time-invariant vessel characteristics, including hold capacity (log of cubic meters) and vessel type. Hold capacity determines the physical constraint on catch per trip and proxies for vessel scale.
 
-For the artisanal fleet, the response to allocated anchoveta (\(H^{alloc}_{vy,\text{anchoveta}}\)) varies sharply by vessel type: small-vessel categories (BM = \emph{bote motor}, \(8\%\) of the panel) exhibit a strong positive elasticity---when their anchoveta allocation rises, they fish more trips---while large-vessel categories (LM = \emph{lancha motor}, \(77\%\)) show near-zero response. Without a vessel-type interaction, this within-class heterogeneity collapses to a misleading aggregate; we therefore include \(H^{alloc}_{vy,\text{anchoveta}} \times \text{vesselType}\) in the artisanal specification, following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}). The interaction is estimated only for \emph{vesselType} categories with at least \(50\) vessel-year observations; the remaining categories (collectively \(<0.1\%\) of artisanal effort) carry an aggregated coefficient. Sardine and jack mackerel quotas do not display this within-fleet heterogeneity.
+For the artisanal fleet, the response to allocated anchoveta (\(H^{alloc}_{vy,\text{anchoveta}}\)) varies sharply by vessel type: small-vessel categories (BM = \emph{bote motor}, \(8\%\) of the panel) exhibit a strong positive elasticity---when their anchoveta allocation rises, they fish more trips---while large-vessel categories (LM = \emph{lancha motor}, \(77\%\)) show near-zero response. Without a vessel-type interaction, this within-class heterogeneity collapses to a misleading aggregate; we therefore include \(H^{alloc}_{vy,\text{anchoveta}} \times \text{Vessel type}\) in the artisanal specification, following Kasperski (\citeproc{ref-Kasperski2015-jm}{2015}). The interaction is estimated only for \emph{Vessel type} categories with at least \(50\) vessel-year observations; the remaining categories (collectively \(<0.1\%\) of artisanal effort) carry an aggregated coefficient. Sardine and jack mackerel quotas do not display this within-fleet heterogeneity.
 
 The vector \(O_{vy}\) captures operating and regulatory constraints that vary across both vessels and years. Unlike the environmental variables in the stock dynamics model, which reflect biological productivity (SST, chlorophyll-a), the variables in the trip equation capture conditions that affect the \emph{feasibility} of fishing operations. Two vessel--year variables are constructed using each vessel's center of gravity (COG)---the catch-weighted centroid of its haul locations over the sample period. First, the number of bad-weather days is computed as the count of days per year in which the maximum daily wind speed exceeds 8 m/s at the environmental grid point (\(0.125° \approx 14\)\textasciitilde km resolution) nearest to the vessel's COG.\footnote{The wind threshold of 8 m/s corresponds approximately to Beaufort scale 5, at which purse-seine operations become difficult for artisanal vessels. We selected this threshold via AIC comparison across 8, 10, and 12 m/s cut-offs on the trip-equation fit.} Second, the number of days closed for biological closures (\textit{vedas}) is assigned based on the regulatory zone corresponding to the vessel's COG latitude. In the Centro-Sur region, sardine and anchoveta face seasonal closures for reproduction (August--October in Valparaíso--Biobío; July--October in Araucanía--Los Lagos) and recruitment (January--February in all regions), yielding 151 and 182 closed days per year, respectively. Jack mackerel has no biological closures.
 
@@ -338,7 +338,7 @@ the local climate shifters \(\{\rho_s^{SST}, \rho_s^{CHL}\}_{s=1}^{3}\)
 introduced in Section \emph{\nameref{methods}}, together with the
 basin-scale ENSO shifter \(\rho^{\text{ENSO}}_{\text{jur}}\) from the
 jack mackerel refit of Online Appendix E.4. The model reproduces the historical biomass trajectories within a median 90\% posterior band width of approximately 20\% of the mean; posterior-predictive and convergence diagnostics are reported in Online Appendices C and D. Priors are weakly informative
-and constructed from independent reduced-form regressions (Appendix A). The
+and elicited from IFOP and SPRFMO single-species assessments (Appendix A). The
 posterior-to-prior standard-deviation ratio in the rightmost column
 measures how much the 2000--2024 biomass series refines each parameter
 relative to the prior; values well below one indicate identification from
@@ -374,7 +374,7 @@ $\rho^{ENSO}$ & Jack mackerel CS & $\mathcal{N}(0.0, 0.5)$ & -0.02 & {}[-0.81, 0
 Three patterns in Table \ref{tab:rho-posteriors} organise the
 discussion: (i) the two coastal stocks are identified on both shifters,
 with sardine's SST semi-elasticity roughly twice that of anchoveta; (ii) their CHL
-shifters carry opposite signs, reflecting a trophic asymmetry; and (iii)
+shifters carry opposite signs; and (iii)
 jack mackerel returns a structural null on all three shifters, including the basin-scale ENSO refit.
 
 First, for the two coastal upwelling stocks---anchoveta and sardine
@@ -386,7 +386,7 @@ materially. For anchoveta, a one-degree positive SST anomaly is associated
 with a semi-elasticity of \(\rho^{SST}_{\text{anch}} = -1.06\)
 (CI \([-1.79, -0.38]\)); for sardine, the corresponding semi-elasticity
 is more than twice as large, \(\rho^{SST}_{\text{sard}} = -2.75\)
-(CI \([-3.46, -2.02]\)). Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}), and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by (\citeproc{ref-Gomez2012}{Gomez et al. 2012}, \(r=-0.83\)). Evaluated at one historical standard deviation of
+(CI \([-3.46, -2.02]\)). Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}), and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by Gomez et al. (\citeproc{ref-Gomez2012}{2012}) with \(r=-0.83\). Evaluated at one historical standard deviation of
 the SST anomaly series (estimation-sample \(\hat{\sigma}_{SST} =
 0.26\,^{\circ}\text{C}\) over 2000--2024), a thermal shock of that magnitude
 lowers the intrinsic growth rate of anchoveta by approximately 24\%
@@ -408,32 +408,16 @@ Second, the two coastal stocks respond to chlorophyll-a with opposite signs: \(\
 standard deviation of \(\log CHL\) (\(\hat{\sigma}_{\log CHL} = 0.095\), a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardine growth by
-approximately 23\%. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the well-documented anchoveta--sardine asymmetry under regime shifts in the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}): they might reflect the relative competitive dynamics between the two species under high-productivity regimes rather than a direct biological effect of chlorophyll on anchoveta. The positive coupling between coastal chlorophyll and common sardine recruitment in Centro-Sur Chile is documented with correlation \(r=0.92\) between CHL and log recruitment by (\citeproc{ref-Gomez2012}{Gomez et al. 2012}). The economic implication is
-first-order for this paper: the artisanal fleet, which lands both
-species, is not simply ``climate-exposed''; it is exposed to within-target heterogeneity in the sign of climate effects. A warming-and-greening
-regime therefore does not translate into a uniform shock on the artisanal
-sector, but into a substitution across species that the current
-quota-allocation rules, indexed by species, cannot fully absorb.
+approximately 23\%. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the well-documented anchoveta--sardine asymmetry under regime shifts in the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}): they might reflect the relative competitive dynamics between the two species under high-productivity regimes rather than a direct biological effect of chlorophyll on anchoveta. The positive coupling between coastal chlorophyll and common sardine recruitment in Centro-Sur Chile is documented with correlation \(r=0.92\) between CHL and log recruitment by Gomez et al. (\citeproc{ref-Gomez2012}{2012}). A warming-and-greening regime
+therefore does not produce a uniform shock on the artisanal fleet,
+because anchoveta and sardine respond to chlorophyll with opposite signs.
+The net impact on each vessel depends on its realized catch composition
+over the two species, which we integrate at the fleet level in Section
+\emph{\nameref{projections}}.
 
-Third, and in marked contrast, neither SST nor CHL shifters are identified for jack mackerel. The posterior standard deviations \(\sigma_{\text{post}}\)
-are indistinguishable from the prior scale (\(\sigma_{\text{post}}/\sigma_{\text{prior}}
-\approx 1\)), the posterior means lie near zero, and the credible intervals
-straddle zero in both directions. This is the expected result under the
-null hypothesis that jack mackerel productivity at the Centro-Sur scale is
-not locally coupled to the Chilean coastal upwelling regime---which is
-biologically sensible given its transboundary Southeast Pacific stock
-structure managed through SPRFMO. Econometrically, the model correctly
-reports non-identification rather than producing a spurious coefficient,
-which is a strength of the Bayesian state-space approach with structurally
-informed priors: the data can either move the prior or, as here, confirm
-that they are silent about it. This is the econometric dividend of
-Cowles-style structural identification in fishery climate-impact
-assessment: the structural posterior reports the absence of local
-climate signal where a reduced-form benchmark would have produced an
-artefactually precise but structurally meaningless coefficient, which
-would then propagate into climate projections as if it were information.
+Third, and in marked contrast, neither SST nor CHL shifters are identified for jack mackerel. Unlike anchoveta and sardine, jack mackerel priors are vague and centered at zero (Appendix A), so the posterior moves only if the data refines it. That the posterior coincides with the prior---\(\sigma_{\text{post}}/\sigma_{\text{prior}} \approx 1\), means near zero, credible intervals straddling zero---indicates that the 2000--2024 biomass series provides insufficient information to identify climate effects on jack mackerel productivity at this scale, consistent with jack mackerel ranging across the broader Southeast Pacific rather than being driven by local Chilean conditions (it is managed through SPRFMO accordingly). The model correctly reports this non-identification rather than producing a spurious coefficient.
 
-Online Appendix E reports five complementary robustness tests of this null: three nested coastal aggregations, a dual-source extension with a Northern acoustic series, basin-scale ENSO shifters at lags 1 and 2, a joint specification with all three shifters active simultaneously, and an attempted SPRFMO regional-assessment integration. All five converge on posterior-to-prior ratios between \(0.94\) and \(1.03\), indistinguishable from unity. The local non-identification is therefore structural rather than an artefact of spatial aggregation, sample size, mis-specified forcing scale, or joint-specification convention. The relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins---behaviour, location, phenology---not captured in the elasticity of annual aggregate productivity, consistent with its transboundary SPRFMO management (\citeproc{ref-Arcos2001-jq}{Arcos et al. 2001}; \citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al. 2017}).
+Online Appendix E reports five complementary robustness tests of this null: three nested coastal aggregations, a dual-source extension with a Northern Chilean acoustic series, basin-scale ENSO shifters at lags 1 and 2, a joint specification with all three shifters active simultaneously, and an extension using the broader SPRFMO range-wide jack mackerel stock assessment. All five converge on posterior-to-prior ratios between \(0.94\) and \(1.03\), indistinguishable from unity. These tests try to rule out the standard technical explanations for the null: too small an area, too few years, the wrong climate variable, the wrong econometric specification, or the wrong geographic scope. The relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins---behaviour, location, and the seasonal timing of spawning and migration (\citeproc{ref-Arancibia2019-FIPA}{Arancibia et al. 2019}; \citeproc{ref-Arcos2001-jq}{Arcos et al. 2001}; \citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al. 2017})---not captured in the elasticity of annual aggregate productivity.
 
 Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
 forest plot.
@@ -441,11 +425,7 @@ forest plot.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{../figs/t4b/t4b_full_rho_shifters.png}
-\caption{Posterior and prior distributions of the climate shifters
-$\rho_s^{SST}, \rho_s^{CHL}$ by stock. Anchoveta and sardine show
-substantial posterior updating with narrow credible intervals excluding
-zero; jack mackerel posteriors coincide with the weakly informative
-prior centred at zero.}
+\caption{Posterior and prior distributions of the climate shifters $\rho_s^{SST}$, $\rho_s^{CHL}$, and $\rho_{jur}^{ENSO}$ by stock. Solid lines show the posterior $90\%$ (thin) and $50\%$ (thick) credible intervals; dashed lines show the prior $90\%$ credible interval. Anchoveta and sardine show substantial posterior updating with narrow credible intervals excluding zero. Jack mackerel posteriors (SST, CHL, ENSO) coincide with their vague priors centred at zero, indicating non-identification.}
 \label{fig:rho-forest}
 \end{figure}
 
@@ -504,7 +484,7 @@ Observations & 319 & 4,201 \\
 \end{threeparttable}
 \end{table}
 
-The coefficients on species-specific allocated harvest reveal cross-fleet heterogeneity that the legacy scalar specification could not capture. The industrial fleet shows a positive and significant response of trips to allocated anchoveta and sardine quotas (quota-binding behaviour), while the response to jack mackerel quota is indistinguishable from zero. The artisanal fleet's response to anchoveta allocation is scale-dependent and only becomes visible in the Kasperski-aligned interaction \(H^{\text{alloc}}_{\text{anch}} \times \text{vesselType}\): smaller vessel categories (BM = bote motor, \(8\%\) of the panel) exhibit a strong positive coefficient on anchoveta allocation while larger categories do not, so the scalar specification averages the two effects and reports a near-zero aggregate. The species-specific quota-share mechanism translates regional TACs into vessel-level effort adjustments under the projections of Section \emph{\nameref{projections}}.
+The coefficients on species-specific allocated harvest reveal cross-fleet heterogeneity that the legacy scalar specification could not capture. The industrial fleet shows a positive and significant response of trips to allocated anchoveta and sardine quotas (quota-binding behaviour), while the response to jack mackerel quota is indistinguishable from zero. The artisanal fleet's response to anchoveta allocation is scale-dependent and only becomes visible in the Kasperski-aligned interaction \(H^{\text{alloc}}_{\text{anch}} \times \text{Vessel type}\): smaller vessel categories (BM = bote motor, \(8\%\) of the panel) exhibit a strong positive coefficient on anchoveta allocation while larger categories do not, so the scalar specification averages the two effects and reports a near-zero aggregate. The species-specific quota-share mechanism translates regional TACs into vessel-level effort adjustments under the projections of Section \emph{\nameref{projections}}.
 
 The two fleets differ markedly in price responsiveness. For the industrial fleet, the jack mackerel price is positive and significant (\(p < 0.01\)), consistent with this fleet's primary orientation toward jack mackerel. Sardine and anchoveta prices have no detectable effect on industrial effort, reflecting the limited participation of industrial vessels in the sardine--anchoveta fishery. For the artisanal fleet, the sardine price is positive and significant (\(p < 0.01\)), consistent with sardine being the dominant target species for artisanal vessels in the Centro-Sur region. The anchoveta-price coefficient is negative and significant; this counterintuitive sign likely reflects simultaneity, as years of low anchoveta availability generate both higher prices (through the inverse-demand channel) and fewer trips (through reduced catch opportunities). The negative reduced-form correlation does not threaten the projection exercise: the trip equation enters Section \emph{\nameref{projection-approach}} only as the empirical mapping from harvest allocations and environmental conditions to fleet-level trips, not as a causal demand curve.
 

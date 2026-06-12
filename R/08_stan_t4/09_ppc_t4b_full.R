@@ -41,8 +41,8 @@ T4B_FULL_OUT_DIR <- "data/outputs/t4b"
 T4B_FULL_FIG_DIR <- "figs/t4b"
 T4B_FULL_STOCKS  <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
 STOCK_LABELS <- c(anchoveta_cs = "Anchoveta CS",
-                  sardina_comun_cs = "Sardina común CS",
-                  jurel_cs = "Jurel CS")
+                  sardina_comun_cs = "Sardine CS",
+                  jurel_cs = "Jack mackerel CS")
 dir.create(T4B_FULL_FIG_DIR, recursive = TRUE, showWarnings = FALSE)
 
 theme_ppc <- theme_bw(base_size = 11) +
@@ -236,22 +236,52 @@ plot_rho_forest <- function(fit, fit_enso = NULL) {
   # Lock factor order so legend reads SST -> log(CHL) -> ENSO and ENSO appears last
   dr$covar <- factor(dr$covar, levels = c("SST", "log(CHL)", "ENSO"))
 
+  # Priors used in the state-space likelihood (Appendix A).
+  # SST/CHL priors: anchoveta and sardine centered on the joint MLE of the
+  # deterministic hindcast; jack mackerel deliberately vague at zero.
+  # ENSO prior (jack mackerel only): N(0, 0.5), tighter scale.
+  prior_specs <- tibble::tribble(
+    ~stock_id,          ~covar,      ~prior_mean, ~prior_sd,
+    "anchoveta_cs",     "SST",       -2.3,         1.0,
+    "sardina_comun_cs", "SST",       -2.0,         1.0,
+    "jurel_cs",         "SST",        0.0,         1.0,
+    "anchoveta_cs",     "log(CHL)",  -2.3,         1.0,
+    "sardina_comun_cs", "log(CHL)",  +2.1,         1.0,
+    "jurel_cs",         "log(CHL)",   0.0,         1.0,
+    "jurel_cs",         "ENSO",       0.0,         0.5
+  ) %>%
+    mutate(
+      stock_lbl = STOCK_LABELS[stock_id],
+      covar     = factor(covar, levels = c("SST", "log(CHL)", "ENSO")),
+      med       = prior_mean,
+      q05       = prior_mean - 1.645 * prior_sd,
+      q95       = prior_mean + 1.645 * prior_sd
+    ) %>%
+    semi_join(dr, by = c("stock_lbl", "covar"))   # only priors shown in dr
+
   ggplot(dr, aes(y = stock_lbl, x = med, color = covar)) +
     geom_vline(xintercept = 0, color = "grey50", linetype = "dashed") +
+    # Prior 90% CI (dashed, lighter), drawn first so posterior overlays it
+    geom_linerange(data = prior_specs,
+                   aes(xmin = q05, xmax = q95),
+                   linewidth = 0.5, linetype = "dashed", alpha = 0.7,
+                   position = position_dodge(width = 0.8),
+                   show.legend = FALSE) +
+    # Posterior 90% CI (thin solid)
     geom_linerange(aes(xmin = q05, xmax = q95), linewidth = 0.6,
-                   position = position_dodge(width = 0.5)) +
+                   position = position_dodge(width = 0.8)) +
+    # Posterior 50% CI (thick solid)
     geom_linerange(aes(xmin = q25, xmax = q75), linewidth = 1.8,
-                   position = position_dodge(width = 0.5)) +
-    geom_point(size = 3, position = position_dodge(width = 0.5)) +
+                   position = position_dodge(width = 0.8)) +
+    geom_point(size = 3, position = position_dodge(width = 0.8)) +
     geom_text(aes(label = sprintf("%.2f", med)),
-              position = position_dodge(width = 0.5),
+              position = position_dodge(width = 0.8),
               hjust = 0.5, vjust = -1.2, size = 3, show.legend = FALSE) +
     scale_color_manual(values = c(SST = "firebrick", `log(CHL)` = "forestgreen",
                                   ENSO = "steelblue"),
                        name = NULL, drop = FALSE) +
-    labs(title = "(5) Shifters ambientales -- efecto sobre r_t,s (paper 1 main + ENSO)",
-         subtitle = "r_t,s = r_base * exp(rho_SST * SST_c[t-1] + rho_CHL * logCHL_c[t-1] [+ rho_ENSO * ENSO[t-1] for jurel])",
-         x = "rho (coef de elasticidad semi-log)", y = NULL) +
+    labs(title = NULL, subtitle = NULL,
+         x = expression(rho ~ " (semi-elasticity)"), y = NULL) +
     theme_ppc +
     theme(legend.position = "bottom")
 }

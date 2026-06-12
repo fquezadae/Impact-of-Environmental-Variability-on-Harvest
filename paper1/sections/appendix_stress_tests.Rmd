@@ -1,17 +1,17 @@
 # Reduced-form stress tests and prior elicitation {#appendix-stress}
 
 This appendix documents the protocol used to elicit the prior densities
-on the climate shifters $(\rho_i^{SST}, \rho_i^{CHL})$ that enter the
+on the climate shifters $(\rho_s^{SST}, \rho_s^{CHL})$ that enter the
 state-space specification of the Stock dynamics subsection of the main text, together
 with the identifiability diagnostic that motivates the recourse to a
 Bayesian likelihood rather than a direct maximum-likelihood treatment.
 
 ## Deterministic hindcast and cross-variant fit {#sec:appendix-stress-spec}
 
-For each stock $i$ we estimate a deterministic Schaefer hindcast over
-$2000$--$2024$, $\hat B_{i,t+1} = \hat B_{i,t} + r_{i,t}\hat B_{i,t}(1 - \hat B_{i,t}/K_i) - C_{i,t}$
-with $r_{i,t} = r_i^{0} \exp(\rho_i^{SST}(SST_{t-1}-\overline{SST}) + \rho_i^{CHL}(\log CHL_{t-1}-\overline{\log CHL}))$,
-biological parameters $(r_i^{0}, K_i)$ held at the centres of the
+For each stock $s$ we estimate a deterministic Schaefer hindcast over
+$2000$--$2024$, $\hat B_{s,t+1} = \hat B_{s,t} + r_{s,t}\hat B_{s,t}(1 - \hat B_{s,t}/K_s) - C_{s,t}$
+with $r_{s,t} = r_s^{0} \exp(\rho_s^{SST}(SST_{t-1}-\overline{SST}) + \rho_s^{CHL}(\log CHL_{t-1}-\overline{\log CHL}))$,
+biological parameters $(r_s^{0}, K_s, B_{0,s})$ held at the centres of the
 IFOP/SPRFMO single-species priors, and shifters estimated by bounded
 least squares on $[-3,3]^2$ minimising median absolute percent error
 (MAPE). Four nested variants are reported: base ($\rho=0$), $+$SST
@@ -82,13 +82,32 @@ single-species hindcast; the Bayesian state-space specification
 addresses both limitations within a single inferential framework.
 
 Table \ref{tab:stress-priors} reports the priors on
-$(\rho_i^{SST}, \rho_i^{CHL})$ used in the structural likelihood.
+$(\rho_s^{SST}, \rho_s^{CHL})$ used in the structural likelihood.
 Prior centres for the two coastal stocks are the joint MLEs rounded to
 one decimal place; jurel priors are centred at zero so that posterior
 identification is driven by the structural likelihood rather than by
 the boundary solution. All priors are independent normal with unit
 standard deviation; no hierarchical pooling is imposed because
-$\rho^{CHL}$ switches sign between anchoveta and sardina com\'un.
+$\rho^{CHL}$ switches sign between anchoveta and sardine.
+
+This prior-elicitation strategy is a form of empirical Bayes: the
+prior centres for anchoveta and sardine are derived from the same
+2000--2024 biomass series that enters the state-space likelihood,
+which trades pure data-prior independence for tractable identification
+under $N=25$ annual observations. We adopt this trade-off deliberately
+for two reasons. First, the prior standard deviation $\sigma = 1$ is
+large enough that the posterior is free to move substantially: the
+posterior of $\rho_s^{CHL}$ for anchoveta migrates to $-3.65$
+(prior mean $-2.3$), more than one prior standard deviation from
+the centre, illustrating that the data does refine the prior when
+informative. Second, the alternative of centring all priors at zero
+would, under $N=25$, leave the joint posterior of
+$(r_s^{0}, K_s, B_{0,s}, \rho_s^{SST}, \rho_s^{CHL})$ weakly identified
+or multimodal, producing posteriors that are uninformative for
+projections regardless of whether the underlying coupling is real or
+absent. The empirical-Bayes choice therefore makes the non-identification
+result for jack mackerel a substantive finding rather than a numerical
+artefact of weak posterior geometry.
 
 ```{r stress-priors-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 priors_tbl <- data.frame(
