@@ -434,7 +434,7 @@ forest plot.
 Table \ref{tab:poisson_results} reports the negative binomial estimates separately for each fleet segment. The specification includes year fixed effects, which absorb aggregate shocks affecting both fleets contemporaneously---most notably the 2019 social outbreak (\emph{estallido social}) and the 2020--2022 COVID-19 period---and identify the trip-equation coefficients from within-year cross-vessel variation.
 
 \begin{table}[!htbp] \centering 
-  \caption{Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = 319, $N_{ART}$ = 4201)} 
+  \caption{Negative binomial estimates of annual fishing trips (2013--2024, $N_{IND}$ = 319, $N_{ART}$ = 4184)} 
   \label{tab:poisson_results} 
 \footnotesize 
 \begin{threeparttable}
@@ -446,42 +446,38 @@ Table \ref{tab:poisson_results} reports the negative binomial estimates separate
  & Industrial & Artisanal \\ 
 \\[-1.8ex] & (1) & (2)\\ 
 \hline \\[-1.8ex] 
- Hold capacity (log m$^3$) & 0.097 (0.221) & 0.132$^{***}$ (0.046) \\ 
-  Allocated harvest anchoveta ($H^{alloc}_{vy,anch}$, tons) & $-$0.0003 (0.0002) & 0.016$^{***}$ (0.003) \\ 
-  Allocated harvest sardine ($H^{alloc}_{vy,sard}$, tons) & 0.0001$^{***}$ (0.00003) & 0.001$^{***}$ (0.00004) \\ 
-  Allocated harvest jack mackerel ($H^{alloc}_{vy,jur}$, tons) & 0.00002$^{*}$ (0.00001) & 0.001 (0.001) \\ 
-  Price anchoveta (1000s \$/ton) & $-$0.004 (0.004) & 0.011$^{***}$ (0.003) \\ 
-  Price sardine (1000s \$/ton) & $-$0.016$^{***}$ (0.003) & 0.003$^{**}$ (0.002) \\ 
+ Hold capacity (log m$^3$) & 0.097 (0.221) & 0.132$^{***}$ (0.045) \\ 
+  Allocated harvest anchoveta ($H^{alloc}_{vy,anch}$, tons) & $-$0.0003 (0.0002) & 0.007$^{***}$ (0.002) \\ 
+  Allocated harvest sardine ($H^{alloc}_{vy,sard}$, tons) & 0.0001$^{***}$ (0.00003) & 0.004$^{***}$ (0.001) \\ 
+  Allocated harvest jack mackerel ($H^{alloc}_{vy,jur}$, tons) & 0.00002$^{*}$ (0.00001) & 0.001 (0.0005) \\ 
+  Price anchoveta (1000s \$/ton) & $-$0.004 (0.004) & 0.010$^{***}$ (0.003) \\ 
+  Price sardine (1000s \$/ton) & $-$0.016$^{***}$ (0.003) & 0.004$^{**}$ (0.002) \\ 
   Price jack mackerel (1000s \$/ton) & 0.008$^{***}$ (0.003) & 0.007$^{***}$ (0.002) \\ 
   Bad weather days & $-$0.0003 (0.001) & $-$0.001 (0.0005) \\ 
-  Veda days & $-$0.079$^{***}$ (0.005) & 0.013$^{***}$ (0.002) \\ 
-  Vessel type (UNK) & $-$1.450$^{***}$ (0.163) & 0.160 (0.099) \\ 
-  Vessel type (BR) &  & $-$0.329$^{***}$ (0.079) \\ 
-  Vessel type (BRV) &  & $-$0.774$^{***}$ (0.079) \\ 
-  Vessel type (L) &  & $-$2.212$^{***}$ (0.377) \\ 
-  Vessel type (LM) &  & 0.289$^{***}$ (0.098) \\ 
-  $H^{alloc}_{vy,anch} \times$ Vessel type (BR) &  & $-$0.021$^{***}$ (0.008) \\ 
-  $H^{alloc}_{vy,anch} \times$ Vessel type (BRV) &  & $-$66.546$^{***}$ (13.119) \\ 
-  $H^{alloc}_{vy,anch} \times$ Vessel type (L) &  & 501.903 (501.942) \\ 
-  $H^{alloc}_{vy,anch} \times$ Vessel type (LM) &  & $-$0.017$^{***}$ (0.003) \\ 
-  $H^{alloc}_{vy,anch} \times$ Vessel type (UNK) &  & $-$0.013$^{***}$ (0.003) \\ 
-  Constant & 15.763$^{***}$ (2.605) & $-$3.697$^{***}$ (0.519) \\ 
+  Veda days & $-$0.079$^{***}$ (0.005) & 0.012$^{***}$ (0.002) \\ 
+  Vessel type (UNK) & $-$1.450$^{***}$ (0.163) & 0.166 (0.102) \\ 
+  Vessel type (LM) &  & 0.466$^{***}$ (0.100) \\ 
+  $H^{alloc}_{vy,anch} \times$ Vessel type (LM) &  & $-$0.007$^{***}$ (0.002) \\ 
+  $H^{alloc}_{vy,anch} \times$ Vessel type (UNK) &  & $-$0.007$^{***}$ (0.002) \\ 
+  $H^{alloc}_{vy,sard} \times$ Vessel type (LM) &  & $-$0.003$^{***}$ (0.001) \\ 
+  $H^{alloc}_{vy,sard} \times$ Vessel type (UNK) &  & $-$0.00002 (0.001) \\ 
+  Constant & 15.763$^{***}$ (2.605) & $-$3.776$^{***}$ (0.519) \\ 
  \hline \\[-1.8ex] 
 Year fixed effects & Yes & Yes \\ 
-Pseudo-$R^2$ (Cragg-Uhler) & 0.302 & 0.631 \\ 
-Observations & 319 & 4,201 \\ 
+Pseudo-$R^2$ (Cragg-Uhler) & 0.302 & 0.632 \\ 
+Observations & 319 & 4,184 \\ 
 \hline 
 \hline \\[-1.8ex] 
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \footnotesize
 \item \textit{Note:} $^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01. Vessel-clustered robust SEs. Prices in constant 2018 thousands of pesos/ton.
-\item LR test NB vs Poisson: Industrial $\chi^2$ = 397.6; Artisanal $\chi^2$ = 37046.9 (both $p < 0.001$).
+\item LR test NB vs Poisson: Industrial $\chi^2$ = 397.6; Artisanal $\chi^2$ = 36496.9 (both $p < 0.001$).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-The coefficients on species-specific allocated harvest reveal cross-fleet heterogeneity. For the industrial fleet, the sardine allocation yields a positive and significant trip response (\(p < 0.001\)), the jack mackerel allocation is positive and marginally significant (\(p < 0.10\)), and the anchoveta coefficient is not statistically distinguishable from zero. The artisanal fleet shows positive and significant responses to anchoveta and sardine allocations (both at \(p < 0.001\)); the jack mackerel allocation is positive but not statistically distinguishable from zero. The artisanal anchoveta response is scale-dependent: the \emph{bote motor} (BM) reference category exhibits a strong positive coefficient (\(\hat{\beta}_h^{\,\mathrm{anch,BM}} = +0.016\), \(p < 0.001\)), while the dominant \emph{lancha motor} (LM) category has an interaction coefficient of equal and opposite magnitude that cancels this base effect, so the aggregate LM response to anchoveta allocation is near zero.
+The coefficients on species-specific allocated harvest reveal cross-fleet heterogeneity. For the industrial fleet, the sardine allocation yields a positive and significant trip response (\(p < 0.001\)), the jack mackerel allocation is positive and marginally significant (\(p < 0.10\)), and the anchoveta coefficient is not statistically distinguishable from zero. The artisanal fleet shows positive and significant responses to anchoveta and sardine allocations (both at \(p < 0.001\)); the jack mackerel allocation is positive but not statistically distinguishable from zero. Both species show scale-dependent responses in the artisanal fleet, but with different patterns. For anchoveta, only the \emph{bote motor} (BM, \(8\%\) of the panel) exhibits a positive marginal coefficient (\(\hat{\beta}_h^{\,\mathrm{anch,BM}} = +0.007\), \(p < 0.01\)); the \emph{lancha motor} (LM, \(77\%\)) and \emph{unidentified} (UNK, \(14\%\)) categories cancel this base effect through significant negative interactions (\(-0.007\) each, both \(p < 0.01\)). For sardine, BM and UNK exhibit positive coefficients (\(\hat{\beta}_h^{\,\mathrm{sard,BM}} = +0.004\), \(p < 0.01\); UNK interaction \(\approx 0\)); only LM cancels the base effect through a significant negative interaction (\(-0.003\), \(p < 0.01\)).
 
 The two fleets differ in price responsiveness. For the industrial fleet, both the jack mackerel and sardine prices are significant at the 1\% level---jack mackerel with a positive coefficient and sardine with a negative coefficient; the anchoveta price has no detectable effect. The artisanal fleet shows positive and significant coefficients on all three prices: anchoveta and jack mackerel at the 1\% level and sardine at the 5\% level. The artisanal pattern is consistent with a standard supply-side response: higher ex-vessel prices for the species the fleet targets are associated with more trips. The trip equation enters Section \emph{\nameref{projection-approach}} only as the empirical mapping from harvest allocations and environmental conditions to fleet-level trips, not as a causal demand curve.
 
@@ -585,10 +581,10 @@ Table \ref{tab:trip_compstat} translates the comparative-statics object on intri
 \toprule
 Fleet & Scenario & $\Pr(f^H_v < 0.5)$ & $\%\Delta$ trips (marginal) & $\%\Delta$ trips (conditional)\\
 \midrule
-Artisanal & SSP2-4.5, 2041-2060 & 0.95\,[0.93,\,0.96] & -13.2\%\,[-13.3\%,\,-12.2\%] & -4.6\%\,[-4.8\%,\,-4.0\%]\\
-Artisanal & SSP2-4.5, 2081-2100 & 0.98\,[0.97,\,0.99] & -14.1\%\,[-14.3\%,\,-13.7\%] & -3.9\%\,[-4.5\%,\,-3.4\%]\\
-Artisanal & SSP5-8.5, 2041-2060 & 0.98\,[0.96,\,0.98] & -13.6\%\,[-13.8\%,\,-13.4\%] & -4.2\%\,[-4.5\%,\,-4.1\%]\\
-Artisanal & SSP5-8.5, 2081-2100 & 0.99\,[0.99,\,0.99] & -15.0\%\,[-15.2\%,\,-14.9\%] & -3.8\%\,[-5.5\%,\,-2.6\%]\\
+Artisanal & SSP2-4.5, 2041-2060 & 0.95\,[0.93,\,0.96] & -16.1\%\,[-16.9\%,\,-14.9\%] & -8.0\%\,[-8.2\%,\,-7.7\%]\\
+Artisanal & SSP2-4.5, 2081-2100 & 0.98\,[0.97,\,0.99] & -17.0\%\,[-17.1\%,\,-16.9\%] & -7.9\%\,[-13.8\%,\,-5.2\%]\\
+Artisanal & SSP5-8.5, 2041-2060 & 0.98\,[0.96,\,0.98] & -16.6\%\,[-16.8\%,\,-15.9\%] & -8.8\%\,[-11.2\%,\,-6.5\%]\\
+Artisanal & SSP5-8.5, 2081-2100 & 0.99\,[0.99,\,0.99] & -17.6\%\,[-17.8\%,\,-17.5\%] & -6.2\%\,[-10.6\%,\,-5.9\%]\\
 Industrial & SSP2-4.5, 2041-2060 & 0.12\,[0.11,\,0.12] & -1.0\%\,[-1.0\%,\,-0.8\%] & -0.7\%\,[-0.7\%,\,-0.7\%]\\
 Industrial & SSP2-4.5, 2081-2100 & 0.12\,[0.12,\,0.12] & -0.9\%\,[-1.0\%,\,-0.8\%] & -0.7\%\,[-0.8\%,\,-0.7\%]\\
 Industrial & SSP5-8.5, 2041-2060 & 0.12\,[0.12,\,0.12] & -0.8\%\,[-0.9\%,\,-0.8\%] & -0.7\%\,[-0.9\%,\,-0.7\%]\\
@@ -610,7 +606,7 @@ Two channels generate this asymmetry. The \emph{indirect biomass channel} transm
 
 The \emph{direct weather channel} transmits the signal through differential weather sensitivity: \(\hat{\beta}_{\text{weather}}^{\text{ART}} = -0.0007\) (marginally significant) vs \(\hat{\beta}_{\text{weather}}^{\text{IND}} = -0.0003\) (indistinguishable from zero), translating the projected \(+10\) to \(+23.5\) days of additional bad weather into a \(-0.7\%\) to \(-1.9\%\) contribution to the artisanal response and near-zero for industrial. The limited cross-sector transferability of the prevailing sector-level allocation locks this dual exposure into differential losses of harvest capacity, consistent with the portfolio mechanism documented by Kasperski and Holland (\citeproc{ref-Kasperski2013-jz}{2013}) and the access constraints of Oken et al. (\citeproc{ref-Oken2021-of}{2021}).
 
-The between-fleet asymmetry decomposes further into within-artisanal heterogeneity by vessel type (Table \ref{tab:tripcompstatemb}). The dominant \emph{lancha motor} (LM) segment (\(77\%\) of the panel) contracts by \(-19.9\%\) under SSP5-8.5 end-of-century, driven by its identified positive sardine elasticity and the projected \(-99.9\%\) steady-state collapse of the sardine stock. The smaller \emph{bote motor} (BM) segment (\(8\%\)) contracts by only \(-3.2\%\) at the marginal median, because its identified positive anchoveta elasticity (\(\hat{\beta}_h^{\,\mathrm{anch,BM}} = +0.016\), \(p < 0.001\)) partially offsets the sardine contraction in the high-mass posterior region. The intermediate UNK segment (\(14\%\)) contracts by \(-7.6\%\). Portfolio-loss probability exceeds \(0.98\) in all three categories, so the differential within artisanal is concentrated in the magnitude rather than the incidence of portfolio collapse.
+The between-fleet asymmetry decomposes further into within-artisanal heterogeneity by vessel type (Table \ref{tab:tripcompstatemb}). The dominant \emph{lancha motor} (LM) segment (\(77\%\) of the panel) contracts by \(-19.6\%\) under SSP5-8.5 end-of-century. Although LM has near-zero marginal coefficients on both anchoveta and sardine after interaction cancellation, its absolute exposure to the collapsing sardine stock dominates the contraction (\(H^{\text{alloc}}_{\text{sard}}\) median \(\approx 616\) t/yr, an order of magnitude above the other categories). The smaller \emph{bote motor} (BM) segment (\(8\%\)) contracts by \(-10.0\%\) at the marginal median, less than LM because its sardine exposure (\(\approx 66\) t/yr) is roughly ten times smaller. The intermediate UNK segment (\(14\%\)) contracts by \(-11.9\%\). Portfolio-loss probability exceeds \(0.98\) in all three categories, so the differential within artisanal is concentrated in the magnitude rather than the incidence of portfolio collapse.
 
 \begin{table}[!h]
 \centering
@@ -622,9 +618,9 @@ The between-fleet asymmetry decomposes further into within-artisanal heterogenei
 \toprule
   & Segment & Pr(portfolio loss) & $\%\Delta$ trips (marginal) & Cross-model IQR & $\%\Delta$ trips (conditional)\\
 \midrule
-LM & Lancha motor (LM) & 0.99 & -19.9\% & {}[-20.0\%,\,-19.7\%] & -16.1\%\\
-UNK & Unidentified (UNK) & 0.98 & -7.6\% & {}[-8.1\%,\,-7.3\%] & -1.6\%\\
-BM & Bote motor (BM) & 1.00 & -3.2\% & {}[-3.3\%,\,-3.0\%] & +16.3\%\\
+LM & Lancha motor (LM) & 0.99 & -19.6\% & {}[-19.7\%,\,-19.5\%] & -16.0\%\\
+UNK & Unidentified (UNK) & 0.98 & -11.9\% & {}[-12.0\%,\,-11.8\%] & -2.1\%\\
+BM & Bote motor (BM) & 1.00 & -10.0\% & {}[-10.2\%,\,-9.8\%] & -5.6\%\\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}

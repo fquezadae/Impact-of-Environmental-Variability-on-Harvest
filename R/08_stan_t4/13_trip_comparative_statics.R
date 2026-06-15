@@ -471,7 +471,23 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
     names(beta_h_anch_art_by_emb) %in% T6_TIPO_EMB_KEEP_ART
   ]
 
-  beta_h_sard_art <- as.numeric(cf_art["H_alloc_sardina_comun"])
+  # ART: beta_h_sard also interacts with TIPO_EMB (2026-06-15 spec update).
+  # Same lookup mechanics as anchoveta. Joint Wald test on (sard + jur) × TIPO_EMB
+  # rejects at p < 2e-16; sard × LM individually p < 0.001 under cluster SEs.
+  # Jurel interaction kept out since (i) individual jur × TIPO_EMB are NS, and
+  # (ii) factor_B_jur = 1 by convention, so any β_h^jur is absorbed by zero.
+  base_sard_art <- as.numeric(cf_art["H_alloc_sardina_comun"])
+  inter_sard_names <- grep("^TIPO_EMB.+:H_alloc_sardina_comun$",
+                           names(cf_art), value = TRUE)
+  beta_h_sard_art_by_emb <- c(BM = base_sard_art)
+  for (nm in inter_sard_names) {
+    em <- sub("TIPO_EMB(.+):H_alloc_sardina_comun", "\\1", nm)
+    beta_h_sard_art_by_emb[em] <- base_sard_art + as.numeric(cf_art[nm])
+  }
+  beta_h_sard_art_by_emb <- beta_h_sard_art_by_emb[
+    names(beta_h_sard_art_by_emb) %in% T6_TIPO_EMB_KEEP_ART
+  ]
+
   beta_h_jur_art  <- as.numeric(cf_art["H_alloc_jurel"])
   beta_W_art      <- as.numeric(cf_art["days_bad_weather"])
 
@@ -487,12 +503,14 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
   cat(sprintf("    IND: beta_h_anch=%.6f  beta_h_sard=%.6f  beta_h_jur=%.6f\n",
               beta_h_anch_ind, beta_h_sard_ind, beta_h_jur_ind))
   cat(sprintf("    IND: beta_weather=%.6f\n", beta_W_ind))
-  cat(sprintf("    ART (TIPO_EMB-dependent for anchoveta):\n"))
+  cat(sprintf("    ART (TIPO_EMB-dependent for anchoveta AND sardine):\n"))
   for (em in names(beta_h_anch_art_by_emb)) {
-    cat(sprintf("       beta_h_anch[%s]=%.6f\n", em, beta_h_anch_art_by_emb[em]))
+    cat(sprintf("       beta_h_anch[%s]=%.6f  beta_h_sard[%s]=%.6f\n",
+                em, beta_h_anch_art_by_emb[em],
+                em, beta_h_sard_art_by_emb[em]))
   }
-  cat(sprintf("    ART: beta_h_sard=%.6f  beta_h_jur=%.6f  beta_weather=%.6f\n\n",
-              beta_h_sard_art, beta_h_jur_art, beta_W_art))
+  cat(sprintf("    ART: beta_h_jur=%.6f  beta_weather=%.6f\n\n",
+              beta_h_jur_art, beta_W_art))
   cat("[T7] Legacy (scalar) for appendix sensitivity:\n")
   cat(sprintf("    IND: beta_H=%.6f  beta_w=%.6f\n", beta_H_ind_leg, beta_W_ind_leg))
   cat(sprintf("    ART: beta_H=%.6f  beta_w=%.6f\n\n", beta_H_art_leg, beta_W_art_leg))
@@ -500,7 +518,7 @@ t6_fit_nb <- function(poisson_rds = T6_POISSON_RDS) {
   list(
     # PRIMARY (Kasperski-aligned)
     beta_h_anch       = list(IND = beta_h_anch_ind, ART_by_emb = beta_h_anch_art_by_emb),
-    beta_h_sard       = c(ART = beta_h_sard_art, IND = beta_h_sard_ind),
+    beta_h_sard       = list(IND = beta_h_sard_ind, ART_by_emb = beta_h_sard_art_by_emb),
     beta_h_jur        = c(ART = beta_h_jur_art,  IND = beta_h_jur_ind),
     beta_weather      = c(ART = beta_W_art,      IND = beta_W_ind),
     # LEGACY (scalar H_alloc) for appendix sensitivity
@@ -566,7 +584,6 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_pack,
   t0 <- Sys.time()
 
   # Extract beta lookups (PRIMARY = Kasperski-aligned)
-  beta_h_sard_v <- beta_pack$beta_h_sard
   beta_h_jur_v  <- beta_pack$beta_h_jur
   beta_w_v      <- if (use_direct) beta_pack$beta_weather else NULL
 
@@ -575,13 +592,16 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_pack,
     v       <- vt[i]
     fleet   <- as.character(v$TIPO_FLOTA)
 
-    # beta_h_anch lookup: scalar for IND, TIPO_EMB-dependent for ART
+    # beta_h_anch AND beta_h_sard lookup: scalar for IND, TIPO_EMB-dependent
+    # for ART (2026-06-15 spec update: sardine interaction added to primary).
     if (fleet == "IND") {
       beta_h_anch_v <- beta_pack$beta_h_anch$IND
+      beta_h_sard_v <- beta_pack$beta_h_sard$IND
     } else {  # ART
       emb <- as.character(v$TIPO_EMB)
       beta_h_anch_v <- beta_pack$beta_h_anch$ART_by_emb[emb]
-      if (is.na(beta_h_anch_v)) {
+      beta_h_sard_v <- beta_pack$beta_h_sard$ART_by_emb[emb]
+      if (is.na(beta_h_anch_v) || is.na(beta_h_sard_v)) {
         # Should not happen post-filter; safety belt.
         next
       }
@@ -594,8 +614,8 @@ t6_compute_factor_trips <- function(factor_B_dt, vessel_tab, beta_pack,
 
     # PRIMARY indirect term: sum_s beta_h^s * H_alloc_s_hist * (fB_s - 1)
     indirect_term <- beta_h_anch_v * v$H_alloc_anch_hist * (fb_wide$fB_anch - 1) +
-                     beta_h_sard_v[[fleet]] * v$H_alloc_sard_hist * (fb_wide$fB_sard - 1) +
-                     beta_h_jur_v[[fleet]]  * v$H_alloc_jur_hist  * (fb_wide$fB_jur  - 1)
+                     beta_h_sard_v * v$H_alloc_sard_hist * (fb_wide$fB_sard - 1) +
+                     beta_h_jur_v[[fleet]] * v$H_alloc_jur_hist  * (fb_wide$fB_jur  - 1)
 
     if (use_direct) {
       vd_v <- vd[COD_BARCO == v$COD_BARCO]
