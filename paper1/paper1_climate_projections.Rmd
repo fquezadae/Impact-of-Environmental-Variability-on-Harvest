@@ -389,6 +389,8 @@ For the direct weather channel, monthly wind speed deltas from CMIP6 are applied
 
 For the indirect biomass channel, the CMIP6 SST delta (in °C) and log-CHL delta (in log-points) are added to the historical anomaly series. These enter Eq. \eqref{eq:shifter} and shift each stock's intrinsic growth rate to $r_s^{\star} = r_s^{0} \cdot \exp(\rho_s^{SST}\, \Delta SST + \rho_s^{CHL}\, \Delta \log CHL)$. The new $r_s^{\star}$ translates into a new Schaefer steady-state biomass $B_s^{\star} = K_s (1 - F_s / r_s^{\star})$---collapsing to zero if $F_s \geq r_s^{\star}$. Under proportional-TAC management, each species' relative biomass shift $B_s^{\star}/B_s^{0}$ scales the corresponding vessel-level allocated harvest $H^{alloc}_{vy,s}$. The trip equation aggregates the three species-specific shifts through the Kasperski-aligned semi-elasticities $\beta_h^s$, so each vessel's projected effort response reflects all three biomass shifts simultaneously, weighted by its historical exposure to each species. We compute the climate-driven shift in long-run productivity, $\Delta r_s^{\star}/r_s^{0}$, for every combination of CMIP6 model and posterior draw of $(\rho_s^{SST}, \rho_s^{CHL})$.
 
+Because $\Delta r_s^{\star}/r_s^{0}$ is a random variable over both dimensions (the six CMIP6 models and the posterior of the shifters), we report four summary statistics that separate the corresponding two sources of uncertainty. \emph{Climate uncertainty}---the contribution of disagreement across CMIP6 models---is summarised by computing the within-model posterior median of $\Delta r_s^{\star}/r_s^{0}$ for each of the six models and then reporting the median and IQR across those six model-specific medians. \emph{Structural uncertainty}---the contribution of parameter uncertainty about the shifters---is summarised by evaluating $\Delta r_s^{\star}/r_s^{0}$ at every posterior draw conditional on each CMIP6 model, taking the 5th and 95th percentiles to form a within-model 90\% posterior credible interval, and reporting the median lower bound and median upper bound across the six models. Finally, we report the posterior probability of a negative impact, $\Pr(\Delta r_s^{\star}/r_s^{0} < 0)$, computed within each CMIP6 model as the fraction of posterior draws yielding a negative shift and then taken as the cross-model median. Online Appendix F formalises the climate-vs-structural separation as a variance decomposition of $\Delta r_s^{\star}/r_s^{0}$ via the law of total variance; Appendix G applies the same logic to fleet-level annual trips.
+
 Our framework is positioned as long-run comparative statics, not a year-by-year forecast. Because the empirical models are estimated on interannual variability rather than decadal trends, the projections capture short-run behavioural responses to environmental and weather shocks but cannot identify long-run adaptation by fishers or managers [@Aufhammer2018]. Prices, quotas, and adaptive behaviour are held fixed at historical levels. The framework therefore provides a benchmark for the direction and magnitude of climate impacts under a fixed-institution baseline; relaxations that endogenize price adjustment, quota revision, or vessel-level adaptation are flagged as natural extensions of this work.
 
 # Results
@@ -646,7 +648,7 @@ The projection methodology is summarized in Section \emph{\nameref{projection-ap
 
 ### Projected environmental changes
 
-Table \ref{tab:env_projections} summarises the projected environmental changes as cross-model medians with cross-model interquartile range (IQR). SST warms by $+0.7$ to $+2.4\,^{\circ}$C across scenarios. The chlorophyll-a cross-model median is close to zero in all scenario-window pairs (between $-1.3\%$ and $+2.2\%$), while the cross-model IQR is substantially wider (up to $-9\%$ to $+1\%$ under SSP5-8.5 end-of-century), reflecting documented CMIP6 disagreement on primary-productivity responses. Wind speed increases modestly ($+0.1$ to $+0.4$ m/s cross-model median), but translates into $+10$ to $+23.5$ additional bad-weather days per year because the historical daily wind distribution at vessel COGs sits sufficiently close to the 8 m/s operability threshold that a small upward shift in the mean displaces a non-negligible mass of the upper tail past it.
+Table \ref{tab:env_projections} summarises the projected environmental changes as cross-model medians with cross-model interquartile range (IQR). SST warms by $+0.6$ to $+2.4\,^{\circ}$C across scenarios. The chlorophyll-a cross-model median is close to zero in all scenario-window pairs (between $-1.3\%$ and $+2.2\%$), while the cross-model IQR is substantially wider (up to $-7\%$ to $+3\%$ under SSP5-8.5 end-of-century), reflecting documented CMIP6 disagreement on primary-productivity responses. Wind speed increases modestly ($+0.1$ to $+0.4$ m/s cross-model median), but translates into $+8.5$ to $+23.5$ additional bad-weather days per year because the historical daily wind distribution at vessel COGs sits sufficiently close to the 8 m/s operability threshold that a small upward shift in the mean displaces a non-negligible mass of the upper tail past it.
 
 ```{r envprojections, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -655,12 +657,18 @@ deltas_ens <- readr::read_csv("data/cmip6/deltas_ensemble.csv",
 
 env_stats <- deltas_ens %>%
   dplyr::filter(var %in% c("sst", "logchl", "wind_speed")) %>%
+  # Alineamos al sub-ensemble usado en growth_compstat (Tabla 5): en SSP2-4.5
+  # excluimos CESM2 porque no publica chl-ssp245 en el catalogo NCAR; en SSP5-8.5
+  # usamos los 6 modelos. Esto evita la inconsistencia visual entre tabla 4 y 5
+  # cuando CESM2 corre mas calido que la mediana en SSP245.
+  dplyr::filter(!(scenario == "ssp245" & model == "CESM2")) %>%
   dplyr::mutate(
     # Para CHL convertir log-anomaly a porcentaje: %ΔCHL = (exp(Δlog) - 1) * 100
     delta_disp = ifelse(var == "logchl", (exp(delta) - 1) * 100, delta)
   ) %>%
   dplyr::group_by(var, scenario, window) %>%
   dplyr::summarise(
+    n_m = dplyr::n_distinct(model),
     med = median(delta_disp),
     q25 = quantile(delta_disp, 0.25),
     q75 = quantile(delta_disp, 0.75),
@@ -680,9 +688,18 @@ env_stats <- env_stats %>%
     )
   )
 
+# n_m puede diferir entre vars (e.g. en SSP585 algun modelo no tiene CHL para
+# cierto window mientras que SST y wind si). Para que la tabla tenga una sola
+# fila por (scenario, window) tomamos el n_m maximo disponible, consistente
+# con el sub-ensemble efectivo de SST/wind.
+n_m_lookup <- env_stats %>%
+  dplyr::group_by(scenario, window) %>%
+  dplyr::summarise(n_m = max(n_m), .groups = "drop")
+
 env_wide <- env_stats %>%
   dplyr::select(var, scenario, window, cell) %>%
   tidyr::pivot_wider(names_from = var, values_from = cell) %>%
+  dplyr::left_join(n_m_lookup, by = c("scenario", "window")) %>%
   dplyr::mutate(
     SSP    = ifelse(scenario == "ssp245", "SSP2-4.5", "SSP5-8.5"),
     Window = ifelse(window   == "mid",    "2041--2060", "2081--2100")
@@ -690,6 +707,7 @@ env_wide <- env_stats %>%
   dplyr::arrange(scenario, window) %>%
   dplyr::transmute(
     SSP, Window,
+    `$n_m$`                                = n_m,
     `$\\Delta$ SST ($^{\\circ}$C)`         = sst,
     `$\\Delta$ CHL (\\%)`                  = logchl,
     `$\\Delta$ wind speed (m/s)`           = wind_speed
@@ -697,9 +715,14 @@ env_wide <- env_stats %>%
 
 knitr::kable(env_wide, format = "latex", booktabs = TRUE, escape = FALSE,
              caption = paste("Projected environmental changes for Centro-Sur",
-                             "Chile (CMIP6 six-model ensemble, change-factor method;",
+                             "Chile (CMIP6 ensemble, change-factor method;",
                              "cross-model median with cross-model IQR in",
                              "brackets). \\label{tab:env_projections}")) %>%
+  kableExtra::footnote(general = paste(
+      "SSP2-4.5 panels use $n_m=5$ because one of the six CMIP6 models in the",
+      "ensemble does not publish chlorophyll-a projections for SSP2-4.5;",
+      "this matches the sub-ensemble used in Table \\\\ref{tab:growth_compstat}."),
+      general_title = "Note:", escape = FALSE, threeparttable = TRUE) %>%
   kableExtra::kable_styling(latex_options = c("hold_position"),
                             font_size = 9)
 
@@ -707,13 +730,15 @@ knitr::kable(env_wide, format = "latex", booktabs = TRUE, escape = FALSE,
 
 ### Comparative statics on intrinsic stock productivity
 
-Table \ref{tab:growth_compstat} reports $\Delta r_s^{\star}/r_s^{0}$, the climate-driven shift in long-run productivity defined in Section \emph{\nameref{projection-approach}}, for each stock under each scenario-window pair. We separate two sources of uncertainty. \emph{Climate uncertainty} isolates the effect of swapping the CMIP6 model---which determines the projected SST and CHL deltas, the only climate inputs to the stock-dynamics equation---while integrating over the posterior of the structural shifters $(\rho_s^{SST}, \rho_s^{CHL})$. For each of the six models we compute the within-model posterior median of $\Delta r_s^{\star}/r_s^{0}$; the table reports the median (column \emph{cross median}) and IQR (column \emph{Cross-model IQR}) of those six model-specific medians. \emph{Structural uncertainty} isolates the effect of varying the posterior draws of $(\rho_s^{SST}, \rho_s^{CHL})$ while holding the CMIP6 input fixed: for each model we compute the within-model 90\% posterior credible interval of $\Delta r_s^{\star}/r_s^{0}$, and the table reports the median of that interval across the six models (column \emph{Within posterior 90\% CI}). A separate variance decomposition appears in Online Appendix F. Jack mackerel is reported as non-identified (``n.i.'') consistent with the identification result in Section \emph{\nameref{identification}}.
+Table \ref{tab:growth_compstat} reports the four summary statistics of $\Delta r_s^{\star}/r_s^{0}$ defined in Section \emph{\nameref{projection-approach}}, for each stock under each scenario-window pair. The variance decomposition in Online Appendix F shows that the two sources contribute asymmetrically across stocks: climate uncertainty dominates for sardine (85--91\% of total variance) while structural uncertainty dominates for anchoveta (56--88\% within-model). Jack mackerel is reported as non-identified (``n.i.'') consistent with the identification result in Section \emph{\nameref{identification}}.
 
-The magnitudes are economically first-order for a Centro-Sur fishery whose combined TAC is in the low hundred-thousand-tonne range. Under the moderate SSP2-4.5 mid-century scenario (cross-model median $+0.74\,^{\circ}$C; $\Delta\log\text{CHL}$ near zero in the cross-model median, with non-trivial cross-model spread), the cross-model median of anchoveta's intrinsic productivity declines by $51\%$ and sardine's by $79\%$, with posterior probability of negative impact equal to one in both cases.
+Under the moderate SSP2-4.5 mid-century scenario (cross-model median $+0.58\,^{\circ}$C; $\Delta\log\text{CHL}$ near zero in the cross-model median, with non-trivial cross-model spread), the cross-model median of anchoveta's intrinsic productivity declines by $51\%$ and sardine's by $79\%$, with posterior probability of negative impact equal to one in both cases.
 
 Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median $+2.39\,^{\circ}$C, $\Delta\log\text{CHL}$ cross-model median $-0.013$ with $5$th-percentile of $-0.30$ across models) the cross-model medians deepen to $-90\%$ and $-99.9\%$ respectively, and the entire $90\%$ credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is $0.99$ rather than $1$ because under a small fraction of (model, draw) pairs a sufficiently negative $\Delta\log\text{CHL}$ combined with $\rho^{CHL}_{\text{anch}}<0$ offsets the SST-driven collapse.
 
 The identified signs confirm the qualitative reading of the shifters in Section \emph{\nameref{identification}}: both coastal stocks respond negatively to SST, but sardine carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardine than for anchoveta.
+
+The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. The shifters $(\rho_s^{SST}, \rho_s^{CHL})$ enter the law of motion as coefficients on exogenous climate forcings, which makes them invariant to the joint distribution of $(SST, B, C)$ and therefore evaluable at climate regimes outside the estimation window---in particular, at an SST anomaly of $+2.3^{\circ}$C that lies roughly nine historical standard deviations beyond the 2000--2024 mean. A purely correlational specification would not license this extrapolation.
 
 ```{r growthcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
@@ -738,7 +763,7 @@ gcs_tbl <- gcs %>%
     `$n_m$`                                          = n_models,
     `$\\Delta SST$ ($^{\\circ}$C)`                   = `DSST (C)`,
     `$\\Delta \\log\\text{CHL}$`                     = `DlogCHL`,
-    `$\\Delta r_s^{\\star}/r_s^{0}$ (cross median)`  = pct_escape(`%Delta cross median`),
+    `Cross median`                                   = pct_escape(`%Delta cross median`),
     `Cross-model IQR`                                = pct_escape(`%Delta cross IQR`),
     `Within posterior 90\\% CI`                      = pct_escape(`%Delta within posterior CI`),
     `$\\Pr(\\Delta<0)$`                              = `Pr(Delta<0) cross median`
@@ -746,9 +771,11 @@ gcs_tbl <- gcs %>%
 
 gcs_kable <- kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       align = "llccccccr",
-      caption = "Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. SSP2-4.5 panels use $n_m=5$ because CESM2 does not publish chl-ssp245 in the NCAR CMIP6 catalogue; SSP5-8.5 panels use all six models. \\label{tab:growth_compstat}") %>%
+      caption = "Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. SSP2-4.5 panels use $n_m=5$ because one of the six models does not publish chlorophyll-a projections for that scenario; SSP5-8.5 panels use all six. \\label{tab:growth_compstat}") %>%
+  add_header_above(c(" " = 5, "Summaries of $\\\\Delta r_s^{\\\\star}/r_s^{0}$" = 4),
+                   escape = FALSE) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"),
-                font_size = 9) %>%
+                font_size = 8) %>%
   footnote(general = paste(
       "Entries summarise the posterior of the proportional change in intrinsic productivity, integrated over (rho_SST, rho_CHL) from the full state-space specification.",
       "Cross-model IQR is the 25th-to-75th percentile range across CMIP6 models of within-model posterior medians (climate uncertainty).",
@@ -764,13 +791,6 @@ cat("\n\\end{landscape}\n")
 
 ```
 
-```{r growthridgeline, echo=FALSE, fig.align='center', fig.cap="Posterior distribution of the proportional change in intrinsic stock productivity under CMIP6 scenarios, six-model ensemble. Ridges are kernel-smoothed marginal posteriors of the proportional change in intrinsic productivity derived from draws of the state-space full specification, with one ridge per CMIP6 model in each scenario--window pair; vertical line at zero. CESM2 is absent from the SSP2-4.5 panels because chl-ssp245 is not published in the NCAR CMIP6 catalogue. Jack mackerel is omitted because its climate shifter is not identified in the 2000--2024 sample.", fig.pos='ht!', out.width='95%', message=FALSE, warning=FALSE}
-
-knitr::include_graphics("../figs/t4b/growth_ridgeline_cmip6.png", error = FALSE)
-
-```
-
-The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. The shifters $(\rho_s^{SST}, \rho_s^{CHL})$ enter the law of motion as coefficients on exogenous climate forcings, which makes them invariant to the joint distribution of $(SST, B, C)$ and therefore evaluable at climate regimes outside the estimation window---in particular, at an SST anomaly of $+2.3^{\circ}$C that lies roughly nine historical standard deviations beyond the 2000--2024 mean. A purely correlational specification would not license this extrapolation.
 
 ### Implications for fleet-level effort
 
