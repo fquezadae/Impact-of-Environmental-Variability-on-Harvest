@@ -514,7 +514,7 @@ SSP5-8.5 & 2041--2060 & 6 & $+0.92$ \,[$+0.61$, $+1.23$] & $+0.7$ \,[$-2.3$, $+3
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item SSP2-4.5 panels use $n_m=5$ because one of the six CMIP6 models in the ensemble does not publish chlorophyll-a projections for SSP2-4.5; this matches the sub-ensemble used in Table \ref{tab:growth_compstat}.
+\item SSP2-4.5 panels use 5 instead of 6 CMIP6 models because one model does not publish chlorophyll-a projections for that scenario.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -534,14 +534,14 @@ The comparative-statics exercise is a long-run object rather than a year-by-year
 \begin{landscape}
 \begin{table}[!h]
 \centering
-\caption{\label{tab:growthcompstat}Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. SSP2-4.5 panels use $n_m=5$ because one of the six models does not publish chlorophyll-a projections for that scenario; SSP5-8.5 panels use all six. \label{tab:growth_compstat}}
+\caption{\label{tab:growthcompstat}Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. \label{tab:growth_compstat}}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \fontsize{8}{10}\selectfont
 \begin{threeparttable}
 \begin{tabular}[t]{llccccccr}
 \toprule
-\multicolumn{5}{c}{ } & \multicolumn{4}{c}{Summaries of $\Delta r_s^{\star}/r_s^{0}$} \\
+\multicolumn{5}{c}{ } & \multicolumn{4}{c}{Summary statistics} \\
 \cmidrule(l{3pt}r{3pt}){6-9}
 Stock & Scenario & $n_m$ & $\Delta SST$ ($^{\circ}$C) & $\Delta \log\text{CHL}$ & Cross median & Cross-model IQR & Within posterior 90\% CI & $\Pr(\Delta<0)$\\
 \midrule
@@ -563,7 +563,7 @@ Jack mackerel CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & -0.013 & n.i. & n.i. & n.i.
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Entries summarise the posterior of the proportional change in intrinsic productivity, integrated over (rho\_SST, rho\_CHL) from the full state-space specification. Cross-model IQR is the 25th-to-75th percentile range across CMIP6 models of within-model posterior medians (climate uncertainty). Within posterior 90\% CI is the cross-model median of within-model 5th-to-95th-percentile posterior intervals (structural uncertainty, climate fixed). Jack mackerel CS is reported as non-identified ('n.i.'); see Results identification section. Raw numerical values and model-level disaggregation are in tables/growth\_comparative\_statics\_raw.csv and ...\_by\_model.csv; Appendix F reports the variance decomposition.
+\item SSP2-4.5 panels use 5 instead of 6 CMIP6 models because one model does not publish chlorophyll-a projections for that scenario. Jack mackerel CS is reported as non-identified ('n.i.'); see Results identification section.
 \end{tablenotes}
 \end{threeparttable}}
 \end{table}

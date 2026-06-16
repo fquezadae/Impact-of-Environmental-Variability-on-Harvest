@@ -719,10 +719,9 @@ knitr::kable(env_wide, format = "latex", booktabs = TRUE, escape = FALSE,
                              "cross-model median with cross-model IQR in",
                              "brackets). \\label{tab:env_projections}")) %>%
   kableExtra::footnote(general = paste(
-      "SSP2-4.5 panels use $n_m=5$ because one of the six CMIP6 models in the",
-      "ensemble does not publish chlorophyll-a projections for SSP2-4.5;",
-      "this matches the sub-ensemble used in Table \\\\ref{tab:growth_compstat}."),
-      general_title = "Note:", escape = FALSE, threeparttable = TRUE) %>%
+      "SSP2-4.5 panels use 5 instead of 6 CMIP6 models because one model does",
+      "not publish chlorophyll-a projections for that scenario."),
+      general_title = "Note:", escape = TRUE, threeparttable = TRUE) %>%
   kableExtra::kable_styling(latex_options = c("hold_position"),
                             font_size = 9)
 
@@ -771,18 +770,13 @@ gcs_tbl <- gcs %>%
 
 gcs_kable <- kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       align = "llccccccr",
-      caption = "Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. SSP2-4.5 panels use $n_m=5$ because one of the six models does not publish chlorophyll-a projections for that scenario; SSP5-8.5 panels use all six. \\label{tab:growth_compstat}") %>%
-  add_header_above(c(" " = 5, "Summaries of $\\\\Delta r_s^{\\\\star}/r_s^{0}$" = 4),
-                   escape = FALSE) %>%
+      caption = "Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. \\label{tab:growth_compstat}") %>%
+  add_header_above(c(" " = 5, "Summary statistics" = 4)) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"),
                 font_size = 8) %>%
   footnote(general = paste(
-      "Entries summarise the posterior of the proportional change in intrinsic productivity, integrated over (rho_SST, rho_CHL) from the full state-space specification.",
-      "Cross-model IQR is the 25th-to-75th percentile range across CMIP6 models of within-model posterior medians (climate uncertainty).",
-      "Within posterior 90% CI is the cross-model median of within-model 5th-to-95th-percentile posterior intervals (structural uncertainty, climate fixed).",
-      "Jack mackerel CS is reported as non-identified ('n.i.'); see Results identification section.",
-      "Raw numerical values and model-level disaggregation are in tables/growth_comparative_statics_raw.csv and ..._by_model.csv;",
-      "Appendix F reports the variance decomposition."),
+      "SSP2-4.5 panels use 5 instead of 6 CMIP6 models because one model does not publish chlorophyll-a projections for that scenario.",
+      "Jack mackerel CS is reported as non-identified ('n.i.'); see Results identification section."),
       general_title = "Note:", escape = TRUE, threeparttable = TRUE)
 
 cat("\\begin{landscape}\n")
