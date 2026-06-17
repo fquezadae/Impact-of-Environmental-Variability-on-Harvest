@@ -60,20 +60,24 @@ abstract: "Climate-driven shifts in stock productivity reach fishing fleets unev
 rm(list = ls())
 gc()
 
-# Definir directorios según usuario
-
-usuario <- Sys.info()[["user"]]
-# computador <- Sys.info()[["nodename"]]  # Alternativamente puedes usar esto
-if (usuario == "felip") {
-  dirdata <- "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
-} else if (usuario == "FACEA") {
-  dirdata <- "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
-} else if (usuario == "Felipe") {
-  dirdata <- "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/"
-} else {
-  stop("Usuario no reconocido. Defina el directorio correspondiente.")
+# Raiz de datos externos (OneDrive). Resolucion:
+#   1) variable de entorno FONDECYT_DATA (recomendado; definir en .Renviron
+#      via usethis::edit_r_environ())
+#   2) fallback por usuario para compatibilidad con el setup historico
+dirdata <- Sys.getenv("FONDECYT_DATA", unset = NA)
+if (is.na(dirdata) || !nzchar(dirdata)) {
+  dirdata <- switch(
+    Sys.info()[["user"]],
+    "felip"  = "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/",
+    "FACEA"  = "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/",
+    "Felipe" = "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/",
+    stop("Define FONDECYT_DATA en tu .Renviron (usethis::edit_r_environ()), o agrega tu usuario en el chunk 'directorio'.")
+  )
 }
-rm(usuario)
+if (!grepl("/$", dirdata)) dirdata <- paste0(dirdata, "/")  # asegurar trailing slash
+if (!dir.exists(dirdata)) {
+  stop(sprintf("dirdata no existe (revisa que OneDrive este sincronizado o que FONDECYT_DATA apunte a la ruta correcta): %s", dirdata))
+}
 
 # Fijar la raíz del proyecto como working directory para todos los chunks
 # siguientes. Así las rutas relativas ("data/...", "figs/...") resuelven
@@ -169,6 +173,28 @@ fix_stargazer_notes <- function(tex) {
   )
 }
 
+```
+
+```{r preflight_inputs, message=FALSE, warning=FALSE, include=FALSE}
+# Preflight: verificar que todos los insumos del render existan antes de empezar.
+# Si falta algo, se aborta con la lista exacta (en vez del error criptico de gzfile()).
+required <- c(
+  paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"),
+  paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"),
+  here::here("data/biomass/biomass_dt.rds"),
+  here::here("data/harvest/sernapesca_v2.rds"),
+  here::here("data/trips/poisson_dt.rds"),
+  here::here("data/cmip6/deltas_ensemble.csv"),
+  here::here("paper1/tables/growth_comparative_statics.csv"),
+  here::here("paper1/tables/trip_comparative_statics_raw.csv"),
+  here::here("paper1/tables/trip_comparative_statics_by_tipo_emb_raw.csv")
+)
+missing_inputs <- required[!file.exists(required)]
+if (length(missing_inputs)) {
+  stop("Faltan insumos para el knit (sincronizalos; ver data/README.md):\n",
+       paste0("  - ", missing_inputs, collapse = "\n"))
+}
+rm(required, missing_inputs)
 ```
 
 # Introduction
