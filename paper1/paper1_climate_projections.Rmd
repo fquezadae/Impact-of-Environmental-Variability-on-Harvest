@@ -417,6 +417,12 @@ For the indirect biomass channel, the CMIP6 SST delta (in °C) and log-CHL delta
 
 Because $\Delta r_s^{\star}/r_s^{0}$ is a random variable over both dimensions (the six CMIP6 models and the posterior of the shifters), we report four summary statistics that separate the corresponding two sources of uncertainty. \emph{Climate uncertainty}---the contribution of disagreement across CMIP6 models---is summarised by computing the within-model posterior median of $\Delta r_s^{\star}/r_s^{0}$ for each of the six models and then reporting the median and IQR across those six model-specific medians. \emph{Structural uncertainty}---the contribution of parameter uncertainty about the shifters---is summarised by evaluating $\Delta r_s^{\star}/r_s^{0}$ at every posterior draw conditional on each CMIP6 model, taking the 5th and 95th percentiles to form a within-model 90\% posterior credible interval, and reporting the median lower bound and median upper bound across the six models. Finally, we report the posterior probability of a negative impact, $\Pr(\Delta r_s^{\star}/r_s^{0} < 0)$, computed within each CMIP6 model as the fraction of posterior draws yielding a negative shift and then taken as the cross-model median. Online Appendix F formalises the climate-vs-structural separation as a variance decomposition of $\Delta r_s^{\star}/r_s^{0}$ via the law of total variance; Appendix G applies the same logic to fleet-level annual trips.
 
+At the vessel level we aggregate the species-specific biomass shifts into a single \emph{composition-weighted biomass factor} relative to the historical baseline,
+\begin{equation}
+f^H_v \;=\; \sum_s \omega_{vs}\,\frac{B_s^{\star}}{B_s^{0}}, \label{eq:fHv}
+\end{equation}
+where $\omega_{vs}$ is vessel $v$'s realised catch share in species $s$ over the historical sample and $B_s^{\star} = K_s(1 - F_s^{\text{hist}}/r_s^{\star})$ is the Schaefer steady-state biomass under the projected climate, holding fishing pressure at the 2000--2024 average. Jack mackerel is treated as non-identified ($B_{\text{jur}}^{\star}/B_{\text{jur}}^{0}=1$) consistent with Section \emph{\nameref{identification}}. We summarise the resulting fleet-level percentage change in trips, $\%\Delta T_f$, with two posterior medians that isolate complementary economic content. The \emph{marginal} median integrates over all posterior draws within each model and captures the full response, including portfolio collapse. The \emph{conditional} median restricts the integration to draws with $f^H_v \geq 0.5$, isolating the pure climate-elasticity component from the steady-state collapse component; we also report the posterior probability of portfolio loss, $\Pr(f^H_v<0.5)$, as a stand-alone measure of collapse risk. Both medians are then aggregated across CMIP6 models via cross-model median and IQR, in parallel with the productivity statistics above.
+
 Our framework is positioned as long-run comparative statics, not a year-by-year forecast. Because the empirical models are estimated on interannual variability rather than decadal trends, the projections capture short-run behavioural responses to environmental and weather shocks but cannot identify long-run adaptation by fishers or managers [@Aufhammer2018]. Prices, quotas, and adaptive behaviour are held fixed at historical levels. The framework therefore provides a benchmark for the direction and magnitude of climate impacts under a fixed-institution baseline; relaxations that endogenize price adjustment, quota revision, or vessel-level adaptation are flagged as natural extensions of this work.
 
 # Results
@@ -869,27 +875,12 @@ tcs_tbl <- tcs %>%
 kable(tcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       linesep = "",
       align = "llcll",
-      caption = "Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort, under a Schaefer steady-state thought experiment with fishing pressure fixed at the 2000--2024 historical average. Entries are cross-model medians with cross-model IQRs in brackets, aggregated within each CMIP6 model over posterior draws and vessels within fleet. \\label{tab:trip_compstat}") %>%
+      caption = "Long-run implications of CMIP6 climate scenarios for fleet-level fishing effort. Summary statistics defined in Section \\emph{\\nameref{projection-approach}}. \\label{tab:trip_compstat}") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
   footnote(general = paste(
-    "Entries summarise the posterior of the proportional change in fleet-level annual trips,",
-    "computed for each of the six CMIP6 models in the ensemble and then aggregated across models.",
-    "Within each model, the posterior is integrated over draws of the full state-space specification and vessels within fleet (composition-weighted exposure).",
-    "Cross-model medians and 25th-to-75th-percentile inter-quartile ranges across the n_m models are reported in brackets;",
-    "the median across models of the within-model 5th-to-95th-percentile posterior interval (within posterior CI) is archived in tables/trip_comparative_statics_raw.csv.",
-    "f_H is the composition-weighted biomass factor relative to the historical baseline:",
-    "f_H = sum over species of omega_vs * B_star_s / B_hist_s,",
-    "where B_star_s = K_s * (1 - F_hist_s / r_eff_s) is the Schaefer steady-state biomass",
-    "and omega_vs is the vessel's realized catch share in species s.",
-    "Pr(f_H < 0.5) reports the posterior probability that the vessel's composition-weighted biomass factor falls below one-half.",
-    "The marginal median integrates over all posterior draws within each model;",
-    "the conditional median restricts to draws with f_H >= 0.5, isolating the pure climate-elasticity component",
-    "from the steady-state collapse component of the trip response.",
-    "Jack mackerel is treated as non-identified (factor_B = 1) consistent with the identification discussion in the Results section.",
-    "Raw numerical values, by-model disaggregation, and by-stock extinction probabilities are archived in tables/trip_comparative_statics_raw.csv, tables/trip_comparative_statics_by_model.csv, and tables/trip_comparative_statics_extinct.csv.",
-    "The narrow cross-IQR observed in many cells reflects a floor effect: once Schaefer steady-state collapse saturates the portfolio-weighted biomass factor across models, the trip response converges to exp(-beta * H_alloc * 1), independent of climate magnitude. Appendix G reports the formal two-way variance decomposition of the fleet-level trip response, which confirms that the within-model component (posterior plus vessel heterogeneity) dominates the total variance under saturated regimes; Appendix F reports the analogous decomposition for the underlying productivity response."
-  ),
-  general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+    "SSP2-4.5 panels use 5 instead of 6 CMIP6 models because one model does not publish chlorophyll-a projections for that scenario.",
+    "Raw values, by-model disaggregation, and by-stock extinction probabilities are in tables/trip_comparative_statics_raw.csv, ..._by_model.csv, and ..._extinct.csv."),
+    general_title = "Note:", escape = TRUE, threeparttable = TRUE)
 
 ```
 
