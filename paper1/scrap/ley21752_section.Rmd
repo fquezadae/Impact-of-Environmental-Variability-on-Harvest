@@ -1,0 +1,42 @@
+---
+title: "[SCRAP] Implications of the 2025 fractioning reform"
+note: |
+  Sección removida del body del paper 1 el 2026-06-17 por decisión editorial:
+  con cesiones operando (IND cede 85-99% de anch/sard al ART) el cambio de jure
+  78%→90% es prácticamente cero, y el cambio jurel 10%→30% no se materializa
+  porque ART no puede acceder offshore por vessel range. La sección es por tanto
+  redundante con el resto de Discussion (que ya concluye "redistributive más que
+  allocative"). Conservada acá por si en revisión MRE se pide reintroducir o si
+  se necesita para futuro trabajo policy.
+---
+
+## Implications of the 2025 fractioning reform {#sec:ley21752-implications}
+
+The asymmetry estimated in this paper is identified on the pre-reform fractioning regime that prevailed during the estimation window (2013--2024). The 2025 reform, in force from $2026$ until $2040$, modifies that regime in two relevant directions for the Central-South small pelagic fishery [@Ley21752-2025]. First, the artisanal share of the anchoveta and sardine TACs rises from $78\%$ to $90\%$ across the Valparaíso--Los Lagos macrozone; the same artisanal sector therefore now holds a deeper claim on stocks whose long-run productivity is projected to collapse under SSP$5$-$8.5$ end-of-century. Second, the artisanal share of the jack mackerel TAC rises from $10\%$ to $30\%$ in Valparaíso--Los Ríos and from $10\%$ to $15\%$ in Los Lagos---a quota-weighted aggregate of approximately $28\%$ across the macrozone---giving the artisanal sector partial access to the species whose local productivity is non-identified at the Centro-Sur scale and whose climate response is held fixed in our projections. Table \ref{tab:counterfactual-main} reports the static plug-in counterfactual at SSP$5$-$8.5$ end-of-century, holding the structural posterior and the TAC level at $2024$ values and varying only the statutory artisanal share.
+
+\begin{table}[H]
+\centering
+\caption{Static counterfactual: artisanal absolute landing under the pre-reform and 2025 fractioning regimes at SSP$5$-$8.5$ end-of-century, Centro-Sur (Valparaíso--Los Lagos), $2024$ Cuotas Globales.\label{tab:counterfactual-main}}
+\begin{threeparttable}
+\begin{tabular}{lrrrrr}
+\toprule
+ & & \multicolumn{2}{c}{Artisanal share ($\alpha_s$)} & \multicolumn{2}{c}{Artisanal landing $L_{\text{art}}$ (kt)} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6}
+Stock & TAC 2024 (kt) & Pre-reform & 2025 reform & Pre-reform & 2025 reform \\
+\midrule
+Anchoveta (Valparaíso--Los Lagos)            & $211.3$ & $0.78$ & $0.90$ & $17.1$  & $19.8$  \\
+Sardina com\'un (Valparaíso--Los Lagos)      & $290.6$ & $0.78$ & $0.90$ & $0.2$   & $0.3$   \\
+Jack mackerel (Valparaíso--Los Ríos)               & $578.6$ & $0.10$ & $0.30$ & $57.9$  & $173.6$ \\
+Jack mackerel (Los Lagos)                 & $80.6$  & $0.10$ & $0.15$ & $8.1$   & $12.1$  \\
+\addlinespace
+\textbf{Total Centro-Sur}           &         &        &        & $\mathbf{83.3}$ & $\mathbf{205.7}$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[para,flushleft]
+\footnotesize
+\item \emph{Notes.} Static plug-in evaluation of $L_{\text{art}}^{(R)} = \sum_s \alpha_s^{(R)} \cdot (1 + \widehat{\Delta r_s^{\star}/r_s^{0}}) \cdot Q_s^{0}$, with $\widehat{\Delta r_s^{\star}/r_s^{0}}$ set to the cross-model median at SSP$5$-$8.5$ end-of-century from Table \ref{tab:growth_compstat} ($-89.6\%$ anchoveta, $-99.9\%$ sardine, $0\%$ jack mackerel by the non-identification convention of Section \ref{sec:stock-dynamics}). $Q_s^{0}$ is the $2024$ Cuota Global de Captura. Artisanal fractions follow the pre-reform statutory schedule and the 2025 reform. The Los Ríos--Los Lagos jack mackerel quota is reported as a single block by SERNAPESCA; the row applies the Los Lagos artisanal share ($15\%$) as a conservative lower bound on the true sub-block share, which would rise toward $30\%$ to the extent that Los Ríos contributes to the aggregate quota. The posterior-propagated version of this table, with cross-model IQR and within-posterior $90\%$ CI, is reported in Online Appendix H.2.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Three readings of Table \ref{tab:counterfactual-main} structure the policy interpretation. First, the redistribution \emph{raises} the absolute artisanal landing under projected SSP$5$-$8.5$ end-of-century stress by approximately $122$ kt at the Centro-Sur aggregate, almost entirely through the $20$-percentage-point increase in the artisanal jack mackerel share in Valparaíso--Los Ríos rather than through anchoveta and sardine, whose projected productivity collapse makes the $12$-percentage-point increase in the artisanal share mechanically small. Second, the policy logic of the redistribution---designed to protect the artisanal sector---in fact \emph{deepens} the artisanal exposure to anchoveta and sardine biomass collapse under climate stress: the same sector now holds $90\%$ rather than $78\%$ of a TAC projected to fall to floor levels. The net welfare effect therefore depends on whether the jack mackerel access expansion outweighs the deepened anchoveta-sardine exposure. Third, the counterfactual is a de jure upper bound on the post-cession allocation. Under the pre-2025 regime the industrial sector ceded $85$--$99\%$ of its assigned anchoveta and sardine TACs to artisanal cessionaries via the cession channel (Online Appendix H.3), so the $12$-percentage-point rise in the artisanal de jure share translates into a much smaller change in realised landings; the operationally meaningful change is the contraction of the cession volume that industrial titulares had been intermediating for fee. The reform is therefore primarily \emph{redistributive} (transferring rent from industrial titulares to artisanal armadores) rather than \emph{allocative} in anchoveta and sardine; for jack mackerel, historical cessions are an order of magnitude smaller and the de jure expansion is operationally meaningful.
