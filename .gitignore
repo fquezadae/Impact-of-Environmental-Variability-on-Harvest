@@ -70,3 +70,8 @@ tree.txt
 *.bak
 *.pre_*.bak
 .positai
+
+# Excepciones: insumos procesados que el manuscrito necesita para knitear
+!/data/biomass/biomass_dt.rds
+!/data/harvest/sernapesca_v2.rds
+!/data/trips/poisson_dt.rds
