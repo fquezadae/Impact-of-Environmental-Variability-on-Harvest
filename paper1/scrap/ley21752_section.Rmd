@@ -40,3 +40,149 @@ Jack mackerel (Los Lagos)                 & $80.6$  & $0.10$ & $0.15$ & $8.1$   
 \end{table}
 
 Three readings of Table \ref{tab:counterfactual-main} structure the policy interpretation. First, the redistribution \emph{raises} the absolute artisanal landing under projected SSP$5$-$8.5$ end-of-century stress by approximately $122$ kt at the Centro-Sur aggregate, almost entirely through the $20$-percentage-point increase in the artisanal jack mackerel share in Valparaíso--Los Ríos rather than through anchoveta and sardine, whose projected productivity collapse makes the $12$-percentage-point increase in the artisanal share mechanically small. Second, the policy logic of the redistribution---designed to protect the artisanal sector---in fact \emph{deepens} the artisanal exposure to anchoveta and sardine biomass collapse under climate stress: the same sector now holds $90\%$ rather than $78\%$ of a TAC projected to fall to floor levels. The net welfare effect therefore depends on whether the jack mackerel access expansion outweighs the deepened anchoveta-sardine exposure. Third, the counterfactual is a de jure upper bound on the post-cession allocation. Under the pre-2025 regime the industrial sector ceded $85$--$99\%$ of its assigned anchoveta and sardine TACs to artisanal cessionaries via the cession channel (Online Appendix H.3), so the $12$-percentage-point rise in the artisanal de jure share translates into a much smaller change in realised landings; the operationally meaningful change is the contraction of the cession volume that industrial titulares had been intermediating for fee. The reform is therefore primarily \emph{redistributive} (transferring rent from industrial titulares to artisanal armadores) rather than \emph{allocative} in anchoveta and sardine; for jack mackerel, historical cessions are an order of magnitude smaller and the de jure expansion is operationally meaningful.
+
+---
+
+# H.2 (originally in appendix_h_portfolio_and_counterfactual.Rmd, removed 2026-06-17)
+
+## Policy counterfactual under the 2025 reform {#appendix-counterfactual}
+
+The estimation window of the present paper (2018--2024) coincides with
+the pre-reform fractioning regime. The 2025 fractioning reform
+[@Ley21752-2025] fixes a new schedule of artisanal--industrial fractions
+in force through $2040$. Across
+the Valparaíso--Los Lagos macrozone studied here, the law raises the artisanal
+share to $90\%$ in anchoveta and sardine (from $78\%$) and
+partitions jack mackerel into a $30\%$ artisanal share in Valparaíso--Los Ríos and
+$15\%$ in Los Lagos (from a uniform $10\%$ pre-reform);
+the fractioning table (main text) reports the two regimes side by side.
+A static plug-in evaluation of the climate-conditional artisanal
+landing under each regime is reported in
+the Implications of the 2025 fractioning reform subsection of the main text
+(the static counterfactual table (main text)); this appendix records the
+formal derivation and the posterior-propagated, by-model version
+that complements that headline table.
+
+Letting $Q_s^{0}$ denote the $2024$ Cuota Global de Captura for
+stock $s$ and $\Delta r_s^{\star}/r_s^{0}$ the projected productivity
+change at $\mathrm{SSP}5$-$8.5$ end-of-century, the artisanal
+absolute landing under fractioning regime $R$ is
+
+\begin{equation}
+L_{\text{art}}^{(R)} \;=\; \sum_{s} \alpha_s^{(R)} \cdot \big(1 + \Delta r_s^{\star}/r_s^{0}\big) \cdot Q_s^{0},
+\label{eq:counterfactual}
+\end{equation}
+
+where $\alpha_s^{(R)}$ is the artisanal fraction of stock $s$ under
+regime $R \in \{\text{pre-reform}, \text{2025 reform}\}$ and the sum
+runs over the four (stock $\times$ macrozone) units of
+the fractioning table (main text): anchoveta Valparaíso--Los Lagos, sardine
+Valparaíso--Los Lagos, jack mackerel Valparaíso--Los Ríos, and jack mackerel Los Lagos.
+Equation \eqref{eq:counterfactual} reads the productivity change as a
+proportional adjustment to the steady-state landed volume and
+abstracts from any endogenous TAC-setting response. The plug-in
+version reported in the main text fixes $\Delta r_s^{\star}/r_s^{0}$
+at the cross-model posterior median from
+the stock productivity comparative-statics table (main text); the posterior-propagated version
+reported below integrates explicitly over the CMIP6 six-model
+ensemble and the within-posterior $90\%$ envelope, returning
+cross-model median plus inter-quartile range for the central estimate
+and the median within-posterior $90\%$ CI for the structural
+uncertainty axis, exactly as in
+the trip comparative-statics table (main text).
+
+```{r appendix-counterfactual-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+
+# Posterior-propagated counterfactual produced by R/run_counterfactual_ley21752.R
+# Format of summary CSV (one row per (stock, regime)):
+# stock_id, regime, cross_med, cross_q25, cross_q75, within_q05, within_q95, n_models
+# When the script is run, this chunk renders the appendix table directly from disk.
+
+cf_path <- "tables/appendix_h_counterfactual_ley21752.csv"
+
+if (file.exists(cf_path)) {
+
+ cf <- readr::read_csv(cf_path, show_col_types = FALSE)
+
+ stock_label <- c(
+ anchoveta_cs = "Anchoveta",
+ sardina_comun_cs = "Sardine",
+ jurel_cs = "Jack mackerel",
+ TOTAL_CS = "\\textbf{Total}"
+ )
+
+ cf <- cf %>%
+ dplyr::mutate(
+ Stock = stock_label[stock_id],
+ Regime = ifelse(regime == "Art47", "Pre-reform", "2025 reform"),
+ Central = sprintf("$%.1f$ $[%.1f, %.1f]$", cross_med, cross_q25, cross_q75),
+ WithinCI = sprintf("$[%.1f, %.1f]$", within_q05, within_q95)
+ ) %>%
+ dplyr::arrange(factor(stock_id,
+ levels = c("anchoveta_cs","sardina_comun_cs","jurel_cs","TOTAL_CS")),
+ regime) %>%
+ dplyr::select(Stock, Regime, `Cross-model [IQR] (kt)` = Central,
+ `Within-post.\\ CI (kt)` = WithinCI)
+
+ # Render manually with threeparttable + footnotes (avoids stargazer wrapper)
+ tbl <- knitr::kable(cf, format = "latex", booktabs = TRUE, escape = FALSE,
+ linesep = "")
+
+ cap_str <- paste0(
+ "Posterior-propagated artisanal absolute landing under the ",
+ "pre-reform and 2025 fractioning regimes, ",
+ "$\\mathrm{SSP}5$-$8.5$ end-of-century, Centro-Sur (Valparaíso--Los Lagos), ",
+ "$2024$ Cuotas Globales.")
+
+ notes_str <- paste0(
+ "\\emph{Notes.} Cross-model statistics across six CMIP6 models of the per-model posterior median; ",
+ "within-posterior 90\\% CI is the median across models of per-model $[q_{05}, q_{95}]$. ",
+ "Jack mackerel is held at $\\Delta r^{\\star}/r^{0} = 0$ (non-identified at Centro-Sur scale)."
+ )
+
+ cat("\\begin{table}[H]\n")
+ cat("\\centering\\small\n")
+ cat("\\setlength{\\tabcolsep}{4pt}\n")
+ cat("\\renewcommand{\\arraystretch}{0.95}\n")
+ cat(sprintf("\\caption{%s\\label{tab:counterfactual}}\n", cap_str))
+ cat("\\begin{threeparttable}\n")
+ cat(as.character(tbl))
+ cat("\n\\begin{tablenotes}[flushleft]\\footnotesize\n")
+ cat(sprintf("\\item %s\n", notes_str))
+ cat("\\end{tablenotes}\n")
+ cat("\\end{threeparttable}\n")
+ cat("\\end{table}\n")
+
+} else {
+
+ cat("\\noindent\\textit{Posterior-propagated counterfactual table not yet built. ",
+ "Run \\texttt{Rscript R/run\\_counterfactual\\_ley21752.R} to generate ",
+ "\\texttt{tables/appendix\\_h\\_counterfactual\\_ley21752.csv}, then re-knit.}\n")
+
+}
+
+```
+
+Three readings of the posterior-propagated counterfactual sharpen the
+plug-in headline reported in the main text. First, the cross-model
+inter-quartile range is narrow at the aggregate level (a few kilotonnes
+on either side of the $122$ kt median total), reflecting the floor-effect
+saturation documented in Appendix \ref{appendix-trips-ensemble}: once
+the small-pelagic productivity collapses, the cross-model dispersion of
+$L_{\text{art}}$ is small in absolute terms because the residual base on
+which it operates is small. Second, the within-posterior $90\%$ CI is
+substantially wider for anchoveta than for sardine, because
+the posterior on $(\rho^{SST}_{\text{anch}}, \rho^{CHL}_{\text{anch}})$
+admits a wider envelope of climate-conditional productivity factors
+than the sardine pair. Third, the jack mackerel contribution to the artisanal
+landing is invariant across both axes of uncertainty---it appears as a
+point in the table---because the non-identification convention holds
+$(1 + \Delta r_{\text{jack mackerel}}^{\star}/r_{\text{jack mackerel}}^{0}) = 1$;
+relaxing this convention to the ENSO-prior-propagated envelope of
+Appendix \ref{sec:appendix-spatial-enso} would add a third source of
+uncertainty whose magnitude is bounded by the three-orders-of-magnitude
+range reported there. The plug-in headline in the main text is therefore
+robust to the cross-model and within-posterior axes that the appendix
+makes explicit, and the institutional reading developed in
+the Discussion section of the main text carries over unchanged.
+

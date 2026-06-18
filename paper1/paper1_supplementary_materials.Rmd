@@ -72,16 +72,32 @@ knitr::opts_knit$set(root.dir = here::here())
 ```{r appendix-spatial, child='paper1/sections/appendix_spatial_jurel.Rmd'}
 ```
 
+<!-- Appendix F (variance decomposition of stock productivity) and Appendix G
+     (variance decomposition of fleet-level trips) removed from supplementary
+     materials on 2026-06-17 per editorial decision (technical content not
+     central to MRE narrative). Source files are preserved at
+     paper1/sections/appendix_variance_decomposition.Rmd and
+     paper1/sections/appendix_g_trips_variance_decomposition.Rmd in case a
+     reviewer requests them. -->
+
+<!--
 ```{r appendix-variance, child='paper1/sections/appendix_variance_decomposition.Rmd'}
 ```
 
 ```{r appendix-trips-variance, child='paper1/sections/appendix_g_trips_variance_decomposition.Rmd'}
 ```
+-->
 
 ```{r appendix-portfolio, child='paper1/sections/appendix_h_portfolio_and_counterfactual.Rmd'}
 ```
 
+<!-- Appendix I (limitations) removed from supplementary materials on 2026-06-17
+     per editorial decision. Source file preserved at
+     paper1/sections/appendix_i_limitations.Rmd. -->
+
+<!--
 ```{r appendix-limitations, child='paper1/sections/appendix_i_limitations.Rmd'}
 ```
+-->
 
 # References {.unnumbered}
