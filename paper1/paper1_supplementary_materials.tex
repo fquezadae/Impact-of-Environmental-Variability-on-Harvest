@@ -102,7 +102,7 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \usepackage{setspace}
-\doublespacing
+\setstretch{1.5}
 \usepackage{indentfirst}
 \setlength{\parindent}{10pt}
 \usepackage{authblk}
@@ -119,6 +119,9 @@
 \fancyhead[L]{\small\scshape Online Appendix: Asymmetric Climate Impacts on Fishing Effort}
 \fancyhead[R]{\small\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
+\usepackage{etoolbox}
+\author{Felipe J. Quezada-Escalona\thanks{Associate Professor, Department of Economics, Universidad de Concepci\'on. Mailing address: Victoria 471, Concepci\'on, Chile. Email: felipequezada@udec.cl. Adjunct Researcher, Interdisciplinary Center for Aquaculture Research---Applied Research (INCAR\textsuperscript{2}), Universidad de Concepci\'on, Chile.}}
+\affil{Universidad de Concepci\'on \vspace{-60pt}}
 \renewcommand{\thesection}{\Alph{section}}
 \renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
 \usepackage{chngcntr}
@@ -150,6 +153,8 @@
 
 \begin{document}
 \maketitle
+
+\doublespacing
 
 \section{Reduced-form stress tests and prior elicitation}\label{appendix-stress}
 
@@ -597,25 +602,9 @@ present record, holding \(r^{\star}_{\text{jurel}}\) fixed at the
 prior mean is the defensible reporting choice and is the convention
 adopted throughout the main text.
 
-\section{Permit portfolios and sectoral counterfactual}\label{appendix-portfolio}
+\section{Permit portfolios and inter-sectoral cessions}\label{appendix-portfolio}
 
-This appendix reports three pieces of evidence that underpin
-the institutional mechanism developed in the Discussion section of the main text.
-Section \ref{appendix-portfolio-permits} documents the revealed
-multi-species portfolio held by each sector, refuting the common reading
-that the artisanal--industrial asymmetry estimated in the main text is
-driven by single-species permit rigidity at the vessel level.
-Section \ref{appendix-counterfactual} computes a policy counterfactual
-in which the projected \(\mathrm{SSP}5\)-\(8.5\) end-of-century catch
-allocation is recomputed under the 2025 fractioning reform
-(\citeproc{ref-Ley21752-2025}{Congreso Nacional de Chile 2025}), in force through \(2040\), and contrasts it with the
-pre-reform regime that prevailed during the estimation window.
-Section \ref{sec:cesiones-evidence} documents the realised
-inter-sectoral quota cession flow over \(2013\)--\(2024\), showing that the
-industrial sector already cedes the bulk of its assigned small-pelagic
-TAC to artisanal operators, so that the de jure 2025 reform of
-Section \ref{appendix-counterfactual} should be read as an upper bound
-on the post-cession allocation.
+This appendix reports two pieces of evidence that underpin the institutional mechanism developed in the Discussion section of the main text. Section \ref{appendix-portfolio-permits} documents the revealed multi-species portfolio held by each sector, refuting the common reading that the artisanal--industrial asymmetry estimated in the main text is driven by single-species permit rigidity at the vessel level. Section \ref{sec:cesiones-evidence} documents the realised inter-sectoral quota cession flow over \(2013\)--\(2024\), showing that the industrial sector already cedes the bulk of its assigned small-pelagic TAC to artisanal operators.
 
 \subsection{Multi-species permit portfolios in both sectors}\label{appendix-portfolio-permits}
 
@@ -831,9 +820,6 @@ $2024^{\dagger}$ & jack mackerel &  728.6 & $-31.5$ & 4\% \\
 \begin{CSLReferences}{1}{1}
 \bibitem[\citeproctext]{ref-Arcos2001-jq}
 Arcos, D. F., L. A. Cubillos, and S. P. Núñez. 2001. {``The Jack Mackerel Fishery and {El Ni{ñ}o} 1997--98 Effects Off {Chile}.''} \emph{Progress in Oceanography} 49 (1--4): 597--617. \url{https://doi.org/10.1016/S0079-6611(01)00043-X}.
-
-\bibitem[\citeproctext]{ref-Ley21752-2025}
-Congreso Nacional de Chile. 2025. \emph{Ley {N\textsuperscript{o}}~21.752: Fija Un Nuevo Fraccionamiento Entre El Sector Pesquero Artesanal e Industrial}. Law. Biblioteca del Congreso Nacional de Chile. \url{https://bcn.cl/x54WxT}.
 
 \bibitem[\citeproctext]{ref-Pena-Torres2017-gn}
 Peña-Torres, Julio, Jorge Dresdner, and Felipe Vasquez. 2017. {``El Niño and Fishing Location Decisions: The Chilean Straddling Jack Mackerel Fishery.''} \emph{Mar. Resour. Econ.} 32 (3): 249--75.

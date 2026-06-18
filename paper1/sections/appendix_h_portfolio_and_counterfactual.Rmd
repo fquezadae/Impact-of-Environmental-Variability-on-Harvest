@@ -1,22 +1,6 @@
-# Permit portfolios and sectoral counterfactual {#appendix-portfolio}
+# Permit portfolios and inter-sectoral cessions {#appendix-portfolio}
 
-This appendix reports three pieces of evidence that underpin
-the institutional mechanism developed in the Discussion section of the main text.
-Section \ref{appendix-portfolio-permits} documents the revealed
-multi-species portfolio held by each sector, refuting the common reading
-that the artisanal--industrial asymmetry estimated in the main text is
-driven by single-species permit rigidity at the vessel level.
-Section \ref{appendix-counterfactual} computes a policy counterfactual
-in which the projected $\mathrm{SSP}5$-$8.5$ end-of-century catch
-allocation is recomputed under the 2025 fractioning reform
-[@Ley21752-2025], in force through $2040$, and contrasts it with the
-pre-reform regime that prevailed during the estimation window.
-Section \ref{sec:cesiones-evidence} documents the realised
-inter-sectoral quota cession flow over $2013$--$2024$, showing that the
-industrial sector already cedes the bulk of its assigned small-pelagic
-TAC to artisanal operators, so that the de jure 2025 reform of
-Section \ref{appendix-counterfactual} should be read as an upper bound
-on the post-cession allocation.
+This appendix reports two pieces of evidence that underpin the institutional mechanism developed in the Discussion section of the main text. Section \ref{appendix-portfolio-permits} documents the revealed multi-species portfolio held by each sector, refuting the common reading that the artisanal--industrial asymmetry estimated in the main text is driven by single-species permit rigidity at the vessel level. Section \ref{sec:cesiones-evidence} documents the realised inter-sectoral quota cession flow over $2013$--$2024$, showing that the industrial sector already cedes the bulk of its assigned small-pelagic TAC to artisanal operators.
 
 ## Multi-species permit portfolios in both sectors {#appendix-portfolio-permits}
 
