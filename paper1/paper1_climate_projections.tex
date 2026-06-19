@@ -129,6 +129,20 @@
 \affil{Universidad de Concepci\'on \vspace{-60pt}}
 \newcommand{\keywords}[1]{\par\noindent{\setstretch{1.5}\textbf{Keywords:} #1\par}}
 \newcommand{\jelcodes}[1]{\par\noindent{\setstretch{1.5}\textbf{JEL Codes:} #1\par}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -639,25 +653,34 @@ BM & Bote motor (BM) & 1.00 & -10.0\% & {}[-10.2\%,\,-9.8\%] & -5.6\%\\
 
 \section{Discussion}\label{sec:discussion}
 
-Our results reveal a substantial asymmetry in how climate change affects different segments of Chile's small pelagic fishery: the artisanal fleet, concentrated in the coastal sardine--anchoveta pair, absorbs most of the projected long-run loss in fishing effort, while the industrial fleet---whose \(95\%\) exposure is to offshore jack mackerel---is buffered because the non-identification of jack mackerel's local climate shifter leads us to hold its biomass at the baseline value in the projection. The artisanal fleet's restricted operating range explains why its realised exposure to jack mackerel is far below its de jure quota allocation: even with a \(10\%\) statutory share of the jack mackerel TAC under the pre-reform regime, artisanal vessels cannot effectively access the offshore stock, so the observed industrial--artisanal portfolio asymmetry is sharper than the statutory partition suggests.
+Our results reveal a substantial asymmetry in how climate change affects different segments of Chile's small pelagic fishery: the artisanal fleet, concentrated in the coastal sardine--anchoveta pair, absorbs most of the projected long-run loss in fishing effort, while the industrial fleet---whose \(95%
+\) exposure is to offshore jack mackerel---is buffered because the non-identification of jack mackerel's local climate shifter leads us to hold its biomass at the baseline value in the projection. The artisanal fleet's restricted operating range explains why its realised exposure to jack mackerel is far below its de jure quota allocation: even with a \(10%
+\) statutory share of the jack mackerel TAC under the pre-reform regime, artisanal vessels cannot effectively access the offshore stock, so the observed industrial--artisanal portfolio asymmetry is sharper than the statutory partition suggests.
 
-The non-identification of \((\rho_{\text{jur}}^{SST}, \rho_{\text{jur}}^{CHL})\) at the Centro-Sur scale is itself a substantive result rather than a nuisance, but its policy reading depends on the distinction between \emph{non-identification} and \emph{no climate effect}. Five converging tests reported in Online Appendix E (varying coastal aggregation, augmenting biomass coverage, replacing local shifters with basin-scale ENSO, joint specification, and SPRFMO integration) all return posterior-to-prior ratios in \(0.94\)--\(1.03\). Existing empirical evidence documents that climate forcing operates on jack mackerel at scales broader than local coastal anomalies---jack mackerel range shifts driven by the southward displacement of the \(15\,^{\circ}\)C thermal boundary during the \(1997\)--\(98\) El Niño (\citeproc{ref-Arcos2001-jq}{Arcos et al. 2001}) and ENSO-driven shifts in location choices in the Chilean fishery (\citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al. 2017})---but each documents climatic effects on margins (location choice, range distribution, spawning timing) that are not necessarily captured in the elasticity of annual aggregate productivity. We accordingly hold \(r^{*}_{\text{jack mackerel}}\) fixed in the projections; closing the identification gap will require either a longer biomass record or a basin-scale SPRFMO assessment with explicit cross-stock spillover.
+The non-identification of \((\rho_{\text{jur}}^{SST}, \rho_{\text{jur}}^{CHL})\) at the Centro-Sur scale is itself a substantive result rather than a nuisance, but its policy reading depends on the distinction between \emph{non-identification} and \emph{no climate effect}. Five converging tests reported in Online Appendix E (varying coastal aggregation, augmenting biomass coverage, replacing local shifters with basin-scale ENSO, joint specification, and SPRFMO integration) all return posterior-to-prior ratios in \(0.94\)--\(1.03\). Existing empirical evidence documents that climate forcing operates on jack mackerel at scales broader than local coastal anomalies---jack mackerel range shifts driven by the southward displacement of the \(15,^{\circ}\)C thermal boundary during the \(1997\)--\(98\) El Niño (\citeproc{ref-Arcos2001-jq}{Arcos et al. 2001}) and ENSO-driven shifts in location choices in the Chilean fishery (\citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al. 2017})---but each documents climatic effects on margins (location choice, range distribution, spawning timing) that are not necessarily captured in the elasticity of annual aggregate productivity. We accordingly hold \(r^{*}_{\text{jack mackerel}}\) fixed in the projections; closing the identification gap will require either a longer biomass record or a basin-scale SPRFMO assessment with explicit cross-stock spillover.
 
-The two channels through which climate change reaches fleet-level effort operate on different segments. The \emph{direct weather channel} contributes \(-0.7\%\) to \(-1.5\%\) to the artisanal trip response and a contribution indistinguishable from zero for the industrial fleet, even though the mean wind anomaly is below \(+0.5\) m/s under SSP5-8.5 end-of-century: the historical daily wind distribution at vessel COGs sits sufficiently close to the 8 m/s operability threshold that small upward shifts in the mean push additional days past it. The \emph{indirect biomass channel} dominates the response in absolute terms for both fleets and operates entirely through portfolio composition.
+The two channels through which climate change reaches fleet-level effort operate on different segments. The \emph{direct weather channel} contributes \(-0.7%
+\) to \(-1.5%
+\) to the artisanal trip response and a contribution indistinguishable from zero for the industrial fleet, even though the mean wind anomaly is below \(+0.5\) m/s under SSP5-8.5 end-of-century: the historical daily wind distribution at vessel COGs sits sufficiently close to the 8 m/s operability threshold that small upward shifts in the mean push additional days past it. The \emph{indirect biomass channel} dominates the response in absolute terms for both fleets and operates entirely through portfolio composition.
 
-These mechanics imply that climate-adaptation policy in the Centro-Sur should be targeted rather than uniform. The cross-sector cession regime documented in Online Appendix F already redistributes anchoveta and sardine quota toward the artisanal fleet (\(85\)--\(99\%\) each year), but it redistributes \emph{quota}, not \emph{climate exposure}: the post-cession allocation inherits the same collapsing biomass. The binding constraint is the artisanal fleet's technological--geographical specialisation, not the de jure allocation. Adaptation instruments that target the artisanal segment specifically---vessel reinforcement, expanded port infrastructure, weather-indexed insurance, income support, or alternative livelihood programs---are the operationally relevant policy lever, while the industrial purse-seine fleet retains access to its offshore stock under its existing vessel technology. A more structural variant of the same logic is whether artisanal vessels should be allowed to scale up toward industrial-class capacity, restoring access to the offshore stock that the range constraint currently denies them. The premise that small-scale operations are uniformly preferable to large-scale ones has limited empirical support in the broader fisheries literature: Asche and Smith (\citeproc{ref-Asche2026-large}{2026}) argue that environmental and economic sustainability depend on governance rather than scale per se, and that suitable approaches across different scales can outperform a uniform preference for either small or large. Whether targeted vessel upgrades, fleet consolidation, or non-fishery livelihoods dominate the welfare-improving response in our setting depends on the relative weights of biological access, labour, and cultural-heritage considerations, which our framework does not capture. Whether industrial titulares would continue to cede \(85\)--\(99\%\) of their anchoveta and sardine quota under a collapsing biomass is an open question and a natural extension of this work.
+These mechanics imply that climate-adaptation policy in the Centro-Sur small pelagic fishery should focus on differential access to biological resources rather than on quota allocation alone. The cross-sector cession regime documented in Online Appendix F already transfers most anchoveta and sardine quota toward the artisanal fleet (\(85\)--\(99%
+\) each year), but these are precisely the stocks projected to experience the largest climate-driven declines in productivity. In contrast, the offshore jack mackerel stock remains predominantly accessible to industrial vessels because of the operating-range limitations of the artisanal fleet. As a result, climate change amplifies an existing access asymmetry: the fleet segment most dependent on climate-sensitive coastal stocks is also the segment least able to shift effort toward the more resilient offshore resource.
 
-CMIP6 SST anomalies under SSP\(5\)-\(8.5\) end-of-century reach roughly \(+2.3\,^{\circ}\)C, nearly an order of magnitude outside the \(25\)-year estimation window (\(\hat{\sigma}_{SST} \approx 0.26\,^{\circ}\)C). The corresponding posterior of \(\Delta r_s^{\star}/r_s^{0}\) therefore leans on the log-linear extrapolation embedded in the shifter function. Thermal-tolerance arguments (\citeproc{ref-Cheung2010}{Cheung et al. 2010}; \citeproc{ref-Free2019}{Free et al. 2019}) imply that for stocks below their thermal optimum, a log-linear specification, if anything, \emph{under-states} the productivity response, so the projected magnitudes should be read as conservative within the class of monotone shifter functions consistent with the identified posterior signs.
+Under this interpretation, adaptation policies that expand the effective operating range and resilience of artisanal vessels may yield greater long-run benefits than reforms focused solely on quota allocation. Investments in vessel upgrading, safety equipment, port infrastructure, weather forecasting services, weather-indexed insurance, or other measures that relax technological constraints could increase the ability of artisanal fishers to access alternative fishing opportunities as coastal productivity declines. Whether such a transition is socially desirable depends on broader economic, cultural, and governance considerations beyond the scope of this study. More generally, our results suggest that technological access, rather than quota ownership alone, is likely to become the binding constraint under future climate change. Put differently, under climate change the relevant constraint may be less who owns the quota than who can physically reach the fish.
 
-Three caveats qualify the thought experiment behind Table \ref{tab:trip_compstat}. First, the Schaefer steady-state comparative statics holds fishing pressure fixed at the 2000--2024 historical average; any regulatory response that lowered \(\bar{F}_s\) in the face of falling productivity would attenuate both the loss probability and the marginal trip response. Second, the 2000--2024 window was not itself in Schaefer equilibrium under \(\bar{F}_s\): an internal consistency check at \(\Delta SST = 0\) and \(\Delta \log CHL = 0\) yields a median \(f^H_v\) of \(1.015\) rather than \(1.000\), so the results should be read as responses \emph{relative to the baseline steady-state}, not relative to the observed 2000--2024 trajectory. Third, jack mackerel's apparent climate protection rests on a null about \emph{local identification} rather than on biological insensitivity; a range-wide SPRFMO analysis would be the appropriate setting to refine it.
-
-Eight additional caveats qualify the present analysis: holding ex-vessel prices and management rules constant; substantial cross-model spread in chlorophyll-a; identification on a \(25\)-year series limiting non-linearity detection; the absence of risk preferences in the trip equation; the zonal coding of biological closures; the purse-seine focus of the trip-equation panel; the missing wind components for CESM2 in the direct weather channel; and the restriction of the trip equation to the three small pelagic species---artisanal fishers also operate on other coastal species recorded in the IFOP logbook, some of which may be more resilient to climate change and offer an adaptation margin not captured by our projections.
+One limitation deserves particular emphasis. The apparent climate resilience of jack mackerel reflects non-identification of local climate effects rather than evidence of biological insensitivity. Existing evidence suggests that climate variability affects the species through changes in distribution, migration, and spawning dynamics, but these effects are not identified in our aggregate productivity specification. Consequently, the projected asymmetry between fleets should be interpreted as conditional on the current evidence available for jack mackerel productivity. Resolving this uncertainty will require basin-scale analyses using SPRFMO-wide data.
 
 \section{Conclusions}\label{conclusions}
 
-This paper combines a Bayesian state-space model of multi-species stock dynamics with a vessel-level trip equation to project fleet-level fishing effort in the Chilean small pelagic fishery under CMIP6 scenarios. The artisanal segment absorbs most of the projected long-run loss in effort under SSP5-8.5 (\(-16\) to \(-18\%\) vs \(-0.8\) to \(-1.0\%\) for the industrial fleet), an asymmetry driven by differential portfolio exposure to the two coastal stocks with identified climate shifters (anchoveta and sardine), combined with the artisanal fleet's restricted operating range that prevents access to the offshore jack mackerel stock. The cross-sector cession regime already redistributes most of the industrial anchoveta and sardine quota toward the artisanal fleet, but redistributes quota rather than climate exposure, so the policy lever is targeted adaptation of the artisanal segment---vessel reinforcement, port infrastructure, weather-indexed insurance, or alternative livelihoods---rather than reform of the de jure sector-level allocation.
+This paper combines a Bayesian state-space model of multi-species stock dynamics with a vessel-level trip equation to project fleet-level fishing effort in the Chilean small pelagic fishery under CMIP6 scenarios. Across all scenarios, projected impacts are highly uneven across fleets. The artisanal segment absorbs most of the projected long-run loss in effort under SSP5-8.5 (\(-16\) to \(-18%
+\) versus \(-0.8\) to \(-1.0%
+\) for the industrial fleet), an asymmetry driven by differential portfolio exposure to the two coastal stocks with identified climate shifters (anchoveta and sardine) combined with the artisanal fleet's restricted operating range, which limits access to the offshore jack mackerel stock.
 
-Several extensions are natural. A bi-level Stackelberg optimisation using our posterior as prior would deliver full forward biomass trajectories under endogenous TACs and effort allocation (\citeproc{ref-Kasperski2015-jm}{Kasperski 2015}). Connecting the multi-species model to the location-choice literature (\citeproc{ref-Dupont1993-jn}{Dupont 1993}; \citeproc{ref-Smith2005-us}{Smith 2005}; \citeproc{ref-Hicks2020-mz}{Hicks et al. 2020}) through a daily discrete-choice specification, with environmentally informed species distribution models as proxies for local availability, would explicitly capture the spatial dimension of effort reallocation that our framework holds constant under fixed catch shares \(\omega_{vs}\). Such an extension would test whether the asymmetry survives once industrial vessels endogenously re-target stocks across space, and whether artisanal vessels can substitute toward more resilient coastal species within their range (\citeproc{ref-Quezada2026-cp}{Quezada-Escalona et al. 2026}). Extending the trip equation beyond the three pelagic species to other coastal species recorded in the IFOP logbook would quantify the species-substitution adaptation margin available to artisanal fishers. Finally, incorporating risk preferences and production risk would provide a richer characterisation of fleet responses to projected environmental variability (\citeproc{ref-Kasperski2013-jz}{Kasperski and Holland 2013}).
+The policy implications follow directly from this result. The cross-sector cession regime already redistributes most industrial anchoveta and sardine quota toward the artisanal fleet, but it redistributes quota rather than climate exposure. Because the stocks most accessible to artisanal fishers are also those projected to experience the largest climate-driven declines in productivity, future vulnerability is shaped primarily by effective access to biological resources rather than by the formal allocation of harvesting rights. Adaptation policies that relax technological constraints---including vessel upgrading, improved port infrastructure, weather services, and insurance mechanisms---may therefore be more effective than reforms focused solely on quota allocation.
+
+More broadly, our findings suggest that climate impacts on fisheries depend not only on how environmental change affects fish populations, but also on how technology, geography, and institutions determine which fleets can access those populations. Differences in fleet vulnerability arise primarily from portfolio composition and effective access to offshore resources rather than from the formal allocation of harvesting rights.
+
+Future work could extend the framework by incorporating endogenous harvest-control rules, spatial redistribution through location-choice models, species-substitution opportunities beyond the three focal pelagic stocks, and risk preferences in fishing decisions. More fundamentally, resolving the climate sensitivity of jack mackerel will require basin-scale analyses capable of linking environmental variability to productivity across the species' full South Pacific distribution.
 
 \section*{Acknowledgments}\label{acknowledgments}
 \addcontentsline{toc}{section}{Acknowledgments}
@@ -683,9 +706,6 @@ Arancibia, Hugo, Sebastián Klarian, Rubén Alarcón, et al. 2019. \emph{Informe
 \bibitem[\citeproctext]{ref-Arcos2001-jq}
 Arcos, D. F., L. A. Cubillos, and S. P. Núñez. 2001. {``The Jack Mackerel Fishery and {El Ni{ñ}o} 1997--98 Effects Off {Chile}.''} \emph{Progress in Oceanography} 49 (1--4): 597--617. \url{https://doi.org/10.1016/S0079-6611(01)00043-X}.
 
-\bibitem[\citeproctext]{ref-Asche2026-large}
-Asche, Frank, and Martin D. Smith. 2026. {``Large and Small Can Be Beautiful in Fisheries and Aquaculture.''} \emph{ICES Journal of Marine Science} 83 (6): fsag092. \url{https://doi.org/10.1093/icesjms/fsag092}.
-
 \bibitem[\citeproctext]{ref-Aufhammer2018}
 Auffhammer, Maximilian. 2018. {``Quantifying Economic Damages from Climate Change.''} \emph{Journal of Economic Perspectives} 32 (4): 33--52. \url{https://doi.org/10.1257/jep.32.4.33}.
 
@@ -707,9 +727,6 @@ Congreso Nacional de Chile. 2025. \emph{Ley {N\textsuperscript{o}}~21.752: Fija 
 \bibitem[\citeproctext]{ref-dresdner2013}
 Dresdner, Jorge, Carlos Chávez, Daniela Dresdner, et al. 2013. {``Evaluaci{ó}n Socio-Econ{ó}mica de La Aplicaci{ó}n de Medidas de Administraci{ó}n Sobre La Pesquer{ı́}a Mixta de Peque{ñ}os Pel{á}gicos de La Zona Centro Sur.''} \emph{Informe Final Revisado Del Proyecto}, 539.
 
-\bibitem[\citeproctext]{ref-Dupont1993-jn}
-Dupont, Diane P. 1993. {``Price Uncertainty, Expectations Formation and Fishers' Location Choices.''} \emph{Mar. Resour. Econ.} 8 (3): 219--47.
-
 \bibitem[\citeproctext]{ref-GlobColour}
 E.U. Copernicus Marine Service Information. 2025a. \emph{Global Ocean Colour (Copernicus-GlobColour)}. Marine Data Store (MDS). \url{https://doi.org/10.48670/moi-00281}.
 
@@ -719,20 +736,11 @@ E.U. Copernicus Marine Service Information. 2025b. \emph{Global Ocean Hourly Rep
 \bibitem[\citeproctext]{ref-GLORYS12V1}
 E.U. Copernicus Marine Service Information. 2025c. \emph{Global Ocean Physics Reanalysis}. Marine Data Store (MDS). \url{https://doi.org/10.48670/moi-00021}.
 
-\bibitem[\citeproctext]{ref-Free2019}
-Free, Christopher M., James T. Thorson, Malin L. Pinsky, Kiva L. Oken, John Wiedenmann, and Olaf P. Jensen. 2019. {``Impacts of Historical Warming on Marine Fisheries Production.''} \emph{Science} 363 (6430): 979--83. \url{https://doi.org/10.1126/science.aau1758}.
-
 \bibitem[\citeproctext]{ref-Gomez2012}
 Gomez, Fabian, Aldo Montecinos, Samuel Hormazabal, Luis A. Cubillos, Marco Correa-Ramirez, and Francisco P. Chavez. 2012. {``Impact of Spring Upwelling Variability Off Southern--Central {Chile} on Common Sardine ({Strangomera bentincki}) Recruitment.''} \emph{Fisheries Oceanography} 21 (6): 405--14. \url{https://doi.org/10.1111/j.1365-2419.2012.00632.x}.
 
-\bibitem[\citeproctext]{ref-Hicks2020-mz}
-Hicks, Robert L., Daniel S. Holland, Peter T. Kuriyama, and Kurt E. Schnier. 2020. {``Choice Sets for Spatial Discrete Choice Models in Data Rich Environments.''} \emph{Res. Energy Econ.} 60 (May): 101148.
-
 \bibitem[\citeproctext]{ref-Kasperski2015-jm}
 Kasperski, Stephen. 2015. {``Optimal Multi-Species Harvesting in Ecologically and Economically Interdependent Fisheries.''} \emph{Environ. Resour. Econ.} 61 (4): 517--57.
-
-\bibitem[\citeproctext]{ref-Kasperski2013-jz}
-Kasperski, Stephen, and Daniel S. Holland. 2013. {``Income Diversification and Risk for Fishermen.''} \emph{Proc. Natl. Acad. Sci. U. S. A.} 110 (6): 2076--81.
 
 \bibitem[\citeproctext]{ref-Pena-Torres2017-gn}
 Peña-Torres, Julio, Jorge Dresdner, and Felipe Vasquez. 2017. {``El Niño and Fishing Location Decisions: The Chilean Straddling Jack Mackerel Fishery.''} \emph{Mar. Resour. Econ.} 32 (3): 249--75.
@@ -740,17 +748,11 @@ Peña-Torres, Julio, Jorge Dresdner, and Felipe Vasquez. 2017. {``El Niño and F
 \bibitem[\citeproctext]{ref-peuxf1a_torres_2022_MRE}
 Peña-Torres, Julio, Roberto Muñoz, Felipe Quezada, and Cristóbal Kaufmann. 2022. {``Entry Deterrence and Collusion at Repeated Multiunit Auctions of ITQs.''} \emph{Marine Resource Economics} 37 (4): 437--65. \url{https://doi.org/10.1086/721014}.
 
-\bibitem[\citeproctext]{ref-Quezada2026-cp}
-Quezada-Escalona, Felipe J., Desiree Tommasi, Isaac C. Kaplan, Barbara Muhling, and Stephen M. Stohs. 2026. {``Are Fishing Decisions Flexible? Participation, Species Target, and Landing Location Choices in the {U.S.} West Coast Coastal Pelagic Species Fishery.''} \emph{Ecol. Econ.} 247: 109051. \url{https://doi.org/10.1016/j.ecolecon.2026.109051}.
-
 \bibitem[\citeproctext]{ref-Schwartzlose1999-uy}
 Schwartzlose, R. A., J. Alheit, A. Bakun, et al. 1999. {``Worldwide Large-Scale Fluctuations of Sardine and Anchovy Populations.''} \emph{S. Afr. J. Mar. Sci.} 21: 289--347.
 
 \bibitem[\citeproctext]{ref-SERNAPESCA2024-cuota}
 Servicio Nacional de Pesca y Acuicultura (SERNAPESCA), and Subsecretaría de Pesca y Acuicultura (SUBPESCA). 2024. \emph{Cuota Global, Cuota Industrial y Licencias Clase a y Clase b Con y Sin Proyecto de Ley, Año 2024}. Administrative dataset. Gobierno de Chile.
-
-\bibitem[\citeproctext]{ref-Smith2005-us}
-Smith, Martin D. 2005. {``State Dependence and Heterogeneity in Fishing Location Choice.''} \emph{J. Environ. Econ. Manage.} 50 (2): 319--40.
 
 \bibitem[\citeproctext]{ref-SUBPESCA2020}
 SUBPESCA. 2020. \emph{Informe Sectorial de Pesca y Acuicultura 2019}. Subsecretaría de Pesca y Acuicultura. \url{https://www.subpesca.cl/portal/618/articles-106845_documento.pdf}.
