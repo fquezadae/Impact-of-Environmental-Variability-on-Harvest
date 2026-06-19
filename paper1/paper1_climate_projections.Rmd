@@ -188,6 +188,7 @@ required <- c(
   here::here("data/harvest/sernapesca_v2.rds"),
   here::here("data/trips/poisson_dt.rds"),
   here::here("data/cmip6/deltas_ensemble.csv"),
+  here::here("data/outputs/t4b/t4b_full_summary.csv"),  # leido por sections/results_identification.Rmd (gitignored; sincronizar)
   here::here("tables/growth_comparative_statics.csv"),
   here::here("tables/trip_comparative_statics_raw.csv"),
   here::here("tables/trip_comparative_statics_by_tipo_emb_raw.csv")
