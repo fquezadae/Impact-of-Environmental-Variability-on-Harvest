@@ -1,17 +1,17 @@
 # Reduced-form stress tests and prior elicitation {#appendix-stress}
 
-This appendix documents the protocol used to elicit the prior densities
-on the climate shifters $(\rho_s^{SST}, \rho_s^{CHL})$ that enter the
-state-space specification of the Stock dynamics subsection of the main text, together
-with the identifiability diagnostic that motivates the recourse to a
-Bayesian likelihood rather than a direct maximum-likelihood treatment.
+This appendix describes how we set the priors on the climate shifters
+$(\rho_s^{SST}, \rho_s^{CHL})$ that enter the state-space model of the
+Stock dynamics subsection of the main text, together with the
+identifiability diagnostic that motivates the use of Bayesian methods
+over direct maximum likelihood.
 
 ## Deterministic hindcast and cross-variant fit {#sec:appendix-stress-spec}
 
 For each stock $s$ we estimate a deterministic Schaefer hindcast over
 $2000$--$2024$, $\hat B_{s,t+1} = \hat B_{s,t} + r_{s,t}\hat B_{s,t}(1 - \hat B_{s,t}/K_s) - C_{s,t}$
 with $r_{s,t} = r_s^{0} \exp(\rho_s^{SST}(SST_{t-1}-\overline{SST}) + \rho_s^{CHL}(\log CHL_{t-1}-\overline{\log CHL}))$,
-biological parameters $(r_s^{0}, K_s, B_{0,s})$ held at the centres of the
+stock-dynamics parameters $(r_s^{0}, K_s, B_{0,s})$ centred at the
 IFOP/SPRFMO single-species priors, and shifters estimated by bounded
 least squares on $[-3,3]^2$ minimising median absolute percent error
 (MAPE). Four nested variants are reported: base ($\rho=0$), $+$SST
@@ -55,17 +55,16 @@ the joint specification delivering further marginal improvement.
 Jack mackerel hindcast errors remain in the $44$--$49\%$ range across
 all variants, with no shifter distinguishably better than the base.
 
-The joint-variant point estimates carry an internally coherent
-biological reading for the coastal stocks. Anchoveta: both shifters
-negative and similar in magnitude
-($\rho^{SST} \approx -2.3$, $\rho^{CHL} \approx -2.3$). Sardina
-com\'un: $\rho^{SST} \approx -2.0$ but $\rho^{CHL} \approx +2.1$
-(opposite sign to anchoveta, consistent with the warm-water mesotrophic
-affinity that distinguishes sardine from anchoveta in the Humboldt
-Current biological literature). Jack mackerel: $\rho^{SST} \approx +0.6$
-small and the $\rho^{CHL}$ estimate binds at the lower boundary of the
-admissible box; we read the boundary solution as a failure of point
-identification rather than a finding of strong climate forcing.
+The joint-variant point estimates are internally coherent for the
+coastal stocks. Anchoveta: both shifters negative and similar in
+magnitude ($\rho^{SST} \approx -2.3$, $\rho^{CHL} \approx -2.3$).
+Sardina com\'un: $\rho^{SST} \approx -2.0$ but $\rho^{CHL} \approx +2.1$
+(opposite sign for sardine, consistent with the established ecological
+differentiation between sardine and anchoveta in the Humboldt system).
+Jack mackerel: $\rho^{SST} \approx +0.6$ small and the $\rho^{CHL}$
+estimate binds at the lower boundary of the admissible box; we read
+the boundary solution as a failure of point identification rather
+than a finding of strong climate forcing.
 
 ## Identifiability diagnostic and prior elicitation {#sec:appendix-stress-diag}
 \label{sec:appendix-stress-priors}
@@ -75,11 +74,11 @@ than direct maximum-likelihood estimation. First, the two environmental
 forcings are statistically orthogonal over the $2000$--$2024$ sample
 (Pearson $r = 0.030$, $p = 0.888$), so the cross-variant gap in
 hindcast error cannot be attributed to collinearity in the design
-matrix. Second, the jurel MLE binds at the boundary, indicating that
-the climate signal is not separately identifiable from process and
-observation noise absorbed into the residual under a deterministic
-single-species hindcast; the Bayesian state-space specification
-addresses both limitations within a single inferential framework.
+matrix. Second, the jurel MLE binds at the boundary: the deterministic
+hindcast cannot separate the climate signal from process and observation
+noise, so $\rho$ is not separately identifiable. The Bayesian
+state-space specification addresses both limitations within a single
+estimation step.
 
 Table \ref{tab:stress-priors} reports the priors on
 $(\rho_s^{SST}, \rho_s^{CHL})$ used in the structural likelihood.
