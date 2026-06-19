@@ -188,9 +188,9 @@ required <- c(
   here::here("data/harvest/sernapesca_v2.rds"),
   here::here("data/trips/poisson_dt.rds"),
   here::here("data/cmip6/deltas_ensemble.csv"),
-  here::here("paper1/tables/growth_comparative_statics.csv"),
-  here::here("paper1/tables/trip_comparative_statics_raw.csv"),
-  here::here("paper1/tables/trip_comparative_statics_by_tipo_emb_raw.csv")
+  here::here("tables/growth_comparative_statics.csv"),
+  here::here("tables/trip_comparative_statics_raw.csv"),
+  here::here("tables/trip_comparative_statics_by_tipo_emb_raw.csv")
 )
 missing_inputs <- required[!file.exists(required)]
 if (length(missing_inputs)) {
@@ -779,7 +779,7 @@ The identified signs confirm the qualitative reading of the shifters in Section 
 
 ```{r growthcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-gcs <- read.csv("paper1/tables/growth_comparative_statics.csv",
+gcs <- read.csv("tables/growth_comparative_statics.csv",
                 stringsAsFactors = FALSE, check.names = FALSE,
                 colClasses = "character")
 
@@ -832,7 +832,7 @@ Table \ref{tab:trip_compstat} translates the productivity shifts of Table \ref{t
 
 ```{r tripcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-tcs <- read.csv("paper1/tables/trip_comparative_statics_raw.csv",
+tcs <- read.csv("tables/trip_comparative_statics_raw.csv",
                 stringsAsFactors = FALSE, check.names = FALSE)
 
 # Helpers: formateo de porcentajes y bandas. Todos los "%" se escapan como
@@ -902,7 +902,7 @@ The between-fleet asymmetry decomposes further into within-artisanal heterogenei
 
 ```{r tripcompstatemb, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
-tcs_emb_raw <- read.csv("paper1/tables/trip_comparative_statics_by_tipo_emb_raw.csv",
+tcs_emb_raw <- read.csv("tables/trip_comparative_statics_by_tipo_emb_raw.csv",
                         stringsAsFactors = FALSE, check.names = FALSE)
 
 # Filter to SSP5-8.5 end-of-century; reorder by panel share LM > UNK > BM
