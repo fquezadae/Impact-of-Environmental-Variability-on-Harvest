@@ -36,7 +36,7 @@ header-includes:
   - "\\fancyhead[R]{\\small\\thepage}"
   - "\\renewcommand{\\headrulewidth}{0.4pt}"
   - \usepackage{etoolbox}
-  - "\\author{Felipe J. Quezada-Escalona\\thanks{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: felipequezada@udec.cl. Adjunct Researcher, Interdisciplinary Center for Aquaculture Research---Applied Research (INCAR\\textsuperscript{2}), Universidad de Concepci\\'on, Chile.}}"
+  - "\\author{Felipe J. Quezada-Escalona\\thanks{Associate Professor, Department of Economics, Universidad de Concepci\\'on. Mailing address: Victoria 471, Concepci\\'on, Chile. Email: felipequezada@udec.cl. Adjunct Researcher, Interdisciplinary Center for Aquaculture Research---Applied Research (INCAR\\textsuperscript{2}), Universidad de Concepci\\'on.}}"
   - "\\affil{Universidad de Concepci\\'on \\vspace{-60pt}}"
   - "\\renewcommand{\\thesection}{\\Alph{section}}"
   - "\\renewcommand{\\thesubsection}{\\Alph{section}.\\arabic{subsection}}"
