@@ -75,3 +75,8 @@ tree.txt
 !/data/biomass/biomass_dt.rds
 !/data/harvest/sernapesca_v2.rds
 !/data/trips/poisson_dt.rds
+
+# Excepciones: summaries posteriores t4b que el manuscrito necesita para knitear
+# (los *_fit.rds y *_stan_data.rds se quedan ignorados a propósito)
+!/data/outputs/t4b/t4b_full_summary.csv
+!/data/outputs/t4b/t4b_full_enso_lag1_summary.csv
