@@ -19,7 +19,7 @@ limit: $|\rho|=3$ implies that a one-unit anomaly changes productivity
 by roughly $95\%$.] minimising median absolute percent error (MAPE).
 The structural priors draw on the FishLife meta-analysis for
 intrinsic growth rates [@Thorson2020-fishlife], the IFOP V--X
-stock-assessment informes for anchovy and sardine carrying
+stock-assessment informes for anchoveta and sardine carrying
 capacity [@IFOP2024-anchoveta-vx; @IFOP2022-sardina-vx], and the
 range-wide SPRFMO assessment for jack mackerel [@SPRFMO2025-sc13].
 
@@ -32,13 +32,13 @@ range-wide SPRFMO assessment for jack mackerel [@SPRFMO2025-sc13].
 \toprule
 Stock & $r_s^{0}$ (yr$^{-1}$) & $K_s$ (kt) & $B_{0,s}$ (kt) \\
 \midrule
-Anchovy              & $\log\mathcal{N}(0.6,\,0.25)$   & $\log\mathcal{N}(2{,}200,\,0.15)$ & $\log\mathcal{N}(376,\,0.10)$   \\
-Sardine         & $\log\mathcal{N}(0.9,\,0.25)$   & $\log\mathcal{N}(3{,}000,\,0.15)$ & $\log\mathcal{N}(496,\,0.10)$   \\
+Anchoveta              & $\log\mathcal{N}(0.6,\,0.25)$   & $\log\mathcal{N}(2{,}200,\,0.15)$ & $\log\mathcal{N}(376,\,0.10)$   \\
+Sardina com\'un         & $\log\mathcal{N}(0.9,\,0.25)$   & $\log\mathcal{N}(3{,}000,\,0.15)$ & $\log\mathcal{N}(496,\,0.10)$   \\
 Jack mackerel          & $\log\mathcal{N}(0.35,\,0.25)$  & $\log\mathcal{N}(8{,}000,\,0.25)$ & $\log\mathcal{N}(5{,}889,\,0.15)$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[para,flushleft]\footnotesize
-\item \emph{Notes.} Intrinsic growth-rate priors ($r_s^{0}$) follow Thorson's FishLife meta-analysis. Carrying capacity ($K_s$) for anchovy and sardine is derived from the unfished spawning biomass $B_{D0}$ reported in the IFOP V--X stock-assessment informes (anchovy 2024, sardine 2022), scaled to total biomass; for jack mackerel, $K_s$ is re-scaled from the range-wide SPRFMO 2025 assessment. Initial-biomass priors ($B_{0,s}$) are not virgin biomass: they represent the state-space initial condition at $t=2000$ and are centred at the first observed value in the window (total biomass for the coastal stocks, IFOP acoustic survey for jack mackerel). This empirical-Bayes choice is necessary for identification of the initial state under $N=25$ annual observations; see Online Appendix A.2.
+\item \emph{Notes.} Intrinsic growth-rate priors ($r_s^{0}$) follow Thorson's FishLife meta-analysis. Carrying capacity ($K_s$) for anchoveta and sardine is derived from the unfished spawning biomass $B_{D0}$ reported in the IFOP V--X stock-assessment informes (anchoveta 2024, sardina 2022), scaled to total biomass; for jack mackerel, $K_s$ is re-scaled from the range-wide SPRFMO 2025 assessment. Initial-biomass priors ($B_{0,s}$) are not virgin biomass: they represent the state-space initial condition at $t=2000$ and are centred at the first observed value in the window (total biomass for the coastal stocks, IFOP acoustic survey for jack mackerel). This empirical-Bayes choice is necessary for identification of the initial state under $N=25$ annual observations; see Online Appendix A.2.
 \end{tablenotes}
 \end{threeparttable}
 \end{table} Four nested variants are reported: base ($\rho=0$), $+$SST
@@ -52,8 +52,8 @@ mape_raw <- read.csv("data/bio_params/qa/hindcast_sst_comparison.csv",
  stringsAsFactors = FALSE)
 
 stock_label <- c(
- anchoveta_cs = "Anchovy",
- sardina_comun_cs = "Sardine",
+ anchoveta_cs = "Anchoveta",
+ sardina_comun_cs = "Sardina com\\'un",
  jurel_cs = "Jack mackerel"
 )
 
@@ -77,13 +77,13 @@ kable(mape_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
 
 No variant brings any of the three stocks below a $20\%$ MAPE
 threshold. The two coastal stocks benefit from activating SST
-(anchovy: $95.9\%\to 30.8\%$, sardine: $98.5\%\to 23.1\%$), with
+(anchoveta: $95.9\%\to 30.8\%$, sardine: $98.5\%\to 23.1\%$), with
 the joint specification delivering further marginal improvement.
 Jack mackerel hindcast errors remain in the $44$--$49\%$ range across
 all variants, with no shifter distinguishably better than the base.
 
 The point estimates from the joint variant are interpretable for the
-coastal stocks. For anchovy both shifters are negative
+coastal stocks. For anchoveta both shifters are negative
 ($\rho^{SST} \approx -2.3$, $\rho^{CHL} \approx -2.3$); for sardine
 $\rho^{SST} \approx -2.0$ is negative but $\rho^{CHL} \approx +2.1$
 is positive---the opposite sign on CHL across
@@ -99,7 +99,7 @@ Two diagnostics motivate the Bayesian approach. First, the MLE's
 difficulties are not due to collinearity: SST and CHL are uncorrelated
 over the $2000$--$2024$ sample (Pearson $r = 0.030$, $p = 0.888$), so
 the difference in hindcast error across variants cannot be blamed on
-linear dependence between the shifters. Second, the jack mackerel MLE binds
+linear dependence between the shifters. Second, the jurel MLE binds
 at the boundary: the deterministic hindcast cannot separate the climate
 signal from noise, so $\rho$ is not separately identifiable. Together
 these point to a fundamental identification problem under $N=25$
@@ -109,23 +109,23 @@ in a single estimation step.
 Table \ref{tab:stress-priors} reports the priors on
 $(\rho_s^{SST}, \rho_s^{CHL})$ used in the structural likelihood.
 Prior centres for the two coastal stocks are the joint MLEs rounded to
-one decimal place; jack mackerel priors are centred at zero so that posterior
+one decimal place; jurel priors are centred at zero so that posterior
 identification is driven by the structural likelihood rather than by
 the boundary solution. All priors are independent normal with unit
 standard deviation. We do not impose hierarchical pooling across
-species because $\rho^{CHL}$ has opposite signs for anchovy and
+species because $\rho^{CHL}$ has opposite signs for anchoveta and
 sardine---pooling would shrink the two estimates toward a common
 center and erase this ecological distinction.
 
 This prior-elicitation strategy is a form of empirical Bayes: the
-prior centres for anchovy and sardine come from the same $2000$--$2024$
+prior centres for anchoveta and sardine come from the same $2000$--$2024$
 biomass series that enters the likelihood. Standard Bayesian practice
 keeps prior and data independent; we accept this departure because
 with $N=25$ annual observations it is necessary for identification.
 
 We adopt this trade-off deliberately for two reasons. First, the prior
 $\sigma = 1$ is wide enough that the data move the posterior
-substantially when informative: for anchovy, the posterior of
+substantially when informative: for anchoveta, the posterior of
 $\rho^{CHL}$ migrates to $-3.64$, more than one prior standard
 deviation away from the prior centre of $-2.3$ (see the
 posterior-identification table of the main text for full posterior
@@ -139,7 +139,7 @@ substantive finding, not a numerical artefact.
 
 ```{r stress-priors-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 priors_tbl <- data.frame(
- Stock = c("Anchovy", "Sardine", "Jack mackerel"),
+ Stock = c("Anchoveta", "Sardina com\\'un", "Jack mackerel"),
  `rho_SST_mu` = c("-2.3", "-2.0", "0.0"),
  `rho_SST_sd` = c("1.0", "1.0", "1.0"),
  `rho_CHL_mu` = c("-2.3", "+2.1", "0.0"),

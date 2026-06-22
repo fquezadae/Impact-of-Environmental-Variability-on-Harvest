@@ -12,13 +12,13 @@ residuals.
 against survey-based SSB observations, by stock. Solid line: posterior
 median; shaded band: $90\%$ credible interval. Open circles: official
 IFOP/SPRFMO point estimates; downward arrows: left-censored
-observations at the assessment detection limit (jack mackerel $2012$,
+observations at the assessment detection limit (jurel $2012$,
 $2015$).\label{fig:ppc-smooth-vs-obs}}
 \end{figure}
 
 The smoothed band has a median width of approximately $20\%$ of the
 posterior mean, tightening over years with direct observation and
-widening across the seven non-surveyed jack mackerel years (latent biomass
+widening across the seven non-surveyed jurel years (latent biomass
 identified dynamically through the Schaefer transition and two censored
 observations in $2012$ and $2015$).
 

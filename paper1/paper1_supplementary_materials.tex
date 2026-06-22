@@ -122,6 +122,7 @@
 \usepackage{etoolbox}
 \author{Felipe J. Quezada-Escalona\thanks{Associate Professor, Department of Economics, Universidad de Concepci\'on. Mailing address: Victoria 471, Concepci\'on, Chile. Email: felipequezada@udec.cl. Adjunct Researcher, Interdisciplinary Center for Aquaculture Research---Applied Research (INCAR\textsuperscript{2}), Universidad de Concepci\'on.}}
 \affil{Universidad de Concepci\'on \vspace{-60pt}}
+\AtBeginEnvironment{CSLReferences}{\small\setstretch{1.0}}
 \renewcommand{\thesection}{\Alph{section}}
 \renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
 \usepackage{chngcntr}
@@ -169,10 +170,39 @@ over direct maximum likelihood.
 For each stock \(s\) we estimate a deterministic Schaefer hindcast over
 \(2000\)--\(2024\), \(\hat B_{s,t+1} = \hat B_{s,t} + r_{s,t}\hat B_{s,t}(1 - \hat B_{s,t}/K_s) - C_{s,t}\)
 with \(r_{s,t} = r_s^{0} \exp(\rho_s^{SST}(SST_{t-1}-\overline{SST}) + \rho_s^{CHL}(\log CHL_{t-1}-\overline{\log CHL}))\),
-stock-dynamics parameters \((r_s^{0}, K_s, B_{0,s})\) centred at the
-IFOP/SPRFMO single-species priors, and shifters estimated by bounded
-least squares on \([-3,3]^2\) minimising median absolute percent error
-(MAPE). Four nested variants are reported: base (\(\rho=0\)), \(+\)SST
+stock-dynamics parameters \((r_s^{0}, K_s, B_{0,s})\) held fixed at the
+IFOP/SPRFMO single-species prior means reported in Table \ref{tab:stress-structural-priors},
+and shifters estimated by bounded least squares with each shifter
+constrained to \([-3, 3]\),\footnote{The bound is a biologically extreme upper
+  limit: \(|\rho|=3\) implies that a one-unit anomaly changes productivity
+  by roughly \(95\%\).} minimising median absolute percent error (MAPE).
+The structural priors draw on the FishLife meta-analysis for
+intrinsic growth rates (\citeproc{ref-Thorson2020-fishlife}{Thorson 2020}), the IFOP V--X
+stock-assessment informes for anchovy and sardine carrying
+capacity (\citeproc{ref-IFOP2024-anchoveta-vx}{Instituto de Fomento Pesquero 2024}, \citeproc{ref-IFOP2022-sardina-vx}{2022}), and the
+range-wide SPRFMO assessment for jack mackerel (\citeproc{ref-SPRFMO2025-sc13}{South Pacific Regional Fisheries Management Organisation 2025}).
+
+\begin{table}[H]
+\centering\small
+\renewcommand{\arraystretch}{1.0}
+\caption{Single-species priors on structural stock-dynamics parameters used by the deterministic hindcast and as priors in the state-space likelihood. Priors are log-normal on $(r_s^{0}, K_s, B_{0,s})$; the entry $\log\mathcal{N}(\mu,\sigma)$ denotes $\log\theta \sim \mathcal{N}(\log\mu,\sigma)$.\label{tab:stress-structural-priors}}
+\begin{threeparttable}
+\begin{tabular}{lccc}
+\toprule
+Stock & $r_s^{0}$ (yr$^{-1}$) & $K_s$ (kt) & $B_{0,s}$ (kt) \\
+\midrule
+Anchovy              & $\log\mathcal{N}(0.6,\,0.25)$   & $\log\mathcal{N}(2{,}200,\,0.15)$ & $\log\mathcal{N}(376,\,0.10)$   \\
+Sardine         & $\log\mathcal{N}(0.9,\,0.25)$   & $\log\mathcal{N}(3{,}000,\,0.15)$ & $\log\mathcal{N}(496,\,0.10)$   \\
+Jack mackerel          & $\log\mathcal{N}(0.35,\,0.25)$  & $\log\mathcal{N}(8{,}000,\,0.25)$ & $\log\mathcal{N}(5{,}889,\,0.15)$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[para,flushleft]\footnotesize
+\item \emph{Notes.} Intrinsic growth-rate priors ($r_s^{0}$) follow Thorson's FishLife meta-analysis. Carrying capacity ($K_s$) for anchovy and sardine is derived from the unfished spawning biomass $B_{D0}$ reported in the IFOP V--X stock-assessment informes (anchovy 2024, sardine 2022), scaled to total biomass; for jack mackerel, $K_s$ is re-scaled from the range-wide SPRFMO 2025 assessment. Initial-biomass priors ($B_{0,s}$) are not virgin biomass: they represent the state-space initial condition at $t=2000$ and are centred at the first observed value in the window (total biomass for the coastal stocks, IFOP acoustic survey for jack mackerel). This empirical-Bayes choice is necessary for identification of the initial state under $N=25$ annual observations; see Online Appendix A.2.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Four nested variants are reported: base (\(\rho=0\)), \(+\)SST
 only, \(+\log\)CHL only, and joint \(+\)SST\(+\log\)CHL.
 \label{eq:stress-law}
 \label{eq:stress-shifter}
@@ -187,8 +217,8 @@ only, \(+\log\)CHL only, and joint \(+\)SST\(+\log\)CHL.
 \toprule
 Stock & Base & + SST & + log CHL & + SST and log CHL\\
 \midrule
-Anchoveta & 95.9 & 30.8 & 95.1 & 26.6\\
-Sardina com\'un & 98.5 & 23.1 & 98.5 & 20.5\\
+Anchovy & 95.9 & 30.8 & 95.1 & 26.6\\
+Sardine & 98.5 & 23.1 & 98.5 & 20.5\\
 Jack mackerel & 44.2 & 44.3 & 49.1 & 48.5\\
 \bottomrule
 \end{tabular}
@@ -196,64 +226,66 @@ Jack mackerel & 44.2 & 44.3 & 49.1 & 48.5\\
 
 No variant brings any of the three stocks below a \(20\%\) MAPE
 threshold. The two coastal stocks benefit from activating SST
-(anchoveta: \(95.9\%\to 30.8\%\), sardine: \(98.5\%\to 23.1\%\)), with
+(anchovy: \(95.9\%\to 30.8\%\), sardine: \(98.5\%\to 23.1\%\)), with
 the joint specification delivering further marginal improvement.
 Jack mackerel hindcast errors remain in the \(44\)--\(49\%\) range across
 all variants, with no shifter distinguishably better than the base.
 
-The joint-variant point estimates are internally coherent for the
-coastal stocks. Anchoveta: both shifters negative and similar in
-magnitude (\(\rho^{SST} \approx -2.3\), \(\rho^{CHL} \approx -2.3\)).
-Sardina com\textquotesingle un: \(\rho^{SST} \approx -2.0\) but \(\rho^{CHL} \approx +2.1\)
-(opposite sign for sardine, consistent with the established ecological
-differentiation between sardine and anchoveta in the Humboldt system).
-Jack mackerel: \(\rho^{SST} \approx +0.6\) small and the \(\rho^{CHL}\)
-estimate binds at the lower boundary of the admissible box; we read
-the boundary solution as a failure of point identification rather
-than a finding of strong climate forcing.
+The point estimates from the joint variant are interpretable for the
+coastal stocks. For anchovy both shifters are negative
+(\(\rho^{SST} \approx -2.3\), \(\rho^{CHL} \approx -2.3\)); for sardine
+\(\rho^{SST} \approx -2.0\) is negative but \(\rho^{CHL} \approx +2.1\)
+is positive---the opposite sign on CHL across
+the two species reflects underlying ecological differences. For jack mackerel \(\rho^{SST} \approx +0.6\)
+is small and \(\rho^{CHL}\) binds at the lower boundary; we read this
+as a failure of identification at the Centro-Sur scale rather than as
+strong climate forcing.
 
 \subsection{Identifiability diagnostic and prior elicitation}\label{sec:appendix-stress-diag}
 
 \label{sec:appendix-stress-priors}
 
-Two diagnostics motivate the use of weakly informative priors rather
-than direct maximum-likelihood estimation. First, the two environmental
-forcings are statistically orthogonal over the \(2000\)--\(2024\) sample
-(Pearson \(r = 0.030\), \(p = 0.888\)), so the cross-variant gap in
-hindcast error cannot be attributed to collinearity in the design
-matrix. Second, the jurel MLE binds at the boundary: the deterministic
-hindcast cannot separate the climate signal from process and observation
-noise, so \(\rho\) is not separately identifiable. The Bayesian
-state-space specification addresses both limitations within a single
-estimation step.
+Two diagnostics motivate the Bayesian approach. First, the MLE's
+difficulties are not due to collinearity: SST and CHL are uncorrelated
+over the \(2000\)--\(2024\) sample (Pearson \(r = 0.030\), \(p = 0.888\)), so
+the difference in hindcast error across variants cannot be blamed on
+linear dependence between the shifters. Second, the jack mackerel MLE binds
+at the boundary: the deterministic hindcast cannot separate the climate
+signal from noise, so \(\rho\) is not separately identifiable. Together
+these point to a fundamental identification problem under \(N=25\)
+observations, which the Bayesian state-space specification addresses
+in a single estimation step.
 
 Table \ref{tab:stress-priors} reports the priors on
 \((\rho_s^{SST}, \rho_s^{CHL})\) used in the structural likelihood.
 Prior centres for the two coastal stocks are the joint MLEs rounded to
-one decimal place; jurel priors are centred at zero so that posterior
+one decimal place; jack mackerel priors are centred at zero so that posterior
 identification is driven by the structural likelihood rather than by
 the boundary solution. All priors are independent normal with unit
-standard deviation; no hierarchical pooling is imposed because
-\(\rho^{CHL}\) switches sign between anchoveta and sardine.
+standard deviation. We do not impose hierarchical pooling across
+species because \(\rho^{CHL}\) has opposite signs for anchovy and
+sardine---pooling would shrink the two estimates toward a common
+center and erase this ecological distinction.
 
 This prior-elicitation strategy is a form of empirical Bayes: the
-prior centres for anchoveta and sardine are derived from the same
-2000--2024 biomass series that enters the state-space likelihood,
-which trades pure data-prior independence for tractable identification
-under \(N=25\) annual observations. We adopt this trade-off deliberately
-for two reasons. First, the prior standard deviation \(\sigma = 1\) is
-large enough that the posterior is free to move substantially: the
-posterior of \(\rho_s^{CHL}\) for anchoveta migrates to \(-3.65\)
-(prior mean \(-2.3\)), more than one prior standard deviation from
-the centre, illustrating that the data does refine the prior when
-informative. Second, the alternative of centring all priors at zero
-would, under \(N=25\), leave the joint posterior of
-\((r_s^{0}, K_s, B_{0,s}, \rho_s^{SST}, \rho_s^{CHL})\) weakly identified
-or multimodal, producing posteriors that are uninformative for
-projections regardless of whether the underlying coupling is real or
-absent. The empirical-Bayes choice therefore makes the non-identification
-result for jack mackerel a substantive finding rather than a numerical
-artefact of weak posterior geometry.
+prior centres for anchovy and sardine come from the same \(2000\)--\(2024\)
+biomass series that enters the likelihood. Standard Bayesian practice
+keeps prior and data independent; we accept this departure because
+with \(N=25\) annual observations it is necessary for identification.
+
+We adopt this trade-off deliberately for two reasons. First, the prior
+\(\sigma = 1\) is wide enough that the data move the posterior
+substantially when informative: for anchovy, the posterior of
+\(\rho^{CHL}\) migrates to \(-3.64\), more than one prior standard
+deviation away from the prior centre of \(-2.3\) (see the
+posterior-identification table of the main text for full posterior
+summaries). Second,
+centring all priors at zero under \(N=25\) would leave the joint
+posterior of \((r_s^{0}, K_s, B_{0,s}, \rho_s^{SST}, \rho_s^{CHL})\)
+poorly identified, producing flat posteriors regardless of whether
+climate coupling is real or absent. The empirical-Bayes choice
+therefore makes the non-identification result for jack mackerel a
+substantive finding, not a numerical artefact.
 
 \begin{table}[!h]
 \centering
@@ -264,8 +296,8 @@ artefact of weak posterior geometry.
 \toprule
 Stock & $\mu_{\rho^{SST}}$ & $\sigma_{\rho^{SST}}$ & $\mu_{\rho^{CHL}}$ & $\sigma_{\rho^{CHL}}$ & Source\\
 \midrule
-Anchoveta & -2.3 & 1.0 & -2.3 & 1.0 & Joint MLE\\
-Sardina com\'un & -2.0 & 1.0 & +2.1 & 1.0 & Joint MLE\\
+Anchovy & -2.3 & 1.0 & -2.3 & 1.0 & Joint MLE\\
+Sardine & -2.0 & 1.0 & +2.1 & 1.0 & Joint MLE\\
 Jack mackerel & 0.0 & 1.0 & 0.0 & 1.0 & Boundary solution; vague prior\\
 \bottomrule
 \end{tabular}
@@ -278,10 +310,16 @@ the Stock dynamics subsection of the main text, comparing three state-space
 specifications: (i) species-independent dynamics without climate
 shifters (\emph{ind}), (ii) the same with a cross-stock residual
 covariance \(\Omega\) (\emph{omega}), and (iii) the full model
-augmented with the climate shifter of Eq.\textasciitilde(1) of the main text
-(\emph{full}). Two predictive metrics are reported: leave-one-out
-PSIS-LOO (Pareto-smoothed importance sampling) and one-step-ahead LFO
-(leave-future-out).
+augmented with the climate shifter equation of the Stock dynamics subsection of the main text
+(\emph{full}). Two predictive metrics are reported. PSIS-LOO
+(Pareto-smoothed importance-sampling leave-one-out) is a Bayesian
+analogue of cross-validation that estimates how well each model would
+predict each observation if that observation were held out of the
+sample. LFO (leave-future-out) is its time-series counterpart: the
+model is refit on observations up to year \(t\) and evaluated on the
+one-step-ahead predictive density at \(t+1\). Both metrics report
+Expected Log Predictive Density (ELPD); higher values indicate better
+predictive performance.
 
 \begin{table}[!h]
 \centering
@@ -293,14 +331,14 @@ PSIS-LOO (Pareto-smoothed importance sampling) and one-step-ahead LFO
 \toprule
 Model & $\widehat{\text{ELPD}}_{\text{loo}}$ & SE & $\Delta\widehat{\text{ELPD}}$ & SE$_{\Delta}$ & $\hat{p}_{\text{loo}}$\\
 \midrule
-T4b-full & -8.41 & 8.28 & -- & -- & 64.8\\
-T4b-ind & -23.00 & 8.01 & -14.59 & 4.93 & 62.4\\
-T4b-omega & -26.43 & 9.16 & -18.02 & 5.59 & 57.9\\
+\emph{full} & -8.41 & 8.28 & -- & -- & 64.8\\
+\emph{ind} & -23.00 & 8.01 & -14.59 & 4.93 & 62.4\\
+\emph{omega} & -26.43 & 9.16 & -18.02 & 5.59 & 57.9\\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Δ ELPD is the pairwise difference relative to T4b-full (the leading model); the adjacent SE column reports the standard error of that difference. After moment matching, 65/68 observations satisfy Pareto-k <= 0.7 for T4b-full, 64/68 for T4b-ind, and 67/68 for T4b-omega. The remaining high-Pareto-k points are the two censored jack-mackerel years (2012, 2015), which appear in all three models and therefore do not affect the ranking.
+\item ΔELPD is the difference relative to full (the leading model); SE is the standard error of that difference.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -316,31 +354,33 @@ climate shifter is included.
 \centering
 \fontsize{10}{12}\selectfont
 \begin{threeparttable}
-\begin{tabular}[t]{lcccrr}
+\begin{tabular}[t]{lrrr}
 \toprule
-Model & Points & Censored & $\widehat{\text{ELPD}}_{\text{LFO}}$ & Mean per point & $\Delta$ vs leader\\
+Model & $\widehat{\text{ELPD}}_{\text{LFO}}$ & Mean & $\Delta\widehat{\text{ELPD}}$\\
 \midrule
-T4b-full & 14 & 2 & -29.10 & -2.08 & --\\
-T4b-ind & 14 & 2 & -29.46 & -2.10 & -0.37\\
-T4b-omega & 14 & 2 & -30.46 & -2.18 & -1.36\\
+\emph{full} & -29.10 & -2.08 & --\\
+\emph{ind} & -29.46 & -2.10 & -0.37\\
+\emph{omega} & -30.46 & -2.18 & -1.36\\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Sum of one-step predictive log densities over five origin years (2011, 2014, 2017, 2020, 2022) and three stocks (14 targets per model; two are censored). Each refit uses 4 chains × 1500 warmup + 1500 sampling iterations. All 15 refits satisfied R-hat <= 1.01 with at most one divergent transition (T4b-omega at the 2011 origin), which does not affect the reported ELPD.
+\item ELPD sums one-step-ahead predictive log densities over 14 target years per model, covering five origin years equally spaced from 2011 to 2022 (roughly half of the 2000--2024 window) across three stocks. ΔELPD is the difference relative to full (the leading model).
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
 The one-step-ahead LFO comparison is essentially a tie across the three
-specifications, indicating that the climate-augmented specification does
-not deliver a detectable improvement in short-horizon forecast
-performance over the climate-free alternatives. We interpret this as a
-sample-size issue rather than a deficiency of the climate
-specification: the structural climate elasticities are identified on
-the full \(25\)-year window, not on one-step-ahead increments. The
-posterior of the climate-augmented specification remains our primary
-object of interpretation in the main text.
+specifications, indicating that the climate-augmented specification
+does not improve one-step-ahead forecasts relative to the climate-free
+alternatives. This reflects sample size, not a flaw in the climate
+specification: with only \(25\) years of biomass data, the climate
+shifters capture how SST and CHL modulate stock productivity, and
+their effect accumulates over multiple years; in any single year it
+is small relative to process and observation noise, so the climate
+signal is identifiable across the full \(25\)-year window but not in
+one-step-ahead increments. The climate-augmented specification remains the primary
+model reported in the main text.
 
 \section{Posterior-predictive checks}\label{appendix-posterior}
 
@@ -356,13 +396,13 @@ residuals.
 against survey-based SSB observations, by stock. Solid line: posterior
 median; shaded band: $90\%$ credible interval. Open circles: official
 IFOP/SPRFMO point estimates; downward arrows: left-censored
-observations at the assessment detection limit (jurel $2012$,
+observations at the assessment detection limit (jack mackerel $2012$,
 $2015$).\label{fig:ppc-smooth-vs-obs}}
 \end{figure}
 
 The smoothed band has a median width of approximately \(20\%\) of the
 posterior mean, tightening over years with direct observation and
-widening across the seven non-surveyed jurel years (latent biomass
+widening across the seven non-surveyed jack mackerel years (latent biomass
 identified dynamically through the Schaefer transition and two censored
 observations in \(2012\) and \(2015\)).
 
@@ -416,43 +456,49 @@ $\Omega$ (off-diagonal) & 3 & 1.001 & 5,732 & 8,544\\
 
 \section{Spatial robustness of the jack mackerel non-identification result}\label{appendix-spatial}
 
-The non-identification of \((\rho_{\text{jurel}}^{SST}, \rho_{\text{jurel}}^{CHL})\)
-reported in the Identification of climate shifters section of the main text admits two observationally
-equivalent readings: that jurel productivity is uncoupled from
-Centro-Sur coastal forcing at the annual aggregate, or that the
-relevant forcing operates at a spatial scale broader than the EEZ,
-diluting the local-domain signal. This appendix tests four
-explanations for the null --- insufficient power, insufficient
-spatial extent, insufficient biomass coverage, and a poor choice of
-spatial scale --- and concludes that the null is structural rather
-than aggregation-driven within the \(2000\)--\(2024\) Centro-Sur record.
+The non-identification of \((\rho_{\text{jack mackerel}}^{SST}, \rho_{\text{jack mackerel}}^{CHL})\)
+reported in the Identification of climate shifters section of the
+main text admits two readings: a true null (jack mackerel productivity has no
+climate response at the annual aggregate) or a measurement gap (the
+relevant forcing operates at a scale broader than the local shifters
+capture). This appendix first establishes that the sample places jack mackerel at the
+edge of detection for a climate shifter of magnitude comparable to the
+identified coastal-stock shifters, then tests
+five mechanical explanations for the null---spatial aggregation,
+joint specification, biomass coverage, basin-scale forcing, and
+SPRFMO integration---and concludes that the null is structural within
+the \(2000\)--\(2024\) Centro-Sur record.
 
 \subsection{Identification power on the sample}\label{sec:appendix-spatial-power}
 
-Linearising the Schaefer transition in log-differences,
-\(\Delta \log B_{i,t+1} = \alpha_i - \beta_i (B_{i,t}/K_i) + \rho_i^X X_{t-1} + \varepsilon_{i,t}\)
-with \(\varepsilon_{i,t} \sim \mathcal{N}(0, \sigma_{i,\text{resid}}^2)\)
-and \(\sigma_{i,\text{resid}} = \sqrt{\sigma_{i,\text{proc}}^2 + 2\sigma_{i,\text{obs}}^2}\),
-the OLS-equivalent standard error on a sample of \(N=24\) lag-one
-observations is
-\(\mathrm{SE}(\hat{\rho}_i^X) \approx \sigma_{i,\text{resid}} / [\mathrm{sd}(X)\sqrt{N-K}]\)
-with \(K=3\) regressors. The minimum shifter magnitude detectable at
-\(80\%\) power for a two-sided \(90\%\) credible interval is then
-\(|\rho_i^X|_{\min} \approx 2.56\,\mathrm{SE}(\hat{\rho}_i^X)\).
+Before testing alternative specifications, we check whether the sample
+is informative enough to identify a jack mackerel climate shifter of magnitude
+comparable to the coastal stocks. The minimum shifter detectable at
+\(80\%\) power for a two-sided \(90\%\) credible interval is
+\(|\rho_i^X|_{\min}\approx 2.56\,\mathrm{SE}(\hat{\rho}_i^X)\), where
+\(\mathrm{SE}(\hat{\rho}_i^X)\approx\sigma_{i,\text{resid}}/[\mathrm{sd}(X)\sqrt{N-K}]\)
+from a linearisation of the Schaefer transition with
+\(\sigma_{i,\text{resid}}=\sqrt{\sigma_{i,\text{proc}}^2+2\sigma_{i,\text{obs}}^2}\)
+the residual noise (combining process and observation noise), \(N=24\)
+lag-one observations, and \(K=3\) regressors.
 
-Evaluated at the posterior medians of \(\sigma_{\text{proc}}\) and
-\(\sigma_{\text{obs}}\), \(\sigma_{i,\text{resid}}\) is \(0.28\) for
-anchoveta, \(0.25\) for sardine, and \(1.28\) for jurel --- the latter
-roughly \(4.6\) times the coastal-stock average and the main reason
-why the prior dominates the jurel posterior. Table \ref{tab:appE-power}
-reports \(|\rho|_{\min}\) for the three stocks and three candidate
-shifters. The jurel envelope spans \(|\rho|_{\min}\) of \(1.50\) on
-local SST, \(1.32\) on local \(\log\)\textasciitilde CHL, and \(0.71\) on basin-scale
-ENSO, against an envelope of empirically plausible biological
-elasticities centred near \(0.05\)--\(0.30\) in absolute value, far below the
-\(|\rho|_{\min}\) envelope reported here. The sample is therefore insufficiently informative
-to support a credible interval for jurel under any of these
-forcings, regardless of the true elasticity.
+At posterior medians, the residual noise is \(\sigma_{\text{resid}}=0.28\)
+for anchovy, \(0.25\) for sardine, and \(1.28\) for jack mackerel---roughly \(4.6\)
+times higher for jack mackerel than for the coastal stocks. This is the main
+reason the prior dominates the jack mackerel posterior in the full state-space
+fit. Table \ref{tab:appE-power} reports the detectable \(|\rho|_{\min}\)
+for each stock and candidate shifter. For the coastal stocks,
+\(|\rho|_{\min}\) ranges from \(0.26\) to \(0.33\) across all shifters, well
+below the identified posterior magnitudes reported in the main text
+(\(|\rho|\) between \(1.06\) and \(3.64\)), confirming that the coastal-stock
+identification is supported by ample power. For jack mackerel, \(|\rho|_{\min}\)
+ranges from \(0.71\) (basin-scale ENSO) to \(1.50\) (local SST)---of the
+same order of magnitude as the coastal-stock estimates. A jack mackerel climate
+response of coastal-stock magnitude would therefore be at the edge of
+detection on the present sample; a smaller response would not be
+detectable at all. The direct test of whether such a response is
+present is the posterior-to-prior comparison in the next subsection,
+to which we now turn.
 
 \begin{table}[H]
 \centering
@@ -465,9 +511,9 @@ evaluated at posterior medians.\label{tab:appE-power}}
 \toprule
 Stock & $\sigma_{\text{resid}}$ & $|\rho_{SST}|_{\min}$ & $|\rho_{\log\text{CHL}}|_{\min}$ & $|\rho_{\text{ENSO}}|_{\min}$ \\
 \midrule
-Anchoveta & $0.28$ & $0.33$ & $0.29$ & $0.16$ \\
-Sardina común & $0.25$ & $0.29$ & $0.26$ & $0.14$ \\
-Jurel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
+Anchovy & $0.28$ & $0.33$ & $0.29$ & ---     \\
+Sardine & $0.25$ & $0.29$ & $0.26$ & ---     \\
+Jack mackerel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -482,52 +528,39 @@ Niño 3.4 index over the estimation window.
 
 \subsection{Posterior identification across alternative specifications}\label{sec:appendix-spatial-results}
 
-We re-fit the state-space jurel block under four alternative shifter
+We re-fit the state-space jack mackerel block under four alternative shifter
 configurations, each designed to test one mechanical explanation for
 the local null. Table \ref{tab:appE-sigma} reports the
-posterior-to-prior standard deviation ratios for the jurel shifters
+posterior-to-prior standard deviation ratios for the jack mackerel shifters
 under each specification; ratios at unity indicate no posterior
 updating relative to the prior.
 
 \begin{table}[H]
-\centering
-\caption{Posterior-to-prior standard deviation ratios of the jurel
+\centering\small
+\caption{Posterior-to-prior standard deviation ratios of the jack mackerel
 climate shifters under four alternative specifications.\label{tab:appE-sigma}}
 \begin{threeparttable}
-\begin{tabular}{llcc}
+\begin{tabular}{llccc}
 \toprule
-Test & Specification & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ (SST) & $\sigma_{\text{post}}/\sigma_{\text{prior}}$ ($\log$~CHL or ENSO) \\
+Test & Specification & $\sigma$(SST) & $\sigma$($\log$~CHL) & $\sigma$(ENSO) \\
 \midrule
-Spatial extent & EEZ domain $\mathcal{D}_1$ & $0.998$ & $1.014$ ($\log$~CHL) \\
- & Offshore-extended $\mathcal{D}_2$ & $1.002$ & $1.009$ ($\log$~CHL) \\
- & Southeast Pacific $\mathcal{D}_3$ & $0.999$ & $1.011$ ($\log$~CHL) \\
-Biomass coverage & Dual-source (Centro-Sur + Northern acoustic) & $0.94$ & $0.99$ ($\log$~CHL) \\
-Spatial scale & Basin-scale ENSO Niño 3.4, lag~1 & --- & $0.98$ (ENSO) \\
- & Basin-scale ENSO Niño 3.4, lag~2 & --- & $1.01$ (ENSO) \\
-Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$ & $1.00$ ($\log$~CHL); $0.98$ (ENSO) \\
+Spatial extent      & EEZ $\mathcal{D}_1$                         & $0.998$ & $1.014$ & ---     \\
+                    & Offshore-extended $\mathcal{D}_2$           & $1.002$ & $1.009$ & ---     \\
+                    & Southeast Pacific $\mathcal{D}_3$           & $0.999$ & $1.011$ & ---     \\
+Biomass coverage    & Dual-source (Centro-Sur + Northern acoustic) & $0.94$  & $0.99$  & ---     \\
+Spatial scale       & Basin-scale ENSO Niño 3.4, lag~1            & ---     & ---     & $0.98$  \\
+                    & Basin-scale ENSO Niño 3.4, lag~2            & ---     & ---     & $1.01$  \\
+Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$  & $1.00$  & $0.98$  \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \emph{Notes.} $\mathcal{D}_1$ is the Chilean EEZ between $18^{\circ}$S
-and $42^{\circ}$S out to $200$ nautical miles. $\mathcal{D}_2$ extends to
-$1{,}000$ km offshore. $\mathcal{D}_3$ is the regional Southeast Pacific
-domain $5^{\circ}$S--$45^{\circ}$S, $70^{\circ}$W--$120^{\circ}$W.
-Spatial aggregates are area-weighted (with $\cos(\text{lat})$) and
-centred on the $2000$--$2024$ mean. The dual-source extension augments
-the Centro-Sur biomass likelihood with the Northern Chilean acoustic
-series under a common shifter $\rho_{\text{jurel}}^{\text{common}}$,
-motivated by the $0.88$ log-scale cross-series correlation. The ENSO
-specification replaces the local coastal shifters with the Niño 3.4
-index at the indicated lag. The joint specification estimates all
-three shifters simultaneously for jurel, holding the anchoveta and
-sardina blocks at the main specification of the Stock dynamics subsection of the main text. Anchoveta and sardina shifter ratios remain
-stable at $0.43$--$0.83$ across all configurations (not reported).
+\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. $\mathcal{D}_1$: EEZ $18$--$42^{\circ}$S, $200$ nm. $\mathcal{D}_2$: extends to $1{,}000$ km offshore. $\mathcal{D}_3$: Southeast Pacific $5$--$45^{\circ}$S, $70$--$120^{\circ}$W. Spatial aggregates are area-weighted ($\cos(\text{lat})$) and centred on the $2000$--$2024$ mean. Dual-source: joint likelihood of Centro-Sur and Northern Chilean acoustic series ($0.88$ cross-correlation) under a common shifter. ENSO specs replace local shifters with Niño 3.4. Joint specification holds anchovy and sardine at the main specification. Anchovy and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
 All four tests deliver a posterior-to-prior ratio between \(0.94\) and
-\(1.03\) for the jurel shifters, statistically indistinguishable from
+\(1.03\) for the jack mackerel shifters, statistically indistinguishable from
 unity given the prior dispersion. The two ratios closest to ``informative
 updating'' --- the dual-source extension at \(0.94\)--\(0.99\) and the
 basin-scale ENSO at \(0.98\) --- remain well above the \(0.7\) threshold
@@ -542,7 +575,7 @@ The Centro-Sur and Northern Chilean acoustic biomass series exhibit a
 (\(2012\)--\(2024\)), motivating a joint-likelihood specification in
 which a common shifter \(\rho^{\text{common}}\) is identified
 simultaneously on both records. The extension multiplies the number
-of informative jurel-biomass observations by approximately \(1.7\)
+of informative jack mackerel-biomass observations by approximately \(1.7\)
 while preserving the prior structure of the main fit. The resulting
 \(\sigma_{\text{post}}/\sigma_{\text{prior}}\) ratios of \(0.94\)
 (SST) and \(0.99\) (\(\log\)\textasciitilde CHL) are the strongest posterior updating
@@ -551,96 +584,82 @@ remain well above the threshold for material identification.
 
 \subsection{Basin-scale ENSO test}\label{sec:appendix-spatial-enso}
 
-Replacing the local coastal shifters with the basin-scale ENSO
-Niño 3.4 index tests whether the relevant climatic forcing for
-jurel operates at the basin scale rather than the coastal scale,
-consistent with the empirical evidence of Peña-Torres et al. (\citeproc{ref-Pena-Torres2017-gn}{2017})
-(ENSO-driven shifts in jurel location choices) and Arcos et al. (\citeproc{ref-Arcos2001-jq}{2001})
-(SPRFMO-scale stock dynamics under broad-basin forcing). The
-specification estimates a single \(\rho_{\text{jurel}}^{\text{ENSO}}\)
-on lag-1 and lag-2 ENSO anomalies in alternative runs. The
-resulting ratios of \(0.98\) (lag\textasciitilde1) and \(1.01\) (lag\textasciitilde2) are both
-indistinguishable from unity, consistent with the analytic
-\(|\rho_{\text{ENSO}}|_{\min} = 0.71\) of Table \ref{tab:appE-power}.
-
-A prior-propagation sensitivity combines the posterior of
-\(\rho_{\text{jurel}}^{\text{ENSO}}\) with the CMIP6 ensemble of
-basin-scale temperature deltas to compute a \(90\%\) predictive
-interval for the jurel productivity factor under SSP\(5\)-\(8.5\)
-end-of-century. The interval spans approximately three orders of
-magnitude (\([0.05, 19.5]\)), confirming that prior-propagated
-projections are uninformative for policy and validating the
-fixed-\(r^{\star}_{\text{jurel}}\) convention adopted in the main
-text.
-
-A separate exploratory attempt to incorporate the SPRFMO range-wide
-assessment (OROP-PS, encompassing Chile, Peru, Ecuador and adjacent
-high-seas) fails on coherence grounds: the augmented likelihood
-exhibits multimodal posterior support and unsatisfactory chain
-mixing, indicating that the broader geographic aggregate is not
+Replacing the local coastal shifters with the basin-scale ENSO Niño 3.4
+index tests whether the relevant forcing operates at the basin scale,
+consistent with Peña-Torres et al. (\citeproc{ref-Pena-Torres2017-gn}{2017}) (ENSO-driven shifts in jack mackerel
+location choices) and Arcos et al. (\citeproc{ref-Arcos2001-jq}{2001}) (SPRFMO-scale stock dynamics under
+broad-basin forcing). The resulting ratios of \(0.98\) (lag\textasciitilde1) and \(1.01\)
+(lag\textasciitilde2) are indistinguishable from unity, consistent with
+\(|\rho_{\text{ENSO}}|_{\min}=0.71\) in Table \ref{tab:appE-power}.
+Propagating the posterior of \(\rho_{\text{jack mackerel}}^{\text{ENSO}}\)
+through the CMIP6 ensemble yields a \(90\%\) predictive interval for the
+jack mackerel productivity factor spanning roughly three orders of magnitude
+(\([0.05, 19.5]\)) at SSP\(5\)-\(8.5\) end-of-century, validating the
+fixed-\(r^{\star}_{\text{jack mackerel}}\) convention of the main text. A
+separate attempt to integrate the SPRFMO range-wide assessment (Chile,
+Peru, Ecuador, and adjacent high-seas) fails: the augmented likelihood
+is multimodal with poor chain mixing, so the broader aggregate is not
 integrable with the Centro-Sur record under a single shifter.
 
 \subsection{Implication for the main claim}\label{sec:appendix-spatial-implication}
 
-The four tests above rule out the most natural mechanical
-explanations for the jurel non-identification: it is not a
-small-sample artefact within the available power envelope
-(Table \ref{tab:appE-power}); it does not respond to broader spatial
-aggregation of the local shifters (E.1: \(\mathcal{D}_1\) through
-\(\mathcal{D}_3\)); it does not respond to expanded biomass coverage
-through the Northern Chilean acoustic series (E.2 dual-source); and
-it does not respond to replacing the local shifters with a
-basin-scale forcing (E.3 ENSO). The convergence of these four tests
-points to a structural rather than aggregation-driven limitation of
-the present record. Closing the identification gap will require
-either a substantially longer biomass record (the \(25\)-year window
-limits any moderate-magnitude shifter to below detection) or a
-basin-scale assessment with explicit cross-stock spillover within
-a fully transboundary stock-dynamics specification. Within the
-present record, holding \(r^{\star}_{\text{jurel}}\) fixed at the
-prior mean is the defensible reporting choice and is the convention
-adopted throughout the main text.
+The five tests above rule out the natural mechanical explanations for
+the jack mackerel non-identification: the result does not respond to broader
+spatial aggregation of the local shifters (\(\mathcal{D}_1\) through
+\(\mathcal{D}_3\)), to joint specification, to expanded biomass coverage
+(dual-source), to basin-scale forcing (Niño 3.4), or to integration
+with the SPRFMO range-wide assessment. The power calculation
+(Table \ref{tab:appE-power}) places the jack mackerel detection threshold at
+the edge of the coastal-stock shifter magnitudes: a coastal-magnitude
+effect would be barely detectable on the present sample, and a smaller
+effect not at all. The convergence of these findings points to a structural
+limitation of the present record. Closing the gap will require either
+a substantially longer biomass record or a basin-scale assessment with
+explicit cross-stock spillover. Within the present record, holding
+\(r^{\star}_{\text{jack mackerel}}\) fixed at the prior mean is the defensible
+reporting choice and is the convention adopted throughout the main
+text.
 
 \section{Inter-sectoral cessions}\label{appendix-portfolio}
 
 This appendix documents the realised inter-sectoral quota cession flow over \(2013\)--\(2024\), the single administrative re-allocation channel admitted by the de jure fractioning regime. We extract assigned, ceded, effective, and captured tonnage by sector for each species--year from the annual SERNAPESCA quota control reports.
 
-Two qualitative facts emerge from the consolidated \(2013\)--\(2024\) series, separated by species pattern: anchoveta and sardine in Table \ref{tab:cesiones-anchsard}, jack mackerel in Table \ref{tab:cesiones-jurel}. First, in the anchoveta and sardine fisheries the industrial sector cedes a large share of its assigned TAC to artisanal cessionaries in every year of the window: the share transferred ranges from \(12\%\) to \(72\%\) over \(2013\)--\(2017\) and tightens to \(85\%\)--\(\sim\!100\%\) over \(2018\)--\(2024\), scaling with the TAC from \(26\) to \(50\) kt per year in anchoveta and \(51\) to \(77\) kt per year in sardine. Second, in the jack mackerel fishery the cession flow is an order of magnitude smaller relative to the assigned TAC---never exceeding \(14\%\) in any year and falling below \(5\%\) in eight of the twelve years---and reverses direction across years.
+Two qualitative facts emerge from the consolidated \(2013\)--\(2024\) series, separated by species pattern: anchovy and sardine in Table \ref{tab:cesiones-anchsard}, jack mackerel in Table \ref{tab:cesiones-jurel}. First, in the anchovy and sardine fisheries the industrial sector cedes a large share of its assigned TAC to artisanal cessionaries in every year of the window: the share transferred ranges from \(12\%\) to \(72\%\) over \(2013\)--\(2017\) and tightens to \(85\%\)--\(\sim\!100\%\) over \(2018\)--\(2024\), scaling with the TAC from \(26\) to \(50\) kt per year in anchovy and \(51\) to \(77\) kt per year in sardine. Second, in the jack mackerel fishery the cession flow is an order of magnitude smaller relative to the assigned TAC---never exceeding \(14\%\) in any year and falling below \(5\%\) in eight of the twelve years---and reverses direction across years.
 
-The post-cession allocation reflects the joint pre-reform fractioning and cession regime rather than the de jure fractioning alone. Whether industrial quota holders would continue to cede \(85\)--\(99\%\) of their anchoveta and sardine TACs under a collapsing biomass is an open question. The contracts depend on the productivity of the ceded stocks, and the cession volumes observed over \(2013\)--\(2024\) reflect TAC and price conditions that the projection horizon will not reproduce.
+The post-cession allocation reflects the joint pre-reform fractioning and cession regime rather than the de jure fractioning alone. Whether industrial quota holders would continue to cede \(85\)--\(99\%\) of their anchovy and sardine TACs under a collapsing biomass is an open question. The contracts depend on the productivity of the ceded stocks, and the cession volumes observed over \(2013\)--\(2024\) reflect TAC and price conditions that the projection horizon will not reproduce.
 
 \begin{table}[H]
 \centering\small
 \renewcommand{\arraystretch}{0.95}
-\caption{Inter-sectoral cession flow, anchoveta and sardine, Valparaíso to Los Lagos, $2013$--$2024$. Source: SERNAPESCA quota control reports.\label{tab:cesiones-anchsard}}
+\caption{Inter-sectoral cession flow, anchovy and sardine, Valparaíso to Los Lagos, $2013$--$2024$. Source: SERNAPESCA quota control reports.\label{tab:cesiones-anchsard}}
 \begin{threeparttable}
 \begin{tabular}{lrrrr}
 \toprule
 Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
 \midrule
-2013 & anchoveta &  25.5 & $-3.1$  & 12\% \\
+2013 & anchovy &  25.5 & $-3.1$  & 12\% \\
 2013 & sardine   & 128.5 & $-31.1$ & 24\% \\
-2014 & anchoveta &   7.7 & $-3.9$  & 51\% \\
+2014 & anchovy &   7.7 & $-3.9$  & 51\% \\
 2014 & sardine   & 104.8 & $-46.6$ & 44\% \\
-2015 & anchoveta &   6.3 & $-2.5$  & 40\% \\
+2015 & anchovy &   6.3 & $-2.5$  & 40\% \\
 2015 & sardine   &  65.2 & $-21.8$ & 33\% \\
-2016 & anchoveta &   7.3 & $-2.1$  & 29\% \\
+2016 & anchovy &   7.3 & $-2.1$  & 29\% \\
 2016 & sardine   &  59.8 & $+15.6$ & 26\% \\
-2017 & anchoveta &  12.6 & $-9.0$  & 72\% \\
+2017 & anchovy &  12.6 & $-9.0$  & 72\% \\
 2017 & sardine   &  72.4 & $-48.9$ & 67\% \\
-2018 & anchoveta &  12.8 & $-10.7$ & 84\% \\
+2018 & anchovy &  12.8 & $-10.7$ & 84\% \\
 2018 & sardine   &  74.2 & $-63.2$ & 85\% \\
-2019 & anchoveta &  27.4 & $-25.8$ & 94\% \\
+2019 & anchovy &  27.4 & $-25.8$ & 94\% \\
 2019 & sardine   &  76.0 & $-69.6$ & 92\% \\
-2020 & anchoveta &  38.6 & $-33.3$ & 86\% \\
+2020 & anchovy &  38.6 & $-33.3$ & 86\% \\
 2020 & sardine   &  67.2 & $-60.9$ & 91\% \\
-2021 & anchoveta &  45.3 & $-45.1$ & $\sim\!100\%$ \\
+2021 & anchovy &  45.3 & $-45.1$ & $\sim\!100\%$ \\
 2021 & sardine   &  76.9 & $-76.5$ & $\sim\!100\%$ \\
-2022 & anchoveta &  52.2 & $-50.5$ & 97\% \\
+2022 & anchovy &  52.2 & $-50.5$ & 97\% \\
 2022 & sardine   &  77.7 & $-71.6$ & 92\% \\
-2023 & anchoveta &  39.9 & $-37.1$ & 93\% \\
+2023 & anchovy &  39.9 & $-37.1$ & 93\% \\
 2023 & sardine   &  63.3 & $-61.7$ & 98\% \\
-2024 & anchoveta &  53.8 & $-45.5$ & 85\% \\
+2024 & anchovy &  53.8 & $-45.5$ & 85\% \\
 2024 & sardine   &  53.9 & $-51.0$ & 95\% \\
 \bottomrule
 \end{tabular}
@@ -687,8 +706,20 @@ $2024^{\dagger}$ & jack mackerel &  728.6 & $-31.5$ & 4\% \\
 \bibitem[\citeproctext]{ref-Arcos2001-jq}
 Arcos, D. F., L. A. Cubillos, and S. P. Núñez. 2001. {``The Jack Mackerel Fishery and {El Ni{ñ}o} 1997--98 Effects Off {Chile}.''} \emph{Progress in Oceanography} 49 (1--4): 597--617. \url{https://doi.org/10.1016/S0079-6611(01)00043-X}.
 
+\bibitem[\citeproctext]{ref-IFOP2022-sardina-vx}
+Instituto de Fomento Pesquero. 2022. \emph{Estatus y Posibilidades de Explotación Biológicamente Sustentables Principales Recursos Pesqueros Nacionales: Sardina Común v--x Regiones}. Tercer Informe Final, Convenio IFOP-\/-SUBPESCA. Instituto de Fomento Pesquero (IFOP).
+
+\bibitem[\citeproctext]{ref-IFOP2024-anchoveta-vx}
+Instituto de Fomento Pesquero. 2024. \emph{Estatus y Posibilidades de Explotación Biológicamente Sustentables Principales Recursos Pesqueros Nacionales: Anchoveta v--x Regiones}. Tercer Informe Consolidado, Convenio IFOP-\/-SUBPESCA. Instituto de Fomento Pesquero (IFOP).
+
 \bibitem[\citeproctext]{ref-Pena-Torres2017-gn}
 Peña-Torres, Julio, Jorge Dresdner, and Felipe Vasquez. 2017. {``El Niño and Fishing Location Decisions: The Chilean Straddling Jack Mackerel Fishery.''} \emph{Mar. Resour. Econ.} 32 (3): 249--75.
+
+\bibitem[\citeproctext]{ref-SPRFMO2025-sc13}
+South Pacific Regional Fisheries Management Organisation. 2025. \emph{Report of the 13th Meeting of the Scientific Committee}. SC13-Report. SPRFMO.
+
+\bibitem[\citeproctext]{ref-Thorson2020-fishlife}
+Thorson, James T. 2020. {``Predicting Recruitment Density Dependence and Intrinsic Growth Rate for All Fishes Worldwide Using a Data-Integrated Life-History Model.''} \emph{Fish and Fisheries} 21 (2): 237--51. \url{https://doi.org/10.1111/faf.12427}.
 
 \end{CSLReferences}
 

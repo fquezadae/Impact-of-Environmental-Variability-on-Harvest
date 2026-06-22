@@ -1,0 +1,98 @@
+# Markov-chain convergence diagnostics {#appendix-convergence}
+
+Table \ref{tab:convergence} reports the Gelman--Rubin $\hat{R}$ and
+the bulk/tail effective sample sizes for the top-level parameters of
+the full state-space specification, evaluated on four independent
+Hamiltonian Monte Carlo chains of $2{,}000$ post-warmup iterations
+each. All $\hat{R}$ values are below $1.01$ and all effective sample
+sizes exceed $400$, indicating that posterior summaries are not
+contaminated by between-chain divergence or by autocorrelation between
+adjacent draws.
+
+```{r convergence-table, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+conv_path <- "data/outputs/t4b/t4b_full_summary.csv"
+
+if (file.exists(conv_path)) {
+
+conv_raw <- read.csv(conv_path,
+ stringsAsFactors = FALSE) %>%
+ dplyr::filter(!is.na(rhat)) %>%
+ dplyr::mutate(group = gsub("\\[.*\\]", "", variable))
+
+# Drop upper-triangular duplicates of the symmetric correlation matrix Omega:
+# keep only Omega[2,1], Omega[3,1], Omega[3,2] so each off-diagonal element is
+# counted once.
+omega_lower_tri <- c("Omega[2,1]", "Omega[3,1]", "Omega[3,2]")
+conv_raw <- conv_raw %>%
+ dplyr::filter(group != "Omega" | variable %in% omega_lower_tri)
+
+top_groups <- c("r_nat", "K_nat", "B0_nat",
+ "sigma_proc", "sigma_obs",
+ "rho_sst", "rho_chl", "Omega")
+
+label_map <- c(
+ r_nat = "$r_i^{0}$",
+ K_nat = "$K_i$",
+ B0_nat = "$B_{i,0}$",
+ sigma_proc = "$\\sigma_{\\text{proc},i}$",
+ sigma_obs = "$\\sigma_{\\text{obs},i}$",
+ rho_sst = "$\\rho_i^{SST}$",
+ rho_chl = "$\\rho_i^{CHL}$",
+ Omega = "$\\Omega$ (off-diagonal)"
+)
+
+conv_agg <- conv_raw %>%
+ dplyr::filter(group %in% top_groups) %>%
+ dplyr::group_by(group) %>%
+ dplyr::summarise(
+ n = dplyr::n(),
+ max_rhat = max(rhat),
+ min_ess_bulk = min(ess_bulk),
+ min_ess_tail = min(ess_tail),
+ .groups = "drop"
+ ) %>%
+ dplyr::arrange(match(group, top_groups)) %>%
+ dplyr::transmute(
+ Parameter = label_map[group],
+ `$N$` = as.character(n),
+ `Max $\\widehat{R}$` = sprintf("%.3f", max_rhat),
+ `Min ESS$_{\\text{bulk}}$` = formatC(round(min_ess_bulk), big.mark = ",", format = "d"),
+ `Min ESS$_{\\text{tail}}$` = formatC(round(min_ess_tail), big.mark = ",", format = "d")
+ )
+
+overall_row <- data.frame(
+ Parameter = "\\textit{All top-level parameters}",
+ `$N$` = as.character(sum(conv_raw$group %in% top_groups)),
+ `Max $\\widehat{R}$` = sprintf("%.3f",
+ max(conv_raw$rhat[conv_raw$group %in% top_groups])),
+ `Min ESS$_{\\text{bulk}}$` = formatC(round(min(conv_raw$ess_bulk[conv_raw$group %in% top_groups])),
+ big.mark = ",", format = "d"),
+ `Min ESS$_{\\text{tail}}$` = formatC(round(min(conv_raw$ess_tail[conv_raw$group %in% top_groups])),
+ big.mark = ",", format = "d"),
+ check.names = FALSE,
+ stringsAsFactors = FALSE
+)
+
+conv_tbl <- dplyr::bind_rows(conv_agg, overall_row)
+
+kable(conv_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
+ align = "lrrrr",
+ caption = "Markov-chain convergence diagnostics for the top-level parameters of the T4b-full state-space specification. \\label{tab:convergence}") %>%
+ kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
+ footnote(general = paste(
+ "Diagnostics are computed from four chains of 2,000 post-warmup iterations.",
+ "Within each parameter family, the table reports the worst case across the three stocks",
+ "(or the three off-diagonal entries of Omega): the largest split-Rhat and the smallest",
+ "bulk- and tail-effective sample sizes. The diagonal of Omega is fixed at one and is",
+ "therefore excluded. The conventional thresholds are Rhat <= 1.01 and ESS >= 400 for",
+ "all top-level parameters."),
+ general_title = "Note:", escape = TRUE, threeparttable = TRUE)
+
+} else {
+
+ cat("\\noindent\\textit{Convergence diagnostics table not yet built. ",
+ "Run \\texttt{Rscript R/08\\_stan\\_t4/08\\_fit\\_t4b\\_full.R} to generate ",
+ "\\texttt{data/outputs/t4b/t4b\\_full\\_summary.csv}, then re-knit.}\n")
+
+}
+```
