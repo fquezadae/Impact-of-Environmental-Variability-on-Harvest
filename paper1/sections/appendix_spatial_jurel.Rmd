@@ -70,19 +70,53 @@ Niño 3.4 index over the estimation window.
 \end{threeparttable}
 \end{table}
 
-## Posterior identification across alternative specifications {#sec:appendix-spatial-results}
+## Alternative specifications {#sec:appendix-spatial-results}
 
-We re-fit the state-space jack mackerel block under four alternative shifter
-configurations, each designed to test one mechanical explanation for
-the local null. Table \ref{tab:appE-sigma} reports the
-posterior-to-prior standard deviation ratios for the jack mackerel shifters
-under each specification; ratios at unity indicate no posterior
-updating relative to the prior.
+We re-fit the state-space jack mackerel block under five alternative
+shifter configurations, each designed to test one mechanical
+explanation for the local null. Ratios of posterior-to-prior standard
+deviation at unity indicate no posterior updating relative to the prior;
+all configurations are summarised in Table \ref{tab:appE-sigma} below.
+
+\emph{Spatial extent.} The local SST and $\log$~CHL shifters are
+re-computed by aggregating environmental anomalies over three
+progressively wider domains: $\mathcal{D}_1$ (Chilean EEZ,
+$18$--$42^{\circ}$S out to $200$ nautical miles), $\mathcal{D}_2$
+(extended offshore to $1{,}000$ km) and $\mathcal{D}_3$ (Southeast
+Pacific, $5$--$45^{\circ}$S and $70$--$120^{\circ}$W). Spatial
+averages are weighted by grid-cell area and expressed as anomalies
+from the $2000$--$2024$ mean.
+
+\emph{Biomass coverage (dual-source extension).} The Centro-Sur and
+Northern Chilean acoustic biomass series exhibit a $0.88$ log-scale
+correlation across overlapping years ($2012$--$2024$), motivating a
+joint-likelihood specification in which a common shifter
+$\rho^{\text{common}}$ is identified simultaneously on both records.
+The extension multiplies the number of informative jack mackerel-biomass
+observations by approximately $1.7$ while preserving the prior
+structure of the main fit.
+
+\emph{Basin-scale forcing (ENSO).} Replacing the local coastal shifters
+with the basin-scale ENSO Niño 3.4 index tests whether the relevant
+forcing operates at the basin scale, consistent with
+@Pena-Torres2017-gn (ENSO-driven shifts in jack mackerel location
+choices) and @Arcos2001-jq (SPRFMO-scale stock dynamics under
+broad-basin forcing). The specification is run at lag~1 and lag~2.
+
+\emph{SPRFMO integration.} Combining the Centro-Sur record with the
+SPRFMO range-wide assessment (Chile, Peru, Ecuador, and adjacent
+high-seas) fails to converge, so the two cannot be fit under a single
+shifter.
+
+\emph{Joint specification.} All three shifters (local SST, local
+$\log$~CHL, basin-scale ENSO at lag~1) are estimated simultaneously
+for jack mackerel, holding anchovy and sardine at the main
+specification.
 
 \begin{table}[H]
 \centering\small
 \caption{Posterior-to-prior standard deviation ratios of the jack mackerel
-climate shifters under four alternative specifications.\label{tab:appE-sigma}}
+climate shifters under five alternative specifications.\label{tab:appE-sigma}}
 \begin{threeparttable}
 \begin{tabular}{llccc}
 \toprule
@@ -98,52 +132,30 @@ Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$  & $1
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. $\mathcal{D}_1$: EEZ $18$--$42^{\circ}$S, $200$ nm. $\mathcal{D}_2$: extends to $1{,}000$ km offshore. $\mathcal{D}_3$: Southeast Pacific $5$--$45^{\circ}$S, $70$--$120^{\circ}$W. Spatial aggregates are area-weighted ($\cos(\text{lat})$) and centred on the $2000$--$2024$ mean. Dual-source: joint likelihood of Centro-Sur and Northern Chilean acoustic series ($0.88$ cross-correlation) under a common shifter. ENSO specs replace local shifters with Niño 3.4. Joint specification holds anchovy and sardine at the main specification. Anchovy and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
+\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. Anchovy and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-All four tests deliver a posterior-to-prior ratio between $0.94$ and
-$1.03$ for the jack mackerel shifters, statistically indistinguishable from
-unity given the prior dispersion. The two ratios closest to "informative
-updating" --- the dual-source extension at $0.94$--$0.99$ and the
-basin-scale ENSO at $0.98$ --- remain well above the $0.7$ threshold
-below which posterior intervals discriminate the shifter from zero
-on the prior support, consistent with the analytic power calculation
-of Table \ref{tab:appE-power}.
-
-## Dual-source extension {#sec:appendix-spatial-dual}
-
-The Centro-Sur and Northern Chilean acoustic biomass series exhibit a
-$0.88$ log-scale correlation across overlapping years
-($2012$--$2024$), motivating a joint-likelihood specification in
-which a common shifter $\rho^{\text{common}}$ is identified
-simultaneously on both records. The extension multiplies the number
-of informative jack mackerel-biomass observations by approximately $1.7$
-while preserving the prior structure of the main fit. The resulting
-$\sigma_{\text{post}}/\sigma_{\text{prior}}$ ratios of $0.94$
-(SST) and $0.99$ ($\log$~CHL) are the strongest posterior updating
-observed in any specification considered in this appendix, but
-remain well above the threshold for material identification.
-
-## Basin-scale ENSO test {#sec:appendix-spatial-enso}
-
-Replacing the local coastal shifters with the basin-scale ENSO Niño 3.4
-index tests whether the relevant forcing operates at the basin scale,
-consistent with @Pena-Torres2017-gn (ENSO-driven shifts in jack mackerel
-location choices) and @Arcos2001-jq (SPRFMO-scale stock dynamics under
-broad-basin forcing). The resulting ratios of $0.98$ (lag~1) and $1.01$
-(lag~2) are indistinguishable from unity, consistent with
-$|\rho_{\text{ENSO}}|_{\min}=0.71$ in Table \ref{tab:appE-power}.
-Propagating the posterior of $\rho_{\text{jack mackerel}}^{\text{ENSO}}$
-through the CMIP6 ensemble yields a $90\%$ predictive interval for the
-jack mackerel productivity factor spanning roughly three orders of magnitude
-($[0.05, 19.5]$) at SSP$5$-$8.5$ end-of-century, validating the
-fixed-$r^{\star}_{\text{jack mackerel}}$ convention of the main text. A
-separate attempt to integrate the SPRFMO range-wide assessment (Chile,
-Peru, Ecuador, and adjacent high-seas) fails: the augmented likelihood
-is multimodal with poor chain mixing, so the broader aggregate is not
-integrable with the Centro-Sur record under a single shifter.
+All five tests deliver a posterior-to-prior ratio between $0.94$ and
+$1.03$ for the jack mackerel shifters. The ratio measures how much the
+data shrink the prior: a value near $1$ means the posterior is no
+narrower than the prior (no information), and a value below $1$ means
+the data refine the prior. For comparison, the anchovy and sardine
+shifters identified in the main text have ratios between $0.43$ and
+$0.83$, with posterior medians moving substantially away from their
+prior centres. For jack mackerel, the ratios near unity imply that the
+posterior medians stay near the prior mean (zero) with credible
+intervals nearly spanning the prior range, under every specification.
+This is exactly what the power calculation of Table \ref{tab:appE-power}
+predicts: a jack mackerel climate shifter smaller than the detection
+threshold $|\rho|_{\min}=0.71$--$1.50$ would leave no detectable signal
+in the posterior. Propagating the posterior of
+$\rho_{\text{jack mackerel}}^{\text{ENSO}}$ through the CMIP6 ensemble
+yields a $90\%$ predictive interval for the jack mackerel productivity
+factor spanning roughly three orders of magnitude ($[0.05, 19.5]$) at
+SSP$5$-$8.5$ end-of-century, validating the
+fixed-$r^{\star}_{\text{jack mackerel}}$ convention of the main text.
 
 ## Implication for the main claim {#sec:appendix-spatial-implication}
 
