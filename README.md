@@ -5,7 +5,7 @@
 <!-- Badges -->
 ![R](https://img.shields.io/badge/R-%E2%89%A54.2-276DC3?logo=r)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-paper%201%20polishing%20for%20MRE%20submission%20(June%202026)-blue)
+![Status](https://img.shields.io/badge/status-paper%201%20submitted%20to%20MRE%20(June%202026)-brightgreen)
 
 ## Overview
 
@@ -15,7 +15,7 @@ The project is organized into **two papers**:
 
 | Paper | Title | Status |
 |---|---|---|
-| **Paper 1** | Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries | Polishing for submission (target *Marine Resource Economics*, June 2026) |
+| **Paper 1** | Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries | Submitted to *Marine Resource Economics* (June 2026) |
 | **Paper 2** | Optimal Quota Allocation under Climate Change: A Bioeconomic Approach | In progress (target JAERE/ERE 2027–2028) |
 
 ## Paper 1: Climate projections
