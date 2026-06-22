@@ -304,7 +304,7 @@ Figure \@ref(fig:biomass) shows that anchovy, sardine, and jack mackerel exhibit
 ```{r biomass, echo=FALSE, fig.align='center', fig.cap="Estimated biomass of small pelagic species in Chile (2000--2024). Curves are LOESS-smoothed. The jack mackerel CS series is reconstructed from the IFOP acoustic record where available, imputed from the IFOP Northern Chile series via GLM otherwise, with linear interpolation as final fallback.", fig.pos='ht!', message=FALSE, warning=FALSE}
 
 biomass_long <- biomass %>%
-  pivot_longer(cols = c(sardine_biomass, anchovy_biomass, jack mackerel_biomass_cs, jurel_cs_interp_primary),
+  pivot_longer(cols = c(sardine_biomass, anchoveta_biomass, jurel_biomass_cs, jurel_cs_interp_primary),
                names_to = "species", 
                values_to = "biomass") %>%
   filter(!is.na(biomass)) %>%
@@ -314,8 +314,8 @@ biomass_long$biomass <- as.numeric(biomass_long$biomass)
 biomass_long$year <- as.numeric(biomass_long$year)
 biomass_long$species <- dplyr::recode(biomass_long$species,
                                sardine_biomass = "Sardine", 
-                               anchovy_biomass = "Anchovy", 
-                               jack mackerel_biomass_cs = "Jack Mackerel", 
+                               anchoveta_biomass = "Anchovy", 
+                               jurel_biomass_cs = "Jack Mackerel", 
                                jurel_cs_interp_primary = "Jack Mackerel (interpolated)")
 
 biomass2 <- biomass_long %>% 
