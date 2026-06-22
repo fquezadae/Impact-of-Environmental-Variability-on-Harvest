@@ -56,9 +56,9 @@ enough that the bottleneck is climate ensemble disagreement, not
 structural inference. The single exception is SSP$5$-$8.5$
 end-of-century, where the within share rises to $59\%$ due to a floor
 effect at $-100\%$ rather than a substantive shift. For
-\emph{anchovy}, the within-model component is comparable to or larger
+\emph{anchoveta}, the within-model component is comparable to or larger
 than the between-model component across all scenarios, reaching $97\%$
-under SSP$5$-$8.5$ end-of-century. The bottleneck on the anchovy
+under SSP$5$-$8.5$ end-of-century. The bottleneck on the anchoveta
 projection is therefore the structural posterior.
 
 \begin{figure}[H]
@@ -69,13 +69,13 @@ the CMIP6 ensemble. Bars stack to one within each scenario--window
 pair, splitting total variance into within-model (posterior, blue) and
 between-model (CMIP6 spread, orange) components. Sardine projections
 are climate-driven except in the SSP$5$-$8.5$ end-of-century cell where
-the floor effect inverts the ratio mechanically. Anchovy projections
+the floor effect inverts the ratio mechanically. Anchoveta projections
 are posterior-driven, particularly under SSP$5$-$8.5$ end-of-century
 ($97\%$ within). Jack mackerel omitted.\label{fig:appF-decomp}}
 \end{figure}
 
 The implication for uncertainty management is species-specific:
-shrinking the anchovy projection uncertainty requires a longer or
+shrinking the anchoveta projection uncertainty requires a longer or
 more informative survey series, while the sardine projection requires
 either a larger CMIP6 ensemble or a defensible ensemble-weighting
 procedure.

@@ -178,7 +178,7 @@ constrained to \([-3, 3]\),\footnote{The bound is a biologically extreme upper
   by roughly \(95\%\).} minimising median absolute percent error (MAPE).
 The structural priors draw on the FishLife meta-analysis for
 intrinsic growth rates (\citeproc{ref-Thorson2020-fishlife}{Thorson 2020}), the IFOP V--X
-stock-assessment informes for anchovy and sardine carrying
+stock-assessment informes for anchoveta and sardine carrying
 capacity (\citeproc{ref-IFOP2024-anchoveta-vx}{Instituto de Fomento Pesquero 2024}, \citeproc{ref-IFOP2022-sardina-vx}{2022}), and the
 range-wide SPRFMO assessment for jack mackerel (\citeproc{ref-SPRFMO2025-sc13}{South Pacific Regional Fisheries Management Organisation 2025}).
 
@@ -191,13 +191,13 @@ range-wide SPRFMO assessment for jack mackerel (\citeproc{ref-SPRFMO2025-sc13}{S
 \toprule
 Stock & $r_s^{0}$ (yr$^{-1}$) & $K_s$ (kt) & $B_{0,s}$ (kt) \\
 \midrule
-Anchovy              & $\log\mathcal{N}(0.6,\,0.25)$   & $\log\mathcal{N}(2{,}200,\,0.15)$ & $\log\mathcal{N}(376,\,0.10)$   \\
+Anchoveta              & $\log\mathcal{N}(0.6,\,0.25)$   & $\log\mathcal{N}(2{,}200,\,0.15)$ & $\log\mathcal{N}(376,\,0.10)$   \\
 Sardine         & $\log\mathcal{N}(0.9,\,0.25)$   & $\log\mathcal{N}(3{,}000,\,0.15)$ & $\log\mathcal{N}(496,\,0.10)$   \\
 Jack mackerel          & $\log\mathcal{N}(0.35,\,0.25)$  & $\log\mathcal{N}(8{,}000,\,0.25)$ & $\log\mathcal{N}(5{,}889,\,0.15)$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[para,flushleft]\footnotesize
-\item \emph{Notes.} Intrinsic growth-rate priors ($r_s^{0}$) follow Thorson's FishLife meta-analysis. Carrying capacity ($K_s$) for anchovy and sardine is derived from the unfished spawning biomass $B_{D0}$ reported in the IFOP V--X stock-assessment informes (anchovy 2024, sardine 2022), scaled to total biomass; for jack mackerel, $K_s$ is re-scaled from the range-wide SPRFMO 2025 assessment. Initial-biomass priors ($B_{0,s}$) are not virgin biomass: they represent the state-space initial condition at $t=2000$ and are centred at the first observed value in the window (total biomass for the coastal stocks, IFOP acoustic survey for jack mackerel). This empirical-Bayes choice is necessary for identification of the initial state under $N=25$ annual observations; see Online Appendix A.2.
+\item \emph{Notes.} Intrinsic growth-rate priors ($r_s^{0}$) follow Thorson's FishLife meta-analysis. Carrying capacity ($K_s$) for anchoveta and sardine is derived from the unfished spawning biomass $B_{D0}$ reported in the IFOP V--X stock-assessment informes (anchoveta 2024, sardine 2022), scaled to total biomass; for jack mackerel, $K_s$ is re-scaled from the range-wide SPRFMO 2025 assessment. Initial-biomass priors ($B_{0,s}$) are not virgin biomass: they represent the state-space initial condition at $t=2000$ and are centred at the first observed value in the window (total biomass for the coastal stocks, IFOP acoustic survey for jack mackerel). This empirical-Bayes choice is necessary for identification of the initial state under $N=25$ annual observations; see Online Appendix A.2.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -217,7 +217,7 @@ only, \(+\log\)CHL only, and joint \(+\)SST\(+\log\)CHL.
 \toprule
 Stock & Base & + SST & + log CHL & + SST and log CHL\\
 \midrule
-Anchovy & 95.9 & 30.8 & 95.1 & 26.6\\
+Anchoveta & 95.9 & 30.8 & 95.1 & 26.6\\
 Sardine & 98.5 & 23.1 & 98.5 & 20.5\\
 Jack mackerel & 44.2 & 44.3 & 49.1 & 48.5\\
 \bottomrule
@@ -226,13 +226,13 @@ Jack mackerel & 44.2 & 44.3 & 49.1 & 48.5\\
 
 No variant brings any of the three stocks below a \(20\%\) MAPE
 threshold. The two coastal stocks benefit from activating SST
-(anchovy: \(95.9\%\to 30.8\%\), sardine: \(98.5\%\to 23.1\%\)), with
+(anchoveta: \(95.9\%\to 30.8\%\), sardine: \(98.5\%\to 23.1\%\)), with
 the joint specification delivering further marginal improvement.
 Jack mackerel hindcast errors remain in the \(44\)--\(49\%\) range across
 all variants, with no shifter distinguishably better than the base.
 
 The point estimates from the joint variant are interpretable for the
-coastal stocks. For anchovy both shifters are negative
+coastal stocks. For anchoveta both shifters are negative
 (\(\rho^{SST} \approx -2.3\), \(\rho^{CHL} \approx -2.3\)); for sardine
 \(\rho^{SST} \approx -2.0\) is negative but \(\rho^{CHL} \approx +2.1\)
 is positive---the opposite sign on CHL across
@@ -263,19 +263,19 @@ one decimal place; jack mackerel priors are centred at zero so that posterior
 identification is driven by the structural likelihood rather than by
 the boundary solution. All priors are independent normal with unit
 standard deviation. We do not impose hierarchical pooling across
-species because \(\rho^{CHL}\) has opposite signs for anchovy and
+species because \(\rho^{CHL}\) has opposite signs for anchoveta and
 sardine---pooling would shrink the two estimates toward a common
 center and erase this ecological distinction.
 
 This prior-elicitation strategy is a form of empirical Bayes: the
-prior centres for anchovy and sardine come from the same \(2000\)--\(2024\)
+prior centres for anchoveta and sardine come from the same \(2000\)--\(2024\)
 biomass series that enters the likelihood. Standard Bayesian practice
 keeps prior and data independent; we accept this departure because
 with \(N=25\) annual observations it is necessary for identification.
 
 We adopt this trade-off deliberately for two reasons. First, the prior
 \(\sigma = 1\) is wide enough that the data move the posterior
-substantially when informative: for anchovy, the posterior of
+substantially when informative: for anchoveta, the posterior of
 \(\rho^{CHL}\) migrates to \(-3.64\), more than one prior standard
 deviation away from the prior centre of \(-2.3\) (see the
 posterior-identification table of the main text for full posterior
@@ -296,7 +296,7 @@ substantive finding, not a numerical artefact.
 \toprule
 Stock & $\mu_{\rho^{SST}}$ & $\sigma_{\rho^{SST}}$ & $\mu_{\rho^{CHL}}$ & $\sigma_{\rho^{CHL}}$ & Source\\
 \midrule
-Anchovy & -2.3 & 1.0 & -2.3 & 1.0 & Joint MLE\\
+Anchoveta & -2.3 & 1.0 & -2.3 & 1.0 & Joint MLE\\
 Sardine & -2.0 & 1.0 & +2.1 & 1.0 & Joint MLE\\
 Jack mackerel & 0.0 & 1.0 & 0.0 & 1.0 & Boundary solution; vague prior\\
 \bottomrule
@@ -410,8 +410,7 @@ observations in \(2012\) and \(2015\)).
 \centering
 \includegraphics[width=0.95\textwidth]{../figs/t4b/t4b_full_residuals.png}
 \caption{Standardised year-level residuals of the full specification by
-stock. The Ljung--Box test of residual autocorrelation does not reject
-the null at conventional levels for any of the three stocks.\label{fig:ppc-residuals}}
+stock.\label{fig:ppc-residuals}}
 \end{figure}
 
 \section{Markov-chain convergence diagnostics}\label{appendix-convergence}
@@ -449,7 +448,7 @@ $\Omega$ (off-diagonal) & 3 & 1.001 & 5,732 & 8,544\\
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item Diagnostics are computed from four chains of 2,000 post-warmup iterations. Within each parameter family, the table reports the worst case across the three stocks (or the three off-diagonal entries of Omega): the largest split-Rhat and the smallest bulk- and tail-effective sample sizes. The diagonal of Omega is fixed at one and is therefore excluded. The conventional thresholds are Rhat <= 1.01 and ESS >= 400 for all top-level parameters.
+\item Within each parameter family, entries report the worst case across stocks (or off-diagonal Omega entries): largest Rhat and smallest bulk- and tail-ESS. Omega diagonal (fixed at 1) is excluded. Conventional thresholds: Rhat <= 1.01, ESS >= 400.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -483,7 +482,7 @@ the residual noise (combining process and observation noise), \(N=24\)
 lag-one observations, and \(K=3\) regressors.
 
 At posterior medians, the residual noise is \(\sigma_{\text{resid}}=0.28\)
-for anchovy, \(0.25\) for sardine, and \(1.28\) for jack mackerel---roughly \(4.6\)
+for anchoveta, \(0.25\) for sardine, and \(1.28\) for jack mackerel---roughly \(4.6\)
 times higher for jack mackerel than for the coastal stocks. This is the main
 reason the prior dominates the jack mackerel posterior in the full state-space
 fit. Table \ref{tab:appE-power} reports the detectable \(|\rho|_{\min}\)
@@ -511,7 +510,7 @@ evaluated at posterior medians.\label{tab:appE-power}}
 \toprule
 Stock & $\sigma_{\text{resid}}$ & $|\rho_{SST}|_{\min}$ & $|\rho_{\log\text{CHL}}|_{\min}$ & $|\rho_{\text{ENSO}}|_{\min}$ \\
 \midrule
-Anchovy & $0.28$ & $0.33$ & $0.29$ & ---     \\
+Anchoveta & $0.28$ & $0.33$ & $0.29$ & ---     \\
 Sardine & $0.25$ & $0.29$ & $0.26$ & ---     \\
 Jack mackerel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
 \bottomrule
@@ -566,7 +565,7 @@ shifter.
 
 \emph{Joint specification.} All three shifters (local SST, local
 \(\log\)\textasciitilde CHL, basin-scale ENSO at lag\textasciitilde1) are estimated simultaneously
-for jack mackerel, holding anchovy and sardine at the main
+for jack mackerel, holding anchoveta and sardine at the main
 specification.
 
 \begin{table}[H]
@@ -588,7 +587,7 @@ Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$  & $1
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. Anchovy and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
+\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. Anchoveta and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -597,7 +596,7 @@ All five tests deliver a posterior-to-prior ratio between \(0.94\) and
 \(1.03\) for the jack mackerel shifters. The ratio measures how much the
 data shrink the prior: a value near \(1\) means the posterior is no
 narrower than the prior (no information), and a value below \(1\) means
-the data refine the prior. For comparison, the anchovy and sardine
+the data refine the prior. For comparison, the anchoveta and sardine
 shifters identified in the main text have ratios between \(0.43\) and
 \(0.83\), with posterior medians moving substantially away from their
 prior centres. For jack mackerel, the ratios near unity imply that the
@@ -632,42 +631,42 @@ convention adopted throughout the main text.
 
 This appendix documents the realised inter-sectoral quota cession flow over \(2013\)--\(2024\), the single administrative re-allocation channel admitted by the de jure fractioning regime. We extract assigned, ceded, effective, and captured tonnage by sector for each species--year from the annual SERNAPESCA quota control reports.
 
-Two qualitative facts emerge from the consolidated \(2013\)--\(2024\) series, separated by species pattern: anchovy and sardine in Table \ref{tab:cesiones-anchsard}, jack mackerel in Table \ref{tab:cesiones-jurel}. First, in the anchovy and sardine fisheries the industrial sector cedes a large share of its assigned TAC to artisanal cessionaries in every year of the window: the share transferred ranges from \(12\%\) to \(72\%\) over \(2013\)--\(2017\) and tightens to \(85\%\)--\(\sim\!100\%\) over \(2018\)--\(2024\), scaling with the TAC from \(26\) to \(50\) kt per year in anchovy and \(51\) to \(77\) kt per year in sardine. Second, in the jack mackerel fishery the cession flow is an order of magnitude smaller relative to the assigned TAC---never exceeding \(14\%\) in any year and falling below \(5\%\) in eight of the twelve years---and reverses direction across years.
+Two qualitative facts emerge from the consolidated \(2013\)--\(2024\) series, separated by species pattern: anchoveta and sardine in Table \ref{tab:cesiones-anchsard}, jack mackerel in Table \ref{tab:cesiones-jurel}. First, in the anchoveta and sardine fisheries the industrial sector cedes a large share of its assigned TAC to artisanal cessionaries in every year of the window: the share transferred ranges from \(12\%\) to \(72\%\) over \(2013\)--\(2017\) and tightens to \(85\%\)--\(\sim\!100\%\) over \(2018\)--\(2024\), scaling with the TAC from \(26\) to \(50\) kt per year in anchoveta and \(51\) to \(77\) kt per year in sardine. Second, in the jack mackerel fishery the cession flow is an order of magnitude smaller relative to the assigned TAC---never exceeding \(14\%\) in any year and falling below \(5\%\) in eight of the twelve years---and reverses direction across years.
 
-The post-cession allocation reflects the joint pre-reform fractioning and cession regime rather than the de jure fractioning alone. Whether industrial quota holders would continue to cede \(85\)--\(99\%\) of their anchovy and sardine TACs under a collapsing biomass is an open question. The contracts depend on the productivity of the ceded stocks, and the cession volumes observed over \(2013\)--\(2024\) reflect TAC and price conditions that the projection horizon will not reproduce.
+The post-cession allocation reflects the joint pre-reform fractioning and cession regime rather than the de jure fractioning alone. Whether industrial quota holders would continue to cede \(85\)--\(99\%\) of their anchoveta and sardine TACs under a collapsing biomass is an open question. The contracts depend on the productivity of the ceded stocks, and the cession volumes observed over \(2013\)--\(2024\) reflect TAC and price conditions that the projection horizon will not reproduce.
 
 \begin{table}[H]
 \centering\small
 \renewcommand{\arraystretch}{0.95}
-\caption{Inter-sectoral cession flow, anchovy and sardine, Valparaíso to Los Lagos, $2013$--$2024$. Source: SERNAPESCA quota control reports.\label{tab:cesiones-anchsard}}
+\caption{Inter-sectoral cession flow, anchoveta and sardine, Valparaíso to Los Lagos, $2013$--$2024$. Source: SERNAPESCA quota control reports.\label{tab:cesiones-anchsard}}
 \begin{threeparttable}
 \begin{tabular}{lrrrr}
 \toprule
 Year & Species & IND assigned (kt) & IND cession (kt) & Share ceded \\
 \midrule
-2013 & anchovy &  25.5 & $-3.1$  & 12\% \\
+2013 & anchoveta &  25.5 & $-3.1$  & 12\% \\
 2013 & sardine   & 128.5 & $-31.1$ & 24\% \\
-2014 & anchovy &   7.7 & $-3.9$  & 51\% \\
+2014 & anchoveta &   7.7 & $-3.9$  & 51\% \\
 2014 & sardine   & 104.8 & $-46.6$ & 44\% \\
-2015 & anchovy &   6.3 & $-2.5$  & 40\% \\
+2015 & anchoveta &   6.3 & $-2.5$  & 40\% \\
 2015 & sardine   &  65.2 & $-21.8$ & 33\% \\
-2016 & anchovy &   7.3 & $-2.1$  & 29\% \\
+2016 & anchoveta &   7.3 & $-2.1$  & 29\% \\
 2016 & sardine   &  59.8 & $+15.6$ & 26\% \\
-2017 & anchovy &  12.6 & $-9.0$  & 72\% \\
+2017 & anchoveta &  12.6 & $-9.0$  & 72\% \\
 2017 & sardine   &  72.4 & $-48.9$ & 67\% \\
-2018 & anchovy &  12.8 & $-10.7$ & 84\% \\
+2018 & anchoveta &  12.8 & $-10.7$ & 84\% \\
 2018 & sardine   &  74.2 & $-63.2$ & 85\% \\
-2019 & anchovy &  27.4 & $-25.8$ & 94\% \\
+2019 & anchoveta &  27.4 & $-25.8$ & 94\% \\
 2019 & sardine   &  76.0 & $-69.6$ & 92\% \\
-2020 & anchovy &  38.6 & $-33.3$ & 86\% \\
+2020 & anchoveta &  38.6 & $-33.3$ & 86\% \\
 2020 & sardine   &  67.2 & $-60.9$ & 91\% \\
-2021 & anchovy &  45.3 & $-45.1$ & $\sim\!100\%$ \\
+2021 & anchoveta &  45.3 & $-45.1$ & $\sim\!100\%$ \\
 2021 & sardine   &  76.9 & $-76.5$ & $\sim\!100\%$ \\
-2022 & anchovy &  52.2 & $-50.5$ & 97\% \\
+2022 & anchoveta &  52.2 & $-50.5$ & 97\% \\
 2022 & sardine   &  77.7 & $-71.6$ & 92\% \\
-2023 & anchovy &  39.9 & $-37.1$ & 93\% \\
+2023 & anchoveta &  39.9 & $-37.1$ & 93\% \\
 2023 & sardine   &  63.3 & $-61.7$ & 98\% \\
-2024 & anchovy &  53.8 & $-45.5$ & 85\% \\
+2024 & anchoveta &  53.8 & $-45.5$ & 85\% \\
 2024 & sardine   &  53.9 & $-51.0$ & 95\% \\
 \bottomrule
 \end{tabular}

@@ -27,7 +27,7 @@ the residual noise (combining process and observation noise), $N=24$
 lag-one observations, and $K=3$ regressors.
 
 At posterior medians, the residual noise is $\sigma_{\text{resid}}=0.28$
-for anchovy, $0.25$ for sardine, and $1.28$ for jack mackerel---roughly $4.6$
+for anchoveta, $0.25$ for sardine, and $1.28$ for jack mackerel---roughly $4.6$
 times higher for jack mackerel than for the coastal stocks. This is the main
 reason the prior dominates the jack mackerel posterior in the full state-space
 fit. Table \ref{tab:appE-power} reports the detectable $|\rho|_{\min}$
@@ -55,7 +55,7 @@ evaluated at posterior medians.\label{tab:appE-power}}
 \toprule
 Stock & $\sigma_{\text{resid}}$ & $|\rho_{SST}|_{\min}$ & $|\rho_{\log\text{CHL}}|_{\min}$ & $|\rho_{\text{ENSO}}|_{\min}$ \\
 \midrule
-Anchovy & $0.28$ & $0.33$ & $0.29$ & ---     \\
+Anchoveta & $0.28$ & $0.33$ & $0.29$ & ---     \\
 Sardine & $0.25$ & $0.29$ & $0.26$ & ---     \\
 Jack mackerel & $1.28$ & $1.50$ & $1.32$ & $0.71$ \\
 \bottomrule
@@ -110,7 +110,7 @@ shifter.
 
 \emph{Joint specification.} All three shifters (local SST, local
 $\log$~CHL, basin-scale ENSO at lag~1) are estimated simultaneously
-for jack mackerel, holding anchovy and sardine at the main
+for jack mackerel, holding anchoveta and sardine at the main
 specification.
 
 \begin{table}[H]
@@ -132,7 +132,7 @@ Joint specification & Local SST + local $\log$~CHL + ENSO (lag~1) & $1.03$  & $1
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. Anchovy and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
+\item \emph{Notes.} All entries are $\sigma_{\text{post}}/\sigma_{\text{prior}}$. Anchoveta and sardine ratios remain stable at $0.43$--$0.83$ across all configurations.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -141,7 +141,7 @@ All five tests deliver a posterior-to-prior ratio between $0.94$ and
 $1.03$ for the jack mackerel shifters. The ratio measures how much the
 data shrink the prior: a value near $1$ means the posterior is no
 narrower than the prior (no information), and a value below $1$ means
-the data refine the prior. For comparison, the anchovy and sardine
+the data refine the prior. For comparison, the anchoveta and sardine
 shifters identified in the main text have ratios between $0.43$ and
 $0.83$, with posterior medians moving substantially away from their
 prior centres. For jack mackerel, the ratios near unity imply that the
@@ -171,3 +171,4 @@ basin-scale assessment with explicit cross-stock spillover. Within
 the present record, holding projected jack mackerel productivity at
 its baseline value is the defensible reporting choice and is the
 convention adopted throughout the main text.
+                                                                                                                                                                                                                                                                               

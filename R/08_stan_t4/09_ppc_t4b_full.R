@@ -110,8 +110,8 @@ plot_smooth_vs_obs_full <- function(fit, obs_df) {
     geom_point(data = filter(obs_plot, is_censored),
                aes(y = B_obs), color = "red", shape = 6, size = 2.5, stroke = 1) +
     facet_wrap(~ stock_lbl, scales = "free_y", ncol = 1) +
-    labs(title = "(1) T4b-FULL: B_smooth vs obs",
-         subtitle = "mediana + bandas 50%/90% posterior",
+    labs(title = NULL,
+         subtitle = NULL,
          x = NULL, y = "Biomasa total (mil t)") +
     theme_ppc
 }
@@ -148,8 +148,8 @@ plot_residuals_full <- function(fit, stan_data) {
     geom_linerange(aes(ymin = r_q05, ymax = r_q95), color = "steelblue") +
     geom_point(color = "steelblue", size = 1.8) +
     facet_wrap(~ stock_lbl, scales = "free_y", ncol = 1) +
-    labs(title = "(2) T4b-FULL: Residuos standardizados",
-         subtitle = "(log(B_obs) - log(B_smooth)) / sigma_obs, CI 90%",
+    labs(title = NULL,
+         subtitle = NULL,
          x = NULL, y = "Residuo std") +
     theme_ppc
 }

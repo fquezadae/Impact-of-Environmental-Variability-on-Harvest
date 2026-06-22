@@ -80,12 +80,10 @@ kable(conv_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
  caption = "Markov-chain convergence diagnostics for the top-level parameters of the T4b-full state-space specification. \\label{tab:convergence}") %>%
  kable_styling(latex_options = c("hold_position"), font_size = 10) %>%
  footnote(general = paste(
- "Diagnostics are computed from four chains of 2,000 post-warmup iterations.",
- "Within each parameter family, the table reports the worst case across the three stocks",
- "(or the three off-diagonal entries of Omega): the largest split-Rhat and the smallest",
- "bulk- and tail-effective sample sizes. The diagonal of Omega is fixed at one and is",
- "therefore excluded. The conventional thresholds are Rhat <= 1.01 and ESS >= 400 for",
- "all top-level parameters."),
+ "Within each parameter family, entries report the worst case across stocks",
+ "(or off-diagonal Omega entries): largest Rhat and smallest bulk- and tail-ESS.",
+ "Omega diagonal (fixed at 1) is excluded.",
+ "Conventional thresholds: Rhat <= 1.01, ESS >= 400."),
  general_title = "Note:", escape = TRUE, threeparttable = TRUE)
 
 } else {

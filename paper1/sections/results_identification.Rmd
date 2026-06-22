@@ -4,7 +4,7 @@ Table \ref{tab:rho-posteriors} reports the posterior identification of
 the local climate shifters $\{\rho_s^{SST}, \rho_s^{CHL}\}_{s=1}^{3}$
 introduced in Section \emph{\nameref{methods}}, together with the
 basin-scale ENSO shifter $\rho^{\text{ENSO}}_{\text{jur}}$ from the
-jack mackerel refit of Online Appendix E.4. The model reproduces the historical biomass trajectories within a median 90\% posterior band width of approximately 20\% of the mean; posterior-predictive and convergence diagnostics are reported in Online Appendices C and D. Priors are weakly informative
+jack mackerel refit of the basin-scale ENSO test in Online Appendix E. The model reproduces the historical biomass trajectories within a median 90\% posterior band width of approximately 20\% of the mean; posterior-predictive and convergence diagnostics are reported in Online Appendices C and D. Priors are weakly informative
 and elicited from IFOP and SPRFMO single-species assessments (Appendix A). The
 posterior-to-prior standard-deviation ratio in the rightmost column
 measures how much the 2000--2024 biomass series refines each parameter
@@ -43,7 +43,7 @@ prior_tbl <- tibble::tribble(
   "rho_enso[3]",   0.0,         0.5
 )
 
-stock_map   <- c(`1` = "Anchovy CS", `2` = "Sardine CS", `3` = "Jack mackerel CS")
+stock_map   <- c(`1` = "Anchoveta CS", `2` = "Sardine CS", `3` = "Jack mackerel CS")
 shifter_map <- c(rho_sst  = "$\\rho^{SST}$",
                  rho_chl  = "$\\rho^{CHL}$",
                  rho_enso = "$\\rho^{ENSO}$")
@@ -78,37 +78,38 @@ kable(rho_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
   footnote(general = paste(
       "Shifters are semi-elasticities of intrinsic growth $r_s$ with respect to",
       "local SST (\u00b0C), local log-CHL (log-points), and the basin-scale",
-      "Ni\u00f1o 3.4 index. The ENSO row reports the lag-1 refit of Online",
-      "Appendix E.4 for jack mackerel only; anchovy and sardine inherit their",
+      "Ni\u00f1o 3.4 index. The ENSO row reports the lag-1 refit of the",
+      "basin-scale ENSO test of Online Appendix E for jack mackerel only;",
+      "anchoveta and sardine inherit their",
       "main-specification posteriors. All $\\\\hat{R} \\\\leq 1.01$."),
       general_title = "Note:", escape = FALSE, threeparttable = TRUE)
 ```
 
 Three patterns in Table \ref{tab:rho-posteriors} organise the
 discussion: (i) the two coastal stocks are identified on both shifters,
-with sardine's SST semi-elasticity roughly twice that of anchovy; (ii) their CHL
+with sardine's SST semi-elasticity roughly twice that of anchoveta; (ii) their CHL
 shifters carry opposite signs; and (iii)
 jack mackerel returns a structural null on all three shifters, including the basin-scale ENSO refit.
 
-First, for the two coastal upwelling stocks---anchovy and sardine
+First, for the two coastal upwelling stocks---anchoveta and sardine
 común---both climate shifters are identified with substantial precision.
 The posterior 90\% credible intervals exclude zero for all four parameters,
 and the standard deviation ratios fall between $0.43$ and $0.83$,
 indicating that the 2000--2024 biomass series refines the priors
-materially. For anchovy, a one-degree positive SST anomaly is associated
+materially. For anchoveta, a one-degree positive SST anomaly is associated
 with a semi-elasticity of $\rho^{SST}_{\text{anch}} = -1.06$
 (CI $[-1.79, -0.38]$); for sardine, the corresponding semi-elasticity
 is more than twice as large, $\rho^{SST}_{\text{sard}} = -2.75$
-(CI $[-3.46, -2.02]$). Both signs are consistent with the regional literature: the negative SST sensitivity for anchovy aligns with the cold-water anchovy regime documented for the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy], and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by @Gomez2012 with $r=-0.83$. Evaluated at one historical standard deviation of
+(CI $[-3.46, -2.02]$). Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchoveta regime documented for the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy], and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by @Gomez2012 with $r=-0.83$. Evaluated at one historical standard deviation of
 the SST anomaly series (estimation-sample $\hat{\sigma}_{SST} =
 0.26\,^{\circ}\text{C}$ over 2000--2024), a thermal shock of that magnitude
-lowers the intrinsic growth rate of anchovy by approximately 24\%
+lowers the intrinsic growth rate of anchoveta by approximately 24\%
 ($1 - e^{-1.06 \cdot 0.26}$) and that of sardine by approximately 51\%
 ($1 - e^{-2.75 \cdot 0.26}$) relative to the climatological mean. Under a
 policy-relevant warming signal of $+1\,^{\circ}\text{C}$, comparable to
 mid-century CMIP6 SSP2-4.5 projections for the Chilean coastal zone, the
-implied declines are 65\% for anchovy and 94\% for sardine. Applied
-to a fishery whose anchovy--sardine combined
+implied declines are 65\% for anchoveta and 94\% for sardine. Applied
+to a fishery whose anchoveta--sardine combined
 Centro-Sur TAC has averaged roughly $440$ kt per year over the 2012--2024
 window, the implied losses are on the order of $300$--$400$ kt per year
 under sustained $+1\,^{\circ}\text{C}$ warming. The caveat is that
@@ -121,15 +122,15 @@ Second, the two coastal stocks respond to chlorophyll-a with opposite signs: $\r
 $\rho^{CHL}_{\text{sard}} = +2.17$ (CI $[+0.96, +3.37]$). At one historical
 standard deviation of $\log CHL$ ($\hat{\sigma}_{\log CHL} = 0.095$, a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
-anchovy growth by approximately 29\% while raising sardine growth by
-approximately 23\%. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the well-documented anchovy--sardine asymmetry under regime shifts in the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy]: they might reflect the relative competitive dynamics between the two species under high-productivity regimes rather than a direct biological effect of chlorophyll on anchovy. The positive coupling between coastal chlorophyll and common sardine recruitment in Centro-Sur Chile is documented with correlation $r=0.92$ between CHL and log recruitment by @Gomez2012. A warming-and-greening regime
+anchoveta growth by approximately 29\% while raising sardine growth by
+approximately 23\%. The opposite-signed CHL semi-elasticities in Table \ref{tab:rho-posteriors} are consistent with the well-documented anchoveta--sardine asymmetry under regime shifts in the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy]: they might reflect the relative competitive dynamics between the two species under high-productivity regimes rather than a direct biological effect of chlorophyll on anchoveta. The positive coupling between coastal chlorophyll and common sardine recruitment in Centro-Sur Chile is documented with correlation $r=0.92$ between CHL and log recruitment by @Gomez2012. A warming-and-greening regime
 therefore does not produce a uniform shock on the artisanal fleet,
-because anchovy and sardine respond to chlorophyll with opposite signs.
+because anchoveta and sardine respond to chlorophyll with opposite signs.
 The net impact on each vessel depends on its realized catch composition
 over the two species, which we integrate at the fleet level in Section
 \emph{\nameref{projections}}.
 
-Third, and in marked contrast, neither SST nor CHL shifters are identified for jack mackerel. Unlike anchovy and sardine, jack mackerel priors are vague and centered at zero (Appendix A), so the posterior moves only if the data refines it. That the posterior coincides with the prior---$\sigma_{\text{post}}/\sigma_{\text{prior}} \approx 1$, means near zero, credible intervals straddling zero---indicates that the 2000--2024 biomass series provides insufficient information to identify climate effects on jack mackerel productivity at this scale, consistent with jack mackerel ranging across the broader Southeast Pacific rather than being driven by local Chilean conditions (it is managed through SPRFMO accordingly). The model correctly reports this non-identification rather than producing a spurious coefficient.
+Third, and in marked contrast, neither SST nor CHL shifters are identified for jack mackerel. Unlike anchoveta and sardine, jack mackerel priors are vague and centered at zero (Appendix A), so the posterior moves only if the data refines it. That the posterior coincides with the prior---$\sigma_{\text{post}}/\sigma_{\text{prior}} \approx 1$, means near zero, credible intervals straddling zero---indicates that the 2000--2024 biomass series provides insufficient information to identify climate effects on jack mackerel productivity at this scale, consistent with jack mackerel ranging across the broader Southeast Pacific rather than being driven by local Chilean conditions (it is managed through SPRFMO accordingly). The model correctly reports this non-identification rather than producing a spurious coefficient.
 
 Online Appendix E reports five complementary robustness tests of this null: three nested coastal aggregations, a dual-source extension with a Northern Chilean acoustic series, basin-scale ENSO shifters at lags 1 and 2, a joint specification with all three shifters active simultaneously, and an extension using the broader SPRFMO range-wide jack mackerel stock assessment. All five converge on posterior-to-prior ratios between $0.94$ and $1.03$, indistinguishable from unity. These tests try to rule out the standard technical explanations for the null: too small an area, too few years, the wrong climate variable, the wrong econometric specification, or the wrong geographic scope. The relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins---behaviour, location, and the seasonal timing of spawning and migration [@Arancibia2019-FIPA; @Arcos2001-jq; @Pena-Torres2017-gn]---not captured in the elasticity of annual aggregate productivity.
 
@@ -139,7 +140,4 @@ forest plot.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{../figs/t4b/t4b_full_rho_shifters.png}
-\caption{Posterior and prior distributions of the climate shifters $\rho_s^{SST}$, $\rho_s^{CHL}$, and $\rho_{jur}^{ENSO}$ by stock. Solid lines show the posterior $90\%$ (thin) and $50\%$ (thick) credible intervals; dashed lines show the prior $90\%$ credible interval. Anchovy and sardine show substantial posterior updating with narrow credible intervals excluding zero. Jack mackerel posteriors (SST, CHL, ENSO) coincide with their vague priors centred at zero, indicating non-identification.}
-\label{fig:rho-forest}
-\end{figure}
-
+\caption{Posterior and prior distributions of the climate shifters $\rho_s^{SST}$, $\rho_s^{CHL}$, and $\rho_{jur}^{ENSO}$ by stock. Solid lines show the posterior $90\%$ (thin) and $50\%$ (thick) credible intervals; dashed lines show the prior $90\%$ credible interval. Anchoveta and sardine show substantial posterior updating with narrow credible intervals excluding zero. Jack mackerel posteriors (SST, CHL, ENSO) coincide with their vague priors centred at zero, indicati
