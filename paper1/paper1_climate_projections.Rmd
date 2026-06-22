@@ -768,12 +768,9 @@ knitr::kable(env_wide, format = "latex", booktabs = TRUE, escape = FALSE,
 
 Table \ref{tab:growth_compstat} reports the four summary statistics of $\Delta r_s^{\star}/r_s^{0}$ defined in Section \emph{\nameref{projection-approach}}, for each stock under each scenario-window pair. Jack mackerel is reported as non-identified (``n.i.'') consistent with the identification result in Section \emph{\nameref{identification}}.
 
-Under the moderate SSP2-4.5 mid-century scenario (cross-model median $+0.58\,^{\circ}$C; $\Delta\log\text{CHL}$ near zero in the cross-model median, with non-trivial cross-model spread), the cross-model median of anchoveta's intrinsic productivity declines by $51\%$ and sardine's by $79\%$, with posterior probability of negative impact equal to one in both cases.
+Under the moderate SSP2-4.5 mid-century scenario---warming of $+0.58\,^{\circ}$C and small chlorophyll-a changes (cross-model medians)---anchoveta's intrinsic productivity declines by $51\%$ and sardine's by $79\%$, with posterior probability of negative impact equal to one in both cases.
 
-Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median $+2.39\,^{\circ}$C, $\Delta\log\text{CHL}$ cross-model median $-0.013$ with $5$th-percentile of $-0.30$ across models) the cross-model medians deepen to $-90\%$ and $-99.9\%$ respectively, and the entire $90\%$ credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is $0.99$ rather than $1$ because under a small fraction of (model, draw) pairs a sufficiently negative $\Delta\log\text{CHL}$ combined with $\rho^{CHL}_{\text{anch}}<0$ offsets the SST-driven collapse.
-
-The identified signs confirm the qualitative reading of the shifters in Section \emph{\nameref{identification}}: both coastal stocks respond negatively to SST, but sardine carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardine than for anchoveta.
-
+Under the high-emissions SSP5-8.5 end-of-century scenario---warming of $+2.39\,^{\circ}$C and small chlorophyll-a changes on average ($\Delta\log\text{CHL}$ median $-0.013$, but with a $5$th-percentile of $-0.30$ across models)---the cross-model medians deepen to $-90\%$ and $-99.9\%$ respectively, and the entire $90\%$ credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is $0.99$ rather than $1$ because anchoveta's CHL semi-elasticity is negative ($\rho^{CHL}_{\text{anch}} \approx -3.64$): in the small fraction of (model, draw) pairs where $\Delta\log\text{CHL}$ is sufficiently negative, the CHL contribution becomes positive and offsets the SST-driven collapse.
 
 
 ```{r growthcompstat, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
@@ -807,7 +804,7 @@ gcs_tbl <- gcs %>%
 
 gcs_kable <- kable(gcs_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       align = "llccccccr",
-      caption = "Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. \\label{tab:growth_compstat}") %>%
+      caption = "Comparative statics on intrinsic stock productivity ($\\Delta r_s^{\\star}/r_s^{0}$) under the CMIP6 six-model ensemble. \\label{tab:growth_compstat}") %>%
   add_header_above(c(" " = 5, "Summary statistics" = 4)) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"),
                 font_size = 8) %>%
@@ -822,7 +819,10 @@ cat("\n\\end{landscape}\n")
 
 ```
 
-The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. The shifters $(\rho_s^{SST}, \rho_s^{CHL})$ enter the law of motion as coefficients on exogenous climate forcings, which makes them invariant to the joint distribution of $(SST, B, C)$ and therefore evaluable at climate regimes outside the estimation window---in particular, at an SST anomaly of $+2.3^{\circ}$C that lies roughly nine historical standard deviations beyond the 2000--2024 mean. A purely correlational specification would not license this extrapolation.
+
+The identified signs confirm the qualitative reading of the shifters in Section \emph{\nameref{identification}}: both coastal stocks respond negatively to SST, but sardine carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardine than for anchoveta.
+
+The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, *holding fixed* the law of motion and the fishery's regulatory regime. The shifters $(\rho_s^{SST}, \rho_s^{CHL})$ enter the law of motion as coefficients on exogenous climate forcings. Because they are structural parameters, not reduced-form correlations, they remain valid at climate regimes outside the estimation window---in particular, at an SST anomaly of $+2.3^{\circ}$C that lies roughly nine historical standard deviations beyond the 2000--2024 mean.
 
 
 ### Implications for fleet-level effort
@@ -940,7 +940,7 @@ kable(tcs_emb_tbl, format = "latex", booktabs = TRUE, escape = FALSE,
       align = "lcccc",
       caption = "Within-artisanal decomposition of the long-run trip response by vessel type (SSP5-8.5, end-of-century).") %>%
   kable_styling(latex_options = c("hold_position"), font_size = 9) %>%
-  footnote(general = "The artisanal negative binomial estimation is restricted to vessel-type categories with at least 50 vessel-year observations (BM, LM, UNK); excluded categories (BR, BRV, L) collectively account for less than 0.1 percent of artisanal effort and quota.",
+  footnote(general = "The artisanal negative binomial estimation is restricted to vessel-type categories with at least 50 vessel-year observations (BM, LM, UNK); excluded categories collectively account for less than 0.1 percent of artisanal effort and quota.",
   general_title = "Note:", threeparttable = TRUE)
 ```
 
@@ -967,7 +967,7 @@ Future work could extend the framework by incorporating endogenous harvest-contr
 
 # Acknowledgments {.unnumbered}
 
-The author thanks Andrea Araya, Karen Walker, and Carola Hernández (Instituto de Fomento Pesquero, IFOP) for providing access to the trip-level logbook data and for responding to detailed methodological questions about its structure during data preparation. The author also thanks IFOP institutionally for granting access to the data. Comments from participants at the 2025 NENRE EfD-Chile meeting and from the audience at the 2026 ICES/PICES Small Pelagic Fish Symposium in La Paz, Mexico, improved earlier versions of this manuscript. The author bears sole responsibility for any remaining errors. Funding was provided by ANID-Chile through ANID Fondecyt Iniciación 11250223 and through ANID INCAR\textsuperscript{2} CIA250009.
+The author thanks Andrea Araya, Karen Walker, and Carola Hernández (Instituto de Fomento Pesquero, IFOP) for providing access to the trip-level logbook data and for responding to detailed methodological questions about its structure during data preparation. The author also thanks IFOP institutionally for granting access to the data. Comments from participants at the 2025 NENRE EfD-Chile meeting and from the audience at the 2026 ICES/PICES Small Pelagic Fish Symposium in La Paz, Mexico, improved earlier versions of this manuscript. The author bears sole responsibility for any remaining errors. Funding was provided by ANID-Chile through ANID Fondecyt Iniciación 11250223. The author also acknowledges partial support through ANID INCAR\textsuperscript{2} CIA250009.
 
 # Data and code availability {.unnumbered}
 

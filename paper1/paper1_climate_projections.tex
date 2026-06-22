@@ -423,15 +423,16 @@ over the two species, which we integrate at the fleet level in Section
 
 Third, and in marked contrast, neither SST nor CHL shifters are identified for jack mackerel. Unlike anchoveta and sardine, jack mackerel priors are vague and centered at zero (Appendix A), so the posterior moves only if the data refines it. That the posterior coincides with the prior---\(\sigma_{\text{post}}/\sigma_{\text{prior}} \approx 1\), means near zero, credible intervals straddling zero---indicates that the 2000--2024 biomass series provides insufficient information to identify climate effects on jack mackerel productivity at this scale, consistent with jack mackerel ranging across the broader Southeast Pacific rather than being driven by local Chilean conditions (it is managed through SPRFMO accordingly). The model correctly reports this non-identification rather than producing a spurious coefficient.
 
-Online Appendix E reports five complementary robustness tests of this null: three nested coastal aggregations, a dual-source extension with a Northern Chilean acoustic series, basin-scale ENSO shifters at lags 1 and 2, a joint specification with all three shifters active simultaneously, and an extension using the broader SPRFMO range-wide jack mackerel stock assessment. All five converge on posterior-to-prior ratios between \(0.94\) and \(1.03\), indistinguishable from unity. These tests try to rule out the standard technical explanations for the null: too small an area, too few years, the wrong climate variable, the wrong econometric specification, or the wrong geographic scope. The relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins---behaviour, location, and the seasonal timing of spawning and migration (\citeproc{ref-Arancibia2019-FIPA}{Arancibia et al. 2019}; \citeproc{ref-Arcos2001-jq}{Arcos et al. 2001}; \citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al. 2017})---not captured in the elasticity of annual aggregate productivity.
+Online Appendix E reports five complementary robustness tests of this null: three nested coastal aggregations, a dual-source extension with a Northern Chilean acoustic series, basin-scale ENSO shifters at lags 1 and 2, a joint specification with all three shifters active simultaneously, and an extension using the broader SPRFMO range-wide jack mackerel stock assessment. All five converge on posterior-to-prior ratios between \(0.94\) and \(1.03\), indistinguishable from unity. These tests try to rule out the standard technical explanations for the null: too small an area, too few biomass observations, the wrong climate variable, the wrong econometric specification, or the wrong geographic scope. The relevant climate forcing for the Centro-Sur jack mackerel stock operates at margins---behaviour, location, and the seasonal timing of spawning and migration (\citeproc{ref-Arancibia2019-FIPA}{Arancibia et al. 2019}; \citeproc{ref-Arcos2001-jq}{Arcos et al. 2001}; \citeproc{ref-Pena-Torres2017-gn}{Peña-Torres et al. 2017})---not captured in the elasticity of annual aggregate productivity.
 
 Figure \ref{fig:rho-forest} visualises the posterior--prior updating as a
 forest plot.
 
-\textbackslash begin\{figure\}{[}!htbp{]}
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{../figs/t4b/t4b_full_rho_shifters.png}
-\textbackslash caption\{Posterior and prior distributions of the climate shifters \(\rho_s^{SST}\), \(\rho_s^{CHL}\), and \(\rho_{jur}^{ENSO}\) by stock. Solid lines show the posterior \(90\%\) (thin) and \(50\%\) (thick) credible intervals; dashed lines show the prior \(90\%\) credible interval. Anchoveta and sardine show substantial posterior updating with narrow credible intervals excluding zero. Jack mackerel posteriors (SST, CHL, ENSO) coincide with their vague priors centred at zero, indicati
+\caption{Posterior and prior distributions of the climate shifters $\rho_s^{SST}$, $\rho_s^{CHL}$, and $\rho_{\text{jur}}^{ENSO}$ by stock. Solid lines show the posterior $90\%$ (thin) and $50\%$ (thick) credible intervals; dashed lines show the prior $90\%$ credible interval. Anchoveta and sardine show substantial posterior updating with narrow credible intervals excluding zero. Jack mackerel posteriors (SST, CHL, ENSO) coincide with their vague priors centred at zero, indicating non-identification.\label{fig:rho-forest}}
+\end{figure}
 
 \subsection{Total annual trips}\label{sec:tripresults}
 
@@ -524,16 +525,14 @@ SSP5-8.5 & 2041--2060 & 6 & $+0.92$ \,[$+0.61$, $+1.23$] & $+0.7$ \,[$-2.3$, $+3
 
 Table \ref{tab:growth_compstat} reports the four summary statistics of \(\Delta r_s^{\star}/r_s^{0}\) defined in Section \emph{\nameref{projection-approach}}, for each stock under each scenario-window pair. Jack mackerel is reported as non-identified (``n.i.'\,') consistent with the identification result in Section \emph{\nameref{identification}}.
 
-Under the moderate SSP2-4.5 mid-century scenario (cross-model median \(+0.58\,^{\circ}\)C; \(\Delta\log\text{CHL}\) near zero in the cross-model median, with non-trivial cross-model spread), the cross-model median of anchoveta's intrinsic productivity declines by \(51\%\) and sardine's by \(79\%\), with posterior probability of negative impact equal to one in both cases.
+Under the moderate SSP2-4.5 mid-century scenario---warming of \(+0.58\,^{\circ}\)C and small chlorophyll-a changes (cross-model medians)---anchoveta's intrinsic productivity declines by \(51\%\) and sardine's by \(79\%\), with posterior probability of negative impact equal to one in both cases.
 
-Under the high-emissions SSP5-8.5 end-of-century scenario (cross-model median \(+2.39\,^{\circ}\)C, \(\Delta\log\text{CHL}\) cross-model median \(-0.013\) with \(5\)th-percentile of \(-0.30\) across models) the cross-model medians deepen to \(-90\%\) and \(-99.9\%\) respectively, and the entire \(90\%\) credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is \(0.99\) rather than \(1\) because under a small fraction of (model, draw) pairs a sufficiently negative \(\Delta\log\text{CHL}\) combined with \(\rho^{CHL}_{\text{anch}}<0\) offsets the SST-driven collapse.
-
-The identified signs confirm the qualitative reading of the shifters in Section \emph{\nameref{identification}}: both coastal stocks respond negatively to SST, but sardine carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardine than for anchoveta.
+Under the high-emissions SSP5-8.5 end-of-century scenario---warming of \(+2.39\,^{\circ}\)C and small chlorophyll-a changes on average (\(\Delta\log\text{CHL}\) median \(-0.013\), but with a \(5\)th-percentile of \(-0.30\) across models)---the cross-model medians deepen to \(-90\%\) and \(-99.9\%\) respectively, and the entire \(90\%\) credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is \(0.99\) rather than \(1\) because anchoveta's CHL semi-elasticity is negative (\(\rho^{CHL}_{\text{anch}} \approx -3.64\)): in the small fraction of (model, draw) pairs where \(\Delta\log\text{CHL}\) is sufficiently negative, the CHL contribution becomes positive and offsets the SST-driven collapse.
 
 \begin{landscape}
 \begin{table}[!h]
 \centering
-\caption{\label{tab:growthcompstat}Comparative statics on intrinsic stock productivity under the CMIP6 six-model ensemble. \label{tab:growth_compstat}}
+\caption{\label{tab:growthcompstat}Comparative statics on intrinsic stock productivity ($\Delta r_s^{\star}/r_s^{0}$) under the CMIP6 six-model ensemble. \label{tab:growth_compstat}}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \fontsize{8}{10}\selectfont
@@ -568,7 +567,9 @@ Jack mackerel CS & SSP5-8.5, 2081-2100 & 6 & +2.39 & -0.013 & n.i. & n.i. & n.i.
 \end{table}
 \end{landscape}
 
-The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, \emph{holding fixed} the law of motion and the fishery's regulatory regime. The shifters \((\rho_s^{SST}, \rho_s^{CHL})\) enter the law of motion as coefficients on exogenous climate forcings, which makes them invariant to the joint distribution of \((SST, B, C)\) and therefore evaluable at climate regimes outside the estimation window---in particular, at an SST anomaly of \(+2.3^{\circ}\)C that lies roughly nine historical standard deviations beyond the 2000--2024 mean. A purely correlational specification would not license this extrapolation.
+The identified signs confirm the qualitative reading of the shifters in Section \emph{\nameref{identification}}: both coastal stocks respond negatively to SST, but sardine carries roughly twice the SST semi-elasticity of anchoveta, and its CHL semi-elasticity is of the opposite sign, so that the compound response---negative thermal shock combined with negative primary-productivity shock---is sharper for sardine than for anchoveta.
+
+The comparative-statics exercise is a long-run object rather than a year-by-year forecast. It describes the steady-state intrinsic productivity of each stock under a counterfactual climate, \emph{holding fixed} the law of motion and the fishery's regulatory regime. The shifters \((\rho_s^{SST}, \rho_s^{CHL})\) enter the law of motion as coefficients on exogenous climate forcings. Because they are structural parameters, not reduced-form correlations, they remain valid at climate regimes outside the estimation window---in particular, at an SST anomaly of \(+2.3^{\circ}\)C that lies roughly nine historical standard deviations beyond the 2000--2024 mean.
 
 \subsubsection{Implications for fleet-level effort}\label{implications-for-fleet-level-effort}
 
@@ -628,7 +629,7 @@ BM & Bote motor (BM) & 1.00 & -10.0\% & {}[-10.2\%,\,-9.8\%] & -5.6\%\\
 \end{tabular}
 \begin{tablenotes}
 \item \textit{Note:} 
-\item The artisanal negative binomial estimation is restricted to vessel-type categories with at least 50 vessel-year observations (BM, LM, UNK); excluded categories (BR, BRV, L) collectively account for less than 0.1 percent of artisanal effort and quota.
+\item The artisanal negative binomial estimation is restricted to vessel-type categories with at least 50 vessel-year observations (BM, LM, UNK); excluded categories collectively account for less than 0.1 percent of artisanal effort and quota.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -656,7 +657,7 @@ Future work could extend the framework by incorporating endogenous harvest-contr
 \section*{Acknowledgments}\label{acknowledgments}
 \addcontentsline{toc}{section}{Acknowledgments}
 
-The author thanks Andrea Araya, Karen Walker, and Carola Hernández (Instituto de Fomento Pesquero, IFOP) for providing access to the trip-level logbook data and for responding to detailed methodological questions about its structure during data preparation. The author also thanks IFOP institutionally for granting access to the data. Comments from participants at the 2025 NENRE EfD-Chile meeting and from the audience at the 2026 ICES/PICES Small Pelagic Fish Symposium in La Paz, Mexico, improved earlier versions of this manuscript. The author bears sole responsibility for any remaining errors. Funding was provided by ANID-Chile through ANID Fondecyt Iniciación 11250223 and through ANID INCAR\textsuperscript{2} CIA250009.
+The author thanks Andrea Araya, Karen Walker, and Carola Hernández (Instituto de Fomento Pesquero, IFOP) for providing access to the trip-level logbook data and for responding to detailed methodological questions about its structure during data preparation. The author also thanks IFOP institutionally for granting access to the data. Comments from participants at the 2025 NENRE EfD-Chile meeting and from the audience at the 2026 ICES/PICES Small Pelagic Fish Symposium in La Paz, Mexico, improved earlier versions of this manuscript. The author bears sole responsibility for any remaining errors. Funding was provided by ANID-Chile through ANID Fondecyt Iniciación 11250223. The author also acknowledges partial support through ANID INCAR\textsuperscript{2} CIA250009.
 
 \section*{Data and code availability}\label{data-and-code-availability}
 \addcontentsline{toc}{section}{Data and code availability}
