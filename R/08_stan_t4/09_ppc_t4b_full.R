@@ -409,7 +409,7 @@ if (isTRUE(getOption("t4b.full.ppc.run_main", FALSE))) {
   ggsave(file.path(T4B_FULL_FIG_DIR, "t4b_full_omega_residual.png"),
          p4, width = 8, height = 4, dpi = 120)
   ggsave(file.path(T4B_FULL_FIG_DIR, "t4b_full_rho_shifters.png"),
-         p5, width = 9, height = 5, dpi = 120)
+         p5, width = 9, height = 5, dpi = 300)
   ggsave(file.path(T4B_FULL_FIG_DIR, "t4b_full_r_eff_timeseries.png"),
          p6, width = 9, height = 9, dpi = 120)
 

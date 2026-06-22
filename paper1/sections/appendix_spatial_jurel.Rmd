@@ -34,7 +34,7 @@ fit. Table \ref{tab:appE-power} reports the detectable $|\rho|_{\min}$
 for each stock and candidate shifter. For the coastal stocks,
 $|\rho|_{\min}$ ranges from $0.26$ to $0.33$ across all shifters, well
 below the identified posterior magnitudes reported in the main text
-($|\rho|$ between $1.06$ and $3.64$), confirming that the coastal-stock
+($|\rho|$ between $1.04$ and $3.65$), confirming that the coastal-stock
 identification is supported by ample power. For jack mackerel, $|\rho|_{\min}$
 ranges from $0.71$ (basin-scale ENSO) to $1.50$ (local SST)---of the
 same order of magnitude as the coastal-stock estimates. A jack mackerel climate

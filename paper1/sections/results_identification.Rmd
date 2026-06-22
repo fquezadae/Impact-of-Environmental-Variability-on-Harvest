@@ -97,15 +97,15 @@ The posterior 90\% credible intervals exclude zero for all four parameters,
 and the standard deviation ratios fall between $0.43$ and $0.83$,
 indicating that the 2000--2024 biomass series refines the priors
 materially. For anchoveta, a one-degree positive SST anomaly is associated
-with a semi-elasticity of $\rho^{SST}_{\text{anch}} = -1.06$
+with a semi-elasticity of $\rho^{SST}_{\text{anch}} = -1.04$
 (CI $[-1.79, -0.38]$); for sardine, the corresponding semi-elasticity
-is more than twice as large, $\rho^{SST}_{\text{sard}} = -2.75$
+is more than twice as large, $\rho^{SST}_{\text{sard}} = -2.76$
 (CI $[-3.46, -2.02]$). Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchoveta regime documented for the Humboldt Current ecosystem [@Alheit2004; @Schwartzlose1999-uy], and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by @Gomez2012 with $r=-0.83$. Evaluated at one historical standard deviation of
 the SST anomaly series (estimation-sample $\hat{\sigma}_{SST} =
 0.26\,^{\circ}\text{C}$ over 2000--2024), a thermal shock of that magnitude
 lowers the intrinsic growth rate of anchoveta by approximately 24\%
-($1 - e^{-1.06 \cdot 0.26}$) and that of sardine by approximately 51\%
-($1 - e^{-2.75 \cdot 0.26}$) relative to the climatological mean. Under a
+($1 - e^{-1.04 \cdot 0.26}$) and that of sardine by approximately 51\%
+($1 - e^{-2.76 \cdot 0.26}$) relative to the climatological mean. Under a
 policy-relevant warming signal of $+1\,^{\circ}\text{C}$, comparable to
 mid-century CMIP6 SSP2-4.5 projections for the Chilean coastal zone, the
 implied declines are 65\% for anchoveta and 94\% for sardine. Applied
@@ -118,8 +118,8 @@ deviations beyond the 2000--2024 estimation window, so the projection
 relies on the log-linear extrapolation embedded in the shifter function. 
 
 
-Second, the two coastal stocks respond to chlorophyll-a with opposite signs: $\rho^{CHL}_{\text{anch}} = -3.64$ (CI $[-5.01, -2.25]$) versus
-$\rho^{CHL}_{\text{sard}} = +2.17$ (CI $[+0.96, +3.37]$). At one historical
+Second, the two coastal stocks respond to chlorophyll-a with opposite signs: $\rho^{CHL}_{\text{anch}} = -3.65$ (CI $[-5.01, -2.25]$) versus
+$\rho^{CHL}_{\text{sard}} = +2.18$ (CI $[+0.96, +3.37]$). At one historical
 standard deviation of $\log CHL$ ($\hat{\sigma}_{\log CHL} = 0.095$, a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardine growth by

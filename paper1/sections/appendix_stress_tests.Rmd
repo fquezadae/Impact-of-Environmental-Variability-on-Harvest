@@ -126,7 +126,7 @@ with $N=25$ annual observations it is necessary for identification.
 We adopt this trade-off deliberately for two reasons. First, the prior
 $\sigma = 1$ is wide enough that the data move the posterior
 substantially when informative: for anchoveta, the posterior of
-$\rho^{CHL}$ migrates to $-3.64$, more than one prior standard
+$\rho^{CHL}$ migrates to $-3.65$, more than one prior standard
 deviation away from the prior centre of $-2.3$ (see the
 posterior-identification table of the main text for full posterior
 summaries). Second,

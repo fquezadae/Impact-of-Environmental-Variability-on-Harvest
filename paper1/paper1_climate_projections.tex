@@ -129,6 +129,20 @@
 \affil{Universidad de Concepci\'on \vspace{-60pt}}
 \newcommand{\keywords}[1]{\par\noindent{\setstretch{1.5}\textbf{Keywords:} #1\par}}
 \newcommand{\jelcodes}[1]{\par\noindent{\setstretch{1.5}\textbf{JEL Codes:} #1\par}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -389,15 +403,15 @@ The posterior 90\% credible intervals exclude zero for all four parameters,
 and the standard deviation ratios fall between \(0.43\) and \(0.83\),
 indicating that the 2000--2024 biomass series refines the priors
 materially. For anchoveta, a one-degree positive SST anomaly is associated
-with a semi-elasticity of \(\rho^{SST}_{\text{anch}} = -1.06\)
+with a semi-elasticity of \(\rho^{SST}_{\text{anch}} = -1.04\)
 (CI \([-1.79, -0.38]\)); for sardine, the corresponding semi-elasticity
-is more than twice as large, \(\rho^{SST}_{\text{sard}} = -2.75\)
+is more than twice as large, \(\rho^{SST}_{\text{sard}} = -2.76\)
 (CI \([-3.46, -2.02]\)). Both signs are consistent with the regional literature: the negative SST sensitivity for anchoveta aligns with the cold-water anchoveta regime documented for the Humboldt Current ecosystem (\citeproc{ref-Alheit2004}{Alheit and Niquen 2004}; \citeproc{ref-Schwartzlose1999-uy}{Schwartzlose et al. 1999}), and the stronger sardine sensitivity matches the negative coupling between SST anomalies and \emph{Strangomera bentincki} recruitment in Centro-Sur Chile reported by Gomez et al. (\citeproc{ref-Gomez2012}{2012}) with \(r=-0.83\). Evaluated at one historical standard deviation of
 the SST anomaly series (estimation-sample \(\hat{\sigma}_{SST} =
 0.26\,^{\circ}\text{C}\) over 2000--2024), a thermal shock of that magnitude
 lowers the intrinsic growth rate of anchoveta by approximately 24\%
-(\(1 - e^{-1.06 \cdot 0.26}\)) and that of sardine by approximately 51\%
-(\(1 - e^{-2.75 \cdot 0.26}\)) relative to the climatological mean. Under a
+(\(1 - e^{-1.04 \cdot 0.26}\)) and that of sardine by approximately 51\%
+(\(1 - e^{-2.76 \cdot 0.26}\)) relative to the climatological mean. Under a
 policy-relevant warming signal of \(+1\,^{\circ}\text{C}\), comparable to
 mid-century CMIP6 SSP2-4.5 projections for the Chilean coastal zone, the
 implied declines are 65\% for anchoveta and 94\% for sardine. Applied
@@ -409,8 +423,8 @@ under sustained \(+1\,^{\circ}\text{C}\) warming. The caveat is that
 deviations beyond the 2000--2024 estimation window, so the projection
 relies on the log-linear extrapolation embedded in the shifter function.
 
-Second, the two coastal stocks respond to chlorophyll-a with opposite signs: \(\rho^{CHL}_{\text{anch}} = -3.64\) (CI \([-5.01, -2.25]\)) versus
-\(\rho^{CHL}_{\text{sard}} = +2.17\) (CI \([+0.96, +3.37]\)). At one historical
+Second, the two coastal stocks respond to chlorophyll-a with opposite signs: \(\rho^{CHL}_{\text{anch}} = -3.65\) (CI \([-5.01, -2.25]\)) versus
+\(\rho^{CHL}_{\text{sard}} = +2.18\) (CI \([+0.96, +3.37]\)). At one historical
 standard deviation of \(\log CHL\) (\(\hat{\sigma}_{\log CHL} = 0.095\), a
 primary-productivity anomaly of roughly 10\%), a positive CHL shock lowers
 anchoveta growth by approximately 29\% while raising sardine growth by
@@ -527,7 +541,7 @@ Table \ref{tab:growth_compstat} reports the four summary statistics of \(\Delta 
 
 Under the moderate SSP2-4.5 mid-century scenario---warming of \(+0.58\,^{\circ}\)C and small chlorophyll-a changes (cross-model medians)---anchoveta's intrinsic productivity declines by \(51\%\) and sardine's by \(79\%\), with posterior probability of negative impact equal to one in both cases.
 
-Under the high-emissions SSP5-8.5 end-of-century scenario---warming of \(+2.39\,^{\circ}\)C and small chlorophyll-a changes on average (\(\Delta\log\text{CHL}\) median \(-0.013\), but with a \(5\)th-percentile of \(-0.30\) across models)---the cross-model medians deepen to \(-90\%\) and \(-99.9\%\) respectively, and the entire \(90\%\) credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is \(0.99\) rather than \(1\) because anchoveta's CHL semi-elasticity is negative (\(\rho^{CHL}_{\text{anch}} \approx -3.64\)): in the small fraction of (model, draw) pairs where \(\Delta\log\text{CHL}\) is sufficiently negative, the CHL contribution becomes positive and offsets the SST-driven collapse.
+Under the high-emissions SSP5-8.5 end-of-century scenario---warming of \(+2.39\,^{\circ}\)C and small chlorophyll-a changes on average (\(\Delta\log\text{CHL}\) median \(-0.013\), but with a \(5\)th-percentile of \(-0.30\) across models)---the cross-model medians deepen to \(-90\%\) and \(-99.9\%\) respectively, and the entire \(90\%\) credible interval of sardine's response lies below zero in every model of the ensemble. The anchoveta cross-model probability of decline is \(0.99\) rather than \(1\) because anchoveta's CHL semi-elasticity is negative (\(\rho^{CHL}_{\text{anch}} \approx -3.65\)): in the small fraction of (model, draw) pairs where \(\Delta\log\text{CHL}\) is sufficiently negative, the CHL contribution becomes positive and offsets the SST-driven collapse.
 
 \begin{landscape}
 \begin{table}[!h]
