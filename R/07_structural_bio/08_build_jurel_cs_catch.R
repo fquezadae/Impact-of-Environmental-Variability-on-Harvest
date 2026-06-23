@@ -29,10 +29,6 @@
 #
 # Outputs:
 #   - data/bio_params/catch_jurel_cs.csv         (stock_id, year, catch_t)
-#   - data/bio_params/catch_jurel_cs_by_sector.csv
-#       (stock_id, year, sector ∈ {Artesanal, Industrial}, catch_t) — versión
-#       desagregada por tipo_agente, consumida por regime_diagnostic.R
-#       (Version C, paper 2). NO altera la serie agregada que usa T3/T4.
 #   - Actualiza data/bio_params/catch_annual_paper1.csv agregando filas con
 #     stock_id = "jurel_cs" (mantiene la fila jurel_chile como archivo histórico;
 #     02_hindcast_check.R consumirá jurel_cs de ahora en adelante).
@@ -99,27 +95,6 @@ build_jurel_cs_annual <- function(raw = load_sernapesca_raw()) {
 }
 
 # -----------------------------------------------------------------------------
-# Agregador: jurel centro-sur anual POR SECTOR (Industrial vs Artesanal)
-# -----------------------------------------------------------------------------
-# Idéntico filtro que build_jurel_cs_annual pero conserva tipo_agente.
-# Output con la misma escala geográfica (V-X + Los Ríos) que la biomasa
-# acústica IFOP, condición necesaria para que regime_diagnostic.R compute
-# H/B sin inflar el numerador con captura del norte.
-build_jurel_cs_by_sector_annual <- function(raw = load_sernapesca_raw()) {
-  raw %>%
-    dplyr::filter(
-      grepl("^jurel", especie, ignore.case = TRUE),
-      region %in% CS_REGIONS,
-      tipo_agente %in% c("Industrial", "Artesanal")
-    ) %>%
-    dplyr::group_by(year = as.integer(anio), sector = tipo_agente) %>%
-    dplyr::summarise(catch_t = sum(toneladas, na.rm = TRUE), .groups = "drop") %>%
-    dplyr::mutate(stock_id = "jurel_cs") %>%
-    dplyr::select(stock_id, year, sector, catch_t) %>%
-    dplyr::arrange(year, sector)
-}
-
-# -----------------------------------------------------------------------------
 # Sanity check: share CS vs Chile-total (debe variar con la dinámica conocida)
 # -----------------------------------------------------------------------------
 qa_share_cs <- function(raw = load_sernapesca_raw()) {
@@ -172,19 +147,6 @@ write_jurel_cs_csv <- function(
 }
 
 # -----------------------------------------------------------------------------
-# Escritor: jurel_cs desagregado por sector (Version C, paper 2)
-# -----------------------------------------------------------------------------
-write_jurel_cs_by_sector_csv <- function(
-    out_path = file.path("data", "bio_params", "catch_jurel_cs_by_sector.csv")
-) {
-  cs_sec <- build_jurel_cs_by_sector_annual()
-  readr::write_csv(cs_sec, out_path)
-  message("Escrito ", out_path, " (", nrow(cs_sec), " filas, ",
-          paste(sort(unique(cs_sec$sector)), collapse = " + "), ")")
-  invisible(cs_sec)
-}
-
-# -----------------------------------------------------------------------------
 # Main
 # -----------------------------------------------------------------------------
 if (isTRUE(getOption("structural_bio.run_main", FALSE))) {
@@ -206,7 +168,6 @@ if (isTRUE(getOption("structural_bio.run_main", FALSE))) {
   print(as.data.frame(share), row.names = FALSE)
 
   write_jurel_cs_csv()
-  write_jurel_cs_by_sector_csv()
 
   cat("\n", strrep("=", 70), "\n", sep = "")
 }
