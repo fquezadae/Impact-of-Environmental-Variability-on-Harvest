@@ -89,8 +89,8 @@ alone.
 │       ├── 14b_fit_t4b_full_enso.R                    # T4b refit with basin-scale ENSO replacement (App E)
 │       ├── 14c_fit_t4b_full_enso_joint.R              # T4b refit with all 3 shifters active for jurel (App E sensitivity)
 │       ├── 15_appendix_e_sigma_ratios.R               # σ_post/σ_prior across domains (App E)
-│       ├── 16_appendix_f_variance_decomposition.R     # Var decomp for growth (App F)
-│       ├── 17_appendix_g_trips_variance_decomposition.R  # Var decomp for trips (App G)
+│       ├── 16_appendix_f_variance_decomposition.R     # Var decomp for growth (No included in paper)
+│       ├── 17_appendix_g_trips_variance_decomposition.R  # Var decomp for trips (No included in paper)
 │       ├── 18_power_calculation_enso.R                # Identification power for SST/CHL/ENSO (App E)
 │       └── 19_project_jurel_enso_prior_propagation.R  # Prior-propagation envelope for r*_jurel (App E)
 │
