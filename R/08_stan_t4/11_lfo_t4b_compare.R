@@ -76,7 +76,7 @@ LFO_MODELS <- list(
   ind = list(
     label         = "T4b-ind",
     color         = "#6c757d",
-    stan_file     = "paper1/stan/t4b_state_space_ind.stan",
+    stan_file     = "paper/stan/t4b_state_space_ind.stan",
     stan_data_rds = "data/outputs/t4b/t4b_ind_stan_data.rds",
     has_shifters  = FALSE,
     r_var_name    = "r_"       # ind usa "r_" (underscore)
@@ -84,7 +84,7 @@ LFO_MODELS <- list(
   omega = list(
     label         = "T4b-omega",
     color         = "#1f77b4",
-    stan_file     = "paper1/stan/t4b_state_space_omega.stan",
+    stan_file     = "paper/stan/t4b_state_space_omega.stan",
     stan_data_rds = "data/outputs/t4b/t4b_omega_stan_data.rds",
     has_shifters  = FALSE,
     r_var_name    = "r_"       # omega tambien usa "r_"
@@ -92,7 +92,7 @@ LFO_MODELS <- list(
   full = list(
     label         = "T4b-full",
     color         = "#d62728",
-    stan_file     = "paper1/stan/t4b_state_space_full.stan",
+    stan_file     = "paper/stan/t4b_state_space_full.stan",
     stan_data_rds = "data/outputs/t4b/t4b_full_stan_data.rds",
     has_shifters  = TRUE,
     r_var_name    = "r_base"   # full usa "r_base"

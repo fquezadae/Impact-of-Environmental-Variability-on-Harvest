@@ -4,7 +4,7 @@
 # Apendice E del paper 1 -- robustez espacial de la NO-IDENTIFICACION de jurel.
 #
 # Refittea el T4b full con covariados ambientales STOCK-ESPECIFICOS
-# (paper1/stan/t4b_state_space_full_stockenv.stan).
+# (paper/stan/t4b_state_space_full_stockenv.stan).
 #
 # En los 3 fits del Apendice:
 #   - anch y sard usan SIEMPRE la serie centro_sur_eez (D1) -- es su habitat.
@@ -80,7 +80,7 @@ APP_E_ENV_CSV  <- "data/bio_params/env_extended_3domains_2000_2024.csv"
 APP_E_DOMAINS_ORDER <- c("centro_sur_eez", "offshore_ext", "se_pacific")
 APP_E_OUT_DIR  <- T4B_FULL_OUT_DIR  # "data/outputs/t4b"
 
-APP_E_STAN_FILE <- "paper1/stan/t4b_state_space_full_stockenv.stan"
+APP_E_STAN_FILE <- "paper/stan/t4b_state_space_full_stockenv.stan"
 
 # Idx de stocks en el modelo (debe coincidir con T4B_FULL_STOCKS y con la
 # convencion IDX_* del Stan: anch=1, sard=2, jur=3)

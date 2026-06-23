@@ -1,7 +1,7 @@
 # =============================================================================
 # FONDECYT -- 01_fit_t4.R
 #
-# Ajusta el modelo T4 state-space Bayesiano (paper1/stan/t4_state_space.stan)
+# Ajusta el modelo T4 state-space Bayesiano (paper/stan/t4_state_space.stan)
 # a las tres SPF centro-sur: anchoveta_cs, sardina_comun_cs, jurel_cs.
 #
 # Entradas:
@@ -73,7 +73,7 @@ assert_scalar_numeric <- function(x, name) {
 T4_STOCKS <- c("anchoveta_cs", "sardina_comun_cs", "jurel_cs")
 T4_WINDOW <- 2000:2024                       # ventana comun (25 anios)
 T4_CENSOR_LIMIT_JUREL <- 3.0                 # mil t; obs <= 3 mil t => censored
-T4_STAN_FILE <- "paper1/stan/t4_state_space.stan"
+T4_STAN_FILE <- "paper/stan/t4_state_space.stan"
 T4_OUT_DIR   <- "data/outputs/t4"
 
 dir.create(T4_OUT_DIR, recursive = TRUE, showWarnings = FALSE)

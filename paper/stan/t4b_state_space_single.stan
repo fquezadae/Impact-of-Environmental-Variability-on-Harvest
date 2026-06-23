@@ -1,5 +1,5 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_single.stan
+// paper/stan/t4b_state_space_single.stan
 //
 // T4b paso 6(a) -- Single-species Schaefer state-space Bayesiano.
 // Version 2026-04-23 (b): CENTERED parametrization del estado latente.

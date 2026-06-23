@@ -517,7 +517,7 @@ pendientes:
         (d) aliaga_gomez_neira_2001_bioeconomico_sardina_anchoveta_norte.pdf →
             verificado; la cita fantasma "Cerda et al. 2001" era en realidad
             Aliaga, Gómez & Neira (2001), Inv. Mar. Valparaíso 29(2):15-23.
-            Corregido en paper1/bibliography.bib y citado en paper1_climate_projections.Rmd.
+            Corregido en paper/bibliography.bib y citado en paper1_climate_projections.Rmd.
       BONUS: ifop_anchoveta_vx_2024.pdf e ifop_jurel_nacional_2023.pdf también
       bajados como fuente primaria CS (fuera del scope original de PEND-7, pero
       completan la cadena de verificación para los 3 stocks del paper).

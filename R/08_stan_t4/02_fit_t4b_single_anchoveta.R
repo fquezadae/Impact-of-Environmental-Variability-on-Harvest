@@ -57,7 +57,7 @@ read_yaml_utf8 <- function(path) {
 # -----------------------------------------------------------------------------
 T4B_STOCK     <- "anchoveta_cs"
 T4B_WINDOW    <- 2000:2024
-T4B_STAN_FILE <- "paper1/stan/t4b_state_space_single.stan"
+T4B_STAN_FILE <- "paper/stan/t4b_state_space_single.stan"
 T4B_OUT_DIR   <- "data/outputs/t4b"
 
 # PRIORS APRETADOS -- corazon del fix T4b (ver header del .stan).

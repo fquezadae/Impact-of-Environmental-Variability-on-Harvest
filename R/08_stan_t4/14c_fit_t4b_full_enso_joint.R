@@ -88,7 +88,7 @@ read_yaml_utf8 <- function(path) {
 # -----------------------------------------------------------------------------
 # Constantes
 # -----------------------------------------------------------------------------
-ENSO_J_STAN_FILE   <- "paper1/stan/t4b_state_space_full_stockenv_enso.stan"
+ENSO_J_STAN_FILE   <- "paper/stan/t4b_state_space_full_stockenv_enso.stan"
 ENSO_J_OUT_DIR     <- T4B_FULL_OUT_DIR
 ENSO_J_ENV_CSV     <- "data/bio_params/env_extended_3domains_2000_2024.csv"
 ENSO_J_NINO34_CSV  <- "data/bio_params/enso_nino34_annual_2000_2024.csv"

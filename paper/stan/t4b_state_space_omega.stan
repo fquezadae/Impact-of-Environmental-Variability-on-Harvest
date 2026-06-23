@@ -1,38 +1,31 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_full_stockenv_enso.stan
+// paper/stan/t4b_state_space_omega.stan
 //
-// Variante del t4b_state_space_full_stockenv.stan que incorpora un tercer
-// shifter climatico basin-scale: el indice ENSO Nino 3.4. Usado para el
-// pivote 2026-05-04 del paper 1 (project_paper1_enso_pivot).
+// T4b paso 6(c) -- 3 stocks + correlacion cruzada de ruido de proceso Omega.
+// Extiende t4b_state_space_ind.stan (Omega = I implicito) con una matriz de
+// correlacion estimada via factor de Cholesky.
 //
-// Motivacion: el Apendice E muestra que jurel CS no identifica los shifters
-// costeros (SST_D1, logCHL_D1; sigma_post/sigma_prior ~ 1.0 a traves de tres
-// dominios espaciales D1/D2/D3). El feedback de un colega 2026-05-04 cerro
-// que el null es defendible econometricamente pero no como "el clima no
-// afecta al jurel" para policy. Existing literatura (Arcos2001, Pena-Torres2017,
-// Espinoza2013) documenta efectos climaticos sobre jurel a escala basin-scale
-// vias teleconexiones ENSO. Este modelo testea esa hipotesis.
+// Cambios respecto a t4b_state_space_ind.stan:
+//   (+) cholesky_factor_corr[S] L_Omega       // nuevo parametro
+//   (+) L_Omega ~ lkj_corr_cholesky(4)        // prior mas apretado que (2)
+//       del T4 v1 -- tira hacia independencia pero permite correlacion si los
+//       datos lo exigen. eta=4 reduce la masa en |rho| > 0.6.
+//   (~) logB[t] ~ multi_normal_cholesky(logB_mean_t,
+//                                       diag_pre_multiply(sigma_proc, L_Omega))
+//       Reemplaza la dinamica univariada por stock (Omega = I) con una
+//       dinamica multivariada que comparte ruido correlacionado.
+//   (+) Omega = L_Omega * L_Omega' reportado en generated quantities.
 //
-// Diferencia con t4b_state_space_full_stockenv.stan:
-//   - Agrega data: vector[T] ENSO_c (indice Nino 3.4 anual centrado, basin-scale,
-//     UN solo time series visible por todos los stocks; el efecto stock-specific
-//     viene de rho_enso[s]).
-//   - Agrega parameter: vector[S] rho_enso con prior stock-especifico.
-//   - Dinamica: r_t[s] = r_base[s] * exp(rho_sst[s] * SST_c[t-1, s]
-//                                      + rho_chl[s] * logCHL_c[t-1, s]
-//                                      + rho_enso[s] * ENSO_c[t-1])
+// Representacion del estado latente:
+//   Ahora logB es array[T] vector[S] (no matrix[T,S]) para que el argumento
+//   de multi_normal_cholesky sea un vector[S] natural. B_smooth se expone
+//   como matrix[T,S] en generated quantities para que el pipeline de PPC
+//   previo siga funcionando.
 //
-// Mecanismo para "apagar" shifters por stock via priors YAML:
-//   - Para jurel: rho_enso[3] activo (prior N(0, 0.5)); rho_sst[3] y rho_chl[3]
-//     pinned a 0 con prior tight (N(0, 0.01)) -- jurel solo "ve" ENSO.
-//   - Para anch/sard: rho_sst[s] y rho_chl[s] como antes (priors normales);
-//     rho_enso[s] pinned a 0 con prior tight (N(0, 0.01)) -- no ven ENSO.
-// Los priors son responsables de mantener la convencion "cada stock ve solo
-// los shifters que le corresponden". El R wrapper escribe los priors YAML
-// apropiados.
-//
-// Si rho_enso es N(0, 0.01) para los tres stocks Y ENSO_c es vector de ceros,
-// este modelo es matematicamente equivalente al stockenv original.
+// Observacion: con sigma_proc[3] (jurel) ~ 1.2 mucho mayor que sigma_proc[1,2]
+// (~0.3), las covariaciones que involucran jurel van a tener bandas muy
+// amplias. Es esperable que Omega[1,3] y Omega[2,3] queden cercanas a cero
+// con incertidumbre alta. Omega[1,2] (anch-sard) es la mas informativa.
 // =============================================================================
 
 functions {
@@ -66,10 +59,6 @@ data {
 
   matrix<lower=0>[T, S] C;
 
-  matrix[T, S] SST_c;          // SST anomalia centrada (degC) por stock
-  matrix[T, S] logCHL_c;       // log(CHL) centrada por stock
-  vector[T]    ENSO_c;         // ENSO Nino 3.4 anomalia centrada (degC) -- basin-scale, comun a todos los stocks
-
   vector[S] log_r_prior_mean;
   vector<lower=0>[S] log_r_prior_sd;
   vector[S] log_K_prior_mean;
@@ -82,13 +71,6 @@ data {
 
   vector[S] sigma_proc_prior_logmean;
   vector<lower=0>[S] sigma_proc_prior_logsd;
-
-  vector[S] rho_sst_prior_mean;
-  vector<lower=0>[S] rho_sst_prior_sd;
-  vector[S] rho_chl_prior_mean;
-  vector<lower=0>[S] rho_chl_prior_sd;
-  vector[S] rho_enso_prior_mean;          // NUEVO
-  vector<lower=0>[S] rho_enso_prior_sd;   // NUEVO
 }
 
 transformed data {
@@ -112,12 +94,10 @@ parameters {
   vector<lower=0>[S] sigma_proc;
   vector<lower=0>[S] sigma_obs;
 
+  // NUEVO: factor Cholesky de la correlacion de ruido de proceso
   cholesky_factor_corr[S] L_Omega;
 
-  vector[S] rho_sst;
-  vector[S] rho_chl;
-  vector[S] rho_enso;       // NUEVO
-
+  // Estado latente como array[T] vector[S] (natural para multi_normal)
   array[T] vector[S] logB;
 }
 
@@ -125,7 +105,7 @@ transformed parameters {
   vector[S] log_r  = log_r_prior_mean  + z_log_r  .* log_r_prior_sd;
   vector[S] log_K  = log_K_prior_mean  + z_log_K  .* log_K_prior_sd;
   vector[S] log_B0 = log_B0_prior_mean + z_log_B0 .* log_B0_prior_sd;
-  vector<lower=0>[S] r_base = exp(log_r);
+  vector<lower=0>[S] r_ = exp(log_r);
 }
 
 model {
@@ -140,39 +120,30 @@ model {
     sigma_obs[s]  ~ normal(sigma_obs_prior_mean[s], sigma_obs_prior_sd[s]);
   }
 
-  // Prior LKJ
+  // Prior LKJ apretado hacia independencia (eta=4 vs eta=2 del T4 v1)
   L_Omega ~ lkj_corr_cholesky(4);
 
-  // Priors shifters (stock-especificos)
-  for (s in 1:S) {
-    rho_sst[s]  ~ normal(rho_sst_prior_mean[s],  rho_sst_prior_sd[s]);
-    rho_chl[s]  ~ normal(rho_chl_prior_mean[s],  rho_chl_prior_sd[s]);
-    rho_enso[s] ~ normal(rho_enso_prior_mean[s], rho_enso_prior_sd[s]);  // NUEVO
-  }
-
-  // Dinamica multivariada con shifters ambientales STOCK-ESPECIFICOS + ENSO basin-scale
+  // Dinamica multivariada (CENTERED). La factorizacion de Cholesky del
+  // proceso covariance es diag(sigma_proc) * L_Omega (lower triangular).
   {
     matrix[S, S] L_proc = diag_pre_multiply(sigma_proc, L_Omega);
 
+    // Ano 1: sin correlacion cruzada (condicion inicial independiente por stock)
     for (s in 1:S) {
       logB[1][s] ~ normal(log_B0[s], sigma_proc[s]);
     }
 
+    // Anos 2..T: innovaciones correlacionadas
     for (t in 2:T) {
       vector[S] logB_mean_t;
       for (s in 1:S) {
-        // CAMBIO: agrega rho_enso[s] * ENSO_c[t-1] al exponente de r_t
-        real r_t = r_base[s]
-                   * exp(rho_sst[s]  * SST_c[t - 1, s]
-                       + rho_chl[s]  * logCHL_c[t - 1, s]
-                       + rho_enso[s] * ENSO_c[t - 1]);
-        logB_mean_t[s] = schaefer_step_log(logB[t - 1][s], log_K[s], r_t, C[t - 1, s]);
+        logB_mean_t[s] = schaefer_step_log(logB[t - 1][s], log_K[s], r_[s], C[t - 1, s]);
       }
       logB[t] ~ multi_normal_cholesky(logB_mean_t, L_proc);
     }
   }
 
-  // Likelihood
+  // Likelihood (indexacion logB[t][s])
   for (n in 1:N_obs_anch) {
     log_B_obs_anch[n] ~ normal(logB[t_anch[n]][IDX_ANCH], sigma_obs[IDX_ANCH]);
   }
@@ -191,23 +162,16 @@ model {
 }
 
 generated quantities {
-  vector<lower=0>[S] r_nat   = r_base;
-  vector<lower=0>[S] K_nat   = exp(log_K);
-  vector<lower=0>[S] B0_nat  = exp(log_B0);
+  vector<lower=0>[S] r_nat  = r_;
+  vector<lower=0>[S] K_nat  = exp(log_K);
+  vector<lower=0>[S] B0_nat = exp(log_B0);
 
+  // Correlacion de proceso en escala legible
   corr_matrix[S] Omega = multiply_lower_tri_self_transpose(L_Omega);
 
+  // B_smooth como matrix[T,S] para compatibilidad con pipeline PPC
   matrix<lower=0>[T, S] B_smooth;
   for (t in 1:T) for (s in 1:S) B_smooth[t, s] = exp(logB[t][s]);
-
-  matrix<lower=0>[T - 1, S] r_eff;
-  for (t in 2:T) for (s in 1:S) {
-    // CAMBIO: agrega rho_enso[s] * ENSO_c[t-1]
-    r_eff[t - 1, s] = r_base[s]
-                      * exp(rho_sst[s]  * SST_c[t - 1, s]
-                          + rho_chl[s]  * logCHL_c[t - 1, s]
-                          + rho_enso[s] * ENSO_c[t - 1]);
-  }
 
   vector[N_obs_total] log_lik;
   {

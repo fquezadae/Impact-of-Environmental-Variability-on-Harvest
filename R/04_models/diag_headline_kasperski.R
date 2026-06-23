@@ -35,7 +35,7 @@ nb_art_leg <- readRDS("data/outputs/nb_kasperski/nb_art_legacy_fe.rds")
 dbw <- readRDS("data/cmip6/delta_days_bw_vessel.rds")
 
 # --- factor_B SSP5-8.5 end-of-century medians from growth compstat -------
-# From paper1/tables/growth_comparative_statics.csv (cross-model medians):
+# From paper/tables/growth_comparative_statics.csv (cross-model medians):
 #   Anchoveta: -89.6% -> factor_B = 0.104
 #   Sardine:   -99.9% -> factor_B = 0.001
 #   Jurel:     n.i.   -> factor_B = 1.0

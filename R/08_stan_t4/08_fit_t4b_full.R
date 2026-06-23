@@ -68,7 +68,7 @@ T4B_FULL_WINDOW       <- 2000:2024
 T4B_FULL_CATCH_CSV    <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T4B_FULL_CENSOR_JUREL <- 3.0
 
-T4B_FULL_STAN_FILE <- "paper1/stan/t4b_state_space_full.stan"
+T4B_FULL_STAN_FILE <- "paper/stan/t4b_state_space_full.stan"
 T4B_FULL_OUT_DIR   <- "data/outputs/t4b"
 
 # Priors estructurales idem T4b-omega

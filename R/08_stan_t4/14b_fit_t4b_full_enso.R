@@ -38,7 +38,7 @@
 # Bloqueado por:
 #   - data/bio_params/enso_nino34_annual_2000_2024.csv (extract_oisst_nino34.R, listo)
 #   - data/bio_params/env_extended_3domains_2000_2024.csv (06_extended_env_anomalies.R, listo)
-#   - paper1/stan/t4b_state_space_full_stockenv_enso.stan (este pivote, listo)
+#   - paper/stan/t4b_state_space_full_stockenv_enso.stan (este pivote, listo)
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -76,7 +76,7 @@ read_yaml_utf8 <- function(path) {
 # -----------------------------------------------------------------------------
 # Constantes
 # -----------------------------------------------------------------------------
-ENSO_STAN_FILE   <- "paper1/stan/t4b_state_space_full_stockenv_enso.stan"
+ENSO_STAN_FILE   <- "paper/stan/t4b_state_space_full_stockenv_enso.stan"
 ENSO_OUT_DIR     <- T4B_FULL_OUT_DIR  # "data/outputs/t4b"
 ENSO_ENV_CSV     <- "data/bio_params/env_extended_3domains_2000_2024.csv"
 ENSO_NINO34_CSV  <- "data/bio_params/enso_nino34_annual_2000_2024.csv"

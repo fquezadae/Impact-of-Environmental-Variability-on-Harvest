@@ -1,5 +1,5 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_full_dualjurel.stan
+// paper/stan/t4b_state_space_full_dualjurel.stan
 //
 // T4b paso 6(d) -- VARIANTE DUAL-JUREL (item #10, 2026-04-30 PM tarde).
 // Extiende t4b_state_space_full.stan agregando un SEGUNDO STATE para jurel

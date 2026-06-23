@@ -75,7 +75,7 @@ T4B_IND_WINDOW       <- 2000:2024
 T4B_IND_CATCH_CSV    <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T4B_IND_CENSOR_JUREL <- 3.0             # mil t; obs <= 3 mil t -> censored
 
-T4B_IND_STAN_FILE <- "paper1/stan/t4b_state_space_ind.stan"
+T4B_IND_STAN_FILE <- "paper/stan/t4b_state_space_ind.stan"
 T4B_IND_OUT_DIR   <- "data/outputs/t4b"
 
 # PRIORS APRETADOS (orden: anch, sard, jur)

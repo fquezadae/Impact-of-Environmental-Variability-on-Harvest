@@ -1,5 +1,5 @@
 // =============================================================================
-// paper1/stan/t4_state_space.stan
+// paper/stan/t4_state_space.stan
 //
 // T4 -- State-space Bayesiano CS-consistente para tres SPF centro-sur Chile.
 // Schaefer en log-escala con shifters ambientales (SST, CHL) y correlacion

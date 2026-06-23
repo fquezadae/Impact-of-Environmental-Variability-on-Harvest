@@ -8,7 +8,7 @@
 # env del bbox Norte (dominio "norte_chile_eez" agregado a env_extended_
 # 3domains_2000_2024.csv via 06_extended_env_anomalies.R).
 #
-# Llama a paper1/stan/t4b_state_space_full_dualjurel.stan que define un
+# Llama a paper/stan/t4b_state_space_full_dualjurel.stan que define un
 # segundo state jurel_norte compartiendo rho_sst[IDX_JUR] y rho_chl[IDX_JUR]
 # con el state CS. Si la identificacion de rho_jur mejora respecto al fit
 # primary (sigma_post/sigma_prior baja material), promovemos a primary; si
@@ -90,7 +90,7 @@ T4B_FULL_WINDOW       <- 2000:2024
 T4B_FULL_CATCH_CSV    <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T4B_FULL_CENSOR_JUREL <- 3.0
 
-T4B_DUAL_STAN_FILE <- "paper1/stan/t4b_state_space_full_dualjurel.stan"
+T4B_DUAL_STAN_FILE <- "paper/stan/t4b_state_space_full_dualjurel.stan"
 T4B_DUAL_OUT_DIR   <- "data/outputs/t4b"
 T4B_ENV_4DOM_CSV   <- "data/bio_params/env_extended_3domains_2000_2024.csv"
 # (mismo archivo, ahora con 4 dominios incluyendo norte_chile_eez)

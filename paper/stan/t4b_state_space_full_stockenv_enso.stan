@@ -1,31 +1,38 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_full.stan
+// paper/stan/t4b_state_space_full_stockenv_enso.stan
 //
-// T4b paso 6(d) -- MODELO COMPLETO. Extiende t4b_state_space_omega.stan con
-// shifters ambientales SST y log(CHL) que modulan la tasa de crecimiento
-// intrinseca r(t,s) ano a ano, stock-especificos.
+// Variante del t4b_state_space_full_stockenv.stan que incorpora un tercer
+// shifter climatico basin-scale: el indice ENSO Nino 3.4. Usado para el
+// pivote 2026-05-04 del paper 1 (project_paper1_enso_pivot).
 //
-// Dinamica:
-//   r_t[s] = r_base[s] * exp(rho_sst[s] * SST_c[t-1] + rho_chl[s] * logCHL_c[t-1])
+// Motivacion: el Apendice E muestra que jurel CS no identifica los shifters
+// costeros (SST_D1, logCHL_D1; sigma_post/sigma_prior ~ 1.0 a traves de tres
+// dominios espaciales D1/D2/D3). El feedback de un colega 2026-05-04 cerro
+// que el null es defendible econometricamente pero no como "el clima no
+// afecta al jurel" para policy. Existing literatura (Arcos2001, Pena-Torres2017,
+// Espinoza2013) documenta efectos climaticos sobre jurel a escala basin-scale
+// vias teleconexiones ENSO. Este modelo testea esa hipotesis.
 //
-// Lag (t-1): el ambiente del ano previo afecta reclutamiento y supervivencia
-// juvenil, que se manifiesta en biomasa observada el ano siguiente. Decision
-// causal heredada del T4 v1. Si en 6(e) se quiere comparar con lag=t, basta
-// cambiar SST_c[t-1] -> SST_c[t].
+// Diferencia con t4b_state_space_full_stockenv.stan:
+//   - Agrega data: vector[T] ENSO_c (indice Nino 3.4 anual centrado, basin-scale,
+//     UN solo time series visible por todos los stocks; el efecto stock-specific
+//     viene de rho_enso[s]).
+//   - Agrega parameter: vector[S] rho_enso con prior stock-especifico.
+//   - Dinamica: r_t[s] = r_base[s] * exp(rho_sst[s] * SST_c[t-1, s]
+//                                      + rho_chl[s] * logCHL_c[t-1, s]
+//                                      + rho_enso[s] * ENSO_c[t-1])
 //
-// Priors rho del stress test T3-bis 2026-04-22 (stock-especificos, no
-// jerarquicos -- ver memoria project_t3bis_stress_test_results.md):
-//   anchoveta_cs:     rho_SST ~ N(-2.3, 1.0)   rho_CHL ~ N(-2.3, 1.0)
-//   sardina_comun_cs: rho_SST ~ N(-2.0, 1.0)   rho_CHL ~ N(+2.1, 1.0)
-//   jurel_cs:         rho_SST ~ N( 0.0, 1.0)   rho_CHL ~ N( 0.0, 1.0)
-// Los signos distintos en CHL (anch negativo, sard positivo) son la razon
-// por la que NO se puede hacer pool jerarquico de los rho.
+// Mecanismo para "apagar" shifters por stock via priors YAML:
+//   - Para jurel: rho_enso[3] activo (prior N(0, 0.5)); rho_sst[3] y rho_chl[3]
+//     pinned a 0 con prior tight (N(0, 0.01)) -- jurel solo "ve" ENSO.
+//   - Para anch/sard: rho_sst[s] y rho_chl[s] como antes (priors normales);
+//     rho_enso[s] pinned a 0 con prior tight (N(0, 0.01)) -- no ven ENSO.
+// Los priors son responsables de mantener la convencion "cada stock ve solo
+// los shifters que le corresponden". El R wrapper escribe los priors YAML
+// apropiados.
 //
-// Expectativa para la comparacion con 6(c) Omega:
-//   Si parte del Omega[anch,sard]=-0.24 era explicable por respuestas opuestas
-//   a forzamiento ambiental comun, al entrar los shifters la correlacion
-//   residual se aplana hacia 0. Si persiste, es competencia biologica directa
-//   (nichos) no mediada por SST/CHL.
+// Si rho_enso es N(0, 0.01) para los tres stocks Y ENSO_c es vector de ceros,
+// este modelo es matematicamente equivalente al stockenv original.
 // =============================================================================
 
 functions {
@@ -59,9 +66,9 @@ data {
 
   matrix<lower=0>[T, S] C;
 
-  // NUEVO: covariables ambientales (una serie comun a los 3 stocks)
-  vector[T] SST_c;             // SST anomalia centrada (degC)
-  vector[T] logCHL_c;          // log(CHL) centrada
+  matrix[T, S] SST_c;          // SST anomalia centrada (degC) por stock
+  matrix[T, S] logCHL_c;       // log(CHL) centrada por stock
+  vector[T]    ENSO_c;         // ENSO Nino 3.4 anomalia centrada (degC) -- basin-scale, comun a todos los stocks
 
   vector[S] log_r_prior_mean;
   vector<lower=0>[S] log_r_prior_sd;
@@ -76,11 +83,12 @@ data {
   vector[S] sigma_proc_prior_logmean;
   vector<lower=0>[S] sigma_proc_prior_logsd;
 
-  // NUEVO: priors stock-especificos para shifters
   vector[S] rho_sst_prior_mean;
   vector<lower=0>[S] rho_sst_prior_sd;
   vector[S] rho_chl_prior_mean;
   vector<lower=0>[S] rho_chl_prior_sd;
+  vector[S] rho_enso_prior_mean;          // NUEVO
+  vector<lower=0>[S] rho_enso_prior_sd;   // NUEVO
 }
 
 transformed data {
@@ -106,9 +114,9 @@ parameters {
 
   cholesky_factor_corr[S] L_Omega;
 
-  // NUEVO: shifters ambientales
   vector[S] rho_sst;
   vector[S] rho_chl;
+  vector[S] rho_enso;       // NUEVO
 
   array[T] vector[S] logB;
 }
@@ -135,13 +143,14 @@ model {
   // Prior LKJ
   L_Omega ~ lkj_corr_cholesky(4);
 
-  // Priors shifters (stock-especificos, no jerarquico)
+  // Priors shifters (stock-especificos)
   for (s in 1:S) {
-    rho_sst[s] ~ normal(rho_sst_prior_mean[s], rho_sst_prior_sd[s]);
-    rho_chl[s] ~ normal(rho_chl_prior_mean[s], rho_chl_prior_sd[s]);
+    rho_sst[s]  ~ normal(rho_sst_prior_mean[s],  rho_sst_prior_sd[s]);
+    rho_chl[s]  ~ normal(rho_chl_prior_mean[s],  rho_chl_prior_sd[s]);
+    rho_enso[s] ~ normal(rho_enso_prior_mean[s], rho_enso_prior_sd[s]);  // NUEVO
   }
 
-  // Dinamica multivariada con shifters ambientales
+  // Dinamica multivariada con shifters ambientales STOCK-ESPECIFICOS + ENSO basin-scale
   {
     matrix[S, S] L_proc = diag_pre_multiply(sigma_proc, L_Omega);
 
@@ -152,10 +161,11 @@ model {
     for (t in 2:T) {
       vector[S] logB_mean_t;
       for (s in 1:S) {
-        // r_t,s = r_base * exp(rho_sst * SST_c[t-1] + rho_chl * logCHL_c[t-1])
+        // CAMBIO: agrega rho_enso[s] * ENSO_c[t-1] al exponente de r_t
         real r_t = r_base[s]
-                   * exp(rho_sst[s] * SST_c[t - 1]
-                       + rho_chl[s] * logCHL_c[t - 1]);
+                   * exp(rho_sst[s]  * SST_c[t - 1, s]
+                       + rho_chl[s]  * logCHL_c[t - 1, s]
+                       + rho_enso[s] * ENSO_c[t - 1]);
         logB_mean_t[s] = schaefer_step_log(logB[t - 1][s], log_K[s], r_t, C[t - 1, s]);
       }
       logB[t] ~ multi_normal_cholesky(logB_mean_t, L_proc);
@@ -190,12 +200,13 @@ generated quantities {
   matrix<lower=0>[T, S] B_smooth;
   for (t in 1:T) for (s in 1:S) B_smooth[t, s] = exp(logB[t][s]);
 
-  // r_t efectivo ano-a-ano (util para plotear efecto ambiental)
   matrix<lower=0>[T - 1, S] r_eff;
   for (t in 2:T) for (s in 1:S) {
+    // CAMBIO: agrega rho_enso[s] * ENSO_c[t-1]
     r_eff[t - 1, s] = r_base[s]
-                      * exp(rho_sst[s] * SST_c[t - 1]
-                          + rho_chl[s] * logCHL_c[t - 1]);
+                      * exp(rho_sst[s]  * SST_c[t - 1, s]
+                          + rho_chl[s]  * logCHL_c[t - 1, s]
+                          + rho_enso[s] * ENSO_c[t - 1]);
   }
 
   vector[N_obs_total] log_lik;

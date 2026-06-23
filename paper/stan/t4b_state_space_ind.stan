@@ -1,5 +1,5 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_ind.stan
+// paper/stan/t4b_state_space_ind.stan
 //
 // T4b paso 6(b) -- 3 stocks INDEPENDIENTES (Omega = I).
 // Generalizacion multi-stock del modelo T4b single-species validado en 6(a).

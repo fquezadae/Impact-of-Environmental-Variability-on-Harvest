@@ -84,8 +84,8 @@ if (!dir.exists(dirdata)) {
 
 # Fijar la raíz del proyecto como working directory para todos los chunks
 # siguientes. Así las rutas relativas ("data/...", "figs/...") resuelven
-# desde la raíz del proyecto y no desde paper1/, evitando depender del
-# junction paper1/data -> ../data.
+# desde la raíz del proyecto y no desde paper/, evitando depender del
+# junction paper/data -> ../data.
 knitr::opts_knit$set(root.dir = here::here())
 
 # Todos los paquetes usados en el documento se cargan acá, en el setup
@@ -431,7 +431,7 @@ Our framework is positioned as long-run comparative statics, not a year-by-year 
 
 # Results
 
-```{r results-identification, child='paper1/sections/results_identification.Rmd'}
+```{r results-identification, child='paper/sections/results_identification.Rmd'}
 ```
 
 ## Total annual trips {#sec:tripresults}

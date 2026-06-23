@@ -1,31 +1,31 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_omega.stan
+// paper/stan/t4b_state_space_full.stan
 //
-// T4b paso 6(c) -- 3 stocks + correlacion cruzada de ruido de proceso Omega.
-// Extiende t4b_state_space_ind.stan (Omega = I implicito) con una matriz de
-// correlacion estimada via factor de Cholesky.
+// T4b paso 6(d) -- MODELO COMPLETO. Extiende t4b_state_space_omega.stan con
+// shifters ambientales SST y log(CHL) que modulan la tasa de crecimiento
+// intrinseca r(t,s) ano a ano, stock-especificos.
 //
-// Cambios respecto a t4b_state_space_ind.stan:
-//   (+) cholesky_factor_corr[S] L_Omega       // nuevo parametro
-//   (+) L_Omega ~ lkj_corr_cholesky(4)        // prior mas apretado que (2)
-//       del T4 v1 -- tira hacia independencia pero permite correlacion si los
-//       datos lo exigen. eta=4 reduce la masa en |rho| > 0.6.
-//   (~) logB[t] ~ multi_normal_cholesky(logB_mean_t,
-//                                       diag_pre_multiply(sigma_proc, L_Omega))
-//       Reemplaza la dinamica univariada por stock (Omega = I) con una
-//       dinamica multivariada que comparte ruido correlacionado.
-//   (+) Omega = L_Omega * L_Omega' reportado en generated quantities.
+// Dinamica:
+//   r_t[s] = r_base[s] * exp(rho_sst[s] * SST_c[t-1] + rho_chl[s] * logCHL_c[t-1])
 //
-// Representacion del estado latente:
-//   Ahora logB es array[T] vector[S] (no matrix[T,S]) para que el argumento
-//   de multi_normal_cholesky sea un vector[S] natural. B_smooth se expone
-//   como matrix[T,S] en generated quantities para que el pipeline de PPC
-//   previo siga funcionando.
+// Lag (t-1): el ambiente del ano previo afecta reclutamiento y supervivencia
+// juvenil, que se manifiesta en biomasa observada el ano siguiente. Decision
+// causal heredada del T4 v1. Si en 6(e) se quiere comparar con lag=t, basta
+// cambiar SST_c[t-1] -> SST_c[t].
 //
-// Observacion: con sigma_proc[3] (jurel) ~ 1.2 mucho mayor que sigma_proc[1,2]
-// (~0.3), las covariaciones que involucran jurel van a tener bandas muy
-// amplias. Es esperable que Omega[1,3] y Omega[2,3] queden cercanas a cero
-// con incertidumbre alta. Omega[1,2] (anch-sard) es la mas informativa.
+// Priors rho del stress test T3-bis 2026-04-22 (stock-especificos, no
+// jerarquicos -- ver memoria project_t3bis_stress_test_results.md):
+//   anchoveta_cs:     rho_SST ~ N(-2.3, 1.0)   rho_CHL ~ N(-2.3, 1.0)
+//   sardina_comun_cs: rho_SST ~ N(-2.0, 1.0)   rho_CHL ~ N(+2.1, 1.0)
+//   jurel_cs:         rho_SST ~ N( 0.0, 1.0)   rho_CHL ~ N( 0.0, 1.0)
+// Los signos distintos en CHL (anch negativo, sard positivo) son la razon
+// por la que NO se puede hacer pool jerarquico de los rho.
+//
+// Expectativa para la comparacion con 6(c) Omega:
+//   Si parte del Omega[anch,sard]=-0.24 era explicable por respuestas opuestas
+//   a forzamiento ambiental comun, al entrar los shifters la correlacion
+//   residual se aplana hacia 0. Si persiste, es competencia biologica directa
+//   (nichos) no mediada por SST/CHL.
 // =============================================================================
 
 functions {
@@ -59,6 +59,10 @@ data {
 
   matrix<lower=0>[T, S] C;
 
+  // NUEVO: covariables ambientales (una serie comun a los 3 stocks)
+  vector[T] SST_c;             // SST anomalia centrada (degC)
+  vector[T] logCHL_c;          // log(CHL) centrada
+
   vector[S] log_r_prior_mean;
   vector<lower=0>[S] log_r_prior_sd;
   vector[S] log_K_prior_mean;
@@ -71,6 +75,12 @@ data {
 
   vector[S] sigma_proc_prior_logmean;
   vector<lower=0>[S] sigma_proc_prior_logsd;
+
+  // NUEVO: priors stock-especificos para shifters
+  vector[S] rho_sst_prior_mean;
+  vector<lower=0>[S] rho_sst_prior_sd;
+  vector[S] rho_chl_prior_mean;
+  vector<lower=0>[S] rho_chl_prior_sd;
 }
 
 transformed data {
@@ -94,10 +104,12 @@ parameters {
   vector<lower=0>[S] sigma_proc;
   vector<lower=0>[S] sigma_obs;
 
-  // NUEVO: factor Cholesky de la correlacion de ruido de proceso
   cholesky_factor_corr[S] L_Omega;
 
-  // Estado latente como array[T] vector[S] (natural para multi_normal)
+  // NUEVO: shifters ambientales
+  vector[S] rho_sst;
+  vector[S] rho_chl;
+
   array[T] vector[S] logB;
 }
 
@@ -105,7 +117,7 @@ transformed parameters {
   vector[S] log_r  = log_r_prior_mean  + z_log_r  .* log_r_prior_sd;
   vector[S] log_K  = log_K_prior_mean  + z_log_K  .* log_K_prior_sd;
   vector[S] log_B0 = log_B0_prior_mean + z_log_B0 .* log_B0_prior_sd;
-  vector<lower=0>[S] r_ = exp(log_r);
+  vector<lower=0>[S] r_base = exp(log_r);
 }
 
 model {
@@ -120,30 +132,37 @@ model {
     sigma_obs[s]  ~ normal(sigma_obs_prior_mean[s], sigma_obs_prior_sd[s]);
   }
 
-  // Prior LKJ apretado hacia independencia (eta=4 vs eta=2 del T4 v1)
+  // Prior LKJ
   L_Omega ~ lkj_corr_cholesky(4);
 
-  // Dinamica multivariada (CENTERED). La factorizacion de Cholesky del
-  // proceso covariance es diag(sigma_proc) * L_Omega (lower triangular).
+  // Priors shifters (stock-especificos, no jerarquico)
+  for (s in 1:S) {
+    rho_sst[s] ~ normal(rho_sst_prior_mean[s], rho_sst_prior_sd[s]);
+    rho_chl[s] ~ normal(rho_chl_prior_mean[s], rho_chl_prior_sd[s]);
+  }
+
+  // Dinamica multivariada con shifters ambientales
   {
     matrix[S, S] L_proc = diag_pre_multiply(sigma_proc, L_Omega);
 
-    // Ano 1: sin correlacion cruzada (condicion inicial independiente por stock)
     for (s in 1:S) {
       logB[1][s] ~ normal(log_B0[s], sigma_proc[s]);
     }
 
-    // Anos 2..T: innovaciones correlacionadas
     for (t in 2:T) {
       vector[S] logB_mean_t;
       for (s in 1:S) {
-        logB_mean_t[s] = schaefer_step_log(logB[t - 1][s], log_K[s], r_[s], C[t - 1, s]);
+        // r_t,s = r_base * exp(rho_sst * SST_c[t-1] + rho_chl * logCHL_c[t-1])
+        real r_t = r_base[s]
+                   * exp(rho_sst[s] * SST_c[t - 1]
+                       + rho_chl[s] * logCHL_c[t - 1]);
+        logB_mean_t[s] = schaefer_step_log(logB[t - 1][s], log_K[s], r_t, C[t - 1, s]);
       }
       logB[t] ~ multi_normal_cholesky(logB_mean_t, L_proc);
     }
   }
 
-  // Likelihood (indexacion logB[t][s])
+  // Likelihood
   for (n in 1:N_obs_anch) {
     log_B_obs_anch[n] ~ normal(logB[t_anch[n]][IDX_ANCH], sigma_obs[IDX_ANCH]);
   }
@@ -162,16 +181,22 @@ model {
 }
 
 generated quantities {
-  vector<lower=0>[S] r_nat  = r_;
-  vector<lower=0>[S] K_nat  = exp(log_K);
-  vector<lower=0>[S] B0_nat = exp(log_B0);
+  vector<lower=0>[S] r_nat   = r_base;
+  vector<lower=0>[S] K_nat   = exp(log_K);
+  vector<lower=0>[S] B0_nat  = exp(log_B0);
 
-  // Correlacion de proceso en escala legible
   corr_matrix[S] Omega = multiply_lower_tri_self_transpose(L_Omega);
 
-  // B_smooth como matrix[T,S] para compatibilidad con pipeline PPC
   matrix<lower=0>[T, S] B_smooth;
   for (t in 1:T) for (s in 1:S) B_smooth[t, s] = exp(logB[t][s]);
+
+  // r_t efectivo ano-a-ano (util para plotear efecto ambiental)
+  matrix<lower=0>[T - 1, S] r_eff;
+  for (t in 2:T) for (s in 1:S) {
+    r_eff[t - 1, s] = r_base[s]
+                      * exp(rho_sst[s] * SST_c[t - 1]
+                          + rho_chl[s] * logCHL_c[t - 1]);
+  }
 
   vector[N_obs_total] log_lik;
   {

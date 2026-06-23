@@ -30,7 +30,7 @@ source_utf8 <- function(file, envir = globalenv()) {
 }
 source_utf8("R/00_config/config.R")
 
-T4B_IND_STAN_FILE <- "paper1/stan/t4b_state_space_ind.stan"
+T4B_IND_STAN_FILE <- "paper/stan/t4b_state_space_ind.stan"
 T4B_IND_OUT_DIR   <- "data/outputs/t4b"
 
 if (isTRUE(getOption("t4b.refit_ind.run_main", FALSE))) {

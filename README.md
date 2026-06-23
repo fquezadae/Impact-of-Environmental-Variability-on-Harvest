@@ -44,7 +44,7 @@ alone.
 
 ```
 .
-├── paper1/                             # Paper 1: Climate projections
+├── paper/                             # Paper 1: Climate projections
 │   ├── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
 │   ├── sections/                       # Child Rmds wired into main
 │   │   ├── results_identification.Rmd                # §4.1 (T4b-full rho posteriors + PPC adequacy)

@@ -96,7 +96,7 @@ local paths configured in `R/00_config/config.R`.
 
 ## Knit-portable setup for the manuscript
 
-`paper1/paper1_climate_projections.Rmd` resolves the external data
+`paper/paper1_climate_projections.Rmd` resolves the external data
 root through the environment variable `FONDECYT_DATA` (defined in
 `.Renviron`, edit with `usethis::edit_r_environ()`). Example:
 
@@ -118,7 +118,7 @@ cryptic `gzfile()` error. The list covers:
 - the three tracked vessel-year aggregates (`biomass_dt.rds`,
   `sernapesca_v2.rds`, `poisson_dt.rds`)
 - the CMIP6 ensemble CSV and the three projection-table CSVs in
-  `paper1/tables/`
+  `paper/tables/`
 
 ## Contact
 

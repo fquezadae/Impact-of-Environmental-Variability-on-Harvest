@@ -56,7 +56,7 @@ load_official_assessments <- function(path = OFFICIAL_ASSESSMENTS_PATH) {
 
   if (!file.exists(path)) {
     stop("No encuentro el YAML en: ", path,
-         "\nEjecutar desde la raíz de paper1/.")
+         "\nEjecutar desde la raíz de paper/.")
   }
 
   # Forzar UTF-8: en Windows con locale no-UTF-8, ni readLines(encoding="UTF-8")

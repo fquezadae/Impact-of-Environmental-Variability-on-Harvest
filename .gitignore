@@ -47,7 +47,7 @@ libs/
 *.knit.md
 *_files/
 # Generated LaTeX from the manuscript .Rmd (regenerable on knit)
-paper1/*.tex
+paper/*.tex
 
 # --- Archive (old manuscript + legacy code) ---
 /archive/

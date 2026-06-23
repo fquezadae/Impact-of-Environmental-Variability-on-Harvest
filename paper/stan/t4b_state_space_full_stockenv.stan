@@ -1,5 +1,5 @@
 // =============================================================================
-// paper1/stan/t4b_state_space_full_stockenv.stan
+// paper/stan/t4b_state_space_full_stockenv.stan
 //
 // Variante del t4b_state_space_full.stan que admite covariados ambientales
 // STOCK-ESPECIFICOS. Usado para Apendice E del paper 1 (robustez espacial de

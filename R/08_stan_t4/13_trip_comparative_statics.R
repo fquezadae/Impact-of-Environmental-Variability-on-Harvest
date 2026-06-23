@@ -74,15 +74,15 @@
 #   - data/trips/poisson_dt.rds                (panel NB con H_33/H_114/H_26)
 #
 # Salidas (paralelas a T5 ensemble):
-#   - paper1/tables/trip_comparative_statics.csv
+#   - paper/tables/trip_comparative_statics.csv
 #         formato paper, fleet x scenario, cross-model + IQR + within-CI
-#   - paper1/tables/trip_comparative_statics_raw.csv
+#   - paper/tables/trip_comparative_statics_raw.csv
 #         numerico cross-model
-#   - paper1/tables/trip_comparative_statics_by_model.csv
+#   - paper/tables/trip_comparative_statics_by_model.csv
 #         long, fila por (fleet x model x scenario x window) -- debug + Apendice
-#   - paper1/tables/trip_comparative_statics_extinct.csv
+#   - paper/tables/trip_comparative_statics_extinct.csv
 #         Pr(extinct) cross-model + IQR por stock x scenario
-#   - paper1/tables/trip_comparative_statics_extinct_by_model.csv
+#   - paper/tables/trip_comparative_statics_extinct_by_model.csv
 #         Pr(extinct) por stock x model x scenario (debug)
 #
 # Corre con:
@@ -128,11 +128,11 @@ T6_OFF_BIO_CSV       <- "data/bio_params/official_biomass_series.csv"
 T6_ACU_BIO_CSV       <- "data/bio_params/acoustic_biomass_series.csv"
 T6_POISSON_RDS       <- "data/trips/poisson_dt.rds"
 
-T6_TABLE_OUT             <- "paper1/tables/trip_comparative_statics.csv"
-T6_TABLE_RAW_OUT         <- "paper1/tables/trip_comparative_statics_raw.csv"
-T6_TABLE_BYMODEL_OUT     <- "paper1/tables/trip_comparative_statics_by_model.csv"
-T6_TABLE_EXTINCT_OUT     <- "paper1/tables/trip_comparative_statics_extinct.csv"
-T6_TABLE_EXTINCT_BYMODEL <- "paper1/tables/trip_comparative_statics_extinct_by_model.csv"
+T6_TABLE_OUT             <- "paper/tables/trip_comparative_statics.csv"
+T6_TABLE_RAW_OUT         <- "paper/tables/trip_comparative_statics_raw.csv"
+T6_TABLE_BYMODEL_OUT     <- "paper/tables/trip_comparative_statics_by_model.csv"
+T6_TABLE_EXTINCT_OUT     <- "paper/tables/trip_comparative_statics_extinct.csv"
+T6_TABLE_EXTINCT_BYMODEL <- "paper/tables/trip_comparative_statics_extinct_by_model.csv"
 
 T6_WINDOW    <- 2000:2024                 # consistente con T4B_FULL_WINDOW
 

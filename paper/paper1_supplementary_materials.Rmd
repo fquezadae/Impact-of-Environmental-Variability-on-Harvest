@@ -59,50 +59,50 @@ suppressPackageStartupMessages({
   library(readr)
 })
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-# Set cwd to project root so paper1/sections/... paths resolve consistently with main paper
+# Set cwd to project root so paper/sections/... paths resolve consistently with main paper
 knitr::opts_knit$set(root.dir = here::here())
 ```
 
-```{r appendix-stress, child='paper1/sections/appendix_stress_tests.Rmd'}
+```{r appendix-stress, child='paper/sections/appendix_stress_tests.Rmd'}
 ```
 
-```{r appendix-predictive, child='paper1/sections/appendix_predictive_diagnostics.Rmd'}
+```{r appendix-predictive, child='paper/sections/appendix_predictive_diagnostics.Rmd'}
 ```
 
-```{r appendix-posterior, child='paper1/sections/appendix_posterior_diagnostics.Rmd'}
+```{r appendix-posterior, child='paper/sections/appendix_posterior_diagnostics.Rmd'}
 ```
 
-```{r appendix-convergence, child='paper1/sections/appendix_convergence_diagnostics.Rmd'}
+```{r appendix-convergence, child='paper/sections/appendix_convergence_diagnostics.Rmd'}
 ```
 
-```{r appendix-spatial, child='paper1/sections/appendix_spatial_jurel.Rmd'}
+```{r appendix-spatial, child='paper/sections/appendix_spatial_jurel.Rmd'}
 ```
 
 <!-- Appendix F (variance decomposition of stock productivity) and Appendix G
      (variance decomposition of fleet-level trips) removed from supplementary
      materials on 2026-06-17 per editorial decision (technical content not
      central to MRE narrative). Source files are preserved at
-     paper1/sections/appendix_variance_decomposition.Rmd and
-     paper1/sections/appendix_g_trips_variance_decomposition.Rmd in case a
+     paper/sections/appendix_variance_decomposition.Rmd and
+     paper/sections/appendix_g_trips_variance_decomposition.Rmd in case a
      reviewer requests them. -->
 
 <!--
-```{r appendix-variance, child='paper1/sections/appendix_variance_decomposition.Rmd'}
+```{r appendix-variance, child='paper/sections/appendix_variance_decomposition.Rmd'}
 ```
 
-```{r appendix-trips-variance, child='paper1/sections/appendix_g_trips_variance_decomposition.Rmd'}
+```{r appendix-trips-variance, child='paper/sections/appendix_g_trips_variance_decomposition.Rmd'}
 ```
 -->
 
-```{r appendix-portfolio, child='paper1/sections/appendix_h_portfolio_and_counterfactual.Rmd'}
+```{r appendix-portfolio, child='paper/sections/appendix_h_portfolio_and_counterfactual.Rmd'}
 ```
 
 <!-- Appendix I (limitations) removed from supplementary materials on 2026-06-17
      per editorial decision. Source file preserved at
-     paper1/sections/appendix_i_limitations.Rmd. -->
+     paper/sections/appendix_i_limitations.Rmd. -->
 
 <!--
-```{r appendix-limitations, child='paper1/sections/appendix_i_limitations.Rmd'}
+```{r appendix-limitations, child='paper/sections/appendix_i_limitations.Rmd'}
 ```
 -->
 

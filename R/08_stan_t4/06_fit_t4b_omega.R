@@ -64,7 +64,7 @@ T4B_OMEGA_WINDOW       <- 2000:2024
 T4B_OMEGA_CATCH_CSV    <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T4B_OMEGA_CENSOR_JUREL <- 3.0
 
-T4B_OMEGA_STAN_FILE <- "paper1/stan/t4b_state_space_omega.stan"
+T4B_OMEGA_STAN_FILE <- "paper/stan/t4b_state_space_omega.stan"
 T4B_OMEGA_OUT_DIR   <- "data/outputs/t4b"
 
 # Priors idem T4b-ind (validados en 6b)
