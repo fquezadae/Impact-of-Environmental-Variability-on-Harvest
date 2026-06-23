@@ -1,9 +1,7 @@
 ###============================================================###
-###   Regime diagnostic — Version C (paper 2)                  ###
+###   Regime diagnostic — Version C                            ###
 ###   Empirical classification of the historical binding       ###
 ###   regime by (year, species, sector).                       ###
-###                                                            ###
-###   Spec: paper1/version_C_spec.md §4.                       ###
 ###                                                            ###
 ###   Decision rule output drives whether Version C is         ###
 ###   adopted as primary, demoted to robustness, or dropped.   ###
@@ -353,7 +351,7 @@ decision <- if (share_biology >= 0.20) {
 }
 
 decision_lines <- c(
-  "=== Version C decision (paper1/version_C_spec.md §4.1) ===",
+  "=== Version C decision ===",
   sprintf("biology_binding share = %.1f%%", 100 * share_biology),
   sprintf("quota_binding share   = %.1f%%", 100 * share_quota),
   sprintf("ambiguous share       = %.1f%%", 100 * share_ambiguous),

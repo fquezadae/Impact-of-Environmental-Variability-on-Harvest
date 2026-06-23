@@ -44,7 +44,7 @@ standardize_species <- function(x) {
 # u_bar_s is the upper bound on annual harvest fraction H/B that biology
 # allows; it appears in the feasibility constraint
 #     H_opp_{vy,s} = omega_{vs} * min( Q_{sy}, u_bar_s * B_{sy} )
-# of the trip equation (see paper1/version_C_spec.md §3.2).
+# of the trip equation.
 #
 # CALIBRATION ROUTE (revised 2026-05-08 after running regime_diagnostic.R)
 # ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ standardize_species <- function(x) {
 # uses the official assessment biomass as B_{s,y}, which is what the bio
 # model targets in observation.
 #
-# Sensitivity ±20% reported as robustness (paper1/version_C_spec.md §5).
+# Sensitivity ±20% reported as robustness.
 U_BAR <- c(
   anchoveta     = 0.35,   # empirical p95 = 0.32 (regime_diagnostic 2026-05-08)
   sardina_comun = 0.25,   # empirical p95 = 0.21

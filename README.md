@@ -9,14 +9,13 @@
 
 ## Overview
 
-This repository contains the bioeconomic modeling framework developed under FONDECYT Iniciación for the Chilean Centro-Sur (CS) small pelagic fishery (SPF), composed of *Strangomera bentincki* (common sardine), *Engraulis ringens* (anchoveta), and *Trachurus murphyi* (jack mackerel).
+This repository is the **replication package for Paper 1**, developed under FONDECYT Iniciación for the Chilean Centro-Sur (CS) small pelagic fishery (SPF), composed of *Strangomera bentincki* (common sardine), *Engraulis ringens* (anchoveta), and *Trachurus murphyi* (jack mackerel):
 
-The project is organized into **two papers**:
+> **"Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries"** — submitted to *Marine Resource Economics* (June 2026).
 
-| Paper | Title | Status |
-|---|---|---|
-| **Paper 1** | Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries | Submitted to *Marine Resource Economics* (June 2026) |
-| **Paper 2** | Optimal Quota Allocation under Climate Change: A Bioeconomic Approach | In progress (target JAERE/ERE 2027–2028) |
+A companion paper on optimal quota allocation under climate change (target
+JAERE/ERE 2027–2028) builds on the same modeling framework and will be
+released as a separate repository.
 
 ## Paper 1: Climate projections
 
@@ -94,10 +93,6 @@ response (Appendix F) and the fleet-level trip response (Appendix G).
    heterogeneity) rather than *between-model* CMIP6 spread. The
    narrow cross-model interquartile range in the headline table is a
    floor-effect saturation, not climate-model consensus.
-
-## Paper 2: Bioeconomic optimization
-
-Extends Paper 1 with trip-level restricted cost functions, an inverse almost ideal demand system (IADS), and numerical optimization following Kasperski & Holland (2013, 2016). Determines optimal quota paths and welfare impacts under climate scenarios.
 
 ## Repository structure
 
@@ -304,33 +299,13 @@ For paper 1's MRE submission these are documented as deliberate simplifications
 ("for parsimony given N=23 per species per year"). They do **not** affect
 the manuscript's headline parameters.
 
-### Paper 2 — planned NB refactor
-
-The paper 2 build requires species-specific $\beta_h^s$ (to evaluate
-species-by-species effort response in the planner equilibrium) and
-identified $\beta_p^s$ (to close the inverse demand system). The planned
-refactor (path B, ~1.5–2 weeks) is:
-
-1. Preserve regional dimension when constructing `prices_wide` in
-   `R/04_models/poisson_model.R`; merge to the trip panel by
-   `(year, vessel_region)` using `puerto_modal`.
-2. Disaggregate `H_alloc_vy` into `H_alloc_jurel`, `H_alloc_sardina_comun`,
-   `H_alloc_anchoveta` in `R/01_data_cleaning/tac_processing.R`.
-3. Update the trip equation formula in
-   `R/08_stan_t4/13_trip_comparative_statics.R:418` and the downstream
-   `factor_trips` computation that currently treats $\beta_H$ as scalar.
-4. Add the `min(Q, u_bar*B)` operator only in the *forward simulator*
-   under SSP5-8.5 collapse scenarios, not in the NB estimation
-   (closed by the `<5%` Version C diagnostic, see `paper1/version_C_spec.md` §4).
-
 ### Version C $\bar{u}_s$ — empirical calibration
 
-`R/00_config/config.R::U_BAR` is now calibrated to the empirical p95 of
+`R/00_config/config.R::U_BAR` is calibrated to the empirical p95 of
 H/B over quota-binding cells (`anchoveta = 0.35`, `sardina_comun = 0.25`,
 `jurel = 0.32`). The Schaefer $F_{MSY}=r/2$ derivation was rejected after
-the 2026-05-08 diagnostic flagged factor-of-two inconsistency for sardina
-and jurel. Sensitivity ±20% reported as robustness in
-`paper1/version_C_spec.md` §5.
+a diagnostic flagged factor-of-two inconsistency for sardina
+and jurel. Sensitivity ±20% is reported as robustness.
 
 ## Funding
 
@@ -338,9 +313,7 @@ This work is funded by **ANID--FONDECYT Iniciación** (Chile).
 
 ## Citation
 
-> Quezada-Escalona, F. (2026a). Climate change, stock productivity, and fishing effort in Chile's multi-species small pelagic fishery. *Working paper, Universidad de Concepción.*
-
-> Quezada-Escalona, F. (forthcoming). Optimal quota allocation under climate change in Chile's multi-species small pelagic fishery. *Working paper, Universidad de Concepción.*
+> Quezada-Escalona, F. (2026). Climate change, stock productivity, and fishing effort in Chile's multi-species small pelagic fishery. *Working paper, Universidad de Concepción.*
 
 ## Contact
 
