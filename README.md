@@ -211,28 +211,28 @@ outputs cached in `data/bio_params/`, `data/cmip6/`, and
 `data/outputs/t4b/`):
 
 ```r
-# 1. Historical ENSO Niño 3.4 from NOAA-CPC ERSSTv5
+# Historical ENSO Niño 3.4 from NOAA-CPC ERSSTv5
 source("R/01_data/extract_oisst_nino34.R")
 
-# 2. CMIP6 Niño 3.4 deltas (after running download_cmip6_nino34.py)
+# CMIP6 Niño 3.4 deltas (after running download_cmip6_nino34.py)
 source("R/06_projections/01b_cmip6_enso_deltas.R")
 
-# 3. Identification power calculation (Apéndice E table)
+# Identification-power calculation (minimum-detectable elasticity)
 options(power.run_main = TRUE)
 source("R/08_stan_t4/18_power_calculation_enso.R")
 
-# 4. T4b refit with basin-scale ENSO (replacement convention, lag 1)
+# Basin-scale ENSO refit (replacement convention, lag 1)
 options(t4b.enso.run_main = TRUE, t4b.enso.lag = 1L)
 source("R/08_stan_t4/14b_fit_t4b_full_enso.R")
 # Lag 2 sensitivity
 options(t4b.enso.run_main = TRUE, t4b.enso.lag = 2L)
 source("R/08_stan_t4/14b_fit_t4b_full_enso.R")
 
-# 5. T4b refit with three shifters active for jurel (joint sensitivity)
+# Joint-shifter sensitivity (SST + CHL + ENSO active for jurel)
 options(t4b.enso.joint.run_main = TRUE, t4b.enso.joint.lag = 1L)
 source("R/08_stan_t4/14c_fit_t4b_full_enso_joint.R")
 
-# 6. Prior-propagation envelope for r*_jurel under SSP scenarios
+# Prior-propagation envelope for r*_jurel under SSP scenarios
 source("R/08_stan_t4/19_project_jurel_enso_prior_propagation.R")
 ```
 
