@@ -1025,7 +1025,7 @@ cat("\n[OK] Kasperski-aligned fits saved to data/outputs/nb_kasperski/\n")
 # =========================================================================
 # 14. PRIMARY SPEC (2026-05-11 -- camino A refinado)
 #     IND: Kasperski-aligned with year FE
-#     ART: Kasperski-aligned with year FE + H_alloc_anch x TIPO_EMB
+#     ART: Kasperski-aligned with year FE + H_alloc_(anch & sard) x TIPO_EMB
 #
 # Decided after diagnostics in diag_kasperski_signflip.R:
 #   * D1 (no FE): confirms price_sardina IND sign-flip is FE-driven
@@ -1036,30 +1036,42 @@ cat("\n[OK] Kasperski-aligned fits saved to data/outputs/nb_kasperski/\n")
 #     ART AIC improves by -121.5 with the interaction.
 #   * D3 (regional-only): coalesce regional->national is fine;
 #     dropping 20% of ART rows introduces selection bias.
+#   * 2026-06: synced to the submitted manuscript -- added
+#     H_alloc_sardina_comun x TIPO_EMB (Wald test on the joint sardine+jurel
+#     interaction null rejected at p<2e-16; sardine x LM individually
+#     significant) and restricted ART to BM/LM/UNK (N>=50) so both
+#     interactions are identifiable. Fit on df_art_primary below.
 # =========================================================================
 
 cat("\n=========================================================\n")
 cat("  SEC 14: Primary Kasperski-aligned NB spec\n")
 cat("    IND: 3 H_alloc + 3 prices + year FE\n")
-cat("    ART: 3 H_alloc + 3 prices + year FE + anch x TIPO_EMB\n")
+cat("    ART: 3 H_alloc + 3 prices + year FE + anch & sard x TIPO_EMB\n")
 cat("=========================================================\n")
 
 nb_ind_primary <- nb_ind_kasperski  # fitted in SEC 13
 
+# Match the submitted manuscript: restrict ART to vessel-type categories
+# with N >= 50 vessel-years (BM, LM, UNK) so both H_alloc x TIPO_EMB
+# interactions are identifiable without aliased levels.
+df_art_primary <- df_art %>%
+  filter(TIPO_EMB %in% c("BM", "LM", "UNK")) %>%
+  mutate(TIPO_EMB = droplevels(factor(TIPO_EMB)))
+
 nb_art_primary <- glm.nb(
   T_vy ~ log_bodega +
     H_alloc_anchoveta * TIPO_EMB +
-    H_alloc_sardina_comun + H_alloc_jurel +
+    H_alloc_sardina_comun * TIPO_EMB + H_alloc_jurel +
     price_anchov + price_sardina + price_jurel +
     days_bad_weather + days_closed_vy +
     factor(year),
-  data = df_art
+  data = df_art_primary
 )
 
 se_ind_p <- coeftest(nb_ind_primary,
                      vcov = vcovCL(nb_ind_primary, cluster = df_ind$COD_BARCO))
 se_art_p <- coeftest(nb_art_primary,
-                     vcov = vcovCL(nb_art_primary, cluster = df_art$COD_BARCO))
+                     vcov = vcovCL(nb_art_primary, cluster = df_art_primary$COD_BARCO))
 
 print_main_p <- function(ct, label) {
   cat("\n----- ", label, " -----\n", sep = "")
@@ -1067,12 +1079,12 @@ print_main_p <- function(ct, label) {
   print(ct[keep, , drop = FALSE])
 }
 print_main_p(se_ind_p, "IND PRIMARY (Kasperski + year FE)")
-print_main_p(se_art_p, "ART PRIMARY (Kasperski + year FE + anch x TIPO_EMB)")
+print_main_p(se_art_p, "ART PRIMARY (Kasperski + year FE + anch & sard x TIPO_EMB)")
 
 # Marginal beta_h^anch by TIPO_EMB in ART, with delta-method SE
 cat("\n--- ART: marginal beta_h^anch by TIPO_EMB (delta-method SE) ---\n")
-vc_art <- vcovCL(nb_art_primary, cluster = df_art$COD_BARCO)
-emb_levels <- sort(unique(df_art$TIPO_EMB))
+vc_art <- vcovCL(nb_art_primary, cluster = df_art_primary$COD_BARCO)
+emb_levels <- sort(unique(df_art_primary$TIPO_EMB))
 ref_emb <- emb_levels[1]
 cat("  Reference TIPO_EMB:", ref_emb, "\n")
 cf <- coef(nb_art_primary)
@@ -1081,7 +1093,7 @@ v_base    <- vc_art["H_alloc_anchoveta", "H_alloc_anchoveta"]
 
 res_marg <- data.frame(
   TIPO_EMB    = ref_emb,
-  n_vessel_yr = sum(df_art$TIPO_EMB == ref_emb),
+  n_vessel_yr = sum(df_art_primary$TIPO_EMB == ref_emb),
   beta_anch   = signif(base_anch, 4),
   se          = signif(sqrt(v_base), 3),
   stringsAsFactors = FALSE
@@ -1098,7 +1110,7 @@ for (em in setdiff(emb_levels, ref_emb)) {
     z   <- eff / se
     res_marg <- rbind(res_marg, data.frame(
       TIPO_EMB    = em,
-      n_vessel_yr = sum(df_art$TIPO_EMB == em),
+      n_vessel_yr = sum(df_art_primary$TIPO_EMB == em),
       beta_anch   = signif(eff, 4),
       se          = signif(se, 3),
       z           = round(z, 2),
@@ -1117,7 +1129,7 @@ cat("\n--- AIC comparison (year FE in all) ---\n")
 cat("  IND primary (Kasperski):                   ", round(AIC(nb_ind_primary),   1), "\n")
 cat("  IND legacy (scalar H_alloc):               ", round(AIC(nb_ind_legacy_fe), 1), "\n")
 cat("  Delta IND primary - legacy:                ", round(AIC(nb_ind_primary) - AIC(nb_ind_legacy_fe), 1), "\n")
-cat("  ART primary (Kasperski + anch x TIPO_EMB): ", round(AIC(nb_art_primary),   1), "\n")
+cat("  ART primary (Kasperski + anch & sard x TIPO_EMB): ", round(AIC(nb_art_primary),   1), "\n")
 cat("  ART Kasperski no interact:                 ", round(AIC(nb_art_kasperski), 1), "\n")
 cat("  ART legacy (scalar H_alloc):               ", round(AIC(nb_art_legacy_fe), 1), "\n")
 cat("  Delta ART primary - legacy:                ", round(AIC(nb_art_primary) - AIC(nb_art_legacy_fe), 1), "\n")
