@@ -46,6 +46,8 @@ libs/
 *.blg
 *.knit.md
 *_files/
+# Generated LaTeX from the manuscript .Rmd (regenerable on knit)
+paper1/*.tex
 
 # --- Archive (old manuscript + legacy code) ---
 /archive/
@@ -77,6 +79,6 @@ tree.txt
 !/data/trips/poisson_dt.rds
 
 # Excepciones: summaries posteriores t4b que el manuscrito necesita para knitear
-# (los *_fit.rds y *_stan_data.rds se quedan ignorados a propósito)
+# (los *_fit.rds y *_stan_data.rds se quedan ignorados a propï¿½sito)
 !/data/outputs/t4b/t4b_full_summary.csv
 !/data/outputs/t4b/t4b_full_enso_lag1_summary.csv
