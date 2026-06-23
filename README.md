@@ -75,14 +75,15 @@ response (Appendix F) and the fleet-level trip response (Appendix G).
    between mid-century SSP2-4.5 and end-of-century SSP5-8.5), with a
    floor effect for sardine in the worst-case window.
 
-3. The fleet-level effort response is asymmetric: the **artisanal
-   fleet contracts by 8.1–10.2%** while the **industrial fleet
-   contracts by 0.7–1.1%**, an asymmetry of roughly **eleven to one**
-   (marginal). Conditional on no portfolio collapse (`f^H_v > 0.5`)
-   the asymmetry narrows to ~3.4:1. The artisanal fleet's
-   probability of portfolio loss > 50% under SSP5-8.5 end-of-century
-   is 0.99; the industrial fleet's is 0.12, partially insulated by
-   its 95% allocation to the *n.i.* jurel stock. The distributional
+3. The fleet-level effort response is sharply asymmetric: marginal
+   annual trips fall by **16–18% for the artisanal fleet** but only
+   **0.8–1.0% for the industrial fleet** — an asymmetry of roughly
+   **seventeen to one**. Conditional on no portfolio collapse the
+   artisanal decline is ~6–9%, and the asymmetry narrows but stays
+   close to an order of magnitude. The artisanal fleet's probability
+   of portfolio loss exceeding 50% under SSP5-8.5 end-of-century is
+   0.99; the industrial fleet's is 0.12, partially insulated by its
+   95% allocation to the *n.i.* jurel stock. The distributional
    asymmetry is governed by the interaction between portfolio
    composition (differential exposure to the identified shifters and
    to severe winds) and the LMCA quota regime's limited cross-sector
