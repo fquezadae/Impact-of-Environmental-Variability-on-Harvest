@@ -119,9 +119,6 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │   │   └── sur_benchmark_deprecated.Rmd  # SUR reduced-form benchmark (removed 2026-04-24)
 │   └── stan/                           # Compiled Stan programs for T4b
 │
-├── paper2/                             # Paper 2: Bioeconomic optimization
-│   └── paper2_bioeconomic_optimization.Rmd
-│
 ├── R/                                  # Shared R code pipeline
 │   ├── 00_config/config.R              # Paths, libraries, constants
 │   ├── 00_run_all.R                    # Master pipeline
@@ -131,7 +128,6 @@ Extends Paper 1 with trip-level restricted cost functions, an inverse almost ide
 │   ├── 02_env_processing/              # NetCDF -> daily env grids
 │   ├── 03_env_spatial/                 # Spatial operations
 │   ├── 04_models/                      # Econometric estimation (SUR, NB)
-│   ├── 05_students/                    # Student-led modules (Paper 2)
 │   ├── 06_projections/                 # CMIP6 ensemble pipeline + Copernicus extended
 │   │   ├── 01_cmip6_deltas.R                 # 6-model ensemble deltas (units-aware chlos)
 │   │   ├── 01b_cmip6_enso_deltas.R           # ENSO Niño 3.4 deltas (App E.6)
@@ -281,10 +277,8 @@ source("R/08_stan_t4/19_project_jurel_enso_prior_propagation.R")
 
 ## Specification audit — known gaps and planned refactors
 
-Recorded 2026-05-08, after a session that closed the Version C diagnostic
-and audited the NB trip equation. See `CHANGELOG.md` 2026-05-08 entry for
-the full record and `paper1/version_C_spec.md` for paper 2's bioeconomic
-spec.
+Recorded after a session that closed the Version C diagnostic and audited
+the NB trip equation.
 
 ### Paper 1 — accepted simplifications, defensive notes
 

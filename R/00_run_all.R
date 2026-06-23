@@ -32,10 +32,6 @@
 #  |-- 04_models/                  <- Econometric estimation
 #  |   |-- poisson_model.R         <- Trip count + harvest allocation
 #  |
-#  |-- 05_students/                <- Student-led modules
-#  |   |-- base_datos_costos.R     <- Trip reconstruction from logbooks
-#  |   |-- base_datos_precios.R    <- Ex-vessel prices database
-#  |
 #  |-- 06_projections/             <- Climate change projections
 #  |   |-- 01_cmip6_deltas.R       <- CMIP6 delta-method (wind, SST, CHL)
 #  |   |-- 02_project_and_predict.R <- Apply deltas + NB prediction
@@ -72,10 +68,6 @@ source("R/00_config/config.R")
 
 # --- 4. Models ---
 # source("R/04_models/poisson_model.R")
-
-# --- 5. Student modules ---
-# source("R/05_students/base_datos_costos.R")    # -> data/outputs/trip_base_wide.xlsx
-# source("R/05_students/base_datos_precios.R")   # -> base_precios.rds
 
 # --- 6. Climate projections ---
 # Requires: CMIP6 NetCDF files in D:/GitHub/climate_projections/CMIP6/

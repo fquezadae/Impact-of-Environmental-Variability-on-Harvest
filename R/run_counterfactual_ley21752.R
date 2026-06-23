@@ -34,8 +34,8 @@ gcs <- readr::read_csv("tables/growth_comparative_statics_by_model.csv",
                        show_col_types = FALSE)
 
 ## 2) 2024 Cuotas Globales de Captura (CS V-Los Lagos), in tonnes. Source:
-##    SERNAPESCA 2024 table reproduced in `paper1/portfolio_check/` and cited
-##    as @SERNAPESCA2024-cuota in the paper.
+##    SERNAPESCA 2024 official quota table, cited as @SERNAPESCA2024-cuota
+##    in the paper.
 ##
 ##    NB: jurel CS is decomposed into TWO sub-macrozones because Ley 21.752
 ##    assigns different artisanal shares to V-Los Rios (item 4, 30%) and
