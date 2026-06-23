@@ -108,10 +108,7 @@ response (Appendix F) and the fleet-level trip response (Appendix G).
 │   │   ├── appendix_convergence_diagnostics.Rmd      # Appendix D (R-hat / ESS for top-level T4b parameters)
 │   │   ├── appendix_spatial_jurel.Rmd                # Appendix E (spatial robustness of jurel n.i.)
 │   │   ├── appendix_variance_decomposition.Rmd       # Appendix F (variance decomp for growth)
-│   │   ├── appendix_g_trips_variance_decomposition.Rmd  # Appendix G (variance decomp for fleet trips)
-│   │   └── results_loo_comparison.Rmd                # alt cut, not wired in main
-│   ├── deprecated/                     # Archived V1 material (not knitted)
-│   │   └── sur_benchmark_deprecated.Rmd  # SUR reduced-form benchmark (removed 2026-04-24)
+│   │   └── appendix_g_trips_variance_decomposition.Rmd  # Appendix G (variance decomp for fleet trips)
 │   └── stan/                           # Compiled Stan programs for T4b
 │
 ├── R/                                  # Shared R code pipeline
@@ -296,43 +293,6 @@ source("R/08_stan_t4/14c_fit_t4b_full_enso_joint.R")
 # 6. Prior-propagation envelope for r*_jurel under SSP scenarios
 source("R/08_stan_t4/19_project_jurel_enso_prior_propagation.R")
 ```
-
-## Specification audit — known gaps and planned refactors
-
-Recorded after a session that closed the Version C diagnostic and audited
-the NB trip equation.
-
-### Paper 1 — accepted simplifications, defensive notes
-
-The trip equation in `R/08_stan_t4/13_trip_comparative_statics.R:418-421`
-has two known deviations from Kasperski (2015) Eq. 17:
-
-- **`H_alloc_vy` is scalar** (aggregated across species) rather than
-  species-specific $h_{vy,s} = \omega_{vs}\bar{Q}_{sy}$ with separate
-  $\beta_h^s$. The aggregation defaults from `data/trips/halloc_official.rds`
-  via `R/01_data_cleaning/tac_processing.R:206-241`.
-- **Prices are merged to the panel by `year` only** (not `(year, region)`)
-  even though the IFOP raw price file
-  (`2025.04.21.pelagicos_proceso-precios.mp.2012-2024.xlsx`, sheet `PRECIO`)
-  carries a regional column `RG ∈ {5, 6, 7, 8, 9, 10, 14, 16}`. The
-  collapse occurs at `R/04_models/poisson_model.R:198-256` (`group_by(year, NM_RECURSO)`,
-  comment "Annual average (simple mean across plants × months)"). Combined
-  with the year FE that the trip equation includes, the three
-  `price_*` coefficients are aliased into the year FE; only $\beta_H$ and
-  $\beta_{weather}$ are extracted downstream. Prices serve as nominal
-  controls in this specification.
-
-For paper 1's MRE submission these are documented as deliberate simplifications
-("for parsimony given N=23 per species per year"). They do **not** affect
-the manuscript's headline parameters.
-
-### Version C $\bar{u}_s$ — empirical calibration
-
-`R/00_config/config.R::U_BAR` is calibrated to the empirical p95 of
-H/B over quota-binding cells (`anchoveta = 0.35`, `sardina_comun = 0.25`,
-`jurel = 0.32`). The Schaefer $F_{MSY}=r/2$ derivation was rejected after
-a diagnostic flagged factor-of-two inconsistency for sardina
-and jurel. Sensitivity ±20% is reported as robustness.
 
 ## Funding
 
