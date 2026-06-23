@@ -17,83 +17,28 @@ A companion paper on optimal quota allocation under climate change (target
 JAERE/ERE 2027–2028) builds on the same modeling framework and will be
 released as a separate repository.
 
-## Paper 1: Climate projections
+## Abstract
 
-Identifies a set of structural climate shifters (ρ^SST, ρ^CHL) that
-modulate the intrinsic growth rate of each stock, within a Bayesian
-state-space specification (Schaefer transition + log-linear
-shifter + log-normal observation equation) calibrated on the IFOP and
-SPRFMO stock assessments. Evaluates the identified shifters under a
-six-model CMIP6 ensemble (IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1,
-UKESM1-0-LL, MPI-ESM1-2-HR) under SSP2-4.5 and SSP5-8.5 to obtain
-posterior distributions of the long-run comparative-statics change in
-each stock's intrinsic productivity under mid-century (2041–2060) and
-end-of-century (2081–2100) climate regimes. Couples this with a
-negative binomial model of annual fishing trips with year fixed
-effects (absorbing the 2019 *estallido social* and the 2020–2022 COVID
-period), estimated separately for the artisanal and industrial fleets.
-Climate propagates to vessel effort through **two channels**: an
-*indirect* channel via the structural biomass shifters, and a *direct*
-channel via vessel-specific exposure to severe winds (computed from
-each vessel's empirical CDF of historical wind speed at the
-center-of-gravity of its operations, evaluated at the projected CMIP6
-delta). Reports formal two-way variance decompositions (within-model
-posterior vs. between-model CMIP6 spread) for both the productivity
-response (Appendix F) and the fleet-level trip response (Appendix G).
+Climate-driven shifts in productivity reach fleets unevenly when species
+portfolios differ and vessel range determines which stocks each fleet can
+access. We measure this asymmetry for Chile's Central-South small pelagic
+fishery (anchoveta, sardine, jack mackerel), under a fixed
+industrial–artisanal allocation with active cessions. We couple a Bayesian
+state-space stock-dynamics model fit to 2000–2024 assessments with a
+vessel-level trip equation, with climate entering via biomass and weather
+channels. Under a six-model CMIP6 ensemble, projected effort falls by
+16–18 percent for the artisanal fleet but only 0.8–1.0 percent for the
+industrial fleet — an asymmetry of seventeen to one, driven by artisanal
+exposure to the two coastal stocks whose climate shifters are large and
+identified. Because the artisanal fleet's restricted range prevents access
+to offshore jack mackerel when coastal stocks collapse, policies that relax
+technological constraints — vessel upgrading, port infrastructure, weather
+services — may be more effective than reforms focused on quota allocation
+alone.
 
-**Key findings.**
+**Keywords:** Bayesian state-space model; bioeconomic projection; Chilean small pelagic fishery; climate change; fishing effort; fleet heterogeneity; quota allocation.
 
-1. The climate semi-elasticities are sharply *identified* for the two
-   coastal-upwelling stocks (anchoveta and sardina común) and
-   structurally *non-identified* for jack mackerel. Non-identification
-   is documented with a **five-line evidence package** (Appendix E):
-   (i) an identification-power calculation showing the
-   minimum-detectable elasticity at 80% power on the available
-   N = 24 sample is ~5× larger for jurel than for the coastal stocks,
-   driven by a process-noise envelope ~5× wider; (ii) spatial-domain
-   robustness across three alternative coastal windows; (iii)
-   dual-source state-space augmenting the Centro-Sur with the Northern
-   Chilean acoustic series (CS↔Norte log-correlation 0.88); (iv) a
-   basin-scale refit replacing local SST/CHL with the ENSO Niño 3.4
-   index (`σ_post/σ_prior = 0.98` at lag 1, `1.01` at lag 2); and
-   (v) a joint-shifter sensitivity with all three covariates active for
-   jurel (ratios 1.03 / 1.00 / 0.98). Across all five lines
-   `σ_post/σ_prior` stays at or above 0.94 for the jurel shifters,
-   ruling out spatial aggregation, sample size, basin-scale forcing
-   modality, and joint-specification convention as alternative
-   explanations. A prior-propagation envelope on `r*_jurel` under
-   SSP5-8.5 end-of-century spans approximately three orders of
-   magnitude on the productivity factor, confirming that any structural
-   projection under the unidentified shifter would be non-informative
-   for policy. Jack mackerel is therefore treated as `n.i.` in all
-   manuscript tables and figures with `factor_B_jurel = 1` in the
-   projections.
-
-2. The two coastal stocks face sharp long-run productivity declines
-   under every CMIP6 model considered (cross-model median −51% to
-   −90% for anchoveta and −79% to −99.9% for sardina común,
-   between mid-century SSP2-4.5 and end-of-century SSP5-8.5), with a
-   floor effect for sardine in the worst-case window.
-
-3. The fleet-level effort response is sharply asymmetric: marginal
-   annual trips fall by **16–18% for the artisanal fleet** but only
-   **0.8–1.0% for the industrial fleet** — an asymmetry of roughly
-   **seventeen to one**. Conditional on no portfolio collapse the
-   artisanal decline is ~6–9%, and the asymmetry narrows but stays
-   close to an order of magnitude. The artisanal fleet's probability
-   of portfolio loss exceeding 50% under SSP5-8.5 end-of-century is
-   0.99; the industrial fleet's is 0.12, partially insulated by its
-   95% allocation to the *n.i.* jurel stock. The distributional
-   asymmetry is governed by the interaction between portfolio
-   composition (differential exposure to the identified shifters and
-   to severe winds) and the LMCA quota regime's limited cross-sector
-   transferability.
-
-4. Variance decompositions: 97–100% of the dispersion in projected
-   fleet-level effort changes is *within-model* (posterior + vessel
-   heterogeneity) rather than *between-model* CMIP6 spread. The
-   narrow cross-model interquartile range in the headline table is a
-   floor-effect saturation, not climate-model consensus.
+**JEL:** Q22, Q54, Q57, Q58.
 
 ## Repository structure
 
