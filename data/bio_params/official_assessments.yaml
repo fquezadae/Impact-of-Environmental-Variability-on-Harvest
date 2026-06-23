@@ -388,11 +388,9 @@ implementacion:
     acoustic_n_annual_points_anchoveta_cs: 45   # RECLAS + PELACES 1999-2024
     acoustic_n_annual_points_jurel_cs:    25   # 2000-2024 con gaps
     MPDH_one_point: "SSB 2024 ± 2023 comparación (ver biologia_observacional)"
-    # Precios y MP procesada (IFOP Encuesta Industrial 2012-2024) NO son input
-    # para paper 1. Ese pipeline vive en R/01_data_cleaning/ifop_industrial_data.R
-    # y alimenta paper 2 (bioeconomic Stackelberg). Los precios que aparecen en
-    # paper 1 como covariables de la trip equation ya vienen deflactados a
-    # constante 2018 pesos desde el Rmd principal, no de este YAML.
+    # Los precios que aparecen en paper 1 como covariables de la trip equation
+    # ya vienen deflactados a constante 2018 pesos desde el Rmd principal, no de
+    # este YAML.
     raw_xlsx_copia: "data/bio_params/ifop_acoustic_raw.xlsx"
   # --- NUEVO 2026-04-21 (tarde): captura anual SERNAPESCA ---
   catch_annual_csv: "data/bio_params/catch_annual_paper1.csv"
@@ -493,11 +491,6 @@ pendientes:
     fecha_cierre: "2026-04-21"
 
   # ----------------------- ABIERTOS -----------------------------------------
-  - id: "PEND-4"
-    descripcion: "Completar L-W y TMM de anchoveta desde IFOP Anexo 4C"
-    urgencia: "baja"
-    bloquea: "paper 2 (catch-per-trip por especie)"
-    estado: "abierto"
   - id: "PEND-7"
     descripcion: "Verificar citas del deep-research ChatGPT [34†...], [56†...], [65†...], [83†...] — son IDs internos de ChatGPT, NO DOIs. Bajar fuentes primarias: (a) Informe Sardina Común IFOP 2022, (b) Informe Anchoveta III-IV IFOP 2022, (c) Taller Imarpe-IFOP 2018 (Hilborn-Mangel/Zhou/SS), (d) Cerda et al. 2001 Gordon-Schaefer."
     urgencia: "media"
