@@ -57,6 +57,8 @@ paper/*.tex
 
 # --- Local remediation notes / scripts (never publish) ---
 /_local_remediation/
+# Revision checklist for the MRE resubmission (don't publish errata while under review)
+/REVISION_NOTES.md
 
 # --- Confidential IFOP vessel microdata: NEVER force-add these ---
 # (the /data/trips/ rule above already ignores them; listed explicitly as a guard)
