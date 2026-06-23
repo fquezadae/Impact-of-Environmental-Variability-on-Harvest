@@ -55,6 +55,16 @@ paper/*.tex
 # --- Editor / tooling (local config, not part of the project) ---
 .claude/
 
+# --- Local remediation notes / scripts (never publish) ---
+/_local_remediation/
+
+# --- Confidential IFOP vessel microdata: NEVER force-add these ---
+# (the /data/trips/ rule above already ignores them; listed explicitly as a guard)
+/data/trips/log_spf.rds
+/data/trips/vessel_chars.rds
+/data/trips/harvest_vys.rds
+/data/trips/halloc_official.rds
+
 # --- OS / system ---
 Thumbs.db
 .DS_Store

@@ -49,8 +49,9 @@ alone.
 │   │   ├── appendix_posterior_diagnostics.Rmd        # Appendix C (posterior-predictive checks)
 │   │   ├── appendix_convergence_diagnostics.Rmd      # Appendix D (R-hat / ESS for top-level T4b parameters)
 │   │   ├── appendix_spatial_jurel.Rmd                # Appendix E (spatial robustness of jurel n.i.)
-│   │   ├── appendix_variance_decomposition.Rmd       # Appendix F (variance decomp for growth)
-│   │   └── appendix_g_trips_variance_decomposition.Rmd  # Appendix G (variance decomp for fleet trips)
+│   │   └── appendix_h_portfolio_and_counterfactual.Rmd  # Appendix F (inter-sectoral cessions; Tables F.1/F.2)
+│   │       # appendix_variance_decomposition.Rmd and appendix_g_trips_variance_decomposition.Rmd
+│   │       # are source-only (removed from the built supplement on 2026-06-17)
 │   └── stan/                           # Compiled Stan programs for T4b
 │
 ├── R/                                  # Shared R code pipeline
@@ -98,7 +99,7 @@ alone.
 │   ├── bio_params/                     # Official assessments (IFOP / SPRFMO)
 │   ├── biomass/
 │   ├── harvest/
-│   ├── logbooks/
+│   ├── logbooks/                       # (gitignored — confidential IFOP microdata)
 │   ├── outputs/t4b/                    # Stan fits + summaries
 │   ├── ports/
 │   ├── projections/                    # CMIP6 deltas + legacy SUR projections
@@ -108,7 +109,7 @@ alone.
 ├── tables/                             # Exported tables
 │
 ├── bibliography.bib                    # Shared bibliography
-├── apa.csl                             # Citation style
+├── chicago-author-date.csl            # Citation style (author-date)
 └── knit.R                              # Render manuscripts
 ```
 
@@ -164,9 +165,9 @@ email the author: **felipequezada@udec.cl**.
 Requirements:
 
 - **R ≥ 4.2** with packages: `dplyr`, `tidyr`, `data.table`, `tibble`,
-  `readr`, `purrr`, `ggplot2`, `ggridges`, `scales`, `viridis`,
-  `kableExtra`, `stargazer`, `MASS`, `lavaan`, `sf`, `openxlsx`,
-  `ncdf4`, `cmdstanr`, `posterior`.
+  `readr`, `purrr`, `janitor`, `ggplot2`, `ggridges`, `scales`, `viridis`,
+  `lavaan`, `sandwich`, `lmtest`, `kableExtra`, `stargazer`, `MASS`, `sf`,
+  `openxlsx`, `ncdf4`, `cmdstanr`, `posterior`, `here`, `withr`.
 - **Python ≥ 3.10** (only for the CMIP6 download pipeline) with
   packages: `intake-esm`, `xarray`, `zarr`, `dask`, `fsspec`,
   `aiohttp`, `netCDF4`, `pyesgf`. Used by
@@ -242,7 +243,7 @@ This work is funded by **ANID--FONDECYT Iniciación** (Chile).
 
 ## Citation
 
-> Quezada-Escalona, F. (2026). Climate change, stock productivity, and fishing effort in Chile's multi-species small pelagic fishery. *Working paper, Universidad de Concepción.*
+> Quezada-Escalona, F. (2026). Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries. *Working paper, Universidad de Concepción* (submitted to *Marine Resource Economics*).
 
 ## Contact
 
