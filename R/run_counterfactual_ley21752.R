@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
 ## ----- Project root -----------------------------------------------------------
 ## Resolve so that the script can be run from anywhere within the project.
 root <- tryCatch(rprojroot::find_root(rprojroot::has_file(
-  "Impact of Environment on Harvest.Rproj")), error = function(e) ".")
+  "EnvironmentalVariability_Effort.Rproj")), error = function(e) ".")
 setwd(root)
 
 ## ----- Inputs -----------------------------------------------------------------
