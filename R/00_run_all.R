@@ -33,7 +33,7 @@ source("R/00_config/config.R")
 # source("R/01_data_cleaning/logbook_data.R")    # -> data/logbooks/logbooks.rds
 # source("R/01_data_cleaning/biomass_data.R")    # -> data/biomass/biomass_dt.rds
 # source("R/01_data_cleaning/tac_processing.R")  # -> TAC allocation
-# source("R/01_data/extract_oisst_nino34.R")     # -> ENSO Niño 3.4 (App E.6)
+# source("R/01_data/extract_oisst_nino34.R")     # -> ENSO Niño 3.4 (App E)
 
 # --- 2. Environmental data processing (large NetCDF) ---
 # source("R/02_env_processing/load_glorys.R")    # -> data/env/glorysDaily_2012_2025.rds

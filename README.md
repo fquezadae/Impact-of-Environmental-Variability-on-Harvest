@@ -64,12 +64,12 @@ alone.
 │   ├── 04_models/                      # Econometric estimation (SUR, NB)
 │   ├── 06_projections/                 # CMIP6 ensemble pipeline + Copernicus extended
 │   │   ├── 01_cmip6_deltas.R                 # 6-model ensemble deltas (units-aware chlos)
-│   │   ├── 01b_cmip6_enso_deltas.R           # ENSO Niño 3.4 deltas (App E.6)
+│   │   ├── 01b_cmip6_enso_deltas.R           # ENSO Niño 3.4 deltas (App E)
 │   │   ├── 00_sanity_check_cmip6.R           # Single-model sanity (legacy)
 │   │   ├── 00b_sanity_check_ensemble.R       # Ensemble sanity (post-fix asserts)
 │   │   ├── 06_extended_env_anomalies.R       # Copernicus extended anomalies for App E
 │   │   ├── download_cmip6_ensemble.py        # Pangeo + ESGF fallback downloader (costero)
-│   │   ├── download_cmip6_nino34.py          # Pangeo downloader for Niño 3.4 box (App E.6)
+│   │   ├── download_cmip6_nino34.py          # Pangeo downloader for Niño 3.4 box (App E)
 │   │   ├── download_copernicus_paper1_extended.py
 │   │   ├── 02_project_and_predict.R          # Legacy V1 (deprecated)
 │   │   ├── 03_project_biomass.R              # Legacy V1 (deprecated)
@@ -86,13 +86,13 @@ alone.
 │       ├── 12_growth_comparative_statics.R            # T5: r_eff under 6-model CMIP6 ensemble
 │       ├── 13_trip_comparative_statics.R              # T7: Schaefer SS + NB → fleet trip response
 │       ├── 14_refit_t4b_full_appendix_e.R             # T4b refit on alternative spatial domains
-│       ├── 14b_fit_t4b_full_enso.R                    # T4b refit with basin-scale ENSO replacement (App E.6)
-│       ├── 14c_fit_t4b_full_enso_joint.R              # T4b refit with all 3 shifters active for jurel (App E.6 sensitivity)
+│       ├── 14b_fit_t4b_full_enso.R                    # T4b refit with basin-scale ENSO replacement (App E)
+│       ├── 14c_fit_t4b_full_enso_joint.R              # T4b refit with all 3 shifters active for jurel (App E sensitivity)
 │       ├── 15_appendix_e_sigma_ratios.R               # σ_post/σ_prior across domains (App E)
 │       ├── 16_appendix_f_variance_decomposition.R     # Var decomp for growth (App F)
 │       ├── 17_appendix_g_trips_variance_decomposition.R  # Var decomp for trips (App G)
-│       ├── 18_power_calculation_enso.R                # Identification power for SST/CHL/ENSO (App E.1)
-│       └── 19_project_jurel_enso_prior_propagation.R  # Prior-propagation envelope for r*_jurel (App E.6)
+│       ├── 18_power_calculation_enso.R                # Identification power for SST/CHL/ENSO (App E)
+│       └── 19_project_jurel_enso_prior_propagation.R  # Prior-propagation envelope for r*_jurel (App E)
 │
 ├── data/                               # Processed data (.rds)
 │   ├── bio_params/                     # Official assessments (IFOP / SPRFMO)
@@ -123,7 +123,7 @@ alone.
 | Banco Central de Chile | FOB fishmeal price, IPC |
 | CNE | Diesel prices by region |
 | Copernicus Marine Service | SST (GLORYS12), chlorophyll-a (Ocean Colour L4 multi-sensor), wind (ERA5) |
-| NOAA-CPC `sstoi.indices` (ERSSTv5) | ENSO Niño 3.4 monthly index for the basin-scale shifter test of Appendix E.6 |
+| NOAA-CPC `sstoi.indices` (ERSSTv5) | ENSO Niño 3.4 monthly index for the basin-scale shifter test of Appendix E |
 | CMIP6 six-model ensemble | Projected SST, chlorophyll-a, surface winds, and Niño 3.4 SST under SSP2-4.5 and SSP5-8.5: IPSL-CM6A-LR, GFDL-ESM4, CESM2, CNRM-ESM2-1, UKESM1-0-LL, MPI-ESM1-2-HR (downloaded via Pangeo + ESGF fallback; Niño 3.4 box on a separate parallel pull) |
 
 Raw data are not redistributed; see `data/README.md` for access instructions.
@@ -206,7 +206,7 @@ options(t6.run_main = FALSE, appg.run_main = TRUE)
 source("R/08_stan_t4/17_appendix_g_trips_variance_decomposition.R")
 ```
 
-For the basin-scale ENSO pipeline of Appendix E.6 (also one-shot;
+For the basin-scale ENSO pipeline of Appendix E (also one-shot;
 outputs cached in `data/bio_params/`, `data/cmip6/`, and
 `data/outputs/t4b/`):
 
@@ -217,7 +217,7 @@ source("R/01_data/extract_oisst_nino34.R")
 # 2. CMIP6 Niño 3.4 deltas (after running download_cmip6_nino34.py)
 source("R/06_projections/01b_cmip6_enso_deltas.R")
 
-# 3. Identification power calculation (Apéndice E.1 table)
+# 3. Identification power calculation (Apéndice E table)
 options(power.run_main = TRUE)
 source("R/08_stan_t4/18_power_calculation_enso.R")
 
