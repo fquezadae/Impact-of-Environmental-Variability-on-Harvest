@@ -1,21 +1,17 @@
-# SPF Harvest
+# Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries
 
-**Climate variability and harvest decisions in Chile's Centro-Sur small pelagic fishery**
+**Replication package — submitted to *Marine Resource Economics* (June 2026)**
 
 <!-- Badges -->
 ![R](https://img.shields.io/badge/R-%E2%89%A54.2-276DC3?logo=r)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-paper%201%20submitted%20to%20MRE%20(June%202026)-brightgreen)
+![Status](https://img.shields.io/badge/status-submitted%20to%20MRE%20(June%202026)-brightgreen)
 
 ## Overview
 
-This repository is the **replication package for Paper 1**, developed under FONDECYT Iniciación for the Chilean Centro-Sur (CS) small pelagic fishery (SPF), composed of *Strangomera bentincki* (common sardine), *Engraulis ringens* (anchoveta), and *Trachurus murphyi* (jack mackerel):
+This repository is the **replication package** for the paper, developed under FONDECYT Iniciación for the Chilean Centro-Sur (CS) small pelagic fishery (SPF), composed of *Strangomera bentincki* (common sardine), *Engraulis ringens* (anchoveta), and *Trachurus murphyi* (jack mackerel):
 
 > **"Differential Climate Impacts on Fishing Effort in Chilean Small Pelagic Fisheries"** — submitted to *Marine Resource Economics* (June 2026).
-
-A companion paper on optimal quota allocation under climate change (target
-JAERE/ERE 2027–2028) builds on the same modeling framework and will be
-released as a separate repository.
 
 ## Abstract
 
@@ -44,7 +40,7 @@ alone.
 
 ```
 .
-├── paper/                             # Paper 1: Climate projections
+├── paper/                             # Manuscript, appendices, Stan models
 │   ├── paper1_climate_projections.Rmd  # Manuscript (R Markdown)
 │   ├── sections/                       # Child Rmds wired into main
 │   │   ├── results_identification.Rmd                # §4.1 (T4b-full rho posteriors + PPC adequacy)
@@ -80,7 +76,7 @@ alone.
 │   │   ├── 04_forward_simulation*.R          # Legacy V1 diagnostic (deprecated)
 │   │   └── 05_sensitivity_sur_spec.R         # Legacy V1 diagnostic (deprecated)
 │   ├── 07_structural_bio/              # Schaefer hindcast + official priors
-│   └── 08_stan_t4/                     # Bayesian state-space (T4b, Paper 1 core)
+│   └── 08_stan_t4/                     # Bayesian state-space (T4b, core models)
 │       ├── _compstat_utils.R                          # Shared constants + scenario loader
 │       ├── 04_fit_t4b_ind.R                           # No-shifter baseline
 │       ├── 06_fit_t4b_omega.R                         # + residual covariance
@@ -187,7 +183,7 @@ Requirements:
 # Run the data pipeline
 source("R/00_run_all.R")
 
-# Render Paper 1
+# Render the paper
 source("knit.R")
 ```
 
