@@ -167,14 +167,10 @@ response (Appendix F) and the fleet-level trip response (Appendix G).
 │
 ├── figs/                               # Figures
 ├── tables/                             # Exported tables
-├── slides/                             # Presentations
-├── logo/                               # Institutional logos
-├── archive/                            # Old manuscript + legacy code
 │
 ├── bibliography.bib                    # Shared bibliography
 ├── apa.csl                             # Citation style
-├── knit.R                              # Render manuscripts
-└── libs/                               # Slide dependencies
+└── knit.R                              # Render manuscripts
 ```
 
 ## Data sources
