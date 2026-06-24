@@ -188,6 +188,23 @@ source("R/00_run_all.R")
 source("knit.R")
 ```
 
+**Reproducing the fleet-effort projections without the confidential logbooks.**
+The vessel-year panel `data/trips/poisson_dt.rds` ships with the repository, so
+the negative-binomial trip fits and the comparative-statics tables can be
+regenerated without the raw IFOP logbooks:
+
+```r
+# Re-fit the four NB trip models from the shipped panel
+source("R/04_models/refit_from_poisson_dt.R")
+
+# Regenerate the trip comparative-statics tables
+options(t6.run_main = TRUE)
+source("R/08_stan_t4/13_trip_comparative_statics.R")
+```
+
+The full `R/04_models/poisson_model.R` rebuilds the panel from the raw IFOP
+logbooks (`data/logbooks/`, confidential) and is therefore author-only.
+
 For the CMIP6 ensemble pipeline specifically (only needs to be run
 once; outputs are cached in `data/cmip6/`):
 
