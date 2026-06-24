@@ -97,3 +97,5 @@ tree.txt
 # (los *_fit.rds y *_stan_data.rds se quedan ignorados a prop�sito)
 !/data/outputs/t4b/t4b_full_summary.csv
 !/data/outputs/t4b/t4b_full_enso_lag1_summary.csv
+# Compact posterior draws for offline projection replication (no full fit / cmdstan / env grids)
+!/data/outputs/t4b/t4b_full_draws.rds

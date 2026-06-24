@@ -123,6 +123,10 @@ source_utf8("R/08_stan_t4/_weather_channel_utils.R")
 # -----------------------------------------------------------------------------
 
 T6_FIT_RDS           <- "data/outputs/t4b/t4b_full_fit.rds"
+# Compact posterior draws (r_base, K_nat, rho_sst, rho_chl per stock) shipped in
+# the repo so the projections reproduce WITHOUT the 41 MB Stan fit, cmdstan, or
+# the confidential env grids. Auto-generated on first run when the fit is present.
+T6_DRAWS_RDS         <- "data/outputs/t4b/t4b_full_draws.rds"
 T6_DELTAS_CSV        <- COMPSTAT_DELTAS_CSV
 T6_CATCH_CSV         <- "data/bio_params/catch_annual_cs_2000_2024.csv"
 T6_OFF_BIO_CSV       <- "data/bio_params/official_biomass_series.csv"
@@ -209,8 +213,18 @@ t6_load_biology <- function() {
 # Paso 2 -- Extraer draws posteriores (sin cambios)
 # -----------------------------------------------------------------------------
 
-t6_extract_draws <- function(fit_rds = T6_FIT_RDS,
-                             stocks  = T6_STOCKS) {
+t6_extract_draws <- function(fit_rds   = T6_FIT_RDS,
+                             stocks    = T6_STOCKS,
+                             draws_rds = T6_DRAWS_RDS) {
+
+  # Offline replication path: if the full Stan fit is absent but the shipped
+  # compact draws are present, use them (no cmdstanr / env grids needed).
+  if (!file.exists(fit_rds) && file.exists(draws_rds)) {
+    draws_long <- readRDS(draws_rds)
+    cat("[T7] Posterior draws cargados del paquete:", draws_rds,
+        "( N_total =", nrow(draws_long), ")\n\n")
+    return(draws_long)
+  }
 
   fit <- readRDS(fit_rds)
 
@@ -233,9 +247,13 @@ t6_extract_draws <- function(fit_rds = T6_FIT_RDS,
   })
   draws_long <- dplyr::bind_rows(long_list)
 
+  # Persist a compact, shippable copy so the projections reproduce offline.
+  dir.create(dirname(draws_rds), showWarnings = FALSE, recursive = TRUE)
+  saveRDS(draws_long, draws_rds)
+
   cat("[T7] Posterior draws extraidos: N_total =", nrow(draws_long),
       "(", length(unique(draws_long$.draw)), "draws x",
-      length(stocks), "stocks )\n\n")
+      length(stocks), "stocks ) -> guardado en", draws_rds, "\n\n")
 
   draws_long
 }

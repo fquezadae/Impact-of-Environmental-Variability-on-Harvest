@@ -188,22 +188,29 @@ source("R/00_run_all.R")
 source("knit.R")
 ```
 
-**Reproducing the fleet-effort projections without the confidential logbooks.**
-The vessel-year panel `data/trips/poisson_dt.rds` ships with the repository, so
-the negative-binomial trip fits and the comparative-statics tables can be
-regenerated without the raw IFOP logbooks:
+**Reproducing the fleet-effort projections from the shipped data alone.**
+The vessel-year panel `data/trips/poisson_dt.rds` and the compact posterior
+draws of the stock-dynamics model (`data/outputs/t4b/t4b_full_draws.rds` —
+`r_base`, `K_nat`, `rho_sst`, `rho_chl` per stock) both ship with the
+repository, so the trip fits and the comparative-statics tables regenerate
+**without the raw IFOP logbooks, without cmdstan, and without the environmental
+grids**:
 
 ```r
 # Re-fit the four NB trip models from the shipped panel
 source("R/04_models/refit_from_poisson_dt.R")
 
-# Regenerate the trip comparative-statics tables
+# Regenerate the trip comparative-statics tables (uses the shipped draws if the
+# full Stan fit data/outputs/t4b/t4b_full_fit.rds is absent)
 options(t6.run_main = TRUE)
 source("R/08_stan_t4/13_trip_comparative_statics.R")
 ```
 
-The full `R/04_models/poisson_model.R` rebuilds the panel from the raw IFOP
-logbooks (`data/logbooks/`, confidential) and is therefore author-only.
+To regenerate the stock-dynamics posterior itself you need cmdstan and the two
+environmental grids (request-only); run `R/08_stan_t4/08_fit_t4b_full.R`
+(`seed = 2026`), which rewrites both the full fit and `t4b_full_draws.rds`. The
+full `R/04_models/poisson_model.R` rebuilds the vessel-year panel from the raw
+IFOP logbooks (`data/logbooks/`, confidential) and is likewise author-only.
 
 For the CMIP6 ensemble pipeline specifically (only needs to be run
 once; outputs are cached in `data/cmip6/`):
