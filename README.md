@@ -131,12 +131,14 @@ Raw data are not redistributed; see `data/README.md` for access instructions.
 
 ### Data not included in this repository (request to reproduce)
 
-The repository ships every **processed** series the manuscript needs, except a
-couple of confidential inputs that cannot be redistributed. To reproduce the
-paper you will need to obtain the following.
+The repository ships every **processed** series the manuscript and the
+projections need, so **knitting the PDF and reproducing the fleet-effort
+projections require no external data** — a fresh clone is sufficient. The inputs
+below are needed only to re-fit the Bayesian stock model or to rebuild the
+pipeline from raw.
 
-**To knit the manuscript** — only two files are missing, both daily
-environmental grids placed under the external data root
+**To re-fit the stock model** (`R/08_stan_t4/08_fit_t4b_full.R`, needs cmdstan)
+you need the two daily environmental grids under
 `FONDECYT_DATA/Environmental/env/` (see `data/README.md`):
 
 | File | What it is | How to obtain |
@@ -144,9 +146,12 @@ environmental grids placed under the external data root
 | `EnvCoastDaily_2012_2025_0.125deg.rds` | Daily coastal SST / CHL / wind grid, 2012–2025 | Request from the author, or rebuild from Copernicus via `R/02_env_processing/` |
 | `EnvCoastDaily_2000_2011_0.25deg.rds` | Daily coastal grid, 2000–2011 (coarser resolution) | Same as above |
 
-Everything else the knit needs — `biomass_dt.rds`, `sernapesca_v2.rds`,
-`poisson_dt.rds`, the CMIP6 deltas, the T4b posterior summary, and the
-comparative-statics tables — is already tracked in this repository.
+The projections do not need these grids either: the posterior draws ship as
+`data/outputs/t4b/t4b_full_draws.rds`, so `R/08_stan_t4/13_trip_comparative_statics.R`
+reproduces the trip tables offline (see **Reproducibility** above). Everything
+the knit reads — `biomass_dt.rds`, `sernapesca_v2.rds`, `poisson_dt.rds`, the
+CMIP6 deltas, the T4b posterior summary/draws, and the comparative-statics
+tables — is already tracked here.
 
 **To rebuild the full pipeline from raw**, you additionally need the
 non-redistributable raw inputs documented in `data/README.md`:
@@ -157,7 +162,8 @@ non-redistributable raw inputs documented in `data/README.md`:
 - **CMIP6 NetCDF ensemble** — Pangeo / ESGF.
 - **Third-party technical reports** (IFOP / SPRFMO / SUBPESCA PDFs) — public, from each institution.
 
-For the confidential items (the logbooks and the two environmental grids),
+For the confidential logbooks or the environmental grids (needed only for the
+stock-model re-fit or the raw rebuild — not for the knit or the projections),
 email the author: **felipequezada@udec.cl**.
 
 ## Reproducibility

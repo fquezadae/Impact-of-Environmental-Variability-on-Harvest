@@ -97,25 +97,17 @@ local paths configured in `R/00_config/config.R`.
 
 ## Knit-portable setup for the manuscript
 
-`paper/paper1_climate_projections.Rmd` resolves the external data
-root through the environment variable `FONDECYT_DATA` (defined in
-`.Renviron`, edit with `usethis::edit_r_environ()`). Example:
-
-```
-FONDECYT_DATA=C:/Users/<USER>/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/
-```
-
-If the variable is not set, the Rmd falls back to a user-specific
-hardcoded path (`felip`, `FACEA`, `Felipe`) for backwards
-compatibility. New machines should just set `FONDECYT_DATA` instead
-of editing the Rmd.
+`paper/paper1_climate_projections.Rmd` needs **no external data root**: every
+input it reads is versioned in this repository, so a fresh clone renders the PDF
+as-is. (`FONDECYT_DATA` is still read as an optional override but is never
+required; the daily environmental grids it used to point to were loaded but
+never used downstream and have been dropped from the manuscript.)
 
 The first chunk after `directorio` is a preflight that verifies all
 required inputs exist before rendering. If something is missing, the
 knit aborts with the exact list of files to sync, instead of the
 cryptic `gzfile()` error. The list covers:
 
-- the two daily environmental grids under `<FONDECYT_DATA>Environmental/env/`
 - the three tracked vessel-year aggregates (`biomass_dt.rds`,
   `sernapesca_v2.rds`, `poisson_dt.rds`)
 - the CMIP6 ensemble CSV and the three projection-table CSVs in

@@ -63,24 +63,12 @@ abstract: "Climate-driven shifts in productivity reach fleets unevenly when spec
 rm(list = ls())
 gc()
 
-# Raiz de datos externos (OneDrive). Resolucion:
-#   1) variable de entorno FONDECYT_DATA (recomendado; definir en .Renviron
-#      via usethis::edit_r_environ())
-#   2) fallback por usuario para compatibilidad con el setup historico
-dirdata <- Sys.getenv("FONDECYT_DATA", unset = NA)
-if (is.na(dirdata) || !nzchar(dirdata)) {
-  dirdata <- switch(
-    Sys.info()[["user"]],
-    "felip"  = "C:/Users/felip/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/",
-    "FACEA"  = "C:/Users/FACEA/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/",
-    "Felipe" = "D:/OneDrive - Universidad de Concepción/FONDECYT Iniciacion/Data/",
-    stop("Define FONDECYT_DATA en tu .Renviron (usethis::edit_r_environ()), o agrega tu usuario en el chunk 'directorio'.")
-  )
-}
-if (!grepl("/$", dirdata)) dirdata <- paste0(dirdata, "/")  # asegurar trailing slash
-if (!dir.exists(dirdata)) {
-  stop(sprintf("dirdata no existe (revisa que OneDrive este sincronizado o que FONDECYT_DATA apunte a la ruta correcta): %s", dirdata))
-}
+# The manuscript no longer reads from the external data root: every input the
+# knit needs is versioned in the repository (see the preflight below). The two
+# daily environmental grids were loaded but never used downstream, so they have
+# been dropped. FONDECYT_DATA is kept only as an optional, never-required path.
+dirdata <- Sys.getenv("FONDECYT_DATA", unset = "")
+if (nzchar(dirdata) && !grepl("/$", dirdata)) dirdata <- paste0(dirdata, "/")
 
 # Fijar la raíz del proyecto como working directory para todos los chunks
 # siguientes. Así las rutas relativas ("data/...", "figs/...") resuelven
@@ -182,8 +170,6 @@ fix_stargazer_notes <- function(tex) {
 # Preflight: verificar que todos los insumos del render existan antes de empezar.
 # Si falta algo, se aborta con la lista exacta (en vez del error criptico de gzfile()).
 required <- c(
-  paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"),
-  paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"),
   here::here("data/biomass/biomass_dt.rds"),
   here::here("data/harvest/sernapesca_v2.rds"),
   here::here("data/trips/poisson_dt.rds"),
@@ -253,13 +239,6 @@ Jack mackerel (Los Lagos)                             & $10$ & $15$ \\
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
-
-```{r load_env_vars, message=FALSE, warning=FALSE, include=FALSE}
-
-env_dt <- readRDS(paste0(dirdata, "Environmental/env/EnvCoastDaily_2012_2025_0.125deg.rds"))
-env_dt_00_11 <- readRDS(paste0(dirdata, "Environmental/env/2000-2011/EnvCoastDaily_2000_2011_0.25deg.rds"))
-
-```
 
 ```{r load_biomass, message=FALSE, warning=FALSE, include=FALSE}
 
@@ -977,4 +956,3 @@ All code required to replicate the analysis is openly available at \url{https://
 
 ::: {#refs}
 :::
-                    
