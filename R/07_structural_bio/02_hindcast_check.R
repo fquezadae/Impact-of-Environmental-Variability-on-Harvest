@@ -60,6 +60,7 @@ source_utf8 <- function(file, envir = globalenv()) {
   bytes <- readBin(con, what = "raw", n = file.info(file)$size)
   txt <- rawToChar(bytes)
   Encoding(txt) <- "UTF-8"
+  txt <- gsub("\r", "", txt, fixed = TRUE)  # tolerate CRLF checkouts (e.g. Windows clones)
   eval(parse(text = txt, encoding = "UTF-8"), envir = envir)
   invisible(NULL)
 }
